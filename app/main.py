@@ -326,6 +326,7 @@ def home():
               <a href="/admin" class="secondary">Admin</a>
               <a href="/health" class="secondary">Health</a>
               <a href="/ready" class="secondary">Readiness</a>
+              <a href="/debug-auth" class="secondary">Debug Auth</a>
             </div>
           </div>
 
@@ -353,6 +354,16 @@ def health():
 @app.get("/ready")
 def ready():
     return {"ok": True}
+
+
+@app.get("/debug-auth")
+def debug_auth():
+    return {
+        "admin_username_set": bool(os.environ.get("ADMIN_USERNAME")),
+        "admin_password_set": bool(os.environ.get("ADMIN_PASSWORD")),
+        "admin_username_length": len(os.environ.get("ADMIN_USERNAME", "")),
+        "admin_password_length": len(os.environ.get("ADMIN_PASSWORD", "")),
+    }
 
 
 @app.get("/api/sources")
@@ -530,12 +541,3 @@ def admin_page(username: str = Depends(check_auth)):
       </body>
     </html>
     """
-    
-@app.get("/debug-auth")
-def debug_auth():
-    return {
-        "admin_username_set": bool(os.environ.get("ADMIN_USERNAME")),
-        "admin_password_set": bool(os.environ.get("ADMIN_PASSWORD")),
-        "admin_username_length": len(os.environ.get("ADMIN_USERNAME", "")),
-        "admin_password_length": len(os.environ.get("ADMIN_PASSWORD", "")),
-    }
