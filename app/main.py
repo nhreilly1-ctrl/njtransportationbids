@@ -135,51 +135,7 @@ def init_db():
         conn.commit()
 
 
-@app.on_event("startup")
-def startup_event():
-    init_db()
-
-
-@app.get("/", response_class=HTMLResponse)
-def home():
-    return """
-    <html>
-      <head>
-        <title>NJ Transportation Bids</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.5; }
-          h1 { margin-bottom: 8px; }
-          a { color: #0b57d0; text-decoration: none; }
-          a:hover { text-decoration: underline; }
-          .card { max-width: 800px; padding: 24px; border: 1px solid #ddd; border-radius: 12px; }
-        </style>
-      </head>
-      <body>
-        <div class="card">
-          <h1>NJ Transportation Bids</h1>
-          <p>The site is live and now connected to Postgres.</p>
-          <p><a href="/health">Health check</a></p>
-          <p><a href="/ready">Readiness check</a></p>
-          <p><a href="/api/sources">View sources JSON</a></p>
-          <p><a href="/sources">View sources page</a></p>
-        </div>
-      </body>
-    </html>
-    """
-
-
-@app.get("/health")
-def health():
-    return {"ok": True}
-
-
-@app.get("/ready")
-def ready():
-    return {"ok": True}
-
-
-@app.get("/api/sources")
-def api_sources():
+def fetch_sources():
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("""
@@ -201,30 +157,121 @@ def api_sources():
             "priority_tier": row[5],
             "website_ready": row[6],
         })
-    return JSONResponse(content=data)
+    return data
+
+
+@app.on_event("startup")
+def startup_event():
+    init_db()
+
+
+@app.get("/", response_class=HTMLResponse)
+def home():
+    sources = fetch_sources()
+    source_count = len(sources)
+
+    return f"""
+    <html>
+      <head>
+        <title>NJ Transportation Bids</title>
+        <style>
+          body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.5; background: #f8fafc; color: #111827; }}
+          .wrap {{ max-width: 960px; margin: 0 auto; }}
+          .hero {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; margin-bottom: 24px; }}
+          .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0; }}
+          .stat {{ background: #f3f4f6; border-radius: 12px; padding: 16px; min-width: 180px; }}
+          .nav {{ display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }}
+          .nav a {{ display: inline-block; background: #0b57d0; color: white; padding: 10px 14px; border-radius: 10px; text-decoration: none; }}
+          .nav a.secondary {{ background: #374151; }}
+          .section {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 24px; }}
+          ul {{ padding-left: 18px; }}
+          li {{ margin-bottom: 8px; }}
+          .muted {{ color: #4b5563; }}
+        </style>
+      </head>
+      <body>
+        <div class="wrap">
+          <div class="hero">
+            <h1>NJ Transportation Bids</h1>
+            <p class="muted">
+              Live New Jersey transportation bid registry. Current version includes the first connected source registry and database-backed source pages.
+            </p>
+
+            <div class="stats">
+              <div class="stat">
+                <strong>{source_count}</strong><br>
+                live source records
+              </div>
+              <div class="stat">
+                <strong>Postgres</strong><br>
+                connected and working
+              </div>
+              <div class="stat">
+                <strong>Render</strong><br>
+                live deployment
+              </div>
+            </div>
+
+            <div class="nav">
+              <a href="/sources">View Sources</a>
+              <a href="/api/sources" class="secondary">Sources JSON</a>
+              <a href="/opportunities" class="secondary">Opportunities</a>
+              <a href="/health" class="secondary">Health</a>
+              <a href="/ready" class="secondary">Readiness</a>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>What is live now</h2>
+            <ul>
+              <li>Custom domain connected</li>
+              <li>Health and readiness checks passing</li>
+              <li>Database-backed source registry working</li>
+              <li>Top transportation sources loaded into the registry</li>
+            </ul>
+
+            <h2>Next build phase</h2>
+            <ul>
+              <li>Expand source registry beyond top 10</li>
+              <li>Add opportunities table and live opportunities page</li>
+              <li>Add crawler and lead-review workflow</li>
+              <li>Add protected admin functions</li>
+            </ul>
+          </div>
+        </div>
+      </body>
+    </html>
+    """
+
+
+@app.get("/health")
+def health():
+    return {"ok": True}
+
+
+@app.get("/ready")
+def ready():
+    return {"ok": True}
+
+
+@app.get("/api/sources")
+def api_sources():
+    return JSONResponse(content=fetch_sources())
 
 
 @app.get("/sources", response_class=HTMLResponse)
 def sources_page():
-    with get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("""
-                SELECT source_name, entity_type, county, priority_tier, source_url
-                FROM registry_sources
-                ORDER BY source_name
-                LIMIT 50
-            """)
-            rows = cur.fetchall()
+    sources = fetch_sources()
 
     items = ""
-    for row in rows:
+    for row in sources:
         items += f"""
         <tr>
-            <td>{row[0] or ''}</td>
-            <td>{row[1] or ''}</td>
-            <td>{row[2] or ''}</td>
-            <td>{row[3] or ''}</td>
-            <td><a href="{row[4]}" target="_blank">link</a></td>
+            <td><a href="{row['source_url']}" target="_blank">{row['source_name']}</a></td>
+            <td>{row['entity_type'] or ''}</td>
+            <td>{row['county'] or ''}</td>
+            <td>{row['priority_tier'] or ''}</td>
+            <td>{row['website_ready'] or ''}</td>
         </tr>
         """
 
@@ -233,28 +280,64 @@ def sources_page():
       <head>
         <title>Sources</title>
         <style>
-          body {{ font-family: Arial, sans-serif; margin: 40px; }}
-          table {{ border-collapse: collapse; width: 100%; }}
-          th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-          th {{ background: #f5f5f5; }}
+          body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+          .wrap {{ max-width: 1100px; margin: 0 auto; }}
+          .top {{ margin-bottom: 24px; }}
+          .top a {{ color: #0b57d0; text-decoration: none; }}
+          table {{ border-collapse: collapse; width: 100%; background: white; }}
+          th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; }}
+          th {{ background: #f3f4f6; }}
+          h1 {{ margin-bottom: 6px; }}
+          .muted {{ color: #4b5563; }}
         </style>
       </head>
       <body>
-        <h1>Registry Sources</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Source Name</th>
-              <th>Entity Type</th>
-              <th>County</th>
-              <th>Priority</th>
-              <th>URL</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items}
-          </tbody>
-        </table>
+        <div class="wrap">
+          <div class="top">
+            <a href="/">← Back to home</a>
+            <h1>Registry Sources</h1>
+            <p class="muted">{len(sources)} sources currently loaded</p>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Source Name</th>
+                <th>Entity Type</th>
+                <th>County</th>
+                <th>Priority</th>
+                <th>Website Ready</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items}
+            </tbody>
+          </table>
+        </div>
+      </body>
+    </html>
+    """
+
+
+@app.get("/opportunities", response_class=HTMLResponse)
+def opportunities_page():
+    return """
+    <html>
+      <head>
+        <title>Opportunities</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }
+          .card { max-width: 900px; margin: 0 auto; background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }
+          a { color: #0b57d0; text-decoration: none; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <a href="/">← Back to home</a>
+          <h1>Opportunities</h1>
+          <p>This page is the next build target.</p>
+          <p>The next phase will connect live bid opportunities, crawler output, and promoted transportation opportunities here.</p>
+        </div>
       </body>
     </html>
     """
