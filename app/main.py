@@ -122,6 +122,9 @@ def init_db():
                     source_url TEXT,
                     raw_text TEXT,
                     duplicate_key TEXT,
+                    possible_duplicate BOOLEAN DEFAULT FALSE,
+                    quality_score INTEGER DEFAULT 0,
+                    admin_notes TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
@@ -147,6 +150,9 @@ def init_db():
 
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS duplicate_key TEXT;")
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
+            cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS possible_duplicate BOOLEAN DEFAULT FALSE;")
+            cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS quality_score INTEGER DEFAULT 0;")
+            cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS admin_notes TEXT;")
 
             cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
 
@@ -320,9 +326,10 @@ def fetch_opportunity_by_id(opportunity_id):
     }
 
 
-def fetch_leads(status_filter=None, q=None, sort_by=None):
+def fetch_leads(status_filter=None, q=None, sort_by=None, duplicates_only=False):
     sql = """
-        SELECT lead_id, source_id, title, agency, county, posted_date, due_date, status, source_url, duplicate_key, created_at
+        SELECT lead_id, source_id, title, agency, county, posted_date, due_date, status,
+               source_url, duplicate_key, possible_duplicate, quality_score, admin_notes, created_at
         FROM opportunity_leads
         WHERE 1=1
     """
@@ -332,10 +339,13 @@ def fetch_leads(status_filter=None, q=None, sort_by=None):
         sql += " AND status = %s"
         params.append(status_filter)
 
+    if duplicates_only:
+        sql += " AND possible_duplicate = TRUE"
+
     if q:
         like_val = f"%{q.lower()}%"
-        sql += " AND (LOWER(title) LIKE %s OR LOWER(COALESCE(agency,'')) LIKE %s OR LOWER(COALESCE(county,'')) LIKE %s OR LOWER(source_id) LIKE %s)"
-        params.extend([like_val, like_val, like_val, like_val])
+        sql += " AND (LOWER(title) LIKE %s OR LOWER(COALESCE(agency,'')) LIKE %s OR LOWER(COALESCE(county,'')) LIKE %s OR LOWER(source_id) LIKE %s OR LOWER(COALESCE(admin_notes,'')) LIKE %s)"
+        params.extend([like_val, like_val, like_val, like_val, like_val])
 
     if sort_by == "due_date":
         sql += """
@@ -345,6 +355,8 @@ def fetch_leads(status_filter=None, q=None, sort_by=None):
                 created_at DESC
             LIMIT 500
         """
+    elif sort_by == "quality":
+        sql += " ORDER BY quality_score DESC, created_at DESC LIMIT 500"
     else:
         sql += """
             ORDER BY
@@ -354,6 +366,7 @@ def fetch_leads(status_filter=None, q=None, sort_by=None):
                     WHEN status = 'Rejected' THEN 3
                     ELSE 4
                 END,
+                possible_duplicate DESC,
                 created_at DESC,
                 title
             LIMIT 500
@@ -378,7 +391,10 @@ def fetch_leads(status_filter=None, q=None, sort_by=None):
             "status": row[7],
             "source_url": row[8],
             "duplicate_key": row[9],
-            "created_at": str(row[10]),
+            "possible_duplicate": row[10],
+            "quality_score": row[11],
+            "admin_notes": row[12] or "",
+            "created_at": str(row[13]),
         }
         for row in rows
     ]
@@ -424,6 +440,8 @@ def fetch_admin_summary():
             promoted_lead_count = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE status = 'Rejected'")
             rejected_lead_count = cur.fetchone()[0]
+            cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE possible_duplicate = TRUE")
+            duplicate_lead_count = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM crawl_runs")
             crawl_run_count = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM crawl_runs WHERE status = 'Success'")
@@ -438,6 +456,7 @@ def fetch_admin_summary():
         "new_lead_count": new_lead_count,
         "promoted_lead_count": promoted_lead_count,
         "rejected_lead_count": rejected_lead_count,
+        "duplicate_lead_count": duplicate_lead_count,
         "crawl_run_count": crawl_run_count,
         "successful_crawl_count": successful_crawl_count,
         "failed_crawl_count": failed_crawl_count,
@@ -453,16 +472,87 @@ def strip_html(text):
     return text.strip()
 
 
-def normalize_title(title):
+def cleanup_title(title):
     title = re.sub(r"\s+", " ", title).strip()
     title = re.sub(r"\s*-\s*", " - ", title)
-    return title[:220]
+    title = re.sub(r"^(ADVERTISEMENT|NOTICE|SOLICITATION)\s*[:\-]\s*", "", title, flags=re.I)
+    title = re.sub(r"\bCLICK HERE\b", "", title, flags=re.I)
+    title = re.sub(r"\bMORE INFO\b", "", title, flags=re.I)
+    title = re.sub(r"\bOPENING DATE\b", "Opening Date", title, flags=re.I)
+    title = re.sub(r"\bCLOSING DATE\b", "Closing Date", title, flags=re.I)
+    title = re.sub(r"\s{2,}", " ", title).strip(" -")
+    return title[:240]
+
+
+def normalize_title(title):
+    return cleanup_title(title)
+
+
+def extract_due_date(text):
+    patterns = [
+        r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}",
+        r"\b\d{1,2}/\d{1,2}/\d{2,4}\b",
+        r"\b\d{4}-\d{2}-\d{2}\b",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.I)
+        if match:
+            return match.group(0)
+    return None
 
 
 def make_duplicate_key(source_id, title, due_date):
     norm_title = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
     norm_date = (due_date or "nodate").lower().replace(" ", "-").replace(",", "")
     return f"{source_id}|{norm_title}|{norm_date}"[:500]
+
+
+def compute_quality_score(title, due_date, agency, county):
+    score = 0
+    if title and len(title) >= 25:
+        score += 30
+    if title and len(title) >= 50:
+        score += 10
+    if due_date:
+        score += 25
+    if agency:
+        score += 15
+    if county:
+        score += 10
+    if title and any(token in title.lower() for token in ["contract", "rfp", "rfq", "ifb", "proposal", "project", "services"]):
+        score += 10
+    return min(score, 100)
+
+
+def refresh_duplicate_flags():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE opportunity_leads SET possible_duplicate = FALSE")
+
+            cur.execute("""
+                UPDATE opportunity_leads l
+                SET possible_duplicate = TRUE
+                WHERE duplicate_key IN (
+                    SELECT duplicate_key
+                    FROM opportunity_leads
+                    WHERE duplicate_key IS NOT NULL AND duplicate_key <> ''
+                    GROUP BY duplicate_key
+                    HAVING COUNT(*) > 1
+                )
+            """)
+
+            cur.execute("""
+                UPDATE opportunity_leads l
+                SET possible_duplicate = TRUE
+                WHERE EXISTS (
+                    SELECT 1
+                    FROM opportunities o
+                    WHERE o.source_id = l.source_id
+                      AND LOWER(o.title) = LOWER(l.title)
+                      AND COALESCE(o.due_date, '') = COALESCE(l.due_date, '')
+                )
+            """)
+        conn.commit()
 
 
 def upsert_leads(source_key, source_id, agency, county, source_url, titles):
@@ -472,20 +562,16 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
             for idx, raw_title in enumerate(titles, start=1):
                 title = normalize_title(raw_title)
                 lead_id = f"lead-{source_key}-{idx}"
-                due_date_match = re.search(
-                    r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}",
-                    title,
-                    flags=re.I,
-                )
-                due_date = due_date_match.group(0) if due_date_match else None
+                due_date = extract_due_date(title)
                 duplicate_key = make_duplicate_key(source_id, title, due_date)
+                quality_score = compute_quality_score(title, due_date, agency, county)
 
                 cur.execute("""
                     INSERT INTO opportunity_leads (
                         lead_id, source_id, title, agency, county, posted_date, due_date, status,
-                        source_url, raw_text, duplicate_key
+                        source_url, raw_text, duplicate_key, quality_score
                     )
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (lead_id) DO UPDATE SET
                         title = EXCLUDED.title,
                         agency = EXCLUDED.agency,
@@ -494,14 +580,16 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
                         status = EXCLUDED.status,
                         source_url = EXCLUDED.source_url,
                         raw_text = EXCLUDED.raw_text,
-                        duplicate_key = EXCLUDED.duplicate_key
+                        duplicate_key = EXCLUDED.duplicate_key,
+                        quality_score = EXCLUDED.quality_score
                 """, (
                     lead_id, source_id, title, agency, county, None, due_date, "New",
-                    source_url, title, duplicate_key
+                    source_url, title, duplicate_key, quality_score
                 ))
                 inserted += 1
         conn.commit()
 
+    refresh_duplicate_flags()
     return inserted
 
 
@@ -551,7 +639,7 @@ def parse_construction_titles(cleaned):
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
-    return deduped[:15]
+    return deduped[:20]
 
 
 def parse_profserv_titles(cleaned):
@@ -575,7 +663,7 @@ def parse_profserv_titles(cleaned):
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
-    return deduped[:15]
+    return deduped[:20]
 
 
 def parse_njta_titles(cleaned):
@@ -599,7 +687,7 @@ def parse_njta_titles(cleaned):
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
-    return deduped[:15]
+    return deduped[:20]
 
 
 def parse_monmouth_titles(cleaned):
@@ -623,7 +711,7 @@ def parse_monmouth_titles(cleaned):
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
-    return deduped[:15]
+    return deduped[:20]
 
 
 def parse_njtransit_titles(cleaned):
@@ -647,7 +735,7 @@ def parse_njtransit_titles(cleaned):
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
-    return deduped[:15]
+    return deduped[:20]
 
 
 def parse_drjtbc_construction_titles(cleaned):
@@ -671,7 +759,7 @@ def parse_drjtbc_construction_titles(cleaned):
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
-    return deduped[:15]
+    return deduped[:20]
 
 
 def parse_drjtbc_profserv_titles(cleaned):
@@ -695,7 +783,7 @@ def parse_drjtbc_profserv_titles(cleaned):
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
-    return deduped[:15]
+    return deduped[:20]
 
 
 def crawl_generic(url, parser, source_key, source_id, agency, county, source_name):
@@ -842,7 +930,7 @@ def bulk_update_leads(lead_ids, action):
                         SELECT COUNT(*)
                         FROM opportunities
                         WHERE source_id = %s
-                          AND title = %s
+                          AND LOWER(title) = LOWER(%s)
                           AND COALESCE(due_date, '') = COALESCE(%s, '')
                     """, (row[1], row[2], row[5]))
                     duplicate_count = cur.fetchone()[0]
@@ -874,6 +962,8 @@ def bulk_update_leads(lead_ids, action):
                     cur.execute("UPDATE opportunity_leads SET status = 'New' WHERE lead_id = %s", (lead_id,))
         conn.commit()
 
+    refresh_duplicate_flags()
+
 
 def reject_lead(lead_id):
     bulk_update_leads([lead_id], "reject")
@@ -883,9 +973,32 @@ def reset_lead_to_new(lead_id):
     bulk_update_leads([lead_id], "reset")
 
 
+def update_lead_notes(lead_id, admin_notes):
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE opportunity_leads
+                SET admin_notes = %s
+                WHERE lead_id = %s
+            """, (admin_notes.strip(), lead_id))
+        conn.commit()
+
+
+def mark_lead_duplicate(lead_id, is_duplicate: bool):
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE opportunity_leads
+                SET possible_duplicate = %s
+                WHERE lead_id = %s
+            """, (is_duplicate, lead_id))
+        conn.commit()
+
+
 @app.on_event("startup")
 def startup_event():
     init_db()
+    refresh_duplicate_flags()
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -914,7 +1027,7 @@ def home():
           <div class="stat"><strong>{len(sources)}</strong><br>live source records</div>
           <div class="stat"><strong>{len(opportunities)}</strong><br>published opportunities</div>
           <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
-          <div class="stat"><strong>{summary['crawl_run_count']}</strong><br>crawl runs</div>
+          <div class="stat"><strong>{summary['duplicate_lead_count']}</strong><br>possible duplicates</div>
         </div>
         <div class="nav">
           <a href="/sources">View Sources</a>
@@ -927,12 +1040,13 @@ def home():
       </div>
 
       <div class="section">
-        <h2>Latest big bundle</h2>
+        <h2>Latest bundle</h2>
         <ul>
-          <li>Filter persistence after admin actions</li>
-          <li>CSV export for leads and opportunities</li>
-          <li>DRJTBC construction crawler added</li>
-          <li>DRJTBC professional services crawler added</li>
+          <li>Duplicate review queue added</li>
+          <li>Possible duplicate flagging added</li>
+          <li>Lead quality score added</li>
+          <li>Admin notes for leads added</li>
+          <li>Cleaner title and due-date extraction added</li>
         </ul>
       </div>
     </div></body></html>
@@ -970,8 +1084,9 @@ def api_admin_leads(
     status_filter: str | None = Query(default=None, alias="status"),
     q: str | None = None,
     sort_by: str | None = None,
+    duplicates_only: bool = False,
 ):
-    return JSONResponse(content=fetch_leads(status_filter, q, sort_by))
+    return JSONResponse(content=fetch_leads(status_filter, q, sort_by, duplicates_only))
 
 
 @app.get("/api/admin/crawl-runs")
@@ -1007,18 +1122,20 @@ def export_leads_csv(
     status_filter: str | None = Query(default=None, alias="status"),
     q: str | None = None,
     sort_by: str | None = None,
+    duplicates_only: bool = False,
 ):
-    leads = fetch_leads(status_filter, q, sort_by)
+    leads = fetch_leads(status_filter, q, sort_by, duplicates_only)
     rows = [
         [
             l["lead_id"], l["title"], l["source_id"], l["source_name"], l["agency"], l["county"],
-            l["due_date"], l["status"], l["duplicate_key"], l["source_url"], l["created_at"]
+            l["due_date"], l["status"], l["duplicate_key"], l["possible_duplicate"],
+            l["quality_score"], l["admin_notes"], l["source_url"], l["created_at"]
         ]
         for l in leads
     ]
     return csv_response(
         "leads.csv",
-        ["lead_id", "title", "source_id", "source_name", "agency", "county", "due_date", "status", "duplicate_key", "source_url", "created_at"],
+        ["lead_id", "title", "source_id", "source_name", "agency", "county", "due_date", "status", "duplicate_key", "possible_duplicate", "quality_score", "admin_notes", "source_url", "created_at"],
         rows
     )
 
@@ -1119,6 +1236,43 @@ def admin_bulk_leads_action(
     if action in {"promote", "reject", "reset"} and selected_lead_ids:
         bulk_update_leads(selected_lead_ids, action)
     return RedirectResponse(url=build_redirect_url("/admin/leads", return_status, return_q, return_sort_by), status_code=303)
+
+
+@app.post("/admin/leads/{lead_id}/notes")
+def admin_update_lead_notes(
+    lead_id: str,
+    username: str = Depends(check_auth),
+    admin_notes: str = Form(default=""),
+    return_status: str | None = Form(default=None),
+    return_q: str | None = Form(default=None),
+    return_sort_by: str | None = Form(default=None),
+):
+    update_lead_notes(lead_id, admin_notes)
+    return RedirectResponse(url=build_redirect_url("/admin/leads", return_status, return_q, return_sort_by), status_code=303)
+
+
+@app.post("/admin/leads/{lead_id}/mark-duplicate")
+def admin_mark_duplicate(
+    lead_id: str,
+    username: str = Depends(check_auth),
+    return_status: str | None = Form(default=None),
+    return_q: str | None = Form(default=None),
+    return_sort_by: str | None = Form(default=None),
+):
+    mark_lead_duplicate(lead_id, True)
+    return RedirectResponse(url=build_redirect_url("/admin/duplicates", return_status, return_q, return_sort_by), status_code=303)
+
+
+@app.post("/admin/leads/{lead_id}/clear-duplicate")
+def admin_clear_duplicate(
+    lead_id: str,
+    username: str = Depends(check_auth),
+    return_status: str | None = Form(default=None),
+    return_q: str | None = Form(default=None),
+    return_sort_by: str | None = Form(default=None),
+):
+    mark_lead_duplicate(lead_id, False)
+    return RedirectResponse(url=build_redirect_url("/admin/duplicates", return_status, return_q, return_sort_by), status_code=303)
 
 
 @app.get("/sources", response_class=HTMLResponse)
@@ -1289,7 +1443,7 @@ def admin_page(username: str = Depends(check_auth)):
         <div class="stat"><strong>{summary['new_lead_count']}</strong><br>new leads</div>
         <div class="stat"><strong>{summary['promoted_lead_count']}</strong><br>promoted leads</div>
         <div class="stat"><strong>{summary['rejected_lead_count']}</strong><br>rejected leads</div>
-        <div class="stat"><strong>{summary['crawl_run_count']}</strong><br>crawl runs</div>
+        <div class="stat"><strong>{summary['duplicate_lead_count']}</strong><br>possible duplicates</div>
       </div>
 
       <div class="grid" style="margin-top:20px;">
@@ -1310,6 +1464,7 @@ def admin_page(username: str = Depends(check_auth)):
       <h3>Admin links</h3>
       <p><a href="/admin/sources">View source crawl status page</a></p>
       <p><a href="/admin/leads">View admin leads page</a></p>
+      <p><a href="/admin/duplicates">View duplicate review queue</a></p>
       <p><a href="/admin/export/leads.csv">Export leads CSV</a></p>
       <p><a href="/api/admin/summary">Admin summary JSON</a></p>
       <p><a href="/api/admin/leads">Admin leads JSON</a></p>
@@ -1366,7 +1521,7 @@ def admin_leads_page(
     q: str | None = None,
     sort_by: str | None = None,
 ):
-    leads = fetch_leads(status_filter, q, sort_by)
+    leads = fetch_leads(status_filter, q, sort_by, duplicates_only=False)
     summary = fetch_admin_summary()
 
     current_status = status_filter or ""
@@ -1375,15 +1530,32 @@ def admin_leads_page(
 
     items = ""
     for row in leads:
+        duplicate_badge = "Yes" if row["possible_duplicate"] else ""
+        quality_badge = row["quality_score"]
+
         if row["status"] == "New":
             action_html = f"""
                 <button type="submit" formaction="/admin/leads/{row['lead_id']}/promote" formmethod="post" style="background:#0b57d0;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Promote</button>
-                <button type="submit" formaction="/admin/leads/{row['lead_id']}/reject" formmethod="post" style="background:#b91c1c;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;">Reject</button>
+                <button type="submit" formaction="/admin/leads/{row['lead_id']}/reject" formmethod="post" style="background:#b91c1c;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Reject</button>
             """
         else:
             action_html = f"""
-                <button type="submit" formaction="/admin/leads/{row['lead_id']}/reset" formmethod="post" style="background:#374151;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;">Reset to New</button>
+                <button type="submit" formaction="/admin/leads/{row['lead_id']}/reset" formmethod="post" style="background:#374151;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Reset to New</button>
             """
+
+        action_html += f"""
+            <button type="submit" formaction="/admin/leads/{row['lead_id']}/mark-duplicate" formmethod="post" style="background:#7c3aed;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Mark Duplicate</button>
+        """
+
+        notes_form = f"""
+            <form action="/admin/leads/{row['lead_id']}/notes" method="post" style="display:block; margin-top:8px;">
+                <input type="hidden" name="return_status" value="{current_status}">
+                <input type="hidden" name="return_q" value="{current_q}">
+                <input type="hidden" name="return_sort_by" value="{current_sort}">
+                <input type="text" name="admin_notes" value="{row['admin_notes']}" placeholder="admin notes" style="width:180px;padding:6px;">
+                <button type="submit" style="padding:6px 8px;">Save</button>
+            </form>
+        """
 
         items += f"""
         <tr>
@@ -1395,20 +1567,21 @@ def admin_leads_page(
             <td>{row['county'] or ''}</td>
             <td>{row['due_date'] or ''}</td>
             <td>{row['status'] or ''}</td>
+            <td>{duplicate_badge}</td>
+            <td>{quality_badge}</td>
             <td>{row['duplicate_key'] or ''}</td>
             <td><a href="{row['source_url']}" target="_blank">source</a></td>
-            <td>{action_html}</td>
+            <td>{action_html}{notes_form}</td>
         </tr>
         """
 
-    current_label = status_filter if status_filter else "All"
     export_url = build_redirect_url("/admin/export/leads.csv", status_filter, q, sort_by)
 
     return f"""
     <html><head><title>Admin Leads</title>
     <style>
       body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-      .wrap {{ max-width: 1600px; margin: 0 auto; }}
+      .wrap {{ max-width: 1800px; margin: 0 auto; }}
       table {{ border-collapse: collapse; width: 100%; background: white; }}
       th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; vertical-align: top; }}
       th {{ background: #f3f4f6; }}
@@ -1425,18 +1598,19 @@ def admin_leads_page(
     <body><div class="wrap">
       <a href="/admin">← Back to admin</a>
       <h1>Admin Leads</h1>
-      <p>{len(leads)} leads currently shown — filter: {current_label}</p>
+      <p>{len(leads)} leads currently shown</p>
 
       <div class="filters">
         <a href="/admin/leads">All ({summary['lead_count']})</a>
         <a href="/admin/leads?status=New">New ({summary['new_lead_count']})</a>
         <a href="/admin/leads?status=Promoted">Promoted ({summary['promoted_lead_count']})</a>
         <a href="/admin/leads?status=Rejected">Rejected ({summary['rejected_lead_count']})</a>
+        <a href="/admin/duplicates">Duplicates ({summary['duplicate_lead_count']})</a>
         <a href="{export_url}">Export filtered leads CSV</a>
       </div>
 
       <form method="get" action="/admin/leads" class="searchbar">
-        <input type="text" name="q" placeholder="Search title / source / agency / county" value="{current_q}">
+        <input type="text" name="q" placeholder="Search title / source / agency / county / notes" value="{current_q}">
         <select name="status">
           <option value="" {"selected" if not current_status else ""}>All statuses</option>
           <option value="New" {"selected" if current_status == "New" else ""}>New</option>
@@ -1446,6 +1620,7 @@ def admin_leads_page(
         <select name="sort_by">
           <option value="" {"selected" if not current_sort else ""}>Default sort</option>
           <option value="due_date" {"selected" if current_sort == "due_date" else ""}>Sort by due date</option>
+          <option value="quality" {"selected" if current_sort == "quality" else ""}>Sort by quality</option>
         </select>
         <button type="submit">Apply</button>
       </form>
@@ -1472,13 +1647,94 @@ def admin_leads_page(
               <th>County</th>
               <th>Due Date</th>
               <th>Status</th>
+              <th>Possible Duplicate</th>
+              <th>Quality</th>
               <th>Duplicate Key</th>
               <th>Link</th>
-              <th>Actions</th>
+              <th>Actions / Notes</th>
             </tr>
           </thead>
           <tbody>{items}</tbody>
         </table>
       </form>
+    </div></body></html>
+    """
+
+
+@app.get("/admin/duplicates", response_class=HTMLResponse)
+def admin_duplicates_page(
+    username: str = Depends(check_auth),
+    q: str | None = None,
+    sort_by: str | None = None,
+):
+    leads = fetch_leads(None, q, sort_by, duplicates_only=True)
+    current_q = q or ""
+    current_sort = sort_by or ""
+
+    items = ""
+    for row in leads:
+        items += f"""
+        <tr>
+            <td>{row['title']}</td>
+            <td>{row['source_name']}</td>
+            <td>{row['lead_id']}</td>
+            <td>{row['due_date'] or ''}</td>
+            <td>{row['quality_score']}</td>
+            <td>{row['duplicate_key'] or ''}</td>
+            <td>{row['status'] or ''}</td>
+            <td><a href="{row['source_url']}" target="_blank">source</a></td>
+            <td>
+                <form action="/admin/leads/{row['lead_id']}/clear-duplicate" method="post" style="display:inline-block;">
+                    <input type="hidden" name="return_q" value="{current_q}">
+                    <input type="hidden" name="return_sort_by" value="{current_sort}">
+                    <button type="submit" style="padding:8px 10px;">Clear Duplicate Flag</button>
+                </form>
+            </td>
+        </tr>
+        """
+
+    return f"""
+    <html><head><title>Duplicate Review Queue</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+      .wrap {{ max-width: 1500px; margin: 0 auto; }}
+      table {{ border-collapse: collapse; width: 100%; background: white; }}
+      th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; vertical-align: top; }}
+      th {{ background: #f3f4f6; }}
+      .searchbar {{ background:white; border:1px solid #e5e7eb; border-radius:12px; padding:16px; margin-bottom:16px; }}
+      .searchbar input, .searchbar select {{ margin-right:8px; padding:8px; }}
+      a {{ color: #0b57d0; text-decoration: none; }}
+    </style></head>
+    <body><div class="wrap">
+      <a href="/admin">← Back to admin</a>
+      <h1>Duplicate Review Queue</h1>
+      <p>{len(leads)} leads flagged as possible duplicates</p>
+
+      <form method="get" action="/admin/duplicates" class="searchbar">
+        <input type="text" name="q" placeholder="Search duplicates" value="{current_q}">
+        <select name="sort_by">
+          <option value="" {"selected" if not current_sort else ""}>Default sort</option>
+          <option value="due_date" {"selected" if current_sort == "due_date" else ""}>Sort by due date</option>
+          <option value="quality" {"selected" if current_sort == "quality" else ""}>Sort by quality</option>
+        </select>
+        <button type="submit">Apply</button>
+      </form>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Source</th>
+            <th>Lead ID</th>
+            <th>Due Date</th>
+            <th>Quality</th>
+            <th>Duplicate Key</th>
+            <th>Status</th>
+            <th>Link</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>{items}</tbody>
+      </table>
     </div></body></html>
     """
