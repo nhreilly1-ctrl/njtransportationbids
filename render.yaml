@@ -2,7 +2,7 @@ services:
   - type: web
     name: nj-bid-registry-web
     runtime: docker
-    plan: free
+    plan: starter
     autoDeploy: true
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
@@ -30,6 +30,6 @@ services:
 
 databases:
   - name: nj-bid-registry-db
-    plan: free
+    plan: starter
     databaseName: nj_bid_registry
     user: nj_bid_registry_user

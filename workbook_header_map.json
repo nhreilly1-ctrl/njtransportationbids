@@ -1,0 +1,30 @@
+{
+  "workbook": "nj_statewide_transportation_bid_source_registry_built_2026-04-11.xlsx",
+  "sheet": "Master Registry",
+  "field_map": {
+    "Source ID": "source_id",
+    "Source Level": "source_level",
+    "Entity Type": "entity_type",
+    "Source Name": "source_name",
+    "County": "county",
+    "Municipality": "municipality",
+    "Region": "region",
+    "Coverage / Scope": "coverage_scope",
+    "Priority Tier": "priority_tier",
+    "Rank / Area": "rank_area",
+    "Statewide DOS Directory": "statewide_dos_directory",
+    "Direct Legal Notice URL": "direct_legal_notice_url",
+    "Effective Notice Entry URL": "effective_notice_entry_url",
+    "Primary Procurement URL": "primary_procurement_url",
+    "Verification URL / County URL": "verification_url_county_url",
+    "Portal Type": "portal_type",
+    "Crawl Entry": "crawl_entry",
+    "Verification Status": "verification_status",
+    "Source Status": "source_status",
+    "Refresh Cadence": "refresh_cadence",
+    "Website Ready": "website_ready",
+    "Parser Hint": "parser_hint",
+    "Use For": "use_for",
+    "Notes": "notes"
+  }
+}
