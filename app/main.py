@@ -1,5 +1,6 @@
 import os
 import re
+import time
 import secrets
 import psycopg2
 import requests
@@ -52,6 +53,11 @@ def init_db():
                     source_url TEXT,
                     priority_tier TEXT,
                     website_ready TEXT,
+                    crawl_enabled BOOLEAN DEFAULT FALSE,
+                    crawl_method TEXT,
+                    last_crawl_at TIMESTAMP NULL,
+                    last_crawl_status TEXT,
+                    last_leads_found INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
@@ -103,9 +109,17 @@ def init_db():
             """)
 
             # Upgrade older tables in place
+            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS crawl_enabled BOOLEAN DEFAULT FALSE;")
+            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS crawl_method TEXT;")
+            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS last_crawl_at TIMESTAMP NULL;")
+            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS last_crawl_status TEXT;")
+            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS last_leads_found INTEGER DEFAULT 0;")
+
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS duplicate_key TEXT;")
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
+
             cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
+
             cur.execute("ALTER TABLE crawl_runs ADD COLUMN IF NOT EXISTS leads_found INTEGER DEFAULT 0;")
             cur.execute("ALTER TABLE crawl_runs ADD COLUMN IF NOT EXISTS notes TEXT;")
             cur.execute("ALTER TABLE crawl_runs ADD COLUMN IF NOT EXISTS started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
@@ -118,36 +132,51 @@ def init_db():
                     county,
                     source_url,
                     priority_tier,
-                    website_ready
+                    website_ready,
+                    crawl_enabled,
+                    crawl_method
                 )
                 VALUES
-                ('state-njdot-construction','NJDOT Construction Services','State Agency','Statewide','https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm','Tier 1','Yes'),
-                ('state-njdot-profserv','NJDOT Professional Services','State Agency','Statewide','https://www.nj.gov/transportation/business/procurement/ProfServ/CurrentSolic.shtm','Tier 1','Yes'),
-                ('state-njta','NJ Turnpike Authority Current Solicitations','Transportation Authority','Statewide','https://www.njta.gov/business-hub/current-solicitations/','Tier 1','Yes'),
-                ('state-njtransit','NJ TRANSIT Procurement Calendar','Transit Agency','Statewide','https://www.njtransit.com/procurement/calendar','Tier 1','Yes'),
-                ('state-sjta','South Jersey Transportation Authority Legal Notices','Transportation Authority','Atlantic','https://www.sjta.com/legal-notices','Tier 1','Yes'),
-                ('state-drjtbc-construction','DRJTBC Notice To Contractors','Bi-State Authority','Warren/Hunterdon/Mercer','https://www.drjtbc.org/construction-services/notice-to-contractors/','Tier 1','Yes'),
-                ('state-drjtbc-profserv','DRJTBC Current Procurements','Bi-State Authority','Warren/Hunterdon/Mercer','https://www.drjtbc.org/professional-services/current/','Tier 1','Yes'),
-                ('state-panynj-construction','Port Authority Construction Opportunities','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/Construction.html','Tier 1','Yes'),
-                ('state-panynj-profserv','Port Authority Professional Services','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/professional-services.html','Tier 1','Yes'),
-                ('county-monmouth','Monmouth County Purchasing','County','Monmouth','https://pol.co.monmouth.nj.us/','Tier 1','Yes'),
-                ('county-atlantic','Atlantic County Open Bids','County','Atlantic','https://www.atlanticcountynj.gov/government/county-departments/department-of-administrative-services/division-of-budget-and-purchasing/open-bids','Tier 1','Yes'),
-                ('county-bergen','Bergen County Bids','County','Bergen','https://bergenbids.com/','Tier 1','Yes'),
-                ('county-burlington','Burlington County Bid Solicitations','County','Burlington','https://www.co.burlington.nj.us/490/Bid-Solicitations','Tier 1','Yes'),
-                ('county-camden','Camden County Procurements','County','Camden','https://procurements.camdencounty.com/','Tier 1','Yes'),
-                ('county-cape-may','Cape May County Bids and RFPs','County','Cape May','https://capemaycountynj.gov/1072/Bids-and-RFPs','Tier 2','Yes'),
-                ('county-cumberland','Cumberland County Bids','County','Cumberland','https://www.cumberlandcountynj.gov/bids','Tier 2','Yes'),
-                ('county-essex','Essex County Procurement','County','Essex','https://www.essexcountynjprocure.org/bids/search?rfp_filter_status=current','Tier 1','Yes'),
-                ('county-gloucester','Gloucester County Bids','County','Gloucester','https://www.gloucestercountynj.gov/Bids.aspx','Tier 2','Yes'),
-                ('county-hudson','Hudson County Purchasing','County','Hudson','https://www.hcnj.us/finance/purchasing/','Tier 1','Yes'),
-                ('county-hunterdon','Hunterdon County Bids','County','Hunterdon','https://www.co.hunterdon.nj.us/Bids.aspx','Tier 2','Yes'),
-                ('county-mercer','Mercer County Bidding Opportunities','County','Mercer','https://www.mercercounty.org/departments/purchasing/bidding-opportunities','Tier 1','Yes'),
-                ('county-middlesex','Middlesex County Improvement Authority Opportunities','County','Middlesex','https://www.middlesexcountynj.gov/government/departments/department-of-economic-development/middlesex-county-improvement-authority/current-bidding-opportunities','Tier 1','Yes'),
-                ('county-morris','Morris County Bids and Quotes','County','Morris','https://www.morriscountynj.gov/Departments/Purchasing/Bids-and-Quotes','Tier 1','Yes'),
-                ('county-ocean','Ocean County Purchasing','County','Ocean','https://www.co.ocean.nj.us/oc/purchasing/frmhomepdept.aspx','Tier 1','Yes'),
-                ('county-union','Union County Invitations to Bid','County','Union','https://ucnj.org/vendor-opportunities/invitations-to-bid/current/','Tier 1','Yes')
-                ON CONFLICT (source_id) DO NOTHING;
-            """)
+                ('state-njdot-construction','NJDOT Construction Services','State Agency','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-njdot-profserv','NJDOT Professional Services','State Agency','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-njta','NJ Turnpike Authority Current Solicitations','Transportation Authority','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-njtransit','NJ TRANSIT Procurement Calendar','Transit Agency','Statewide','https://www.njtransit.com/procurement/calendar','Tier 1','Yes',FALSE,'manual_html'),
+                ('state-sjta','South Jersey Transportation Authority Legal Notices','Transportation Authority','Atlantic','https://www.sjta.com/legal-notices','Tier 1','Yes',FALSE,'manual_html'),
+                ('state-drjtbc-construction','DRJTBC Notice To Contractors','Bi-State Authority','Warren/Hunterdon/Mercer','https://www.drjtbc.org/construction-services/notice-to-contractors/','Tier 1','Yes',FALSE,'manual_html'),
+                ('state-drjtbc-profserv','DRJTBC Current Procurements','Bi-State Authority','Warren/Hunterdon/Mercer','https://www.drjtbc.org/professional-services/current/','Tier 1','Yes',FALSE,'manual_html'),
+                ('state-panynj-construction','Port Authority Construction Opportunities','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/Construction.html','Tier 1','Yes',FALSE,'manual_html'),
+                ('state-panynj-profserv','Port Authority Professional Services','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/professional-services.html','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-monmouth','Monmouth County Purchasing','County','Monmouth',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('county-atlantic','Atlantic County Open Bids','County','Atlantic','https://www.atlanticcountynj.gov/government/county-departments/department-of-administrative-services/division-of-budget-and-purchasing/open-bids','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-bergen','Bergen County Bids','County','Bergen','https://bergenbids.com/','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-burlington','Burlington County Bid Solicitations','County','Burlington','https://www.co.burlington.nj.us/490/Bid-Solicitations','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-camden','Camden County Procurements','County','Camden','https://procurements.camdencounty.com/','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-cape-may','Cape May County Bids and RFPs','County','Cape May','https://capemaycountynj.gov/1072/Bids-and-RFPs','Tier 2','Yes',FALSE,'manual_html'),
+                ('county-cumberland','Cumberland County Bids','County','Cumberland','https://www.cumberlandcountynj.gov/bids','Tier 2','Yes',FALSE,'manual_html'),
+                ('county-essex','Essex County Procurement','County','Essex','https://www.essexcountynjprocure.org/bids/search?rfp_filter_status=current','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-gloucester','Gloucester County Bids','County','Gloucester','https://www.gloucestercountynj.gov/Bids.aspx','Tier 2','Yes',FALSE,'manual_html'),
+                ('county-hudson','Hudson County Purchasing','County','Hudson','https://www.hcnj.us/finance/purchasing/','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-hunterdon','Hunterdon County Bids','County','Hunterdon','https://www.co.hunterdon.nj.us/Bids.aspx','Tier 2','Yes',FALSE,'manual_html'),
+                ('county-mercer','Mercer County Bidding Opportunities','County','Mercer','https://www.mercercounty.org/departments/purchasing/bidding-opportunities','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-middlesex','Middlesex County Improvement Authority Opportunities','County','Middlesex','https://www.middlesexcountynj.gov/government/departments/department-of-economic-development/middlesex-county-improvement-authority/current-bidding-opportunities','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-morris','Morris County Bids and Quotes','County','Morris','https://www.morriscountynj.gov/Departments/Purchasing/Bids-and-Quotes','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-ocean','Ocean County Purchasing','County','Ocean','https://www.co.ocean.nj.us/oc/purchasing/frmhomepdept.aspx','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-union','Union County Invitations to Bid','County','Union','https://ucnj.org/vendor-opportunities/invitations-to-bid/current/','Tier 1','Yes',FALSE,'manual_html')
+                ON CONFLICT (source_id) DO UPDATE SET
+                    source_name = EXCLUDED.source_name,
+                    entity_type = EXCLUDED.entity_type,
+                    county = EXCLUDED.county,
+                    source_url = EXCLUDED.source_url,
+                    priority_tier = EXCLUDED.priority_tier,
+                    website_ready = EXCLUDED.website_ready,
+                    crawl_enabled = EXCLUDED.crawl_enabled,
+                    crawl_method = EXCLUDED.crawl_method
+            """, (
+                NJDOT_CONSTRUCTION_URL,
+                NJDOT_PROFSERV_URL,
+                NJTA_URL,
+                MONMOUTH_URL
+            ))
 
             cur.execute("""
                 DELETE FROM opportunities
@@ -164,10 +193,11 @@ def fetch_sources():
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT source_id, source_name, entity_type, county, source_url, priority_tier, website_ready
+                SELECT source_id, source_name, entity_type, county, source_url, priority_tier, website_ready,
+                       crawl_enabled, crawl_method, last_crawl_at, last_crawl_status, last_leads_found
                 FROM registry_sources
                 ORDER BY source_name
-                LIMIT 100
+                LIMIT 200
             """)
             rows = cur.fetchall()
 
@@ -180,6 +210,11 @@ def fetch_sources():
             "source_url": row[4],
             "priority_tier": row[5],
             "website_ready": row[6],
+            "crawl_enabled": row[7],
+            "crawl_method": row[8],
+            "last_crawl_at": str(row[9]) if row[9] else None,
+            "last_crawl_status": row[10],
+            "last_leads_found": row[11],
         }
         for row in rows
     ]
@@ -189,15 +224,45 @@ def fetch_source_map():
     return {row["source_id"]: row for row in fetch_sources()}
 
 
-def fetch_opportunities():
+def fetch_enabled_crawl_sources():
+    return [s for s in fetch_sources() if s["crawl_enabled"]]
+
+
+def fetch_opportunities(
+    county_filter: str | None = None,
+    agency_filter: str | None = None,
+    source_filter: str | None = None,
+    q: str | None = None,
+):
+    sql = """
+        SELECT opportunity_id, title, agency, county, source_id, due_date, status, opportunity_url
+        FROM opportunities
+        WHERE 1=1
+    """
+    params = []
+
+    if county_filter:
+        sql += " AND county = %s"
+        params.append(county_filter)
+
+    if agency_filter:
+        sql += " AND agency = %s"
+        params.append(agency_filter)
+
+    if source_filter:
+        sql += " AND source_id = %s"
+        params.append(source_filter)
+
+    if q:
+        sql += " AND (LOWER(title) LIKE %s OR LOWER(agency) LIKE %s OR LOWER(COALESCE(county, '')) LIKE %s)"
+        like_val = f"%{q.lower()}%"
+        params.extend([like_val, like_val, like_val])
+
+    sql += " ORDER BY created_at DESC, due_date NULLS LAST, title LIMIT 200"
+
     with get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("""
-                SELECT opportunity_id, title, agency, county, source_id, due_date, status, opportunity_url
-                FROM opportunities
-                ORDER BY created_at DESC, due_date NULLS LAST, title
-                LIMIT 100
-            """)
+            cur.execute(sql, tuple(params))
             rows = cur.fetchall()
 
     source_map = fetch_source_map()
@@ -254,7 +319,7 @@ def fetch_leads(status_filter: str | None = None):
                     FROM opportunity_leads
                     WHERE status = %s
                     ORDER BY created_at DESC, title
-                    LIMIT 200
+                    LIMIT 300
                 """, (status_filter,))
             else:
                 cur.execute("""
@@ -269,7 +334,7 @@ def fetch_leads(status_filter: str | None = None):
                         END,
                         created_at DESC,
                         title
-                    LIMIT 200
+                    LIMIT 300
                 """)
             rows = cur.fetchall()
 
@@ -293,7 +358,7 @@ def fetch_leads(status_filter: str | None = None):
     ]
 
 
-def fetch_crawl_runs(limit: int = 50):
+def fetch_crawl_runs(limit: int = 100):
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("""
@@ -460,7 +525,7 @@ def upsert_leads(source_key: str, source_id: str, agency: str, county: str, sour
 
 
 def log_crawl_run(source_id: str, source_name: str, status_text: str, leads_found: int, notes: str):
-    crawl_run_id = f"crawl-{source_id}-{int(__import__('time').time())}"
+    crawl_run_id = f"crawl-{source_id}-{int(time.time())}"
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("""
@@ -484,6 +549,19 @@ def log_crawl_run(source_id: str, source_name: str, status_text: str, leads_foun
         conn.commit()
 
 
+def update_source_crawl_status(source_id: str, status_text: str, leads_found: int):
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE registry_sources
+                SET last_crawl_at = CURRENT_TIMESTAMP,
+                    last_crawl_status = %s,
+                    last_leads_found = %s
+                WHERE source_id = %s
+            """, (status_text, leads_found, source_id))
+        conn.commit()
+
+
 def parse_construction_titles(cleaned: str):
     titles = []
     for match in re.finditer(r"(Contract [A-Z0-9\-.]+.*?)(?=Contract [A-Z0-9\-.]+|$)", cleaned, flags=re.I):
@@ -492,8 +570,7 @@ def parse_construction_titles(cleaned: str):
             titles.append(chunk)
 
     if not titles:
-        sentences = re.split(r"(?<=[.!?])\s+", cleaned)
-        for sentence in sentences:
+        for sentence in re.split(r"(?<=[.!?])\s+", cleaned):
             if "contract" in sentence.lower() or "proposal" in sentence.lower():
                 if len(sentence.strip()) > 30:
                     titles.append(sentence.strip())
@@ -600,9 +677,11 @@ def crawl_generic(url: str, parser, source_key: str, source_id: str, agency: str
             titles=deduped,
         )
         log_crawl_run(source_id, source_name, "Success", inserted, "Manual crawl completed")
+        update_source_crawl_status(source_id, "Success", inserted)
         return {"inserted": inserted, "titles": deduped}
     except Exception as e:
         log_crawl_run(source_id, source_name, "Failed", 0, str(e))
+        update_source_crawl_status(source_id, "Failed", 0)
         raise
 
 
@@ -652,6 +731,39 @@ def manual_crawl_monmouth():
         county="Monmouth",
         source_name="Monmouth County Purchasing",
     )
+
+
+def run_enabled_crawlers():
+    results = []
+    for source in fetch_enabled_crawl_sources():
+        sid = source["source_id"]
+        try:
+            if sid == "state-njdot-construction":
+                result = manual_crawl_njdot_construction()
+            elif sid == "state-njdot-profserv":
+                result = manual_crawl_njdot_profserv()
+            elif sid == "state-njta":
+                result = manual_crawl_njta()
+            elif sid == "county-monmouth":
+                result = manual_crawl_monmouth()
+            else:
+                continue
+
+            results.append({
+                "source_id": sid,
+                "source_name": source["source_name"],
+                "status": "Success",
+                "leads_found": result["inserted"],
+            })
+        except Exception as e:
+            results.append({
+                "source_id": sid,
+                "source_name": source["source_name"],
+                "status": "Failed",
+                "leads_found": 0,
+                "error": str(e),
+            })
+    return results
 
 
 def promote_lead(lead_id: str):
@@ -748,7 +860,7 @@ def home():
         <title>NJ Transportation Bids</title>
         <style>
           body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.5; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 960px; margin: 0 auto; }}
+          .wrap {{ max-width: 1000px; margin: 0 auto; }}
           .hero {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; margin-bottom: 24px; }}
           .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0; }}
           .stat {{ background: #f3f4f6; border-radius: 12px; padding: 16px; min-width: 180px; }}
@@ -757,19 +869,20 @@ def home():
           .nav a.secondary {{ background: #374151; }}
           .section {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 24px; }}
           ul {{ padding-left: 18px; }}
-          li {{ margin-bottom: 8px; }}
         </style>
       </head>
       <body>
         <div class="wrap">
           <div class="hero">
             <h1>NJ Transportation Bids</h1>
+
             <div class="stats">
               <div class="stat"><strong>{len(sources)}</strong><br>live source records</div>
               <div class="stat"><strong>{len(opportunities)}</strong><br>published opportunities</div>
               <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
               <div class="stat"><strong>{summary['crawl_run_count']}</strong><br>crawl runs</div>
             </div>
+
             <div class="nav">
               <a href="/sources">View Sources</a>
               <a href="/opportunities">View Opportunities</a>
@@ -780,13 +893,13 @@ def home():
           </div>
 
           <div class="section">
-            <h2>Latest big step</h2>
+            <h2>Current build stage</h2>
             <ul>
-              <li>NJTA manual crawler added</li>
-              <li>Monmouth County manual crawler added</li>
-              <li>Opportunity detail pages added</li>
-              <li>Basic duplicate guard added on promotion</li>
-              <li>Source-aware display added across leads and opportunities</li>
+              <li>Manual crawlers for NJDOT Construction, NJDOT Professional Services, NJTA, and Monmouth County</li>
+              <li>Published opportunities with detail pages</li>
+              <li>Basic duplicate protection on promotion</li>
+              <li>Source operational metadata and crawl status tracking</li>
+              <li>Public opportunities filters by county, agency, source, and search term</li>
             </ul>
           </div>
         </div>
@@ -811,8 +924,18 @@ def api_sources():
 
 
 @app.get("/api/opportunities")
-def api_opportunities():
-    return JSONResponse(content=fetch_opportunities())
+def api_opportunities(
+    county: str | None = None,
+    agency: str | None = None,
+    source_id: str | None = None,
+    q: str | None = None,
+):
+    return JSONResponse(content=fetch_opportunities(
+        county_filter=county,
+        agency_filter=agency,
+        source_filter=source_id,
+        q=q,
+    ))
 
 
 @app.get("/api/admin/summary")
@@ -855,6 +978,12 @@ def admin_crawl_njta(username: str = Depends(check_auth)):
 def admin_crawl_monmouth(username: str = Depends(check_auth)):
     manual_crawl_monmouth()
     return RedirectResponse(url="/admin/leads", status_code=303)
+
+
+@app.post("/admin/crawl/run-enabled")
+def admin_run_enabled(username: str = Depends(check_auth)):
+    run_enabled_crawlers()
+    return RedirectResponse(url="/admin/sources", status_code=303)
 
 
 @app.post("/admin/leads/{lead_id}/promote")
@@ -905,8 +1034,23 @@ def sources_page():
 
 
 @app.get("/opportunities", response_class=HTMLResponse)
-def opportunities_page():
-    opportunities = fetch_opportunities()
+def opportunities_page(
+    county: str | None = None,
+    agency: str | None = None,
+    source_id: str | None = None,
+    q: str | None = None,
+):
+    opportunities = fetch_opportunities(
+        county_filter=county,
+        agency_filter=agency,
+        source_filter=source_id,
+        q=q,
+    )
+    sources = fetch_sources()
+
+    counties = sorted({s["county"] for s in sources if s["county"]})
+    agencies = sorted({o["agency"] for o in fetch_opportunities() if o["agency"]})
+    source_opts = sorted({(s["source_id"], s["source_name"]) for s in sources})
 
     items = ""
     for row in opportunities:
@@ -921,20 +1065,42 @@ def opportunities_page():
         </tr>
         """
 
+    county_options = "<option value=''>All counties</option>" + "".join(
+        f"<option value='{c}' {'selected' if county == c else ''}>{c}</option>" for c in counties
+    )
+    agency_options = "<option value=''>All agencies</option>" + "".join(
+        f"<option value='{a}' {'selected' if agency == a else ''}>{a}</option>" for a in agencies
+    )
+    source_options = "<option value=''>All sources</option>" + "".join(
+        f"<option value='{sid}' {'selected' if source_id == sid else ''}>{sname}</option>" for sid, sname in source_opts
+    )
+
     return f"""
     <html><head><title>Opportunities</title>
     <style>
       body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-      .wrap {{ max-width: 1200px; margin: 0 auto; }}
+      .wrap {{ max-width: 1300px; margin: 0 auto; }}
       table {{ border-collapse: collapse; width: 100%; background: white; }}
       th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; }}
       th {{ background: #f3f4f6; }}
       a {{ color: #0b57d0; text-decoration: none; }}
+      .filters {{ background: white; border: 1px solid #e5e7eb; padding: 16px; border-radius: 12px; margin-bottom: 20px; }}
+      .filters input, .filters select {{ margin-right: 10px; padding: 8px; }}
+      .filters button {{ padding: 8px 12px; }}
     </style></head>
     <body><div class="wrap">
       <a href="/">← Back to home</a>
       <h1>Opportunities</h1>
       <p>{len(opportunities)} published opportunities currently loaded</p>
+
+      <form method="get" action="/opportunities" class="filters">
+        <input type="text" name="q" placeholder="Search title / agency / county" value="{q or ''}">
+        <select name="county">{county_options}</select>
+        <select name="agency">{agency_options}</select>
+        <select name="source_id">{source_options}</select>
+        <button type="submit">Filter</button>
+      </form>
+
       <table>
         <thead><tr><th>Title</th><th>Agency</th><th>County</th><th>Source</th><th>Due Date</th><th>Status</th></tr></thead>
         <tbody>{items}</tbody>
@@ -990,7 +1156,7 @@ def admin_page(username: str = Depends(check_auth)):
     <html><head><title>Admin</title>
     <style>
       body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-      .wrap {{ max-width: 1100px; margin: 0 auto; }}
+      .wrap {{ max-width: 1200px; margin: 0 auto; }}
       .card {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }}
       .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0 24px 0; }}
       .stat {{ background: #f3f4f6; border-radius: 12px; padding: 16px; min-width: 180px; }}
@@ -1028,16 +1194,59 @@ def admin_page(username: str = Depends(check_auth)):
           <form action="/admin/crawl/njdot-profserv" method="post"><button class="button" type="submit">Run NJDOT Professional Services Crawl</button></form>
           <form action="/admin/crawl/njta" method="post"><button class="button" type="submit">Run NJTA Crawl</button></form>
           <form action="/admin/crawl/monmouth" method="post"><button class="button" type="submit">Run Monmouth County Crawl</button></form>
+          <form action="/admin/crawl/run-enabled" method="post"><button class="button" type="submit">Run All Enabled Crawlers</button></form>
         </div>
         <div class="panel"><h3>Latest crawl runs</h3><ul>{crawl_items}</ul></div>
       </div>
 
       <h3>Admin links</h3>
+      <p><a href="/admin/sources">View source crawl status page</a></p>
       <p><a href="/admin/leads">View admin leads page</a></p>
       <p><a href="/api/admin/summary">Admin summary JSON</a></p>
       <p><a href="/api/admin/leads">Admin leads JSON</a></p>
       <p><a href="/api/admin/crawl-runs">Admin crawl runs JSON</a></p>
     </div></div></body></html>
+    """
+
+
+@app.get("/admin/sources", response_class=HTMLResponse)
+def admin_sources_page(username: str = Depends(check_auth)):
+    sources = fetch_sources()
+
+    items = ""
+    for row in sources:
+        crawl_enabled_text = "Yes" if row["crawl_enabled"] else "No"
+        items += f"""
+        <tr>
+            <td>{row['source_name']}</td>
+            <td>{row['source_id']}</td>
+            <td>{row['county'] or ''}</td>
+            <td>{crawl_enabled_text}</td>
+            <td>{row['crawl_method'] or ''}</td>
+            <td>{row['last_crawl_at'] or ''}</td>
+            <td>{row['last_crawl_status'] or ''}</td>
+            <td>{row['last_leads_found'] or 0}</td>
+        </tr>
+        """
+
+    return f"""
+    <html><head><title>Admin Sources</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+      .wrap {{ max-width: 1400px; margin: 0 auto; }}
+      table {{ border-collapse: collapse; width: 100%; background: white; }}
+      th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; }}
+      th {{ background: #f3f4f6; }}
+      a {{ color: #0b57d0; text-decoration: none; }}
+    </style></head>
+    <body><div class="wrap">
+      <a href="/admin">← Back to admin</a>
+      <h1>Source Crawl Status</h1>
+      <table>
+        <thead><tr><th>Source Name</th><th>Source ID</th><th>County</th><th>Crawl Enabled</th><th>Crawl Method</th><th>Last Crawl At</th><th>Last Status</th><th>Last Leads Found</th></tr></thead>
+        <tbody>{items}</tbody>
+      </table>
+    </div></body></html>
     """
 
 
