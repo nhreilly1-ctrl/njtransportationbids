@@ -124,22 +124,14 @@ def init_db():
                 ON CONFLICT (source_id) DO NOTHING;
             """)
 
+            # Remove earlier demo/sample opportunities so the page is driven by promoted leads.
             cur.execute("""
-                INSERT INTO opportunities (
-                    opportunity_id,
-                    title,
-                    agency,
-                    county,
-                    source_id,
-                    due_date,
-                    status,
-                    opportunity_url
-                )
-                VALUES
-                ('opp-njdot-001','Sample NJDOT Construction Opportunity','NJDOT Construction Services','Statewide','state-njdot-construction','2026-05-15','Open','https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm'),
-                ('opp-njta-001','Sample NJTA Professional Services Opportunity','NJ Turnpike Authority Current Solicitations','Statewide','state-njta','2026-05-20','Open','https://www.njta.gov/business-hub/current-solicitations/'),
-                ('opp-monmouth-001','Sample Monmouth County Intersection Improvement Opportunity','Monmouth County Purchasing','Monmouth','county-monmouth','2026-05-10','Open','https://pol.co.monmouth.nj.us/')
-                ON CONFLICT (opportunity_id) DO NOTHING;
+                DELETE FROM opportunities
+                WHERE opportunity_id IN (
+                    'opp-njdot-001',
+                    'opp-njta-001',
+                    'opp-monmouth-001'
+                );
             """)
         conn.commit()
 
@@ -175,7 +167,7 @@ def fetch_opportunities():
             cur.execute("""
                 SELECT opportunity_id, title, agency, county, source_id, due_date, status, opportunity_url
                 FROM opportunities
-                ORDER BY due_date
+                ORDER BY created_at DESC, due_date NULLS LAST, title
                 LIMIT 100
             """)
             rows = cur.fetchall()
@@ -201,8 +193,16 @@ def fetch_leads():
             cur.execute("""
                 SELECT lead_id, source_id, title, agency, county, posted_date, due_date, status, source_url, created_at
                 FROM opportunity_leads
-                ORDER BY created_at DESC, title
-                LIMIT 100
+                ORDER BY
+                    CASE
+                        WHEN status = 'New' THEN 1
+                        WHEN status = 'Promoted' THEN 2
+                        WHEN status = 'Rejected' THEN 3
+                        ELSE 4
+                    END,
+                    created_at DESC,
+                    title
+                LIMIT 200
             """)
             rows = cur.fetchall()
 
@@ -235,6 +235,15 @@ def fetch_admin_summary():
             cur.execute("SELECT COUNT(*) FROM opportunity_leads")
             lead_count = cur.fetchone()[0]
 
+            cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE status = 'New'")
+            new_lead_count = cur.fetchone()[0]
+
+            cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE status = 'Promoted'")
+            promoted_lead_count = cur.fetchone()[0]
+
+            cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE status = 'Rejected'")
+            rejected_lead_count = cur.fetchone()[0]
+
             cur.execute("""
                 SELECT COALESCE(entity_type, 'Unknown'), COUNT(*)
                 FROM registry_sources
@@ -256,6 +265,9 @@ def fetch_admin_summary():
         "source_count": source_count,
         "opportunity_count": opportunity_count,
         "lead_count": lead_count,
+        "new_lead_count": new_lead_count,
+        "promoted_lead_count": promoted_lead_count,
+        "rejected_lead_count": rejected_lead_count,
         "by_entity_type": [{"entity_type": row[0], "count": row[1]} for row in entity_rows],
         "top_counties": [{"county": row[0], "count": row[1]} for row in county_rows],
     }
@@ -268,11 +280,6 @@ def strip_html(text: str) -> str:
     text = re.sub(r"&nbsp;|&#160;", " ", text)
     text = re.sub(r"\s+", " ", text)
     return text.strip()
-
-
-def extract_due_dates(text: str):
-    pattern = r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}"
-    return re.findall(pattern, text)
 
 
 def manual_crawl_njdot_construction():
@@ -359,6 +366,78 @@ def manual_crawl_njdot_construction():
     return {"inserted": inserted, "titles": deduped}
 
 
+def promote_lead(lead_id: str):
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT lead_id, source_id, title, agency, county, due_date, source_url, status
+                FROM opportunity_leads
+                WHERE lead_id = %s
+            """, (lead_id,))
+            row = cur.fetchone()
+
+            if not row:
+                raise ValueError("Lead not found")
+
+            opportunity_id = f"opp-{row[0]}"
+            title = row[2]
+            agency = row[3] or "Unknown Agency"
+            county = row[4]
+            source_id = row[1]
+            due_date = row[5]
+            source_url = row[6]
+
+            cur.execute("""
+                INSERT INTO opportunities (
+                    opportunity_id,
+                    title,
+                    agency,
+                    county,
+                    source_id,
+                    due_date,
+                    status,
+                    opportunity_url
+                )
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT (opportunity_id) DO UPDATE SET
+                    title = EXCLUDED.title,
+                    agency = EXCLUDED.agency,
+                    county = EXCLUDED.county,
+                    source_id = EXCLUDED.source_id,
+                    due_date = EXCLUDED.due_date,
+                    status = EXCLUDED.status,
+                    opportunity_url = EXCLUDED.opportunity_url
+            """, (
+                opportunity_id,
+                title,
+                agency,
+                county,
+                source_id,
+                due_date,
+                "Open",
+                source_url
+            ))
+
+            cur.execute("""
+                UPDATE opportunity_leads
+                SET status = 'Promoted'
+                WHERE lead_id = %s
+            """, (lead_id,))
+
+        conn.commit()
+
+
+def reject_lead(lead_id: str):
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                UPDATE opportunity_leads
+                SET status = 'Rejected'
+                WHERE lead_id = %s
+            """, (lead_id,))
+        conn.commit()
+
+
 @app.on_event("startup")
 def startup_event():
     init_db()
@@ -404,11 +483,11 @@ def home():
               </div>
               <div class="stat">
                 <strong>{len(opportunities)}</strong><br>
-                live opportunity records
+                published opportunities
               </div>
               <div class="stat">
                 <strong>{summary['lead_count']}</strong><br>
-                lead records
+                total leads
               </div>
             </div>
 
@@ -427,8 +506,8 @@ def home():
               <li>Custom domain connected</li>
               <li>Health and readiness checks passing</li>
               <li>Database-backed source registry working</li>
-              <li>Database-backed opportunities page working</li>
-              <li>Lead staging table and admin leads page ready</li>
+              <li>Published opportunities are now driven by promoted leads</li>
+              <li>Admin leads workflow supports crawl, promote, and reject</li>
             </ul>
           </div>
         </div>
@@ -480,6 +559,18 @@ def api_admin_leads(username: str = Depends(check_auth)):
 @app.post("/admin/crawl/njdot-construction")
 def admin_crawl_njdot_construction(username: str = Depends(check_auth)):
     manual_crawl_njdot_construction()
+    return RedirectResponse(url="/admin/leads", status_code=303)
+
+
+@app.post("/admin/leads/{lead_id}/promote")
+def admin_promote_lead(lead_id: str, username: str = Depends(check_auth)):
+    promote_lead(lead_id)
+    return RedirectResponse(url="/admin/leads", status_code=303)
+
+
+@app.post("/admin/leads/{lead_id}/reject")
+def admin_reject_lead(lead_id: str, username: str = Depends(check_auth)):
+    reject_lead(lead_id)
     return RedirectResponse(url="/admin/leads", status_code=303)
 
 
@@ -559,6 +650,10 @@ def opportunities_page():
         </tr>
         """
 
+    empty_message = ""
+    if not opportunities:
+        empty_message = "<p class='muted'>No promoted opportunities yet. Promote leads from the admin leads page to publish them here.</p>"
+
     return f"""
     <html>
       <head>
@@ -580,7 +675,8 @@ def opportunities_page():
           <div class="top">
             <a href="/">← Back to home</a>
             <h1>Opportunities</h1>
-            <p class="muted">{len(opportunities)} opportunities currently loaded</p>
+            <p class="muted">{len(opportunities)} published opportunities currently loaded</p>
+            {empty_message}
           </div>
 
           <table>
@@ -651,7 +747,19 @@ def admin_page(username: str = Depends(check_auth)):
               </div>
               <div class="stat">
                 <strong>{summary['lead_count']}</strong><br>
-                opportunity leads
+                total leads
+              </div>
+              <div class="stat">
+                <strong>{summary['new_lead_count']}</strong><br>
+                new leads
+              </div>
+              <div class="stat">
+                <strong>{summary['promoted_lead_count']}</strong><br>
+                promoted leads
+              </div>
+              <div class="stat">
+                <strong>{summary['rejected_lead_count']}</strong><br>
+                rejected leads
               </div>
             </div>
 
@@ -691,6 +799,19 @@ def admin_leads_page(username: str = Depends(check_auth)):
 
     items = ""
     for row in leads:
+        action_html = ""
+        if row["status"] == "New":
+            action_html = f"""
+                <form action="/admin/leads/{row['lead_id']}/promote" method="post" style="display:inline-block; margin-right:8px;">
+                    <button type="submit" style="background:#0b57d0;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;">Promote</button>
+                </form>
+                <form action="/admin/leads/{row['lead_id']}/reject" method="post" style="display:inline-block;">
+                    <button type="submit" style="background:#b91c1c;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;">Reject</button>
+                </form>
+            """
+        else:
+            action_html = "<span style='color:#4b5563;'>No actions</span>"
+
         items += f"""
         <tr>
             <td>{row['title']}</td>
@@ -700,6 +821,7 @@ def admin_leads_page(username: str = Depends(check_auth)):
             <td>{row['due_date'] or ''}</td>
             <td>{row['status'] or ''}</td>
             <td><a href="{row['source_url']}" target="_blank">source</a></td>
+            <td>{action_html}</td>
         </tr>
         """
 
@@ -709,7 +831,7 @@ def admin_leads_page(username: str = Depends(check_auth)):
         <title>Admin Leads</title>
         <style>
           body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 1200px; margin: 0 auto; }}
+          .wrap {{ max-width: 1300px; margin: 0 auto; }}
           .top {{ margin-bottom: 24px; }}
           .top a {{ color: #0b57d0; text-decoration: none; }}
           table {{ border-collapse: collapse; width: 100%; background: white; }}
@@ -736,6 +858,7 @@ def admin_leads_page(username: str = Depends(check_auth)):
                 <th>Due Date</th>
                 <th>Status</th>
                 <th>Link</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
