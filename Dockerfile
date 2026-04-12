@@ -12,4 +12,4 @@ COPY . /app
 
 EXPOSE 10000
 
-CMD ["sh", "/app/scripts/start_production.sh"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "10000"]
