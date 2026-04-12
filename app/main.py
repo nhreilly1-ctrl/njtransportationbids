@@ -75,96 +75,31 @@ def init_db():
                     website_ready
                 )
                 VALUES
-                (
-                    'state-njdot-construction',
-                    'NJDOT Construction Services',
-                    'State Agency',
-                    'Statewide',
-                    'https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'state-njdot-profserv',
-                    'NJDOT Professional Services',
-                    'State Agency',
-                    'Statewide',
-                    'https://www.nj.gov/transportation/business/procurement/ProfServ/CurrentSolic.shtm',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'state-njta',
-                    'NJ Turnpike Authority Current Solicitations',
-                    'Transportation Authority',
-                    'Statewide',
-                    'https://www.njta.gov/business-hub/current-solicitations/',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'state-njtransit',
-                    'NJ TRANSIT Procurement Calendar',
-                    'Transit Agency',
-                    'Statewide',
-                    'https://www.njtransit.com/procurement/calendar',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'state-sjta',
-                    'South Jersey Transportation Authority Legal Notices',
-                    'Transportation Authority',
-                    'Atlantic',
-                    'https://www.sjta.com/legal-notices',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'state-drjtbc-construction',
-                    'DRJTBC Notice To Contractors',
-                    'Bi-State Authority',
-                    'Warren/Hunterdon/Mercer',
-                    'https://www.drjtbc.org/construction-services/notice-to-contractors/',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'state-drjtbc-profserv',
-                    'DRJTBC Current Procurements',
-                    'Bi-State Authority',
-                    'Warren/Hunterdon/Mercer',
-                    'https://www.drjtbc.org/professional-services/current/',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'state-panynj-construction',
-                    'Port Authority Construction Opportunities',
-                    'Bi-State Authority',
-                    'Hudson/Essex/Union',
-                    'https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/Construction.html',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'state-panynj-profserv',
-                    'Port Authority Professional Services',
-                    'Bi-State Authority',
-                    'Hudson/Essex/Union',
-                    'https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/professional-services.html',
-                    'Tier 1',
-                    'Yes'
-                ),
-                (
-                    'county-monmouth',
-                    'Monmouth County Purchasing',
-                    'County',
-                    'Monmouth',
-                    'https://pol.co.monmouth.nj.us/',
-                    'Tier 1',
-                    'Yes'
-                )
+                ('state-njdot-construction','NJDOT Construction Services','State Agency','Statewide','https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm','Tier 1','Yes'),
+                ('state-njdot-profserv','NJDOT Professional Services','State Agency','Statewide','https://www.nj.gov/transportation/business/procurement/ProfServ/CurrentSolic.shtm','Tier 1','Yes'),
+                ('state-njta','NJ Turnpike Authority Current Solicitations','Transportation Authority','Statewide','https://www.njta.gov/business-hub/current-solicitations/','Tier 1','Yes'),
+                ('state-njtransit','NJ TRANSIT Procurement Calendar','Transit Agency','Statewide','https://www.njtransit.com/procurement/calendar','Tier 1','Yes'),
+                ('state-sjta','South Jersey Transportation Authority Legal Notices','Transportation Authority','Atlantic','https://www.sjta.com/legal-notices','Tier 1','Yes'),
+                ('state-drjtbc-construction','DRJTBC Notice To Contractors','Bi-State Authority','Warren/Hunterdon/Mercer','https://www.drjtbc.org/construction-services/notice-to-contractors/','Tier 1','Yes'),
+                ('state-drjtbc-profserv','DRJTBC Current Procurements','Bi-State Authority','Warren/Hunterdon/Mercer','https://www.drjtbc.org/professional-services/current/','Tier 1','Yes'),
+                ('state-panynj-construction','Port Authority Construction Opportunities','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/Construction.html','Tier 1','Yes'),
+                ('state-panynj-profserv','Port Authority Professional Services','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/professional-services.html','Tier 1','Yes'),
+                ('county-monmouth','Monmouth County Purchasing','County','Monmouth','https://pol.co.monmouth.nj.us/','Tier 1','Yes'),
+                ('county-atlantic','Atlantic County Open Bids','County','Atlantic','https://www.atlanticcountynj.gov/government/county-departments/department-of-administrative-services/division-of-budget-and-purchasing/open-bids','Tier 1','Yes'),
+                ('county-bergen','Bergen County Bids','County','Bergen','https://bergenbids.com/','Tier 1','Yes'),
+                ('county-burlington','Burlington County Bid Solicitations','County','Burlington','https://www.co.burlington.nj.us/490/Bid-Solicitations','Tier 1','Yes'),
+                ('county-camden','Camden County Procurements','County','Camden','https://procurements.camdencounty.com/','Tier 1','Yes'),
+                ('county-cape-may','Cape May County Bids and RFPs','County','Cape May','https://capemaycountynj.gov/1072/Bids-and-RFPs','Tier 2','Yes'),
+                ('county-cumberland','Cumberland County Bids','County','Cumberland','https://www.cumberlandcountynj.gov/bids','Tier 2','Yes'),
+                ('county-essex','Essex County Procurement','County','Essex','https://www.essexcountynjprocure.org/bids/search?rfp_filter_status=current','Tier 1','Yes'),
+                ('county-gloucester','Gloucester County Bids','County','Gloucester','https://www.gloucestercountynj.gov/Bids.aspx','Tier 2','Yes'),
+                ('county-hudson','Hudson County Purchasing','County','Hudson','https://www.hcnj.us/finance/purchasing/','Tier 1','Yes'),
+                ('county-hunterdon','Hunterdon County Bids','County','Hunterdon','https://www.co.hunterdon.nj.us/Bids.aspx','Tier 2','Yes'),
+                ('county-mercer','Mercer County Bidding Opportunities','County','Mercer','https://www.mercercounty.org/departments/purchasing/bidding-opportunities','Tier 1','Yes'),
+                ('county-middlesex','Middlesex County Improvement Authority Opportunities','County','Middlesex','https://www.middlesexcountynj.gov/government/departments/department-of-economic-development/middlesex-county-improvement-authority/current-bidding-opportunities','Tier 1','Yes'),
+                ('county-morris','Morris County Bids and Quotes','County','Morris','https://www.morriscountynj.gov/Departments/Purchasing/Bids-and-Quotes','Tier 1','Yes'),
+                ('county-ocean','Ocean County Purchasing','County','Ocean','https://www.co.ocean.nj.us/oc/purchasing/frmhomepdept.aspx','Tier 1','Yes'),
+                ('county-union','Union County Invitations to Bid','County','Union','https://ucnj.org/vendor-opportunities/invitations-to-bid/current/','Tier 1','Yes')
                 ON CONFLICT (source_id) DO NOTHING;
             """)
 
@@ -180,36 +115,9 @@ def init_db():
                     opportunity_url
                 )
                 VALUES
-                (
-                    'opp-njdot-001',
-                    'Sample NJDOT Construction Opportunity',
-                    'NJDOT Construction Services',
-                    'Statewide',
-                    'state-njdot-construction',
-                    '2026-05-15',
-                    'Open',
-                    'https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm'
-                ),
-                (
-                    'opp-njta-001',
-                    'Sample NJTA Professional Services Opportunity',
-                    'NJ Turnpike Authority Current Solicitations',
-                    'Statewide',
-                    'state-njta',
-                    '2026-05-20',
-                    'Open',
-                    'https://www.njta.gov/business-hub/current-solicitations/'
-                ),
-                (
-                    'opp-monmouth-001',
-                    'Sample Monmouth County Intersection Improvement Opportunity',
-                    'Monmouth County Purchasing',
-                    'Monmouth',
-                    'county-monmouth',
-                    '2026-05-10',
-                    'Open',
-                    'https://pol.co.monmouth.nj.us/'
-                )
+                ('opp-njdot-001','Sample NJDOT Construction Opportunity','NJDOT Construction Services','Statewide','state-njdot-construction','2026-05-15','Open','https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm'),
+                ('opp-njta-001','Sample NJTA Professional Services Opportunity','NJ Turnpike Authority Current Solicitations','Statewide','state-njta','2026-05-20','Open','https://www.njta.gov/business-hub/current-solicitations/'),
+                ('opp-monmouth-001','Sample Monmouth County Intersection Improvement Opportunity','Monmouth County Purchasing','Monmouth','county-monmouth','2026-05-10','Open','https://pol.co.monmouth.nj.us/')
                 ON CONFLICT (opportunity_id) DO NOTHING;
             """)
         conn.commit()
@@ -222,7 +130,7 @@ def fetch_sources():
                 SELECT source_id, source_name, entity_type, county, source_url, priority_tier, website_ready
                 FROM registry_sources
                 ORDER BY source_name
-                LIMIT 50
+                LIMIT 100
             """)
             rows = cur.fetchall()
 
@@ -247,7 +155,7 @@ def fetch_opportunities():
                 SELECT opportunity_id, title, agency, county, source_id, due_date, status, opportunity_url
                 FROM opportunities
                 ORDER BY due_date
-                LIMIT 50
+                LIMIT 100
             """)
             rows = cur.fetchall()
 
@@ -264,6 +172,40 @@ def fetch_opportunities():
         }
         for row in rows
     ]
+
+
+def fetch_admin_summary():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) FROM registry_sources")
+            source_count = cur.fetchone()[0]
+
+            cur.execute("SELECT COUNT(*) FROM opportunities")
+            opportunity_count = cur.fetchone()[0]
+
+            cur.execute("""
+                SELECT COALESCE(entity_type, 'Unknown'), COUNT(*)
+                FROM registry_sources
+                GROUP BY COALESCE(entity_type, 'Unknown')
+                ORDER BY COUNT(*) DESC, COALESCE(entity_type, 'Unknown')
+            """)
+            entity_rows = cur.fetchall()
+
+            cur.execute("""
+                SELECT COALESCE(county, 'Unknown'), COUNT(*)
+                FROM registry_sources
+                GROUP BY COALESCE(county, 'Unknown')
+                ORDER BY COUNT(*) DESC, COALESCE(county, 'Unknown')
+                LIMIT 10
+            """)
+            county_rows = cur.fetchall()
+
+    return {
+        "source_count": source_count,
+        "opportunity_count": opportunity_count,
+        "by_entity_type": [{"entity_type": row[0], "count": row[1]} for row in entity_rows],
+        "top_counties": [{"county": row[0], "count": row[1]} for row in county_rows],
+    }
 
 
 @app.on_event("startup")
@@ -326,7 +268,6 @@ def home():
               <a href="/admin" class="secondary">Admin</a>
               <a href="/health" class="secondary">Health</a>
               <a href="/ready" class="secondary">Readiness</a>
-              <a href="/debug-auth" class="secondary">Debug Auth</a>
             </div>
           </div>
 
@@ -337,7 +278,7 @@ def home():
               <li>Health and readiness checks passing</li>
               <li>Database-backed source registry working</li>
               <li>Database-backed opportunities page working</li>
-              <li>Admin route available with auth</li>
+              <li>Protected admin route working</li>
             </ul>
           </div>
         </div>
@@ -374,6 +315,11 @@ def api_sources():
 @app.get("/api/opportunities")
 def api_opportunities():
     return JSONResponse(content=fetch_opportunities())
+
+
+@app.get("/api/admin/summary")
+def api_admin_summary(username: str = Depends(check_auth)):
+    return JSONResponse(content=fetch_admin_summary())
 
 
 @app.get("/sources", response_class=HTMLResponse)
@@ -498,8 +444,15 @@ def opportunities_page():
 
 @app.get("/admin", response_class=HTMLResponse)
 def admin_page(username: str = Depends(check_auth)):
-    sources = fetch_sources()
-    opportunities = fetch_opportunities()
+    summary = fetch_admin_summary()
+
+    entity_items = ""
+    for row in summary["by_entity_type"]:
+        entity_items += f"<li>{row['entity_type']}: {row['count']}</li>"
+
+    county_items = ""
+    for row in summary["top_counties"]:
+        county_items += f"<li>{row['county']}: {row['count']}</li>"
 
     return f"""
     <html>
@@ -507,33 +460,50 @@ def admin_page(username: str = Depends(check_auth)):
         <title>Admin</title>
         <style>
           body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 900px; margin: 0 auto; }}
+          .wrap {{ max-width: 1000px; margin: 0 auto; }}
           .card {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }}
-          .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0; }}
+          .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0 24px 0; }}
           .stat {{ background: #f3f4f6; border-radius: 12px; padding: 16px; min-width: 180px; }}
+          .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
+          .panel {{ background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }}
           a {{ color: #0b57d0; text-decoration: none; }}
+          ul {{ padding-left: 18px; }}
         </style>
       </head>
       <body>
         <div class="wrap">
           <div class="card">
             <a href="/">← Back to home</a>
-            <h1>Admin</h1>
+            <h1>Admin Dashboard</h1>
             <p>Signed in as <strong>{username}</strong></p>
 
             <div class="stats">
               <div class="stat">
-                <strong>{len(sources)}</strong><br>
+                <strong>{summary['source_count']}</strong><br>
                 source records
               </div>
               <div class="stat">
-                <strong>{len(opportunities)}</strong><br>
+                <strong>{summary['opportunity_count']}</strong><br>
                 opportunity records
               </div>
             </div>
 
-            <p><a href="/api/sources">View sources JSON</a></p>
-            <p><a href="/api/opportunities">View opportunities JSON</a></p>
+            <div class="grid">
+              <div class="panel">
+                <h3>Sources by entity type</h3>
+                <ul>{entity_items}</ul>
+              </div>
+
+              <div class="panel">
+                <h3>Top counties</h3>
+                <ul>{county_items}</ul>
+              </div>
+            </div>
+
+            <h3>Admin links</h3>
+            <p><a href="/api/admin/summary">Admin summary JSON</a></p>
+            <p><a href="/api/sources">Sources JSON</a></p>
+            <p><a href="/api/opportunities">Opportunities JSON</a></p>
             <p><a href="/sources">View sources page</a></p>
             <p><a href="/opportunities">View opportunities page</a></p>
           </div>
