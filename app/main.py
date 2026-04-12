@@ -22,7 +22,6 @@ NJTRANSIT_URL = "https://www.njtransit.com/procurement/calendar"
 DRJTBC_CONSTRUCTION_URL = "https://www.drjtbc.org/construction-services/notice-to-contractors/"
 DRJTBC_PROFSERV_URL = "https://www.drjtbc.org/professional-services/current/"
 
-
 ACCESS_TYPE_OPTIONS = [
     "Public access",
     "Free registration required",
@@ -71,12 +70,7 @@ def check_auth(credentials: HTTPBasicCredentials = Depends(security)):
     return credentials.username
 
 
-def build_redirect_url(
-    base: str,
-    status_filter: str | None = None,
-    q: str | None = None,
-    sort_by: str | None = None,
-):
+def build_redirect_url(base: str, status_filter: str | None = None, q: str | None = None, sort_by: str | None = None):
     params = []
     if status_filter:
         params.append(f"status={requests.utils.quote(status_filter)}")
@@ -101,69 +95,69 @@ def csv_response(filename: str, headers: list[str], rows: list[list[str]]):
     )
 
 
-def get_source_default_guidance(source_id: str):
+def get_source_defaults(source_id: str) -> dict:
     defaults = {
+        "access_type": "Unknown",
+        "platform_name": "Unknown",
+        "next_step": "Open the official source and follow the solicitation instructions",
+        "docs_path_note": "See the official source for bid documents and instructions",
+        "addenda_note": "Check the official source for updates or addenda",
+    }
+
+    mapping = {
         "state-njdot-construction": {
             "access_type": "Public access",
             "platform_name": "NJDOT website",
             "next_step": "Open the official posting and review bid documents",
-            "docs_path_note": "Bid documents are typically linked from the NJDOT solicitation page.",
-            "addenda_note": "Check the official NJDOT posting for addenda before bidding.",
+            "docs_path_note": "Bid documents are typically linked from the NJDOT solicitation page",
+            "addenda_note": "Check the official NJDOT posting for addenda before bidding",
         },
         "state-njdot-profserv": {
             "access_type": "Public access",
             "platform_name": "NJDOT website",
             "next_step": "Open the official solicitation and review proposal requirements",
-            "docs_path_note": "Professional services solicitation materials are typically linked from the official page.",
-            "addenda_note": "Monitor the official posting for updates or addenda.",
+            "docs_path_note": "Professional services materials are typically linked from the official page",
+            "addenda_note": "Monitor the official posting for updates or addenda",
         },
         "state-njta": {
             "access_type": "Public access",
             "platform_name": "NJTA procurement portal",
             "next_step": "Open the official solicitation page and review documents",
-            "docs_path_note": "Documents and instructions are posted through the NJTA solicitation workflow.",
-            "addenda_note": "Check the official NJTA posting for updates.",
+            "docs_path_note": "Documents and instructions are posted through the NJTA solicitation workflow",
+            "addenda_note": "Check the official NJTA posting for updates",
         },
         "state-njtransit": {
             "access_type": "Platform submission required",
             "platform_name": "NJ TRANSIT procurement portal",
             "next_step": "Open the procurement calendar and follow the linked solicitation workflow",
-            "docs_path_note": "Documents may be accessed through the linked procurement workflow.",
-            "addenda_note": "Monitor the official procurement workflow for updates.",
+            "docs_path_note": "Documents may be accessed through the linked procurement platform",
+            "addenda_note": "Monitor the official procurement workflow for updates",
         },
         "state-drjtbc-construction": {
             "access_type": "Public access",
             "platform_name": "DRJTBC procurement portal",
             "next_step": "Open the official DRJTBC posting and review bid documents",
-            "docs_path_note": "Construction documents are typically linked from the official DRJTBC notice page.",
-            "addenda_note": "Check the official posting for addenda.",
+            "docs_path_note": "Construction documents are typically linked from the official DRJTBC notice page",
+            "addenda_note": "Check the official posting for addenda",
         },
         "state-drjtbc-profserv": {
             "access_type": "Public access",
             "platform_name": "DRJTBC procurement portal",
             "next_step": "Open the official DRJTBC professional services posting",
-            "docs_path_note": "Proposal documents and requirements are typically linked from the official page.",
-            "addenda_note": "Check the official posting for updates.",
+            "docs_path_note": "Proposal documents and requirements are typically linked from the official page",
+            "addenda_note": "Check the official posting for updates",
         },
         "county-monmouth": {
             "access_type": "Limited public details",
             "platform_name": "County procurement portal",
             "next_step": "Open the official county posting and follow the procurement instructions",
-            "docs_path_note": "Document access may depend on the county procurement system.",
-            "addenda_note": "Check the official source for updates and addenda.",
+            "docs_path_note": "Document access may depend on the county procurement system",
+            "addenda_note": "Check the official source for updates and addenda",
         },
     }
 
-    return defaults.get(
-        source_id,
-        {
-            "access_type": "Unknown",
-            "platform_name": "Unknown",
-            "next_step": "Open the official posting and review access requirements",
-            "docs_path_note": "Document access path has not been reviewed yet.",
-            "addenda_note": "Check the official posting for updates.",
-        },
-    )
+    defaults.update(mapping.get(source_id, {}))
+    return defaults
 
 
 def init_db():
@@ -184,11 +178,6 @@ def init_db():
                     last_crawl_at TIMESTAMP NULL,
                     last_crawl_status TEXT,
                     last_leads_found INTEGER DEFAULT 0,
-                    default_access_type TEXT,
-                    default_platform_name TEXT,
-                    default_next_step TEXT,
-                    default_docs_path_note TEXT,
-                    default_addenda_note TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
@@ -258,11 +247,6 @@ def init_db():
             cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS last_crawl_at TIMESTAMP NULL;")
             cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS last_crawl_status TEXT;")
             cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS last_leads_found INTEGER DEFAULT 0;")
-            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS default_access_type TEXT;")
-            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS default_platform_name TEXT;")
-            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS default_next_step TEXT;")
-            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS default_docs_path_note TEXT;")
-            cur.execute("ALTER TABLE registry_sources ADD COLUMN IF NOT EXISTS default_addenda_note TEXT;")
 
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS duplicate_key TEXT;")
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
@@ -287,47 +271,37 @@ def init_db():
             cur.execute("ALTER TABLE crawl_runs ADD COLUMN IF NOT EXISTS notes TEXT;")
             cur.execute("ALTER TABLE crawl_runs ADD COLUMN IF NOT EXISTS started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
 
-            njdot_construction_defaults = get_source_default_guidance("state-njdot-construction")
-            njdot_profserv_defaults = get_source_default_guidance("state-njdot-profserv")
-            njta_defaults = get_source_default_guidance("state-njta")
-            njtransit_defaults = get_source_default_guidance("state-njtransit")
-            drjtbc_construction_defaults = get_source_default_guidance("state-drjtbc-construction")
-            drjtbc_profserv_defaults = get_source_default_guidance("state-drjtbc-profserv")
-            monmouth_defaults = get_source_default_guidance("county-monmouth")
-
             cur.execute("""
                 INSERT INTO registry_sources (
                     source_id, source_name, entity_type, county, source_url,
-                    priority_tier, website_ready, crawl_enabled, crawl_method,
-                    default_access_type, default_platform_name, default_next_step,
-                    default_docs_path_note, default_addenda_note
+                    priority_tier, website_ready, crawl_enabled, crawl_method
                 )
                 VALUES
-                ('state-njdot-construction','NJDOT Construction Services','State Agency','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html',%s,%s,%s,%s,%s),
-                ('state-njdot-profserv','NJDOT Professional Services','State Agency','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html',%s,%s,%s,%s,%s),
-                ('state-njta','NJ Turnpike Authority Current Solicitations','Transportation Authority','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html',%s,%s,%s,%s,%s),
-                ('state-njtransit','NJ TRANSIT Procurement Calendar','Transit Agency','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html',%s,%s,%s,%s,%s),
-                ('state-sjta','South Jersey Transportation Authority Legal Notices','Transportation Authority','Atlantic','https://www.sjta.com/legal-notices','Tier 1','Yes',FALSE,'manual_html','Unknown','Unknown','Open the official posting and review access requirements','Document access path has not been reviewed yet.','Check the official posting for updates.'),
-                ('state-drjtbc-construction','DRJTBC Notice To Contractors','Bi-State Authority','Warren/Hunterdon/Mercer',%s,'Tier 1','Yes',TRUE,'manual_html',%s,%s,%s,%s,%s),
-                ('state-drjtbc-profserv','DRJTBC Current Procurements','Bi-State Authority','Warren/Hunterdon/Mercer',%s,'Tier 1','Yes',TRUE,'manual_html',%s,%s,%s,%s,%s),
-                ('state-panynj-construction','Port Authority Construction Opportunities','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/Construction.html','Tier 1','Yes',FALSE,'manual_html','Unknown','Unknown','Open the official posting and review access requirements','Document access path has not been reviewed yet.','Check the official posting for updates.'),
-                ('state-panynj-profserv','Port Authority Professional Services','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/professional-services.html','Tier 1','Yes',FALSE,'manual_html','Unknown','Unknown','Open the official posting and review access requirements','Document access path has not been reviewed yet.','Check the official posting for updates.'),
-                ('county-monmouth','Monmouth County Purchasing','County','Monmouth',%s,'Tier 1','Yes',TRUE,'manual_html',%s,%s,%s,%s,%s),
-                ('county-atlantic','Atlantic County Open Bids','County','Atlantic','https://www.atlanticcountynj.gov/government/county-departments/department-of-administrative-services/division-of-budget-and-purchasing/open-bids','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-bergen','Bergen County Bids','County','Bergen','https://bergenbids.com/','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-burlington','Burlington County Bid Solicitations','County','Burlington','https://www.co.burlington.nj.us/490/Bid-Solicitations','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-camden','Camden County Procurements','County','Camden','https://procurements.camdencounty.com/','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-cape-may','Cape May County Bids and RFPs','County','Cape May','https://capemaycountynj.gov/1072/Bids-and-RFPs','Tier 2','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-cumberland','Cumberland County Bids','County','Cumberland','https://www.cumberlandcountynj.gov/bids','Tier 2','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-essex','Essex County Procurement','County','Essex','https://www.essexcountynjprocure.org/bids/search?rfp_filter_status=current','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-gloucester','Gloucester County Bids','County','Gloucester','https://www.gloucestercountynj.gov/Bids.aspx','Tier 2','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-hudson','Hudson County Purchasing','County','Hudson','https://www.hcnj.us/finance/purchasing/','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-hunterdon','Hunterdon County Bids','County','Hunterdon','https://www.co.hunterdon.nj.us/Bids.aspx','Tier 2','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-mercer','Mercer County Bidding Opportunities','County','Mercer','https://www.mercercounty.org/departments/purchasing/bidding-opportunities','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-middlesex','Middlesex County Improvement Authority Opportunities','County','Middlesex','https://www.middlesexcountynj.gov/government/departments/department-of-economic-development/middlesex-county-improvement-authority/current-bidding-opportunities','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-morris','Morris County Bids and Quotes','County','Morris','https://www.morriscountynj.gov/Departments/Purchasing/Bids-and-Quotes','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-ocean','Ocean County Purchasing','County','Ocean','https://www.co.ocean.nj.us/oc/purchasing/frmhomepdept.aspx','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.'),
-                ('county-union','Union County Invitations to Bid','County','Union','https://ucnj.org/vendor-opportunities/invitations-to-bid/current/','Tier 1','Yes',FALSE,'manual_html','Unknown','County procurement portal','Open the official county posting and follow the procurement instructions','Document access may depend on the county procurement system.','Check the official source for updates and addenda.')
+                ('state-njdot-construction','NJDOT Construction Services','State Agency','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-njdot-profserv','NJDOT Professional Services','State Agency','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-njta','NJ Turnpike Authority Current Solicitations','Transportation Authority','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-njtransit','NJ TRANSIT Procurement Calendar','Transit Agency','Statewide',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-sjta','South Jersey Transportation Authority Legal Notices','Transportation Authority','Atlantic','https://www.sjta.com/legal-notices','Tier 1','Yes',FALSE,'manual_html'),
+                ('state-drjtbc-construction','DRJTBC Notice To Contractors','Bi-State Authority','Warren/Hunterdon/Mercer',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-drjtbc-profserv','DRJTBC Current Procurements','Bi-State Authority','Warren/Hunterdon/Mercer',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('state-panynj-construction','Port Authority Construction Opportunities','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/Construction.html','Tier 1','Yes',FALSE,'manual_html'),
+                ('state-panynj-profserv','Port Authority Professional Services','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/professional-services.html','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-monmouth','Monmouth County Purchasing','County','Monmouth',%s,'Tier 1','Yes',TRUE,'manual_html'),
+                ('county-atlantic','Atlantic County Open Bids','County','Atlantic','https://www.atlanticcountynj.gov/government/county-departments/department-of-administrative-services/division-of-budget-and-purchasing/open-bids','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-bergen','Bergen County Bids','County','Bergen','https://bergenbids.com/','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-burlington','Burlington County Bid Solicitations','County','Burlington','https://www.co.burlington.nj.us/490/Bid-Solicitations','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-camden','Camden County Procurements','County','Camden','https://procurements.camdencounty.com/','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-cape-may','Cape May County Bids and RFPs','County','Cape May','https://capemaycountynj.gov/1072/Bids-and-RFPs','Tier 2','Yes',FALSE,'manual_html'),
+                ('county-cumberland','Cumberland County Bids','County','Cumberland','https://www.cumberlandcountynj.gov/bids','Tier 2','Yes',FALSE,'manual_html'),
+                ('county-essex','Essex County Procurement','County','Essex','https://www.essexcountynjprocure.org/bids/search?rfp_filter_status=current','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-gloucester','Gloucester County Bids','County','Gloucester','https://www.gloucestercountynj.gov/Bids.aspx','Tier 2','Yes',FALSE,'manual_html'),
+                ('county-hudson','Hudson County Purchasing','County','Hudson','https://www.hcnj.us/finance/purchasing/','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-hunterdon','Hunterdon County Bids','County','Hunterdon','https://www.co.hunterdon.nj.us/Bids.aspx','Tier 2','Yes',FALSE,'manual_html'),
+                ('county-mercer','Mercer County Bidding Opportunities','County','Mercer','https://www.mercercounty.org/departments/purchasing/bidding-opportunities','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-middlesex','Middlesex County Improvement Authority Opportunities','County','Middlesex','https://www.middlesexcountynj.gov/government/departments/department-of-economic-development/middlesex-county-improvement-authority/current-bidding-opportunities','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-morris','Morris County Bids and Quotes','County','Morris','https://www.morriscountynj.gov/Departments/Purchasing/Bids-and-Quotes','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-ocean','Ocean County Purchasing','County','Ocean','https://www.co.ocean.nj.us/oc/purchasing/frmhomepdept.aspx','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-union','Union County Invitations to Bid','County','Union','https://ucnj.org/vendor-opportunities/invitations-to-bid/current/','Tier 1','Yes',FALSE,'manual_html')
                 ON CONFLICT (source_id) DO UPDATE SET
                     source_name = EXCLUDED.source_name,
                     entity_type = EXCLUDED.entity_type,
@@ -336,61 +310,15 @@ def init_db():
                     priority_tier = EXCLUDED.priority_tier,
                     website_ready = EXCLUDED.website_ready,
                     crawl_enabled = EXCLUDED.crawl_enabled,
-                    crawl_method = EXCLUDED.crawl_method,
-                    default_access_type = EXCLUDED.default_access_type,
-                    default_platform_name = EXCLUDED.default_platform_name,
-                    default_next_step = EXCLUDED.default_next_step,
-                    default_docs_path_note = EXCLUDED.default_docs_path_note,
-                    default_addenda_note = EXCLUDED.default_addenda_note
+                    crawl_method = EXCLUDED.crawl_method
             """, (
                 NJDOT_CONSTRUCTION_URL,
-                njdot_construction_defaults["access_type"],
-                njdot_construction_defaults["platform_name"],
-                njdot_construction_defaults["next_step"],
-                njdot_construction_defaults["docs_path_note"],
-                njdot_construction_defaults["addenda_note"],
-
                 NJDOT_PROFSERV_URL,
-                njdot_profserv_defaults["access_type"],
-                njdot_profserv_defaults["platform_name"],
-                njdot_profserv_defaults["next_step"],
-                njdot_profserv_defaults["docs_path_note"],
-                njdot_profserv_defaults["addenda_note"],
-
                 NJTA_URL,
-                njta_defaults["access_type"],
-                njta_defaults["platform_name"],
-                njta_defaults["next_step"],
-                njta_defaults["docs_path_note"],
-                njta_defaults["addenda_note"],
-
                 NJTRANSIT_URL,
-                njtransit_defaults["access_type"],
-                njtransit_defaults["platform_name"],
-                njtransit_defaults["next_step"],
-                njtransit_defaults["docs_path_note"],
-                njtransit_defaults["addenda_note"],
-
                 DRJTBC_CONSTRUCTION_URL,
-                drjtbc_construction_defaults["access_type"],
-                drjtbc_construction_defaults["platform_name"],
-                drjtbc_construction_defaults["next_step"],
-                drjtbc_construction_defaults["docs_path_note"],
-                drjtbc_construction_defaults["addenda_note"],
-
                 DRJTBC_PROFSERV_URL,
-                drjtbc_profserv_defaults["access_type"],
-                drjtbc_profserv_defaults["platform_name"],
-                drjtbc_profserv_defaults["next_step"],
-                drjtbc_profserv_defaults["docs_path_note"],
-                drjtbc_profserv_defaults["addenda_note"],
-
-                MONMOUTH_URL,
-                monmouth_defaults["access_type"],
-                monmouth_defaults["platform_name"],
-                monmouth_defaults["next_step"],
-                monmouth_defaults["docs_path_note"],
-                monmouth_defaults["addenda_note"],
+                MONMOUTH_URL
             ))
         conn.commit()
 
@@ -400,9 +328,7 @@ def fetch_sources():
         with conn.cursor() as cur:
             cur.execute("""
                 SELECT source_id, source_name, entity_type, county, source_url, priority_tier, website_ready,
-                       crawl_enabled, crawl_method, last_crawl_at, last_crawl_status, last_leads_found,
-                       default_access_type, default_platform_name, default_next_step,
-                       default_docs_path_note, default_addenda_note
+                       crawl_enabled, crawl_method, last_crawl_at, last_crawl_status, last_leads_found
                 FROM registry_sources
                 ORDER BY source_name
                 LIMIT 250
@@ -423,11 +349,6 @@ def fetch_sources():
             "last_crawl_at": str(row[9]) if row[9] else None,
             "last_crawl_status": row[10],
             "last_leads_found": row[11],
-            "default_access_type": row[12],
-            "default_platform_name": row[13],
-            "default_next_step": row[14],
-            "default_docs_path_note": row[15],
-            "default_addenda_note": row[16],
         }
         for row in rows
     ]
@@ -441,7 +362,81 @@ def fetch_enabled_crawl_sources():
     return [s for s in fetch_sources() if s["crawl_enabled"]]
 
 
-def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=None, q=None):
+def fetch_recent_opportunities(limit=8):
+    return fetch_opportunities()[:limit]
+
+
+def fetch_source_detail(source_id: str):
+    source_map = fetch_source_map()
+    source = source_map.get(source_id)
+    if not source:
+        return None
+
+    defaults = get_source_defaults(source_id)
+
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE source_id = %s", (source_id,))
+            lead_count = cur.fetchone()[0]
+
+            cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE source_id = %s AND status = 'New'", (source_id,))
+            new_lead_count = cur.fetchone()[0]
+
+            cur.execute("SELECT COUNT(*) FROM opportunities WHERE source_id = %s", (source_id,))
+            opportunity_count = cur.fetchone()[0]
+
+            cur.execute("""
+                SELECT lead_id, title, due_date, status, access_type, platform_name, created_at
+                FROM opportunity_leads
+                WHERE source_id = %s
+                ORDER BY created_at DESC
+                LIMIT 12
+            """, (source_id,))
+            recent_leads = cur.fetchall()
+
+            cur.execute("""
+                SELECT opportunity_id, title, due_date, status, access_type, platform_name, created_at
+                FROM opportunities
+                WHERE source_id = %s
+                ORDER BY created_at DESC
+                LIMIT 12
+            """, (source_id,))
+            recent_opps = cur.fetchall()
+
+    return {
+        "source": source,
+        "defaults": defaults,
+        "lead_count": lead_count,
+        "new_lead_count": new_lead_count,
+        "opportunity_count": opportunity_count,
+        "recent_leads": [
+            {
+                "lead_id": row[0],
+                "title": row[1],
+                "due_date": row[2],
+                "status": row[3],
+                "access_type": row[4],
+                "platform_name": row[5],
+                "created_at": str(row[6]),
+            }
+            for row in recent_leads
+        ],
+        "recent_opportunities": [
+            {
+                "opportunity_id": row[0],
+                "title": row[1],
+                "due_date": row[2],
+                "status": row[3],
+                "access_type": row[4],
+                "platform_name": row[5],
+                "created_at": str(row[6]),
+            }
+            for row in recent_opps
+        ],
+    }
+
+
+def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=None, q=None, access_filter=None, platform_filter=None):
     sql = """
         SELECT opportunity_id, title, agency, county, source_id, due_date, status, opportunity_url,
                access_type, platform_name, next_step, docs_path_note, addenda_note, created_at
@@ -459,6 +454,12 @@ def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=No
     if source_filter:
         sql += " AND source_id = %s"
         params.append(source_filter)
+    if access_filter:
+        sql += " AND access_type = %s"
+        params.append(access_filter)
+    if platform_filter:
+        sql += " AND platform_name = %s"
+        params.append(platform_filter)
     if q:
         like_val = f"%{q.lower()}%"
         sql += " AND (LOWER(title) LIKE %s OR LOWER(agency) LIKE %s OR LOWER(COALESCE(county, '')) LIKE %s)"
@@ -483,11 +484,11 @@ def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=No
             "due_date": row[5],
             "status": row[6],
             "opportunity_url": row[7],
-            "access_type": row[8] or "Unknown",
-            "platform_name": row[9] or "Unknown",
-            "next_step": row[10] or "",
-            "docs_path_note": row[11] or "",
-            "addenda_note": row[12] or "",
+            "access_type": row[8],
+            "platform_name": row[9],
+            "next_step": row[10],
+            "docs_path_note": row[11],
+            "addenda_note": row[12],
             "created_at": str(row[13]),
         }
         for row in rows
@@ -519,11 +520,11 @@ def fetch_opportunity_by_id(opportunity_id):
         "due_date": row[5],
         "status": row[6],
         "opportunity_url": row[7],
-        "access_type": row[8] or "Unknown",
-        "platform_name": row[9] or "Unknown",
-        "next_step": row[10] or "",
-        "docs_path_note": row[11] or "",
-        "addenda_note": row[12] or "",
+        "access_type": row[8],
+        "platform_name": row[9],
+        "next_step": row[10],
+        "docs_path_note": row[11],
+        "addenda_note": row[12],
         "created_at": str(row[13]),
     }
 
@@ -597,11 +598,11 @@ def fetch_leads(status_filter=None, q=None, sort_by=None, duplicates_only=False)
             "possible_duplicate": row[10],
             "quality_score": row[11],
             "admin_notes": row[12] or "",
-            "access_type": row[13] or "Unknown",
-            "platform_name": row[14] or "Unknown",
-            "next_step": row[15] or "",
-            "docs_path_note": row[16] or "",
-            "addenda_note": row[17] or "",
+            "access_type": row[13],
+            "platform_name": row[14],
+            "next_step": row[15],
+            "docs_path_note": row[16],
+            "addenda_note": row[17],
             "access_notes": row[18] or "",
             "created_at": str(row[19]),
         }
@@ -651,16 +652,16 @@ def fetch_admin_summary():
             rejected_lead_count = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE possible_duplicate = TRUE")
             duplicate_lead_count = cur.fetchone()[0]
-            cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE access_type IS NOT NULL AND access_type <> '' AND access_type <> 'Unknown'")
-            leads_with_access_count = cur.fetchone()[0]
-            cur.execute("SELECT COUNT(*) FROM opportunities WHERE access_type IS NOT NULL AND access_type <> '' AND access_type <> 'Unknown'")
-            opportunities_with_access_count = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM crawl_runs")
             crawl_run_count = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM crawl_runs WHERE status = 'Success'")
             successful_crawl_count = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM crawl_runs WHERE status = 'Failed'")
             failed_crawl_count = cur.fetchone()[0]
+            cur.execute("SELECT COUNT(*) FROM opportunity_leads WHERE access_type IS NOT NULL AND access_type <> ''")
+            access_populated_count = cur.fetchone()[0]
+            cur.execute("SELECT COUNT(*) FROM opportunities WHERE access_type IS NOT NULL AND access_type <> ''")
+            opportunity_access_count = cur.fetchone()[0]
 
     return {
         "source_count": source_count,
@@ -670,11 +671,11 @@ def fetch_admin_summary():
         "promoted_lead_count": promoted_lead_count,
         "rejected_lead_count": rejected_lead_count,
         "duplicate_lead_count": duplicate_lead_count,
-        "leads_with_access_count": leads_with_access_count,
-        "opportunities_with_access_count": opportunities_with_access_count,
         "crawl_run_count": crawl_run_count,
         "successful_crawl_count": successful_crawl_count,
         "failed_crawl_count": failed_crawl_count,
+        "access_populated_count": access_populated_count,
+        "opportunity_access_count": opportunity_access_count,
     }
 
 
@@ -771,9 +772,9 @@ def refresh_duplicate_flags():
 
 
 def upsert_leads(source_key, source_id, agency, county, source_url, titles):
-    source_defaults = get_source_default_guidance(source_id)
-
     inserted = 0
+    defaults = get_source_defaults(source_id)
+
     with get_conn() as conn:
         with conn.cursor() as cur:
             for idx, raw_title in enumerate(titles, start=1):
@@ -786,8 +787,8 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
                 cur.execute("""
                     INSERT INTO opportunity_leads (
                         lead_id, source_id, title, agency, county, posted_date, due_date, status,
-                        source_url, raw_text, duplicate_key, quality_score, access_type, platform_name,
-                        next_step, docs_path_note, addenda_note
+                        source_url, raw_text, duplicate_key, quality_score,
+                        access_type, platform_name, next_step, docs_path_note, addenda_note
                     )
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (lead_id) DO UPDATE SET
@@ -800,19 +801,16 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
                         raw_text = EXCLUDED.raw_text,
                         duplicate_key = EXCLUDED.duplicate_key,
                         quality_score = EXCLUDED.quality_score,
-                        access_type = COALESCE(opportunity_leads.access_type, EXCLUDED.access_type),
-                        platform_name = COALESCE(opportunity_leads.platform_name, EXCLUDED.platform_name),
-                        next_step = COALESCE(opportunity_leads.next_step, EXCLUDED.next_step),
-                        docs_path_note = COALESCE(opportunity_leads.docs_path_note, EXCLUDED.docs_path_note),
-                        addenda_note = COALESCE(opportunity_leads.addenda_note, EXCLUDED.addenda_note)
+                        access_type = EXCLUDED.access_type,
+                        platform_name = EXCLUDED.platform_name,
+                        next_step = EXCLUDED.next_step,
+                        docs_path_note = EXCLUDED.docs_path_note,
+                        addenda_note = EXCLUDED.addenda_note
                 """, (
                     lead_id, source_id, title, agency, county, None, due_date, "New",
                     source_url, title, duplicate_key, quality_score,
-                    source_defaults["access_type"],
-                    source_defaults["platform_name"],
-                    source_defaults["next_step"],
-                    source_defaults["docs_path_note"],
-                    source_defaults["addenda_note"],
+                    defaults["access_type"], defaults["platform_name"], defaults["next_step"],
+                    defaults["docs_path_note"], defaults["addenda_note"]
                 ))
                 inserted += 1
         conn.commit()
@@ -1168,8 +1166,8 @@ def bulk_update_leads(lead_ids, action):
                         opportunity_id = f"opp-{row[0]}"
                         cur.execute("""
                             INSERT INTO opportunities (
-                                opportunity_id, title, agency, county, source_id, due_date, status, opportunity_url,
-                                access_type, platform_name, next_step, docs_path_note, addenda_note
+                                opportunity_id, title, agency, county, source_id, due_date, status,
+                                opportunity_url, access_type, platform_name, next_step, docs_path_note, addenda_note
                             )
                             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                             ON CONFLICT (opportunity_id) DO UPDATE SET
@@ -1272,51 +1270,88 @@ def startup_event():
 @app.get("/", response_class=HTMLResponse)
 def home():
     sources = fetch_sources()
-    opportunities = fetch_opportunities()
     summary = fetch_admin_summary()
+    recent = fetch_recent_opportunities(limit=8)
+
+    cards = ""
+    for opp in recent:
+        cards += f"""
+        <div class="opp-card">
+            <div class="opp-title"><a href="/opportunities/{opp['opportunity_id']}">{opp['title']}</a></div>
+            <div class="opp-meta">{opp['agency'] or ''} • {opp['county'] or ''}</div>
+            <div class="opp-badges">
+                <span class="badge">{opp['access_type'] or 'Unknown access'}</span>
+                <span class="badge">{opp['platform_name'] or 'Unknown platform'}</span>
+            </div>
+            <div class="opp-next">{opp['next_step'] or ''}</div>
+        </div>
+        """
 
     return f"""
     <html><head><title>NJ Transportation Bids</title>
     <style>
       body {{ font-family: Arial, sans-serif; margin: 40px; line-height: 1.5; background: #f8fafc; color: #111827; }}
-      .wrap {{ max-width: 1000px; margin: 0 auto; }}
-      .hero {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; margin-bottom: 24px; }}
+      .wrap {{ max-width: 1150px; margin: 0 auto; }}
+      .hero {{ background: white; border: 1px solid #e5e7eb; border-radius: 18px; padding: 32px; margin-bottom: 24px; }}
+      .hero h1 {{ margin-top: 0; }}
       .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0; }}
       .stat {{ background: #f3f4f6; border-radius: 12px; padding: 16px; min-width: 180px; }}
       .nav {{ display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }}
       .nav a {{ display: inline-block; background: #0b57d0; color: white; padding: 10px 14px; border-radius: 10px; text-decoration: none; }}
       .nav a.secondary {{ background: #374151; }}
-      .section {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 24px; }}
+      .section {{ background: white; border: 1px solid #e5e7eb; border-radius: 18px; padding: 24px; margin-bottom: 20px; }}
+      .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }}
+      .opp-card {{ border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px; background: #fafafa; }}
+      .opp-title {{ font-weight: bold; margin-bottom: 8px; }}
+      .opp-title a {{ color: #111827; text-decoration: none; }}
+      .opp-meta {{ color: #4b5563; margin-bottom: 10px; }}
+      .opp-badges {{ margin-bottom: 10px; }}
+      .badge {{ display: inline-block; background: #e0e7ff; border-radius: 999px; padding: 4px 10px; margin-right: 8px; font-size: 12px; }}
+      .opp-next {{ color: #1f2937; }}
     </style></head>
     <body><div class="wrap">
       <div class="hero">
         <h1>NJ Transportation Bids</h1>
+        <p>Public transportation bid aggregation with official-path guidance for contractors.</p>
         <div class="stats">
           <div class="stat"><strong>{len(sources)}</strong><br>live source records</div>
-          <div class="stat"><strong>{len(opportunities)}</strong><br>published opportunities</div>
+          <div class="stat"><strong>{summary['opportunity_count']}</strong><br>published opportunities</div>
           <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
-          <div class="stat"><strong>{summary['leads_with_access_count']}</strong><br>leads with access guidance</div>
-          <div class="stat"><strong>{summary['opportunities_with_access_count']}</strong><br>published with access guidance</div>
+          <div class="stat"><strong>{summary['access_populated_count']}</strong><br>leads with access info</div>
         </div>
         <div class="nav">
-          <a href="/sources">View Sources</a>
-          <a href="/opportunities">View Opportunities</a>
-          <a href="/admin" class="secondary">Admin</a>
-          <a href="/health" class="secondary">Health</a>
-          <a href="/ready" class="secondary">Readiness</a>
+          <a href="/opportunities">Browse Opportunities</a>
+          <a href="/sources">Browse Sources</a>
           <a href="/export/opportunities.csv" class="secondary">Export Opportunities CSV</a>
+          <a href="/admin" class="secondary">Admin</a>
         </div>
       </div>
 
       <div class="section">
-        <h2>Latest bundle</h2>
-        <ul>
-          <li>Structured access fields added to leads and opportunities</li>
-          <li>Source-based default access guidance added</li>
-          <li>Admin editing for access guidance added</li>
-          <li>Public opportunity access box added</li>
-          <li>CSV exports expanded with access guidance</li>
-        </ul>
+        <h2>How this site helps</h2>
+        <div class="grid">
+          <div>
+            <strong>Find the job</strong><br>
+            Search public transportation opportunities across major NJ agencies and authorities.
+          </div>
+          <div>
+            <strong>Understand access</strong><br>
+            See whether the job is public access, registration-based, or platform-driven.
+          </div>
+          <div>
+            <strong>Get the official path</strong><br>
+            Every opportunity points you to the official source and the next best step.
+          </div>
+          <div>
+            <strong>Prepare for growth</strong><br>
+            The structure is ready for alerts, networking, teaming, and contractor accounts later.
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Recent opportunities</h2>
+        <div class="grid">{cards}</div>
       </div>
     </div></body></html>
     """
@@ -1338,8 +1373,15 @@ def api_sources():
 
 
 @app.get("/api/opportunities")
-def api_opportunities(county: str | None = None, agency: str | None = None, source_id: str | None = None, q: str | None = None):
-    return JSONResponse(content=fetch_opportunities(county, agency, source_id, q))
+def api_opportunities(
+    county: str | None = None,
+    agency: str | None = None,
+    source_id: str | None = None,
+    q: str | None = None,
+    access_type: str | None = None,
+    platform_name: str | None = None,
+):
+    return JSONResponse(content=fetch_opportunities(county, agency, source_id, q, access_type, platform_name))
 
 
 @app.get("/api/admin/summary")
@@ -1369,13 +1411,16 @@ def export_opportunities_csv(
     agency: str | None = None,
     source_id: str | None = None,
     q: str | None = None,
+    access_type: str | None = None,
+    platform_name: str | None = None,
 ):
-    opportunities = fetch_opportunities(county, agency, source_id, q)
+    opportunities = fetch_opportunities(county, agency, source_id, q, access_type, platform_name)
     rows = [
         [
             o["opportunity_id"], o["title"], o["agency"], o["county"], o["source_id"],
-            o["source_name"], o["due_date"], o["status"], o["access_type"], o["platform_name"],
-            o["next_step"], o["docs_path_note"], o["addenda_note"], o["opportunity_url"], o["created_at"]
+            o["source_name"], o["due_date"], o["status"], o["access_type"],
+            o["platform_name"], o["next_step"], o["docs_path_note"],
+            o["addenda_note"], o["opportunity_url"], o["created_at"]
         ]
         for o in opportunities
     ]
@@ -1398,15 +1443,16 @@ def export_leads_csv(
     rows = [
         [
             l["lead_id"], l["title"], l["source_id"], l["source_name"], l["agency"], l["county"],
-            l["due_date"], l["status"], l["access_type"], l["platform_name"], l["next_step"],
-            l["docs_path_note"], l["addenda_note"], l["access_notes"], l["duplicate_key"],
-            l["possible_duplicate"], l["quality_score"], l["admin_notes"], l["source_url"], l["created_at"]
+            l["due_date"], l["status"], l["duplicate_key"], l["possible_duplicate"],
+            l["quality_score"], l["access_type"], l["platform_name"], l["next_step"],
+            l["docs_path_note"], l["addenda_note"], l["access_notes"], l["admin_notes"],
+            l["source_url"], l["created_at"]
         ]
         for l in leads
     ]
     return csv_response(
         "leads.csv",
-        ["lead_id", "title", "source_id", "source_name", "agency", "county", "due_date", "status", "access_type", "platform_name", "next_step", "docs_path_note", "addenda_note", "access_notes", "duplicate_key", "possible_duplicate", "quality_score", "admin_notes", "source_url", "created_at"],
+        ["lead_id", "title", "source_id", "source_name", "agency", "county", "due_date", "status", "duplicate_key", "possible_duplicate", "quality_score", "access_type", "platform_name", "next_step", "docs_path_note", "addenda_note", "access_notes", "admin_notes", "source_url", "created_at"],
         rows
     )
 
@@ -1577,15 +1623,15 @@ def sources_page():
     sources = fetch_sources()
     items = ""
     for row in sources:
+        defaults = get_source_defaults(row["source_id"])
         items += f"""
         <tr>
-            <td><a href="{row['source_url']}" target="_blank">{row['source_name']}</a></td>
+            <td><a href="/sources/{row['source_id']}">{row['source_name']}</a></td>
             <td>{row['entity_type'] or ''}</td>
             <td>{row['county'] or ''}</td>
             <td>{row['priority_tier'] or ''}</td>
-            <td>{row['website_ready'] or ''}</td>
-            <td>{row['default_access_type'] or ''}</td>
-            <td>{row['default_platform_name'] or ''}</td>
+            <td>{defaults['access_type']}</td>
+            <td>{defaults['platform_name']}</td>
         </tr>
         """
 
@@ -1604,46 +1650,117 @@ def sources_page():
       <h1>Registry Sources</h1>
       <p>{len(sources)} sources currently loaded</p>
       <table>
-        <thead>
-          <tr>
-            <th>Source Name</th>
-            <th>Entity Type</th>
-            <th>County</th>
-            <th>Priority</th>
-            <th>Website Ready</th>
-            <th>Default Access</th>
-            <th>Default Platform</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Source Name</th><th>Entity Type</th><th>County</th><th>Priority</th><th>Default Access</th><th>Default Platform</th></tr></thead>
         <tbody>{items}</tbody>
       </table>
     </div></body></html>
     """
 
 
+@app.get("/sources/{source_id}", response_class=HTMLResponse)
+def source_detail_page(source_id: str):
+    detail = fetch_source_detail(source_id)
+    if not detail:
+        raise HTTPException(status_code=404, detail="Source not found")
+
+    source = detail["source"]
+    defaults = detail["defaults"]
+
+    lead_rows = ""
+    for row in detail["recent_leads"]:
+        lead_rows += f"""
+        <tr>
+            <td>{row['title']}</td>
+            <td>{row['due_date'] or ''}</td>
+            <td>{row['status'] or ''}</td>
+            <td>{row['access_type'] or ''}</td>
+            <td>{row['platform_name'] or ''}</td>
+        </tr>
+        """
+
+    opp_rows = ""
+    for row in detail["recent_opportunities"]:
+        opp_rows += f"""
+        <tr>
+            <td><a href="/opportunities/{row['opportunity_id']}">{row['title']}</a></td>
+            <td>{row['due_date'] or ''}</td>
+            <td>{row['status'] or ''}</td>
+            <td>{row['access_type'] or ''}</td>
+            <td>{row['platform_name'] or ''}</td>
+        </tr>
+        """
+
+    return f"""
+    <html><head><title>{source['source_name']}</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background:#f8fafc; color:#111827; }}
+      .wrap {{ max-width: 1250px; margin: 0 auto; }}
+      .card {{ background:white; border:1px solid #e5e7eb; border-radius:16px; padding:24px; margin-bottom:18px; }}
+      .stats {{ display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; }}
+      .stat {{ background:#f3f4f6; border-radius:12px; padding:14px; min-width:170px; }}
+      table {{ border-collapse: collapse; width: 100%; background: white; }}
+      th, td {{ border:1px solid #e5e7eb; padding:10px; text-align:left; vertical-align:top; }}
+      th {{ background:#f3f4f6; }}
+      a {{ color:#0b57d0; text-decoration:none; }}
+    </style></head>
+    <body><div class="wrap">
+      <div class="card">
+        <a href="/sources">← Back to sources</a>
+        <h1>{source['source_name']}</h1>
+        <p><strong>Entity type:</strong> {source['entity_type'] or ''}</p>
+        <p><strong>County:</strong> {source['county'] or ''}</p>
+        <p><strong>Official source:</strong> <a href="{source['source_url']}" target="_blank">{source['source_url']}</a></p>
+
+        <div class="stats">
+          <div class="stat"><strong>{detail['lead_count']}</strong><br>total leads</div>
+          <div class="stat"><strong>{detail['new_lead_count']}</strong><br>new leads</div>
+          <div class="stat"><strong>{detail['opportunity_count']}</strong><br>published opportunities</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Default access guidance</h2>
+        <p><strong>Access:</strong> {defaults['access_type']}</p>
+        <p><strong>Platform:</strong> {defaults['platform_name']}</p>
+        <p><strong>Next step:</strong> {defaults['next_step']}</p>
+        <p><strong>Bid docs:</strong> {defaults['docs_path_note']}</p>
+        <p><strong>Addenda:</strong> {defaults['addenda_note']}</p>
+      </div>
+
+      <div class="card">
+        <h2>Recent published opportunities</h2>
+        <table>
+          <thead><tr><th>Title</th><th>Due Date</th><th>Status</th><th>Access</th><th>Platform</th></tr></thead>
+          <tbody>{opp_rows}</tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Recent leads</h2>
+        <table>
+          <thead><tr><th>Title</th><th>Due Date</th><th>Status</th><th>Access</th><th>Platform</th></tr></thead>
+          <tbody>{lead_rows}</tbody>
+        </table>
+      </div>
+    </div></body></html>
+    """
+
+
 @app.get("/opportunities", response_class=HTMLResponse)
-def opportunities_page(county: str | None = None, agency: str | None = None, source_id: str | None = None, q: str | None = None):
-    opportunities = fetch_opportunities(county, agency, source_id, q)
+def opportunities_page(
+    county: str | None = None,
+    agency: str | None = None,
+    source_id: str | None = None,
+    q: str | None = None,
+    access_type: str | None = None,
+    platform_name: str | None = None,
+):
+    opportunities = fetch_opportunities(county, agency, source_id, q, access_type, platform_name)
     sources = fetch_sources()
 
     counties = sorted({s["county"] for s in sources if s["county"]})
     agencies = sorted({o["agency"] for o in fetch_opportunities() if o["agency"]})
     source_opts = sorted({(s["source_id"], s["source_name"]) for s in sources})
-
-    items = ""
-    for row in opportunities:
-        items += f"""
-        <tr>
-            <td><a href="/opportunities/{row['opportunity_id']}">{row['title']}</a></td>
-            <td>{row['agency'] or ''}</td>
-            <td>{row['county'] or ''}</td>
-            <td>{row['source_name'] or ''}</td>
-            <td>{row['access_type'] or ''}</td>
-            <td>{row['platform_name'] or ''}</td>
-            <td>{row['due_date'] or ''}</td>
-            <td>{row['status'] or ''}</td>
-        </tr>
-        """
 
     county_options = "<option value=''>All counties</option>" + "".join(
         f"<option value='{c}' {'selected' if county == c else ''}>{c}</option>" for c in counties
@@ -1654,26 +1771,55 @@ def opportunities_page(county: str | None = None, agency: str | None = None, sou
     source_options = "<option value=''>All sources</option>" + "".join(
         f"<option value='{sid}' {'selected' if source_id == sid else ''}>{sname}</option>" for sid, sname in source_opts
     )
+    access_options = "<option value=''>All access types</option>" + "".join(
+        f"<option value='{a}' {'selected' if access_type == a else ''}>{a}</option>" for a in ACCESS_TYPE_OPTIONS
+    )
+    platform_options = "<option value=''>All platforms</option>" + "".join(
+        f"<option value='{p}' {'selected' if platform_name == p else ''}>{p}</option>" for p in PLATFORM_NAME_OPTIONS
+    )
+
+    cards = ""
+    for row in opportunities:
+        cards += f"""
+        <div class="opp-card">
+            <div class="opp-title"><a href="/opportunities/{row['opportunity_id']}">{row['title']}</a></div>
+            <div class="opp-meta">{row['agency'] or ''} • {row['county'] or ''}</div>
+            <div class="opp-badges">
+                <span class="badge">{row['access_type'] or 'Unknown access'}</span>
+                <span class="badge">{row['platform_name'] or 'Unknown platform'}</span>
+            </div>
+            <div class="opp-next"><strong>Next step:</strong> {row['next_step'] or ''}</div>
+            <div class="opp-footer">
+                <span>Due: {row['due_date'] or 'Not listed'}</span>
+                <span><a href="{row['opportunity_url']}" target="_blank">Official source</a></span>
+            </div>
+        </div>
+        """
 
     return f"""
     <html><head><title>Opportunities</title>
     <style>
       body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-      .wrap {{ max-width: 1500px; margin: 0 auto; }}
-      table {{ border-collapse: collapse; width: 100%; background: white; }}
-      th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; vertical-align: top; }}
-      th {{ background: #f3f4f6; }}
-      a {{ color: #0b57d0; text-decoration: none; }}
+      .wrap {{ max-width: 1400px; margin: 0 auto; }}
       .filters {{ background: white; border: 1px solid #e5e7eb; padding: 16px; border-radius: 12px; margin-bottom: 20px; }}
-      .filters input, .filters select {{ margin-right: 10px; padding: 8px; }}
+      .filters input, .filters select {{ margin-right: 10px; margin-bottom:10px; padding: 8px; }}
       .filters button {{ padding: 8px 12px; }}
-      .tools a {{ display:inline-block; margin-bottom:16px; }}
-      .badge {{ display:inline-block; background:#eef2ff; border-radius:999px; padding:3px 8px; }}
+      .tools a {{ display:inline-block; margin-bottom:16px; color:#0b57d0; text-decoration:none; }}
+      .grid {{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }}
+      .opp-card {{ background:white; border:1px solid #e5e7eb; border-radius:16px; padding:18px; }}
+      .opp-title {{ font-weight:bold; font-size:18px; margin-bottom:8px; }}
+      .opp-title a {{ color:#111827; text-decoration:none; }}
+      .opp-meta {{ color:#4b5563; margin-bottom:10px; }}
+      .opp-badges {{ margin-bottom:10px; }}
+      .badge {{ display:inline-block; background:#e0e7ff; border-radius:999px; padding:4px 10px; margin-right:8px; font-size:12px; }}
+      .opp-next {{ margin-bottom:12px; }}
+      .opp-footer {{ display:flex; justify-content:space-between; gap:12px; font-size:14px; color:#374151; }}
+      a {{ color:#0b57d0; text-decoration:none; }}
     </style></head>
     <body><div class="wrap">
       <a href="/">← Back to home</a>
       <h1>Opportunities</h1>
-      <p>{len(opportunities)} published opportunities currently loaded</p>
+      <p>{len(opportunities)} published opportunities currently shown</p>
 
       <div class="tools">
         <a href="/export/opportunities.csv">Export opportunities CSV</a>
@@ -1684,13 +1830,12 @@ def opportunities_page(county: str | None = None, agency: str | None = None, sou
         <select name="county">{county_options}</select>
         <select name="agency">{agency_options}</select>
         <select name="source_id">{source_options}</select>
+        <select name="access_type">{access_options}</select>
+        <select name="platform_name">{platform_options}</select>
         <button type="submit">Filter</button>
       </form>
 
-      <table>
-        <thead><tr><th>Title</th><th>Agency</th><th>County</th><th>Source</th><th>Access</th><th>Platform</th><th>Due Date</th><th>Status</th></tr></thead>
-        <tbody>{items}</tbody>
-      </table>
+      <div class="grid">{cards}</div>
     </div></body></html>
     """
 
@@ -1701,6 +1846,8 @@ def opportunity_detail_page(opportunity_id: str):
     if not opp:
         raise HTTPException(status_code=404, detail="Opportunity not found")
 
+    source_link = f"/sources/{opp['source_id']}" if opp["source_id"] else "/sources"
+
     return f"""
     <html><head><title>{opp['title']}</title>
     <style>
@@ -1710,8 +1857,9 @@ def opportunity_detail_page(opportunity_id: str):
       a {{ color: #0b57d0; text-decoration: none; }}
       .row {{ margin-bottom: 12px; }}
       .label {{ font-weight: bold; display: inline-block; min-width: 160px; }}
-      .highlight {{ background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:20px; }}
-      .section-title {{ margin-top:0; }}
+      .box {{ background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:20px; margin-top:18px; }}
+      .cta a {{ display:inline-block; background:#0b57d0; color:white; padding:10px 14px; border-radius:10px; margin-right:10px; text-decoration:none; }}
+      .badge {{ display:inline-block; background:#e0e7ff; border-radius:999px; padding:4px 10px; margin-right:8px; font-size:12px; }}
     </style></head>
     <body><div class="wrap">
       <div class="card">
@@ -1719,21 +1867,25 @@ def opportunity_detail_page(opportunity_id: str):
         <h1>{opp['title']}</h1>
         <div class="row"><span class="label">Agency:</span> {opp['agency'] or ''}</div>
         <div class="row"><span class="label">County:</span> {opp['county'] or ''}</div>
-        <div class="row"><span class="label">Source:</span> {opp['source_name'] or ''}</div>
-        <div class="row"><span class="label">Source ID:</span> {opp['source_id'] or ''}</div>
+        <div class="row"><span class="label">Source:</span> <a href="{source_link}">{opp['source_name'] or ''}</a></div>
         <div class="row"><span class="label">Due Date:</span> {opp['due_date'] or ''}</div>
         <div class="row"><span class="label">Status:</span> {opp['status'] or ''}</div>
         <div class="row"><span class="label">Published:</span> {opp['created_at']}</div>
       </div>
 
-      <div class="card highlight">
-        <h2 class="section-title">Access and documents</h2>
-        <div class="row"><span class="label">Access:</span> {opp['access_type'] or 'Unknown'}</div>
-        <div class="row"><span class="label">Platform:</span> {opp['platform_name'] or 'Unknown'}</div>
+      <div class="card box">
+        <h2>Official path</h2>
+        <div class="row">
+          <span class="badge">{opp['access_type'] or 'Unknown access'}</span>
+          <span class="badge">{opp['platform_name'] or 'Unknown platform'}</span>
+        </div>
         <div class="row"><span class="label">Next step:</span> {opp['next_step'] or ''}</div>
         <div class="row"><span class="label">Bid docs:</span> {opp['docs_path_note'] or ''}</div>
         <div class="row"><span class="label">Addenda:</span> {opp['addenda_note'] or ''}</div>
-        <div class="row"><span class="label">Official source:</span> <a href="{opp['opportunity_url']}" target="_blank">{opp['opportunity_url']}</a></div>
+        <div class="cta" style="margin-top:18px;">
+          <a href="{opp['opportunity_url']}" target="_blank">Open Official Source</a>
+          <a href="/sources/{opp['source_id']}">View Source Details</a>
+        </div>
       </div>
     </div></body></html>
     """
@@ -1753,7 +1905,7 @@ def admin_page(username: str = Depends(check_auth)):
     <html><head><title>Admin</title>
     <style>
       body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-      .wrap {{ max-width: 1250px; margin: 0 auto; }}
+      .wrap {{ max-width: 1200px; margin: 0 auto; }}
       .card {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }}
       .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0 24px 0; }}
       .stat {{ background: #f3f4f6; border-radius: 12px; padding: 16px; min-width: 180px; }}
@@ -1773,9 +1925,10 @@ def admin_page(username: str = Depends(check_auth)):
         <div class="stat"><strong>{summary['source_count']}</strong><br>source records</div>
         <div class="stat"><strong>{summary['opportunity_count']}</strong><br>published opportunities</div>
         <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
-        <div class="stat"><strong>{summary['leads_with_access_count']}</strong><br>leads with access guidance</div>
-        <div class="stat"><strong>{summary['opportunities_with_access_count']}</strong><br>published with access guidance</div>
+        <div class="stat"><strong>{summary['new_lead_count']}</strong><br>new leads</div>
         <div class="stat"><strong>{summary['duplicate_lead_count']}</strong><br>possible duplicates</div>
+        <div class="stat"><strong>{summary['access_populated_count']}</strong><br>leads with access info</div>
+        <div class="stat"><strong>{summary['opportunity_access_count']}</strong><br>opportunities with access info</div>
       </div>
 
       <div class="grid" style="margin-top:20px;">
@@ -1812,16 +1965,17 @@ def admin_sources_page(username: str = Depends(check_auth)):
 
     items = ""
     for row in sources:
+        defaults = get_source_defaults(row["source_id"])
         crawl_enabled_text = "Yes" if row["crawl_enabled"] else "No"
         items += f"""
         <tr>
-            <td>{row['source_name']}</td>
+            <td><a href="/sources/{row['source_id']}">{row['source_name']}</a></td>
             <td>{row['source_id']}</td>
             <td>{row['county'] or ''}</td>
             <td>{crawl_enabled_text}</td>
             <td>{row['crawl_method'] or ''}</td>
-            <td>{row['default_access_type'] or ''}</td>
-            <td>{row['default_platform_name'] or ''}</td>
+            <td>{defaults['access_type']}</td>
+            <td>{defaults['platform_name']}</td>
             <td>{row['last_crawl_at'] or ''}</td>
             <td>{row['last_crawl_status'] or ''}</td>
             <td>{row['last_leads_found'] or 0}</td>
@@ -1863,10 +2017,6 @@ def admin_leads_page(
     current_q = q or ""
     current_sort = sort_by or ""
 
-    access_type_options_html = "".join(
-        f"<option value='{opt}'>{{selected}}</option>".replace("{selected}", opt) for opt in []
-    )
-
     items = ""
     for row in leads:
         duplicate_badge = "Yes" if row["possible_duplicate"] else ""
@@ -1882,9 +2032,9 @@ def admin_leads_page(
                 <button type="submit" formaction="/admin/leads/{row['lead_id']}/reset" formmethod="post" style="background:#374151;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Reset to New</button>
             """
 
-        workflow_html += """
-            <button type="submit" formaction="/admin/leads/{lead_id}/mark-duplicate" formmethod="post" style="background:#7c3aed;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Mark Duplicate</button>
-        """.replace("{lead_id}", row["lead_id"])
+        workflow_html += f"""
+            <button type="submit" formaction="/admin/leads/{row['lead_id']}/mark-duplicate" formmethod="post" style="background:#7c3aed;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Mark Duplicate</button>
+        """
 
         access_type_options = "".join(
             f"<option value='{opt}' {'selected' if row['access_type'] == opt else ''}>{opt}</option>"
@@ -1907,16 +2057,16 @@ def admin_leads_page(
                     <select name="platform_name" style="width:210px;padding:6px;">{platform_name_options}</select>
                 </div>
                 <div style="margin-bottom:6px;">
-                    <input type="text" name="next_step" value="{row['next_step']}" placeholder="next step" style="width:320px;padding:6px;">
+                    <input type="text" name="next_step" value="{row['next_step'] or ''}" placeholder="next step" style="width:320px;padding:6px;">
                 </div>
                 <div style="margin-bottom:6px;">
-                    <input type="text" name="docs_path_note" value="{row['docs_path_note']}" placeholder="docs path note" style="width:320px;padding:6px;">
+                    <input type="text" name="docs_path_note" value="{row['docs_path_note'] or ''}" placeholder="docs path note" style="width:320px;padding:6px;">
                 </div>
                 <div style="margin-bottom:6px;">
-                    <input type="text" name="addenda_note" value="{row['addenda_note']}" placeholder="addenda note" style="width:320px;padding:6px;">
+                    <input type="text" name="addenda_note" value="{row['addenda_note'] or ''}" placeholder="addenda note" style="width:320px;padding:6px;">
                 </div>
                 <div style="margin-bottom:6px;">
-                    <input type="text" name="access_notes" value="{row['access_notes']}" placeholder="internal access notes" style="width:320px;padding:6px;">
+                    <input type="text" name="access_notes" value="{row['access_notes'] or ''}" placeholder="internal access notes" style="width:320px;padding:6px;">
                 </div>
                 <button type="submit" style="padding:6px 8px;">Save access info</button>
             </form>
