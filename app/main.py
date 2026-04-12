@@ -95,6 +95,75 @@ def csv_response(filename: str, headers: list[str], rows: list[list[str]]):
     )
 
 
+def normalize_for_rules(text: str | None) -> str:
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def classify_access_guidance(source_id: str, title: str | None, raw_text: str | None) -> dict:
+    result = get_source_defaults(source_id).copy()
+
+    haystack = normalize_for_rules(f"{title or ''} {raw_text or ''}")
+
+    if "bid express" in haystack or "bidexpress" in haystack:
+        result["platform_name"] = "Bid Express"
+        result["access_type"] = "Platform submission required"
+        result["next_step"] = "Open the Bid Express workflow and follow the solicitation instructions"
+        result["docs_path_note"] = "Documents and submission steps may be handled through Bid Express"
+        result["addenda_note"] = "Monitor the Bid Express workflow and official source for updates"
+
+    elif "questcdn" in haystack or "ebiddoc" in haystack:
+        result["platform_name"] = "QuestCDN"
+        result["access_type"] = "Document fee possible"
+        result["next_step"] = "Open the QuestCDN project page and download the eBidDoc"
+        result["docs_path_note"] = "Bid documents may require downloading the eBidDoc through QuestCDN"
+        result["addenda_note"] = "Check QuestCDN and the official source for addenda"
+
+    elif "bonfire" in haystack:
+        result["platform_name"] = "Bonfire"
+        result["access_type"] = "Free registration required"
+        result["next_step"] = "Open the Bonfire opportunity and follow the vendor submission workflow"
+        result["docs_path_note"] = "Documents and submission details may be housed in Bonfire"
+        result["addenda_note"] = "Monitor Bonfire and the official source for updates"
+
+    elif "bidnet" in haystack or "bid net" in haystack:
+        result["platform_name"] = "BidNet"
+        result["access_type"] = "Free registration required"
+        result["next_step"] = "Open the BidNet posting and review vendor access requirements"
+        result["docs_path_note"] = "Documents and opportunity details may require BidNet access"
+        result["addenda_note"] = "Check BidNet and the official source for updates"
+
+    if "login required" in haystack or "log in" in haystack or "sign in" in haystack:
+        result["access_type"] = "Login required"
+
+    elif "register" in haystack or "vendor registration" in haystack or "create account" in haystack:
+        if result["access_type"] not in {"Document fee possible", "Platform submission required"}:
+            result["access_type"] = "Free registration required"
+
+    if ("fee" in haystack or "purchase" in haystack or "cost" in haystack) and (
+        "document" in haystack or "bid doc" in haystack or "ebiddoc" in haystack
+    ):
+        result["access_type"] = "Document fee possible"
+        if result["platform_name"] == "Unknown":
+            result["docs_path_note"] = "Document download may require payment or purchase"
+            result["next_step"] = "Open the official posting and confirm document download requirements"
+
+    if "planholder" in haystack or "plan holder" in haystack:
+        result["addenda_note"] = "Registered planholders may receive addenda notices; check the official source before bidding"
+
+    elif "addenda" in haystack:
+        result["addenda_note"] = "Check the official posting and procurement workflow for addenda before bidding"
+
+    if "download specifications" in haystack or "download documents" in haystack or "download bid documents" in haystack:
+        result["docs_path_note"] = "Bid documents appear to be downloadable from the official posting or linked platform"
+
+    if "proposal" in haystack and "professional services" in haystack and result["next_step"] == "":
+        result["next_step"] = "Open the official solicitation and review proposal requirements"
+
+    return result
+
+
 def get_source_defaults(source_id: str) -> dict:
     defaults = {
         "access_type": "Unknown",
@@ -773,7 +842,6 @@ def refresh_duplicate_flags():
 
 def upsert_leads(source_key, source_id, agency, county, source_url, titles):
     inserted = 0
-    defaults = get_source_defaults(source_id)
 
     with get_conn() as conn:
         with conn.cursor() as cur:
@@ -783,6 +851,8 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
                 due_date = extract_due_date(title)
                 duplicate_key = make_duplicate_key(source_id, title, due_date)
                 quality_score = compute_quality_score(title, due_date, agency, county)
+
+                guidance = classify_access_guidance(source_id, title, title)
 
                 cur.execute("""
                     INSERT INTO opportunity_leads (
@@ -809,8 +879,11 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
                 """, (
                     lead_id, source_id, title, agency, county, None, due_date, "New",
                     source_url, title, duplicate_key, quality_score,
-                    defaults["access_type"], defaults["platform_name"], defaults["next_step"],
-                    defaults["docs_path_note"], defaults["addenda_note"]
+                    guidance["access_type"],
+                    guidance["platform_name"],
+                    guidance["next_step"],
+                    guidance["docs_path_note"],
+                    guidance["addenda_note"]
                 ))
                 inserted += 1
         conn.commit()
@@ -1261,6 +1334,75 @@ def update_lead_access_info(
         conn.commit()
 
 
+def rerun_auto_guidance_for_lead(lead_id: str):
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT source_id, title, raw_text
+                FROM opportunity_leads
+                WHERE lead_id = %s
+            """, (lead_id,))
+            row = cur.fetchone()
+
+            if not row:
+                return
+
+            source_id, title, raw_text = row
+            guidance = classify_access_guidance(source_id, title, raw_text)
+
+            cur.execute("""
+                UPDATE opportunity_leads
+                SET access_type = %s,
+                    platform_name = %s,
+                    next_step = %s,
+                    docs_path_note = %s,
+                    addenda_note = %s
+                WHERE lead_id = %s
+            """, (
+                guidance["access_type"],
+                guidance["platform_name"],
+                guidance["next_step"],
+                guidance["docs_path_note"],
+                guidance["addenda_note"],
+                lead_id,
+            ))
+        conn.commit()
+
+
+def rerun_auto_guidance_for_new_leads():
+    updated = 0
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT lead_id, source_id, title, raw_text
+                FROM opportunity_leads
+                WHERE status = 'New'
+            """)
+            rows = cur.fetchall()
+
+            for lead_id, source_id, title, raw_text in rows:
+                guidance = classify_access_guidance(source_id, title, raw_text)
+                cur.execute("""
+                    UPDATE opportunity_leads
+                    SET access_type = %s,
+                        platform_name = %s,
+                        next_step = %s,
+                        docs_path_note = %s,
+                        addenda_note = %s
+                    WHERE lead_id = %s
+                """, (
+                    guidance["access_type"],
+                    guidance["platform_name"],
+                    guidance["next_step"],
+                    guidance["docs_path_note"],
+                    guidance["addenda_note"],
+                    lead_id,
+                ))
+                updated += 1
+        conn.commit()
+    return updated
+
+
 @app.on_event("startup")
 def startup_event():
     init_db()
@@ -1592,6 +1734,29 @@ def admin_update_lead_access(
         access_notes,
     )
     return RedirectResponse(url=build_redirect_url("/admin/leads", return_status, return_q, return_sort_by), status_code=303)
+
+
+@app.post("/admin/leads/{lead_id}/auto-guidance")
+def admin_rerun_auto_guidance_for_lead(
+    lead_id: str,
+    username: str = Depends(check_auth),
+    return_status: str | None = Form(default=None),
+    return_q: str | None = Form(default=None),
+    return_sort_by: str | None = Form(default=None),
+):
+    rerun_auto_guidance_for_lead(lead_id)
+    return RedirectResponse(
+        url=build_redirect_url("/admin/leads", return_status, return_q, return_sort_by),
+        status_code=303,
+    )
+
+
+@app.post("/admin/leads/auto-guidance/new")
+def admin_rerun_auto_guidance_for_new(
+    username: str = Depends(check_auth),
+):
+    rerun_auto_guidance_for_new_leads()
+    return RedirectResponse(url="/admin/leads?status=New", status_code=303)
 
 
 @app.post("/admin/leads/{lead_id}/mark-duplicate")
@@ -1942,6 +2107,7 @@ def admin_page(username: str = Depends(check_auth)):
           <form action="/admin/crawl/drjtbc-construction" method="post"><button class="button" type="submit">Run DRJTBC Construction Crawl</button></form>
           <form action="/admin/crawl/drjtbc-profserv" method="post"><button class="button" type="submit">Run DRJTBC Prof Services Crawl</button></form>
           <form action="/admin/crawl/run-enabled" method="post"><button class="button" type="submit">Run All Enabled Crawlers</button></form>
+          <form action="/admin/leads/auto-guidance/new" method="post"><button class="button" type="submit">Re-run Auto Guidance on New Leads</button></form>
         </div>
         <div class="panel"><h3>Latest crawl runs</h3><ul>{crawl_items}</ul></div>
       </div>
@@ -2033,6 +2199,7 @@ def admin_leads_page(
             """
 
         workflow_html += f"""
+            <button type="submit" formaction="/admin/leads/{row['lead_id']}/auto-guidance" formmethod="post" style="background:#2563eb;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Re-run Auto Guidance</button>
             <button type="submit" formaction="/admin/leads/{row['lead_id']}/mark-duplicate" formmethod="post" style="background:#7c3aed;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;margin-right:6px;">Mark Duplicate</button>
         """
 
