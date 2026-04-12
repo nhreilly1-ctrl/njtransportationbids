@@ -12,6 +12,8 @@ security = HTTPBasic()
 
 NJDOT_CONSTRUCTION_URL = "https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm"
 NJDOT_PROFSERV_URL = "https://www.nj.gov/transportation/business/procurement/ProfServ/CurrentSolic.shtm"
+NJTA_URL = "https://www.njta.gov/business-hub/current-solicitations/"
+MONMOUTH_URL = "https://pol.co.monmouth.nj.us/"
 
 
 def get_conn():
@@ -82,6 +84,7 @@ def init_db():
                     status TEXT,
                     source_url TEXT,
                     raw_text TEXT,
+                    duplicate_key TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
@@ -174,6 +177,10 @@ def fetch_sources():
     ]
 
 
+def fetch_source_map():
+    return {row["source_id"]: row for row in fetch_sources()}
+
+
 def fetch_opportunities():
     with get_conn() as conn:
         with conn.cursor() as cur:
@@ -185,6 +192,7 @@ def fetch_opportunities():
             """)
             rows = cur.fetchall()
 
+    source_map = fetch_source_map()
     return [
         {
             "opportunity_id": row[0],
@@ -192,6 +200,7 @@ def fetch_opportunities():
             "agency": row[2],
             "county": row[3],
             "source_id": row[4],
+            "source_name": source_map.get(row[4], {}).get("source_name", row[4]),
             "due_date": row[5],
             "status": row[6],
             "opportunity_url": row[7],
@@ -200,12 +209,40 @@ def fetch_opportunities():
     ]
 
 
+def fetch_opportunity_by_id(opportunity_id: str):
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT opportunity_id, title, agency, county, source_id, due_date, status, opportunity_url, created_at
+                FROM opportunities
+                WHERE opportunity_id = %s
+            """, (opportunity_id,))
+            row = cur.fetchone()
+
+    if not row:
+        return None
+
+    source_map = fetch_source_map()
+    return {
+        "opportunity_id": row[0],
+        "title": row[1],
+        "agency": row[2],
+        "county": row[3],
+        "source_id": row[4],
+        "source_name": source_map.get(row[4], {}).get("source_name", row[4]),
+        "due_date": row[5],
+        "status": row[6],
+        "opportunity_url": row[7],
+        "created_at": str(row[8]),
+    }
+
+
 def fetch_leads(status_filter: str | None = None):
     with get_conn() as conn:
         with conn.cursor() as cur:
             if status_filter and status_filter in {"New", "Promoted", "Rejected"}:
                 cur.execute("""
-                    SELECT lead_id, source_id, title, agency, county, posted_date, due_date, status, source_url, created_at
+                    SELECT lead_id, source_id, title, agency, county, posted_date, due_date, status, source_url, duplicate_key, created_at
                     FROM opportunity_leads
                     WHERE status = %s
                     ORDER BY created_at DESC, title
@@ -213,7 +250,7 @@ def fetch_leads(status_filter: str | None = None):
                 """, (status_filter,))
             else:
                 cur.execute("""
-                    SELECT lead_id, source_id, title, agency, county, posted_date, due_date, status, source_url, created_at
+                    SELECT lead_id, source_id, title, agency, county, posted_date, due_date, status, source_url, duplicate_key, created_at
                     FROM opportunity_leads
                     ORDER BY
                         CASE
@@ -228,10 +265,12 @@ def fetch_leads(status_filter: str | None = None):
                 """)
             rows = cur.fetchall()
 
+    source_map = fetch_source_map()
     return [
         {
             "lead_id": row[0],
             "source_id": row[1],
+            "source_name": source_map.get(row[1], {}).get("source_name", row[1]),
             "title": row[2],
             "agency": row[3],
             "county": row[4],
@@ -239,7 +278,8 @@ def fetch_leads(status_filter: str | None = None):
             "due_date": row[6],
             "status": row[7],
             "source_url": row[8],
-            "created_at": str(row[9]),
+            "duplicate_key": row[9],
+            "created_at": str(row[10]),
         }
         for row in rows
     ]
@@ -341,11 +381,24 @@ def strip_html(text: str) -> str:
     return text.strip()
 
 
+def normalize_title(title: str) -> str:
+    title = re.sub(r"\s+", " ", title).strip()
+    title = re.sub(r"\s*-\s*", " - ", title)
+    return title[:220]
+
+
+def make_duplicate_key(source_id: str, title: str, due_date: str | None):
+    norm_title = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+    norm_date = (due_date or "nodate").lower().replace(" ", "-").replace(",", "")
+    return f"{source_id}|{norm_title}|{norm_date}"[:500]
+
+
 def upsert_leads(source_key: str, source_id: str, agency: str, county: str, source_url: str, titles: list[str]):
     inserted = 0
     with get_conn() as conn:
         with conn.cursor() as cur:
-            for idx, title in enumerate(titles, start=1):
+            for idx, raw_title in enumerate(titles, start=1):
+                title = normalize_title(raw_title)
                 lead_id = f"lead-{source_key}-{idx}"
                 due_date_match = re.search(
                     r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}",
@@ -353,6 +406,7 @@ def upsert_leads(source_key: str, source_id: str, agency: str, county: str, sour
                     flags=re.I,
                 )
                 due_date = due_date_match.group(0) if due_date_match else None
+                duplicate_key = make_duplicate_key(source_id, title, due_date)
 
                 cur.execute("""
                     INSERT INTO opportunity_leads (
@@ -365,9 +419,10 @@ def upsert_leads(source_key: str, source_id: str, agency: str, county: str, sour
                         due_date,
                         status,
                         source_url,
-                        raw_text
+                        raw_text,
+                        duplicate_key
                     )
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (lead_id) DO UPDATE SET
                         title = EXCLUDED.title,
                         agency = EXCLUDED.agency,
@@ -375,7 +430,8 @@ def upsert_leads(source_key: str, source_id: str, agency: str, county: str, sour
                         due_date = EXCLUDED.due_date,
                         status = EXCLUDED.status,
                         source_url = EXCLUDED.source_url,
-                        raw_text = EXCLUDED.raw_text
+                        raw_text = EXCLUDED.raw_text,
+                        duplicate_key = EXCLUDED.duplicate_key
                 """, (
                     lead_id,
                     source_id,
@@ -386,7 +442,8 @@ def upsert_leads(source_key: str, source_id: str, agency: str, county: str, sour
                     due_date,
                     "New",
                     source_url,
-                    title
+                    title,
+                    duplicate_key
                 ))
                 inserted += 1
         conn.commit()
@@ -436,7 +493,7 @@ def parse_construction_titles(cleaned: str):
     deduped = []
     seen = set()
     for title in titles:
-        short = title[:220].strip()
+        short = normalize_title(title)
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
@@ -463,7 +520,7 @@ def parse_profserv_titles(cleaned: str):
     deduped = []
     seen = set()
     for title in titles:
-        short = title[:220].strip()
+        short = normalize_title(title)
         if short and short not in seen:
             seen.add(short)
             deduped.append(short)
@@ -471,24 +528,74 @@ def parse_profserv_titles(cleaned: str):
     return deduped[:15]
 
 
-def manual_crawl_njdot_construction():
+def parse_njta_titles(cleaned: str):
+    titles = []
+    for match in re.finditer(r"((Order for Professional Services|Contract No\.|Request for Expression of Interest|Solicitation)\s+.*?)(?=(Order for Professional Services|Contract No\.|Request for Expression of Interest|Solicitation)\s+|$)", cleaned, flags=re.I):
+        chunk = match.group(1).strip()
+        if len(chunk) > 30:
+            titles.append(chunk)
+
+    if not titles:
+        for sentence in re.split(r"(?<=[.!?])\s+", cleaned):
+            s = sentence.lower()
+            if "closing date" in s or "contract no." in s or "professional services" in s:
+                if len(sentence.strip()) > 30:
+                    titles.append(sentence.strip())
+
+    deduped = []
+    seen = set()
+    for title in titles:
+        short = normalize_title(title)
+        if short and short not in seen:
+            seen.add(short)
+            deduped.append(short)
+
+    return deduped[:15]
+
+
+def parse_monmouth_titles(cleaned: str):
+    titles = []
+    for match in re.finditer(r"((Request ID|RFB|RFQ|RFP).*?)(?=(Request ID|RFB|RFQ|RFP).*?|$)", cleaned, flags=re.I):
+        chunk = match.group(1).strip()
+        if len(chunk) > 30:
+            titles.append(chunk)
+
+    if not titles:
+        for sentence in re.split(r"(?<=[.!?])\s+", cleaned):
+            s = sentence.lower()
+            if "intersection improvements" in s or "county route" in s or "rfp" in s or "rfq" in s or "rfb" in s:
+                if len(sentence.strip()) > 30:
+                    titles.append(sentence.strip())
+
+    deduped = []
+    seen = set()
+    for title in titles:
+        short = normalize_title(title)
+        if short and short not in seen:
+            seen.add(short)
+            deduped.append(short)
+
+    return deduped[:15]
+
+
+def crawl_generic(url: str, parser, source_key: str, source_id: str, agency: str, county: str, source_name: str):
     headers = {"User-Agent": "Mozilla/5.0 NJTransportationBids/1.0"}
     try:
-        resp = requests.get(NJDOT_CONSTRUCTION_URL, headers=headers, timeout=30)
+        resp = requests.get(url, headers=headers, timeout=30)
         resp.raise_for_status()
         cleaned = strip_html(resp.text)
-        deduped = parse_construction_titles(cleaned) if cleaned else []
+        deduped = parser(cleaned) if cleaned else []
         inserted = upsert_leads(
-            source_key="njdot-construction",
-            source_id="state-njdot-construction",
-            agency="NJDOT Construction Services",
-            county="Statewide",
-            source_url=NJDOT_CONSTRUCTION_URL,
+            source_key=source_key,
+            source_id=source_id,
+            agency=agency,
+            county=county,
+            source_url=url,
             titles=deduped,
         )
         log_crawl_run(
-            source_id="state-njdot-construction",
-            source_name="NJDOT Construction Services",
+            source_id=source_id,
+            source_name=source_name,
             status_text="Success",
             leads_found=inserted,
             notes="Manual crawl completed"
@@ -496,54 +603,68 @@ def manual_crawl_njdot_construction():
         return {"inserted": inserted, "titles": deduped}
     except Exception as e:
         log_crawl_run(
-            source_id="state-njdot-construction",
-            source_name="NJDOT Construction Services",
+            source_id=source_id,
+            source_name=source_name,
             status_text="Failed",
             leads_found=0,
             notes=str(e)
         )
         raise
+
+
+def manual_crawl_njdot_construction():
+    return crawl_generic(
+        url=NJDOT_CONSTRUCTION_URL,
+        parser=parse_construction_titles,
+        source_key="njdot-construction",
+        source_id="state-njdot-construction",
+        agency="NJDOT Construction Services",
+        county="Statewide",
+        source_name="NJDOT Construction Services",
+    )
 
 
 def manual_crawl_njdot_profserv():
-    headers = {"User-Agent": "Mozilla/5.0 NJTransportationBids/1.0"}
-    try:
-        resp = requests.get(NJDOT_PROFSERV_URL, headers=headers, timeout=30)
-        resp.raise_for_status()
-        cleaned = strip_html(resp.text)
-        deduped = parse_profserv_titles(cleaned) if cleaned else []
-        inserted = upsert_leads(
-            source_key="njdot-profserv",
-            source_id="state-njdot-profserv",
-            agency="NJDOT Professional Services",
-            county="Statewide",
-            source_url=NJDOT_PROFSERV_URL,
-            titles=deduped,
-        )
-        log_crawl_run(
-            source_id="state-njdot-profserv",
-            source_name="NJDOT Professional Services",
-            status_text="Success",
-            leads_found=inserted,
-            notes="Manual crawl completed"
-        )
-        return {"inserted": inserted, "titles": deduped}
-    except Exception as e:
-        log_crawl_run(
-            source_id="state-njdot-profserv",
-            source_name="NJDOT Professional Services",
-            status_text="Failed",
-            leads_found=0,
-            notes=str(e)
-        )
-        raise
+    return crawl_generic(
+        url=NJDOT_PROFSERV_URL,
+        parser=parse_profserv_titles,
+        source_key="njdot-profserv",
+        source_id="state-njdot-profserv",
+        agency="NJDOT Professional Services",
+        county="Statewide",
+        source_name="NJDOT Professional Services",
+    )
+
+
+def manual_crawl_njta():
+    return crawl_generic(
+        url=NJTA_URL,
+        parser=parse_njta_titles,
+        source_key="njta",
+        source_id="state-njta",
+        agency="NJ Turnpike Authority Current Solicitations",
+        county="Statewide",
+        source_name="NJ Turnpike Authority Current Solicitations",
+    )
+
+
+def manual_crawl_monmouth():
+    return crawl_generic(
+        url=MONMOUTH_URL,
+        parser=parse_monmouth_titles,
+        source_key="monmouth",
+        source_id="county-monmouth",
+        agency="Monmouth County Purchasing",
+        county="Monmouth",
+        source_name="Monmouth County Purchasing",
+    )
 
 
 def promote_lead(lead_id: str):
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT lead_id, source_id, title, agency, county, due_date, source_url, status
+                SELECT lead_id, source_id, title, agency, county, due_date, source_url, status, duplicate_key
                 FROM opportunity_leads
                 WHERE lead_id = %s
             """, (lead_id,))
@@ -551,6 +672,15 @@ def promote_lead(lead_id: str):
 
             if not row:
                 raise ValueError("Lead not found")
+
+            cur.execute("""
+                SELECT COUNT(*)
+                FROM opportunities
+                WHERE source_id = %s
+                  AND title = %s
+                  AND COALESCE(due_date, '') = COALESCE(%s, '')
+            """, (row[1], row[2], row[5]))
+            duplicate_count = cur.fetchone()[0]
 
             opportunity_id = f"opp-{row[0]}"
             title = row[2]
@@ -560,36 +690,37 @@ def promote_lead(lead_id: str):
             due_date = row[5]
             source_url = row[6]
 
-            cur.execute("""
-                INSERT INTO opportunities (
+            if duplicate_count == 0:
+                cur.execute("""
+                    INSERT INTO opportunities (
+                        opportunity_id,
+                        title,
+                        agency,
+                        county,
+                        source_id,
+                        due_date,
+                        status,
+                        opportunity_url
+                    )
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                    ON CONFLICT (opportunity_id) DO UPDATE SET
+                        title = EXCLUDED.title,
+                        agency = EXCLUDED.agency,
+                        county = EXCLUDED.county,
+                        source_id = EXCLUDED.source_id,
+                        due_date = EXCLUDED.due_date,
+                        status = EXCLUDED.status,
+                        opportunity_url = EXCLUDED.opportunity_url
+                """, (
                     opportunity_id,
                     title,
                     agency,
                     county,
                     source_id,
                     due_date,
-                    status,
-                    opportunity_url
-                )
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT (opportunity_id) DO UPDATE SET
-                    title = EXCLUDED.title,
-                    agency = EXCLUDED.agency,
-                    county = EXCLUDED.county,
-                    source_id = EXCLUDED.source_id,
-                    due_date = EXCLUDED.due_date,
-                    status = EXCLUDED.status,
-                    opportunity_url = EXCLUDED.opportunity_url
-            """, (
-                opportunity_id,
-                title,
-                agency,
-                county,
-                source_id,
-                due_date,
-                "Open",
-                source_url
-            ))
+                    "Open",
+                    source_url
+                ))
 
             cur.execute("""
                 UPDATE opportunity_leads
@@ -675,7 +806,7 @@ def home():
               </div>
               <div class="stat">
                 <strong>{summary['crawl_run_count']}</strong><br>
-                crawl runs logged
+                crawl runs
               </div>
             </div>
 
@@ -693,10 +824,9 @@ def home():
             <ul>
               <li>Custom domain connected</li>
               <li>Health and readiness checks passing</li>
-              <li>Database-backed source registry working</li>
-              <li>Published opportunities are driven by promoted leads</li>
-              <li>Admin leads workflow supports crawl, promote, reject, and reset</li>
-              <li>Crawl runs are logged and visible in admin</li>
+              <li>Published opportunities have detail pages</li>
+              <li>NJTA and Monmouth manual crawlers are now available</li>
+              <li>Basic duplicate protection is active on promote</li>
             </ul>
           </div>
         </div>
@@ -762,6 +892,18 @@ def admin_crawl_njdot_construction(username: str = Depends(check_auth)):
 @app.post("/admin/crawl/njdot-profserv")
 def admin_crawl_njdot_profserv(username: str = Depends(check_auth)):
     manual_crawl_njdot_profserv()
+    return RedirectResponse(url="/admin/leads", status_code=303)
+
+
+@app.post("/admin/crawl/njta")
+def admin_crawl_njta(username: str = Depends(check_auth)):
+    manual_crawl_njta()
+    return RedirectResponse(url="/admin/leads", status_code=303)
+
+
+@app.post("/admin/crawl/monmouth")
+def admin_crawl_monmouth(username: str = Depends(check_auth)):
+    manual_crawl_monmouth()
     return RedirectResponse(url="/admin/leads", status_code=303)
 
 
@@ -851,9 +993,10 @@ def opportunities_page():
     for row in opportunities:
         items += f"""
         <tr>
-            <td><a href="{row['opportunity_url']}" target="_blank">{row['title']}</a></td>
+            <td><a href="/opportunities/{row['opportunity_id']}">{row['title']}</a></td>
             <td>{row['agency'] or ''}</td>
             <td>{row['county'] or ''}</td>
+            <td>{row['source_name'] or ''}</td>
             <td>{row['due_date'] or ''}</td>
             <td>{row['status'] or ''}</td>
         </tr>
@@ -869,7 +1012,7 @@ def opportunities_page():
         <title>Opportunities</title>
         <style>
           body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 1100px; margin: 0 auto; }}
+          .wrap {{ max-width: 1200px; margin: 0 auto; }}
           .top {{ margin-bottom: 24px; }}
           .top a {{ color: #0b57d0; text-decoration: none; }}
           table {{ border-collapse: collapse; width: 100%; background: white; }}
@@ -894,6 +1037,7 @@ def opportunities_page():
                 <th>Title</th>
                 <th>Agency</th>
                 <th>County</th>
+                <th>Source</th>
                 <th>Due Date</th>
                 <th>Status</th>
               </tr>
@@ -902,6 +1046,46 @@ def opportunities_page():
               {items}
             </tbody>
           </table>
+        </div>
+      </body>
+    </html>
+    """
+
+
+@app.get("/opportunities/{opportunity_id}", response_class=HTMLResponse)
+def opportunity_detail_page(opportunity_id: str):
+    opp = fetch_opportunity_by_id(opportunity_id)
+    if not opp:
+        raise HTTPException(status_code=404, detail="Opportunity not found")
+
+    return f"""
+    <html>
+      <head>
+        <title>{opp['title']}</title>
+        <style>
+          body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+          .wrap {{ max-width: 900px; margin: 0 auto; }}
+          .card {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }}
+          a {{ color: #0b57d0; text-decoration: none; }}
+          .row {{ margin-bottom: 12px; }}
+          .label {{ font-weight: bold; display: inline-block; min-width: 140px; }}
+        </style>
+      </head>
+      <body>
+        <div class="wrap">
+          <div class="card">
+            <a href="/opportunities">← Back to opportunities</a>
+            <h1>{opp['title']}</h1>
+
+            <div class="row"><span class="label">Agency:</span> {opp['agency'] or ''}</div>
+            <div class="row"><span class="label">County:</span> {opp['county'] or ''}</div>
+            <div class="row"><span class="label">Source:</span> {opp['source_name'] or ''}</div>
+            <div class="row"><span class="label">Source ID:</span> {opp['source_id'] or ''}</div>
+            <div class="row"><span class="label">Due Date:</span> {opp['due_date'] or ''}</div>
+            <div class="row"><span class="label">Status:</span> {opp['status'] or ''}</div>
+            <div class="row"><span class="label">Published:</span> {opp['created_at']}</div>
+            <div class="row"><span class="label">Original Link:</span> <a href="{opp['opportunity_url']}" target="_blank">{opp['opportunity_url']}</a></div>
+          </div>
         </div>
       </body>
     </html>
@@ -938,7 +1122,7 @@ def admin_page(username: str = Depends(check_auth)):
           .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
           .panel {{ background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }}
           a {{ color: #0b57d0; text-decoration: none; }}
-          .button {{ display: inline-block; background: #0b57d0; color: white; padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; margin-right:8px; }}
+          .button {{ display: inline-block; background: #0b57d0; color: white; padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; margin-right:8px; margin-bottom:8px; }}
           form {{ margin: 0; display:inline-block; }}
           ul {{ padding-left: 18px; }}
         </style>
@@ -951,42 +1135,15 @@ def admin_page(username: str = Depends(check_auth)):
             <p>Signed in as <strong>{username}</strong></p>
 
             <div class="stats">
-              <div class="stat">
-                <strong>{summary['source_count']}</strong><br>
-                source records
-              </div>
-              <div class="stat">
-                <strong>{summary['opportunity_count']}</strong><br>
-                published opportunities
-              </div>
-              <div class="stat">
-                <strong>{summary['lead_count']}</strong><br>
-                total leads
-              </div>
-              <div class="stat">
-                <strong>{summary['new_lead_count']}</strong><br>
-                new leads
-              </div>
-              <div class="stat">
-                <strong>{summary['promoted_lead_count']}</strong><br>
-                promoted leads
-              </div>
-              <div class="stat">
-                <strong>{summary['rejected_lead_count']}</strong><br>
-                rejected leads
-              </div>
-              <div class="stat">
-                <strong>{summary['crawl_run_count']}</strong><br>
-                crawl runs
-              </div>
-              <div class="stat">
-                <strong>{summary['successful_crawl_count']}</strong><br>
-                successful crawls
-              </div>
-              <div class="stat">
-                <strong>{summary['failed_crawl_count']}</strong><br>
-                failed crawls
-              </div>
+              <div class="stat"><strong>{summary['source_count']}</strong><br>source records</div>
+              <div class="stat"><strong>{summary['opportunity_count']}</strong><br>published opportunities</div>
+              <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
+              <div class="stat"><strong>{summary['new_lead_count']}</strong><br>new leads</div>
+              <div class="stat"><strong>{summary['promoted_lead_count']}</strong><br>promoted leads</div>
+              <div class="stat"><strong>{summary['rejected_lead_count']}</strong><br>rejected leads</div>
+              <div class="stat"><strong>{summary['crawl_run_count']}</strong><br>crawl runs</div>
+              <div class="stat"><strong>{summary['successful_crawl_count']}</strong><br>successful crawls</div>
+              <div class="stat"><strong>{summary['failed_crawl_count']}</strong><br>failed crawls</div>
             </div>
 
             <div class="grid">
@@ -1009,6 +1166,12 @@ def admin_page(username: str = Depends(check_auth)):
                 </form>
                 <form action="/admin/crawl/njdot-profserv" method="post">
                   <button class="button" type="submit">Run NJDOT Professional Services Crawl</button>
+                </form>
+                <form action="/admin/crawl/njta" method="post">
+                  <button class="button" type="submit">Run NJTA Crawl</button>
+                </form>
+                <form action="/admin/crawl/monmouth" method="post">
+                  <button class="button" type="submit">Run Monmouth County Crawl</button>
                 </form>
               </div>
 
@@ -1042,8 +1205,6 @@ def admin_leads_page(
 
     items = ""
     for row in leads:
-        source_label = row["source_id"].replace("state-", "").replace("county-", "").replace("-", " ").title()
-
         if row["status"] == "New":
             action_html = f"""
                 <form action="/admin/leads/{row['lead_id']}/promote" method="post" style="display:inline-block; margin-right:8px;">
@@ -1065,12 +1226,13 @@ def admin_leads_page(
         items += f"""
         <tr>
             <td>{row['title']}</td>
-            <td>{source_label}</td>
+            <td>{row['source_name']}</td>
             <td>{row['lead_id']}</td>
             <td>{row['agency'] or ''}</td>
             <td>{row['county'] or ''}</td>
             <td>{row['due_date'] or ''}</td>
             <td>{row['status'] or ''}</td>
+            <td>{row['duplicate_key'] or ''}</td>
             <td><a href="{row['source_url']}" target="_blank">source</a></td>
             <td>{action_html}</td>
         </tr>
@@ -1084,7 +1246,7 @@ def admin_leads_page(
         <title>Admin Leads</title>
         <style>
           body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 1400px; margin: 0 auto; }}
+          .wrap {{ max-width: 1500px; margin: 0 auto; }}
           .top {{ margin-bottom: 24px; }}
           .top a {{ color: #0b57d0; text-decoration: none; }}
           table {{ border-collapse: collapse; width: 100%; background: white; }}
@@ -1128,6 +1290,7 @@ def admin_leads_page(
                 <th>County</th>
                 <th>Due Date</th>
                 <th>Status</th>
+                <th>Duplicate Key</th>
                 <th>Link</th>
                 <th>Actions</th>
               </tr>
