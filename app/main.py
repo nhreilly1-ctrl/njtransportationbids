@@ -530,8 +530,7 @@ def admin_page(username: str = Depends(check_auth)):
       </body>
     </html>
     """
-
-
+    
 @app.get("/debug-auth")
 def debug_auth():
     return {
