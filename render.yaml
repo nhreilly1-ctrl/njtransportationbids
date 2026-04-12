@@ -2,9 +2,10 @@ services:
   - type: web
     name: nj-bid-registry-web
     runtime: docker
-    plan: starter
+    plan: free
     autoDeploy: true
     dockerfilePath: ./Dockerfile
+    startCommand: sh /app/scripts/start_production.sh
     healthCheckPath: /health
     envVars:
       - key: APP_ENV
