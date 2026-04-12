@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: nj-bid-registry-web
+    runtime: docker
+    plan: starter
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: HOST
+        value: 0.0.0.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nj-bid-registry-db
+          property: connectionString
+      - key: SECRET_KEY
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CRAWL_ENABLED
+        value: "false"
+      - key: LOG_LEVEL
+        value: info
+
+databases:
+  - name: nj-bid-registry-db
+    plan: starter
+    databaseName: nj_bid_registry
+    user: nj_bid_registry_user
