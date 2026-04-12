@@ -102,6 +102,14 @@ def init_db():
                 );
             """)
 
+            # Upgrade older tables in place
+            cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS duplicate_key TEXT;")
+            cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
+            cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
+            cur.execute("ALTER TABLE crawl_runs ADD COLUMN IF NOT EXISTS leads_found INTEGER DEFAULT 0;")
+            cur.execute("ALTER TABLE crawl_runs ADD COLUMN IF NOT EXISTS notes TEXT;")
+            cur.execute("ALTER TABLE crawl_runs ADD COLUMN IF NOT EXISTS started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
+
             cur.execute("""
                 INSERT INTO registry_sources (
                     source_id,
@@ -503,15 +511,13 @@ def parse_construction_titles(cleaned: str):
 
 def parse_profserv_titles(cleaned: str):
     titles = []
-
     for match in re.finditer(r"(TP[-\s]?\d+.*?)(?=TP[-\s]?\d+|$)", cleaned, flags=re.I):
         chunk = match.group(1).strip()
         if len(chunk) > 30:
             titles.append(chunk)
 
     if not titles:
-        sentences = re.split(r"(?<=[.!?])\s+", cleaned)
-        for sentence in sentences:
+        for sentence in re.split(r"(?<=[.!?])\s+", cleaned):
             s = sentence.lower()
             if "tp-" in s or "technical proposal" in s or "professional services" in s:
                 if len(sentence.strip()) > 30:
@@ -593,22 +599,10 @@ def crawl_generic(url: str, parser, source_key: str, source_id: str, agency: str
             source_url=url,
             titles=deduped,
         )
-        log_crawl_run(
-            source_id=source_id,
-            source_name=source_name,
-            status_text="Success",
-            leads_found=inserted,
-            notes="Manual crawl completed"
-        )
+        log_crawl_run(source_id, source_name, "Success", inserted, "Manual crawl completed")
         return {"inserted": inserted, "titles": deduped}
     except Exception as e:
-        log_crawl_run(
-            source_id=source_id,
-            source_name=source_name,
-            status_text="Failed",
-            leads_found=0,
-            notes=str(e)
-        )
+        log_crawl_run(source_id, source_name, "Failed", 0, str(e))
         raise
 
 
@@ -664,7 +658,7 @@ def promote_lead(lead_id: str):
     with get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT lead_id, source_id, title, agency, county, due_date, source_url, status, duplicate_key
+                SELECT lead_id, source_id, title, agency, county, due_date, source_url
                 FROM opportunity_leads
                 WHERE lead_id = %s
             """, (lead_id,))
@@ -682,15 +676,8 @@ def promote_lead(lead_id: str):
             """, (row[1], row[2], row[5]))
             duplicate_count = cur.fetchone()[0]
 
-            opportunity_id = f"opp-{row[0]}"
-            title = row[2]
-            agency = row[3] or "Unknown Agency"
-            county = row[4]
-            source_id = row[1]
-            due_date = row[5]
-            source_url = row[6]
-
             if duplicate_count == 0:
+                opportunity_id = f"opp-{row[0]}"
                 cur.execute("""
                     INSERT INTO opportunities (
                         opportunity_id,
@@ -713,13 +700,13 @@ def promote_lead(lead_id: str):
                         opportunity_url = EXCLUDED.opportunity_url
                 """, (
                     opportunity_id,
-                    title,
-                    agency,
-                    county,
-                    source_id,
-                    due_date,
+                    row[2],
+                    row[3] or "Unknown Agency",
+                    row[4],
+                    row[1],
+                    row[5],
                     "Open",
-                    source_url
+                    row[6]
                 ))
 
             cur.execute("""
@@ -727,29 +714,20 @@ def promote_lead(lead_id: str):
                 SET status = 'Promoted'
                 WHERE lead_id = %s
             """, (lead_id,))
-
         conn.commit()
 
 
 def reject_lead(lead_id: str):
     with get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("""
-                UPDATE opportunity_leads
-                SET status = 'Rejected'
-                WHERE lead_id = %s
-            """, (lead_id,))
+            cur.execute("UPDATE opportunity_leads SET status = 'Rejected' WHERE lead_id = %s", (lead_id,))
         conn.commit()
 
 
 def reset_lead_to_new(lead_id: str):
     with get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("""
-                UPDATE opportunity_leads
-                SET status = 'New'
-                WHERE lead_id = %s
-            """, (lead_id,))
+            cur.execute("UPDATE opportunity_leads SET status = 'New' WHERE lead_id = %s", (lead_id,))
         conn.commit()
 
 
@@ -780,36 +758,18 @@ def home():
           .section {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 24px; }}
           ul {{ padding-left: 18px; }}
           li {{ margin-bottom: 8px; }}
-          .muted {{ color: #4b5563; }}
         </style>
       </head>
       <body>
         <div class="wrap">
           <div class="hero">
             <h1>NJ Transportation Bids</h1>
-            <p class="muted">
-              Live New Jersey transportation bid registry with database-backed sources, opportunities, and lead staging.
-            </p>
-
             <div class="stats">
-              <div class="stat">
-                <strong>{len(sources)}</strong><br>
-                live source records
-              </div>
-              <div class="stat">
-                <strong>{len(opportunities)}</strong><br>
-                published opportunities
-              </div>
-              <div class="stat">
-                <strong>{summary['lead_count']}</strong><br>
-                total leads
-              </div>
-              <div class="stat">
-                <strong>{summary['crawl_run_count']}</strong><br>
-                crawl runs
-              </div>
+              <div class="stat"><strong>{len(sources)}</strong><br>live source records</div>
+              <div class="stat"><strong>{len(opportunities)}</strong><br>published opportunities</div>
+              <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
+              <div class="stat"><strong>{summary['crawl_run_count']}</strong><br>crawl runs</div>
             </div>
-
             <div class="nav">
               <a href="/sources">View Sources</a>
               <a href="/opportunities">View Opportunities</a>
@@ -820,13 +780,13 @@ def home():
           </div>
 
           <div class="section">
-            <h2>What is live now</h2>
+            <h2>Latest big step</h2>
             <ul>
-              <li>Custom domain connected</li>
-              <li>Health and readiness checks passing</li>
-              <li>Published opportunities have detail pages</li>
-              <li>NJTA and Monmouth manual crawlers are now available</li>
-              <li>Basic duplicate protection is active on promote</li>
+              <li>NJTA manual crawler added</li>
+              <li>Monmouth County manual crawler added</li>
+              <li>Opportunity detail pages added</li>
+              <li>Basic duplicate guard added on promotion</li>
+              <li>Source-aware display added across leads and opportunities</li>
             </ul>
           </div>
         </div>
@@ -843,16 +803,6 @@ def health():
 @app.get("/ready")
 def ready():
     return {"ok": True}
-
-
-@app.get("/debug-auth")
-def debug_auth():
-    return {
-        "admin_username_set": bool(os.environ.get("ADMIN_USERNAME")),
-        "admin_password_set": bool(os.environ.get("ADMIN_PASSWORD")),
-        "admin_username_length": len(os.environ.get("ADMIN_USERNAME", "")),
-        "admin_password_length": len(os.environ.get("ADMIN_PASSWORD", "")),
-    }
 
 
 @app.get("/api/sources")
@@ -928,60 +878,29 @@ def admin_reset_lead(lead_id: str, username: str = Depends(check_auth)):
 @app.get("/sources", response_class=HTMLResponse)
 def sources_page():
     sources = fetch_sources()
-
     items = ""
     for row in sources:
-        items += f"""
-        <tr>
-            <td><a href="{row['source_url']}" target="_blank">{row['source_name']}</a></td>
-            <td>{row['entity_type'] or ''}</td>
-            <td>{row['county'] or ''}</td>
-            <td>{row['priority_tier'] or ''}</td>
-            <td>{row['website_ready'] or ''}</td>
-        </tr>
-        """
+        items += f"<tr><td><a href='{row['source_url']}' target='_blank'>{row['source_name']}</a></td><td>{row['entity_type'] or ''}</td><td>{row['county'] or ''}</td><td>{row['priority_tier'] or ''}</td><td>{row['website_ready'] or ''}</td></tr>"
 
     return f"""
-    <html>
-      <head>
-        <title>Sources</title>
-        <style>
-          body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 1100px; margin: 0 auto; }}
-          .top {{ margin-bottom: 24px; }}
-          .top a {{ color: #0b57d0; text-decoration: none; }}
-          table {{ border-collapse: collapse; width: 100%; background: white; }}
-          th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; }}
-          th {{ background: #f3f4f6; }}
-          h1 {{ margin-bottom: 6px; }}
-          .muted {{ color: #4b5563; }}
-        </style>
-      </head>
-      <body>
-        <div class="wrap">
-          <div class="top">
-            <a href="/">← Back to home</a>
-            <h1>Registry Sources</h1>
-            <p class="muted">{len(sources)} sources currently loaded</p>
-          </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Source Name</th>
-                <th>Entity Type</th>
-                <th>County</th>
-                <th>Priority</th>
-                <th>Website Ready</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items}
-            </tbody>
-          </table>
-        </div>
-      </body>
-    </html>
+    <html><head><title>Sources</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+      .wrap {{ max-width: 1100px; margin: 0 auto; }}
+      table {{ border-collapse: collapse; width: 100%; background: white; }}
+      th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; }}
+      th {{ background: #f3f4f6; }}
+      a {{ color: #0b57d0; text-decoration: none; }}
+    </style></head>
+    <body><div class="wrap">
+      <a href="/">← Back to home</a>
+      <h1>Registry Sources</h1>
+      <p>{len(sources)} sources currently loaded</p>
+      <table>
+        <thead><tr><th>Source Name</th><th>Entity Type</th><th>County</th><th>Priority</th><th>Website Ready</th></tr></thead>
+        <tbody>{items}</tbody>
+      </table>
+    </div></body></html>
     """
 
 
@@ -1002,53 +921,25 @@ def opportunities_page():
         </tr>
         """
 
-    empty_message = ""
-    if not opportunities:
-        empty_message = "<p class='muted'>No promoted opportunities yet. Promote leads from the admin leads page to publish them here.</p>"
-
     return f"""
-    <html>
-      <head>
-        <title>Opportunities</title>
-        <style>
-          body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 1200px; margin: 0 auto; }}
-          .top {{ margin-bottom: 24px; }}
-          .top a {{ color: #0b57d0; text-decoration: none; }}
-          table {{ border-collapse: collapse; width: 100%; background: white; }}
-          th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; }}
-          th {{ background: #f3f4f6; }}
-          h1 {{ margin-bottom: 6px; }}
-          .muted {{ color: #4b5563; }}
-        </style>
-      </head>
-      <body>
-        <div class="wrap">
-          <div class="top">
-            <a href="/">← Back to home</a>
-            <h1>Opportunities</h1>
-            <p class="muted">{len(opportunities)} published opportunities currently loaded</p>
-            {empty_message}
-          </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Agency</th>
-                <th>County</th>
-                <th>Source</th>
-                <th>Due Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items}
-            </tbody>
-          </table>
-        </div>
-      </body>
-    </html>
+    <html><head><title>Opportunities</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+      .wrap {{ max-width: 1200px; margin: 0 auto; }}
+      table {{ border-collapse: collapse; width: 100%; background: white; }}
+      th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; }}
+      th {{ background: #f3f4f6; }}
+      a {{ color: #0b57d0; text-decoration: none; }}
+    </style></head>
+    <body><div class="wrap">
+      <a href="/">← Back to home</a>
+      <h1>Opportunities</h1>
+      <p>{len(opportunities)} published opportunities currently loaded</p>
+      <table>
+        <thead><tr><th>Title</th><th>Agency</th><th>County</th><th>Source</th><th>Due Date</th><th>Status</th></tr></thead>
+        <tbody>{items}</tbody>
+      </table>
+    </div></body></html>
     """
 
 
@@ -1059,36 +950,27 @@ def opportunity_detail_page(opportunity_id: str):
         raise HTTPException(status_code=404, detail="Opportunity not found")
 
     return f"""
-    <html>
-      <head>
-        <title>{opp['title']}</title>
-        <style>
-          body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 900px; margin: 0 auto; }}
-          .card {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }}
-          a {{ color: #0b57d0; text-decoration: none; }}
-          .row {{ margin-bottom: 12px; }}
-          .label {{ font-weight: bold; display: inline-block; min-width: 140px; }}
-        </style>
-      </head>
-      <body>
-        <div class="wrap">
-          <div class="card">
-            <a href="/opportunities">← Back to opportunities</a>
-            <h1>{opp['title']}</h1>
-
-            <div class="row"><span class="label">Agency:</span> {opp['agency'] or ''}</div>
-            <div class="row"><span class="label">County:</span> {opp['county'] or ''}</div>
-            <div class="row"><span class="label">Source:</span> {opp['source_name'] or ''}</div>
-            <div class="row"><span class="label">Source ID:</span> {opp['source_id'] or ''}</div>
-            <div class="row"><span class="label">Due Date:</span> {opp['due_date'] or ''}</div>
-            <div class="row"><span class="label">Status:</span> {opp['status'] or ''}</div>
-            <div class="row"><span class="label">Published:</span> {opp['created_at']}</div>
-            <div class="row"><span class="label">Original Link:</span> <a href="{opp['opportunity_url']}" target="_blank">{opp['opportunity_url']}</a></div>
-          </div>
-        </div>
-      </body>
-    </html>
+    <html><head><title>{opp['title']}</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+      .wrap {{ max-width: 900px; margin: 0 auto; }}
+      .card {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }}
+      a {{ color: #0b57d0; text-decoration: none; }}
+      .row {{ margin-bottom: 12px; }}
+      .label {{ font-weight: bold; display: inline-block; min-width: 140px; }}
+    </style></head>
+    <body><div class="wrap"><div class="card">
+      <a href="/opportunities">← Back to opportunities</a>
+      <h1>{opp['title']}</h1>
+      <div class="row"><span class="label">Agency:</span> {opp['agency'] or ''}</div>
+      <div class="row"><span class="label">County:</span> {opp['county'] or ''}</div>
+      <div class="row"><span class="label">Source:</span> {opp['source_name'] or ''}</div>
+      <div class="row"><span class="label">Source ID:</span> {opp['source_id'] or ''}</div>
+      <div class="row"><span class="label">Due Date:</span> {opp['due_date'] or ''}</div>
+      <div class="row"><span class="label">Status:</span> {opp['status'] or ''}</div>
+      <div class="row"><span class="label">Published:</span> {opp['created_at']}</div>
+      <div class="row"><span class="label">Original Link:</span> <a href="{opp['opportunity_url']}" target="_blank">{opp['opportunity_url']}</a></div>
+    </div></div></body></html>
     """
 
 
@@ -1097,101 +979,65 @@ def admin_page(username: str = Depends(check_auth)):
     summary = fetch_admin_summary()
     crawl_runs = fetch_crawl_runs(limit=10)
 
-    entity_items = ""
-    for row in summary["by_entity_type"]:
-        entity_items += f"<li>{row['entity_type']}: {row['count']}</li>"
-
-    county_items = ""
-    for row in summary["top_counties"]:
-        county_items += f"<li>{row['county']}: {row['count']}</li>"
-
-    crawl_items = ""
-    for row in crawl_runs:
-        crawl_items += f"<li>{row['started_at']} — {row['source_name']} — {row['status']} ({row['leads_found']} leads)</li>"
+    entity_items = "".join(f"<li>{row['entity_type']}: {row['count']}</li>" for row in summary["by_entity_type"])
+    county_items = "".join(f"<li>{row['county']}: {row['count']}</li>" for row in summary["top_counties"])
+    crawl_items = "".join(
+        f"<li>{row['started_at']} — {row['source_name']} — {row['status']} ({row['leads_found']} leads)</li>"
+        for row in crawl_runs
+    )
 
     return f"""
-    <html>
-      <head>
-        <title>Admin</title>
-        <style>
-          body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 1100px; margin: 0 auto; }}
-          .card {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }}
-          .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0 24px 0; }}
-          .stat {{ background: #f3f4f6; border-radius: 12px; padding: 16px; min-width: 180px; }}
-          .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
-          .panel {{ background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }}
-          a {{ color: #0b57d0; text-decoration: none; }}
-          .button {{ display: inline-block; background: #0b57d0; color: white; padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; margin-right:8px; margin-bottom:8px; }}
-          form {{ margin: 0; display:inline-block; }}
-          ul {{ padding-left: 18px; }}
-        </style>
-      </head>
-      <body>
-        <div class="wrap">
-          <div class="card">
-            <a href="/">← Back to home</a>
-            <h1>Admin Dashboard</h1>
-            <p>Signed in as <strong>{username}</strong></p>
+    <html><head><title>Admin</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+      .wrap {{ max-width: 1100px; margin: 0 auto; }}
+      .card {{ background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 28px; }}
+      .stats {{ display: flex; gap: 16px; flex-wrap: wrap; margin: 18px 0 24px 0; }}
+      .stat {{ background: #f3f4f6; border-radius: 12px; padding: 16px; min-width: 180px; }}
+      .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
+      .panel {{ background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }}
+      a {{ color: #0b57d0; text-decoration: none; }}
+      .button {{ display: inline-block; background: #0b57d0; color: white; padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; margin-right:8px; margin-bottom:8px; }}
+      form {{ margin: 0; display:inline-block; }}
+      ul {{ padding-left: 18px; }}
+    </style></head>
+    <body><div class="wrap"><div class="card">
+      <a href="/">← Back to home</a>
+      <h1>Admin Dashboard</h1>
+      <p>Signed in as <strong>{username}</strong></p>
 
-            <div class="stats">
-              <div class="stat"><strong>{summary['source_count']}</strong><br>source records</div>
-              <div class="stat"><strong>{summary['opportunity_count']}</strong><br>published opportunities</div>
-              <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
-              <div class="stat"><strong>{summary['new_lead_count']}</strong><br>new leads</div>
-              <div class="stat"><strong>{summary['promoted_lead_count']}</strong><br>promoted leads</div>
-              <div class="stat"><strong>{summary['rejected_lead_count']}</strong><br>rejected leads</div>
-              <div class="stat"><strong>{summary['crawl_run_count']}</strong><br>crawl runs</div>
-              <div class="stat"><strong>{summary['successful_crawl_count']}</strong><br>successful crawls</div>
-              <div class="stat"><strong>{summary['failed_crawl_count']}</strong><br>failed crawls</div>
-            </div>
+      <div class="stats">
+        <div class="stat"><strong>{summary['source_count']}</strong><br>source records</div>
+        <div class="stat"><strong>{summary['opportunity_count']}</strong><br>published opportunities</div>
+        <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
+        <div class="stat"><strong>{summary['new_lead_count']}</strong><br>new leads</div>
+        <div class="stat"><strong>{summary['promoted_lead_count']}</strong><br>promoted leads</div>
+        <div class="stat"><strong>{summary['rejected_lead_count']}</strong><br>rejected leads</div>
+        <div class="stat"><strong>{summary['crawl_run_count']}</strong><br>crawl runs</div>
+      </div>
 
-            <div class="grid">
-              <div class="panel">
-                <h3>Sources by entity type</h3>
-                <ul>{entity_items}</ul>
-              </div>
+      <div class="grid">
+        <div class="panel"><h3>Sources by entity type</h3><ul>{entity_items}</ul></div>
+        <div class="panel"><h3>Top counties</h3><ul>{county_items}</ul></div>
+      </div>
 
-              <div class="panel">
-                <h3>Top counties</h3>
-                <ul>{county_items}</ul>
-              </div>
-            </div>
-
-            <div class="grid" style="margin-top:20px;">
-              <div class="panel">
-                <h3>Manual crawl controls</h3>
-                <form action="/admin/crawl/njdot-construction" method="post">
-                  <button class="button" type="submit">Run NJDOT Construction Crawl</button>
-                </form>
-                <form action="/admin/crawl/njdot-profserv" method="post">
-                  <button class="button" type="submit">Run NJDOT Professional Services Crawl</button>
-                </form>
-                <form action="/admin/crawl/njta" method="post">
-                  <button class="button" type="submit">Run NJTA Crawl</button>
-                </form>
-                <form action="/admin/crawl/monmouth" method="post">
-                  <button class="button" type="submit">Run Monmouth County Crawl</button>
-                </form>
-              </div>
-
-              <div class="panel">
-                <h3>Latest crawl runs</h3>
-                <ul>{crawl_items}</ul>
-              </div>
-            </div>
-
-            <h3>Admin links</h3>
-            <p><a href="/admin/leads">View admin leads page</a></p>
-            <p><a href="/api/admin/summary">Admin summary JSON</a></p>
-            <p><a href="/api/admin/leads">Admin leads JSON</a></p>
-            <p><a href="/api/admin/crawl-runs">Admin crawl runs JSON</a></p>
-            <p><a href="/sources">View sources page</a></p>
-            <p><a href="/opportunities">View opportunities page</a></p>
-          </div>
+      <div class="grid" style="margin-top:20px;">
+        <div class="panel">
+          <h3>Manual crawl controls</h3>
+          <form action="/admin/crawl/njdot-construction" method="post"><button class="button" type="submit">Run NJDOT Construction Crawl</button></form>
+          <form action="/admin/crawl/njdot-profserv" method="post"><button class="button" type="submit">Run NJDOT Professional Services Crawl</button></form>
+          <form action="/admin/crawl/njta" method="post"><button class="button" type="submit">Run NJTA Crawl</button></form>
+          <form action="/admin/crawl/monmouth" method="post"><button class="button" type="submit">Run Monmouth County Crawl</button></form>
         </div>
-      </body>
-    </html>
+        <div class="panel"><h3>Latest crawl runs</h3><ul>{crawl_items}</ul></div>
+      </div>
+
+      <h3>Admin links</h3>
+      <p><a href="/admin/leads">View admin leads page</a></p>
+      <p><a href="/api/admin/summary">Admin summary JSON</a></p>
+      <p><a href="/api/admin/leads">Admin leads JSON</a></p>
+      <p><a href="/api/admin/crawl-runs">Admin crawl runs JSON</a></p>
+    </div></div></body></html>
     """
 
 
@@ -1214,14 +1060,12 @@ def admin_leads_page(
                     <button type="submit" style="background:#b91c1c;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;">Reject</button>
                 </form>
             """
-        elif row["status"] in {"Promoted", "Rejected"}:
+        else:
             action_html = f"""
                 <form action="/admin/leads/{row['lead_id']}/reset" method="post" style="display:inline-block;">
                     <button type="submit" style="background:#374151;color:white;border:none;padding:8px 10px;border-radius:8px;cursor:pointer;">Reset to New</button>
                 </form>
             """
-        else:
-            action_html = "<span style='color:#4b5563;'>No actions</span>"
 
         items += f"""
         <tr>
@@ -1241,65 +1085,32 @@ def admin_leads_page(
     current_label = status_filter if status_filter else "All"
 
     return f"""
-    <html>
-      <head>
-        <title>Admin Leads</title>
-        <style>
-          body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
-          .wrap {{ max-width: 1500px; margin: 0 auto; }}
-          .top {{ margin-bottom: 24px; }}
-          .top a {{ color: #0b57d0; text-decoration: none; }}
-          table {{ border-collapse: collapse; width: 100%; background: white; }}
-          th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; vertical-align: top; }}
-          th {{ background: #f3f4f6; }}
-          .muted {{ color: #4b5563; }}
-          .filters a {{
-            display:inline-block;
-            margin-right:8px;
-            margin-bottom:8px;
-            padding:8px 12px;
-            border-radius:8px;
-            background:#e5e7eb;
-            color:#111827;
-            text-decoration:none;
-          }}
-        </style>
-      </head>
-      <body>
-        <div class="wrap">
-          <div class="top">
-            <a href="/admin">← Back to admin</a>
-            <h1>Admin Leads</h1>
-            <p class="muted">{len(leads)} leads currently shown — filter: {current_label}</p>
-
-            <div class="filters">
-              <a href="/admin/leads">All ({summary['lead_count']})</a>
-              <a href="/admin/leads?status=New">New ({summary['new_lead_count']})</a>
-              <a href="/admin/leads?status=Promoted">Promoted ({summary['promoted_lead_count']})</a>
-              <a href="/admin/leads?status=Rejected">Rejected ({summary['rejected_lead_count']})</a>
-            </div>
-          </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Source</th>
-                <th>Lead ID</th>
-                <th>Agency</th>
-                <th>County</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Duplicate Key</th>
-                <th>Link</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items}
-            </tbody>
-          </table>
-        </div>
-      </body>
-    </html>
+    <html><head><title>Admin Leads</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+      .wrap {{ max-width: 1500px; margin: 0 auto; }}
+      table {{ border-collapse: collapse; width: 100%; background: white; }}
+      th, td {{ border: 1px solid #e5e7eb; padding: 10px; text-align: left; vertical-align: top; }}
+      th {{ background: #f3f4f6; }}
+      .filters a {{
+        display:inline-block; margin-right:8px; margin-bottom:8px; padding:8px 12px;
+        border-radius:8px; background:#e5e7eb; color:#111827; text-decoration:none;
+      }}
+      a {{ color: #0b57d0; text-decoration: none; }}
+    </style></head>
+    <body><div class="wrap">
+      <a href="/admin">← Back to admin</a>
+      <h1>Admin Leads</h1>
+      <p>{len(leads)} leads currently shown — filter: {current_label}</p>
+      <div class="filters">
+        <a href="/admin/leads">All ({summary['lead_count']})</a>
+        <a href="/admin/leads?status=New">New ({summary['new_lead_count']})</a>
+        <a href="/admin/leads?status=Promoted">Promoted ({summary['promoted_lead_count']})</a>
+        <a href="/admin/leads?status=Rejected">Rejected ({summary['rejected_lead_count']})</a>
+      </div>
+      <table>
+        <thead><tr><th>Title</th><th>Source</th><th>Lead ID</th><th>Agency</th><th>County</th><th>Due Date</th><th>Status</th><th>Duplicate Key</th><th>Link</th><th>Actions</th></tr></thead>
+        <tbody>{items}</tbody>
+      </table>
+    </div></body></html>
     """
