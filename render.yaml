@@ -30,6 +30,6 @@ services:
 
 databases:
   - name: nj-bid-registry-db
-    plan: starter
+    plan: free
     databaseName: nj_bid_registry
     user: nj_bid_registry_user
