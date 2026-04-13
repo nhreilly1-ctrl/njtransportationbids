@@ -1,50 +1,48 @@
 {% extends "base.html" %}
-{% block title %}Admin Dashboard - NJ Transportation Bids{% endblock %}
+{% block title %}Admin - NJ Transportation Bids{% endblock %}
 {% block content %}
-
 <div class="page-header">
   <h1>Admin dashboard</h1>
-  <p>Signed in as <strong>{{ session.get('admin') and 'admin' }}</strong> &nbsp;&middot;&nbsp;
-     <a href="{{ url_for('admin_logout') }}" style="color:var(--red-text); font-size:13px;">Sign out</a></p>
+  <p>Signed in &middot; <a href="{{ url_for('admin_logout') }}" style="color:var(--red); font-size:13px;">Sign out</a></p>
 </div>
 
 <div class="stats-row">
-  <div class="stat-card"><div class="num stat-green">{{ stats.open }}</div><div class="lbl">Open / active</div></div>
+  <div class="stat-card"><div class="num c-green">{{ stats.open }}</div><div class="lbl">Open / active</div></div>
   <div class="stat-card"><div class="num">{{ stats.total }}</div><div class="lbl">Total records</div></div>
-  <div class="stat-card"><div class="num stat-red">{{ stats.noise }}</div><div class="lbl">Flagged noise</div></div>
-  <div class="stat-card"><div class="num stat-amber">{{ stats.expired }}</div><div class="lbl">Expired</div></div>
+  <div class="stat-card"><div class="num c-red">{{ stats.noise }}</div><div class="lbl">Flagged noise</div></div>
+  <div class="stat-card"><div class="num c-amber">{{ stats.expired }}</div><div class="lbl">Expired</div></div>
 </div>
 
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:1.5rem;">
+  <div class="stat-card"><div class="num c-blue">{{ stats.construction }}</div><div class="lbl">Construction bids</div></div>
+  <div class="stat-card"><div class="num c-teal">{{ stats.profserv }}</div><div class="lbl">Professional services</div></div>
+  <div class="stat-card"><div class="num c-amber">{{ stats.notices }}</div><div class="lbl">Public notices</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--text3);">{{ stats.uncat }}</div><div class="lbl">Uncategorized</div></div>
+</div>
 
-  <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem;">
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+  <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); padding:1.25rem;">
     <div class="section-label" style="margin-top:0;">Quick actions</div>
     <div style="display:flex; flex-direction:column; gap:8px;">
       <a href="{{ url_for('admin_records') }}" class="btn">All records</a>
-      <a href="{{ url_for('admin_records') }}?filter=noise" class="btn">
-        Review noise <span class="badge badge-noise" style="margin-left:4px;">{{ stats.noise }}</span>
-      </a>
-      <a href="{{ url_for('admin_records') }}?filter=expired" class="btn">
-        Review expired <span class="badge badge-expired" style="margin-left:4px;">{{ stats.expired }}</span>
-      </a>
-      <a href="{{ url_for('admin_records') }}?filter=nodate" class="btn">
-        No due date <span class="badge badge-nodate" style="margin-left:4px;">{{ stats.nodate }}</span>
-      </a>
+      <a href="{{ url_for('admin_records') }}?filter=noise" class="btn">Review noise &nbsp;<span class="badge badge-noise">{{ stats.noise }}</span></a>
+      <a href="{{ url_for('admin_records') }}?filter=expired" class="btn">Review expired &nbsp;<span class="badge badge-expired">{{ stats.expired }}</span></a>
+      <a href="{{ url_for('admin_records') }}?filter=uncat" class="btn">Uncategorized &nbsp;<span class="badge badge-nodate">{{ stats.uncat }}</span></a>
       <a href="{{ url_for('admin_sources') }}" class="btn">Manage sources</a>
     </div>
   </div>
-
-  <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem;">
-    <div class="section-label" style="margin-top:0;">Data health</div>
-    <div style="font-size:13px; color:var(--text2); line-height:1.9;">
-      <div>Clean / active: <strong style="color:var(--text);">{{ stats.clean }}</strong></div>
-      <div>Noise (hidden from public): <strong style="color:var(--red-text);">{{ stats.noise }}</strong></div>
-      <div>Expired: <strong style="color:var(--text);">{{ stats.expired }}</strong></div>
-      <div>No due date: <strong style="color:var(--amber-text);">{{ stats.nodate }}</strong></div>
-    </div>
-    <div class="divider" style="margin:.75rem 0;"></div>
+  <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); padding:1.25rem;">
+    <div class="section-label" style="margin-top:0;">Tools</div>
+    <div style="font-size:13px; color:var(--text2); line-height:1.8; margin-bottom:1rem;">Re-run noise scoring on all records that don't have a manual override. Useful after adding new noise keywords.</div>
     <button class="btn" onclick="rescore()" id="rescore-btn">Re-run noise scoring</button>
-    <div id="rescore-msg" style="font-size:12px; color:var(--text2); margin-top:6px; display:none;"></div>
+    <div id="rescore-msg" style="display:none; margin-top:8px; font-size:12px; color:var(--text2);"></div>
+    <div class="divider" style="margin:.75rem 0;"></div>
+    <div style="font-size:13px; color:var(--text2); line-height:1.8; margin-bottom:1rem;">Browse records by category and use bulk actions to set type on any miscategorized records.</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <a href="{{ url_for('admin_records') }}?type=construction" class="btn btn-sm">Construction</a>
+      <a href="{{ url_for('admin_records') }}?type=professional_services" class="btn btn-sm">Prof. Services</a>
+      <a href="{{ url_for('admin_records') }}?type=public_notice" class="btn btn-sm">Notices</a>
+    </div>
   </div>
 </div>
 
@@ -53,16 +51,13 @@ function rescore() {
   const btn = document.getElementById('rescore-btn');
   const msg = document.getElementById('rescore-msg');
   btn.disabled = true; btn.textContent = 'Running...';
-  fetch('/admin/api/rescore', { method:'POST',
-    headers:{'Content-Type':'application/json'} })
+  fetch('/admin/api/rescore', { method:'POST', headers:{'Content-Type':'application/json'} })
     .then(r => r.json())
     .then(d => {
-      btn.textContent = 'Re-run noise scoring';
-      btn.disabled = false;
+      btn.disabled = false; btn.textContent = 'Re-run noise scoring';
       msg.style.display = 'block';
-      msg.textContent = `Done - rescored ${d.rescored} records. Reload to see updated stats.`;
+      msg.textContent = `Done - rescored ${d.rescored} records. Reload to see updated counts.`;
     });
 }
 </script>
 {% endblock %}
-

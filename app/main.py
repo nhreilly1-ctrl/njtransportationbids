@@ -3,7 +3,6 @@ import functools
 import hashlib
 import json
 import os
-import re
 from datetime import date, datetime, timedelta
 from io import StringIO
 
@@ -27,6 +26,141 @@ ADMIN_HASH = os.environ.get("ADMIN_PASSWORD_HASH") or (
     if _admin_password
     else hashlib.sha256(b"changeme").hexdigest()
 )
+
+SOURCE_TYPE_MAP = {
+    "njdot construction": "construction",
+    "notice to contractors": "construction",
+    "port authority construction": "construction",
+    "drjtbc notice to contractors": "construction",
+    "njdot professional services": "professional_services",
+    "njdot procurement notices": "professional_services",
+    "port authority professional": "professional_services",
+    "nj transit procurement": "professional_services",
+    "drjtbc current": "professional_services",
+    "nj department of state legal": "public_notice",
+    "nj department of state public": "public_notice",
+    "south jersey transportation authority legal": "public_notice",
+    "nj treasury legal": "public_notice",
+    "city of trenton legal": "public_notice",
+}
+
+TITLE_TYPE_RULES = [
+    (
+        "public_notice",
+        [
+            "notice to all",
+            "notice to contractors",
+            "legal notice",
+            "notice of intent",
+            "legal ad",
+            "public notice",
+            "prequalif",
+            "pre-qualif",
+            "pre qualif",
+            "2025 eeo",
+            "2026 eeo",
+        ],
+    ),
+    (
+        "professional_services",
+        [
+            "rfp ",
+            "rfq ",
+            "rfp-",
+            "rfq-",
+            "request for proposal",
+            "request for qualif",
+            "professional services",
+            "engineering services",
+            "design services",
+            "inspection services",
+            "planning services",
+            "construction inspection",
+            "structural evaluation",
+            "underwater inspection",
+            "consulting",
+            "consultant",
+            "feasibility",
+            "alternatives analysis",
+            "program management",
+            "cpmc",
+            "order for professional",
+            "op no.",
+            "ops no.",
+            "tp-",
+            "tp -",
+        ],
+    ),
+    (
+        "construction",
+        [
+            "bid no.",
+            "bid no ",
+            "bid number",
+            "contract no.",
+            "contract no ",
+            "contract number",
+            "roadway improvement",
+            "road improvement",
+            "road resurfacing",
+            "pavement",
+            "milling",
+            "resurfacing",
+            "overlay",
+            "bridge replacement",
+            "bridge rehabilitation",
+            "bridge repair",
+            "drainage improvement",
+            "drainage repair",
+            "intersection improvement",
+            "signal",
+            "guide rail",
+            "guardrail",
+            "culvert",
+            "maintenance contract",
+            "snow removal",
+            "construction",
+        ],
+    ),
+]
+
+PUBLIC_NOTICE_CONSTRUCTION_SIGNALS = [
+    "construction",
+    "roadway",
+    "bridge",
+    "pavement",
+    "drainage",
+    "intersection",
+    "culvert",
+    "resurfacing",
+    "guide rail",
+    "maintenance",
+    "notice to contractors",
+    "bid opening",
+    "contract award",
+    "t200.",
+    "t100.",
+    "p200.",
+    "p500.",
+]
+
+PUBLIC_NOTICE_PROFSERV_SIGNALS = [
+    "rfp",
+    "rfq",
+    "professional services",
+    "engineering",
+    "design",
+    "inspection",
+    "planning",
+    "consultant",
+    "program management",
+    "cpmc",
+    "feasibility",
+    "alternatives analysis",
+    "tp-",
+    "ops no.",
+    "op no.",
+]
 
 NOISE_PHRASES = [
     "sign in",
@@ -119,9 +253,10 @@ def init_db_schema() -> None:
                 cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS status_override TEXT;")
                 cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS noise_flagged BOOLEAN DEFAULT FALSE;")
                 cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS noise_reason TEXT;")
+                cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS record_type_override TEXT;")
+                cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS notice_subtype_override TEXT;")
             conn.commit()
     except Exception:
-        # Avoid crashing import if DB is temporarily unavailable.
         pass
 
 
@@ -171,6 +306,8 @@ def load_opps_from_db() -> list[dict]:
                     COALESCE(l.noise_flagged, FALSE) AS noise_flagged,
                     COALESCE(l.noise_reason, '') AS noise_reason,
                     COALESCE(l.admin_notes, '') AS admin_notes,
+                    COALESCE(l.record_type_override, '') AS record_type_override,
+                    COALESCE(l.notice_subtype_override, '') AS notice_subtype_override,
                     COALESCE(l.status, '') AS db_status,
                     COALESCE(l.raw_text, '') AS raw_text,
                     l.created_at
@@ -238,7 +375,40 @@ def load_sources() -> list[dict]:
     return load_json_file(SRC_F)
 
 
-def update_leads(ids: list[str], action: str) -> int:
+def classify_record(opp: dict) -> tuple[str, str | None]:
+    manual_type = (opp.get("record_type_override") or "").strip()
+    manual_subtype = (opp.get("notice_subtype_override") or "").strip() or None
+    if manual_type:
+        return manual_type, manual_subtype
+
+    title = (opp.get("title") or "").lower()
+    src_name = (opp.get("source_name") or "").lower()
+    source_id = (opp.get("source_id") or "").lower()
+
+    src_type = None
+    for key, value in SOURCE_TYPE_MAP.items():
+        if key in src_name or key in source_id:
+            src_type = value
+            break
+
+    title_type = None
+    for record_type, keywords in TITLE_TYPE_RULES:
+        if any(keyword in title for keyword in keywords):
+            title_type = record_type
+            break
+
+    record_type = src_type or title_type or "uncategorized"
+    notice_subtype = None
+    if record_type == "public_notice":
+        if any(keyword in title for keyword in PUBLIC_NOTICE_CONSTRUCTION_SIGNALS):
+            notice_subtype = "construction"
+        elif any(keyword in title for keyword in PUBLIC_NOTICE_PROFSERV_SIGNALS):
+            notice_subtype = "professional_services"
+
+    return record_type, notice_subtype
+
+
+def update_leads(ids: list[str], action: str, record_type: str | None = None, notice_subtype: str | None = None) -> int:
     if not ids:
         return 0
 
@@ -260,34 +430,48 @@ def update_leads(ids: list[str], action: str) -> int:
                 opp["noise_flagged"] = False
                 opp["noise_reason"] = ""
             elif action == "restore":
-                opp.pop("status_override", None)
+                opp["status_override"] = ""
                 opp["noise_flagged"] = False
                 opp["noise_reason"] = ""
+            elif action == "set_type" and record_type:
+                opp["record_type_override"] = record_type
+                opp["notice_subtype_override"] = notice_subtype or ""
             changed += 1
         save_opps(opps)
         return changed
 
-    mapping = {
-        "delete": ("deleted", False, None),
-        "noise": ("noise", True, None),
-        "approve": ("approved", False, ""),
-        "restore": (None, False, ""),
-    }
-    status_override, noise_flagged, noise_reason = mapping[action]
-
     with get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(
-                """
-                UPDATE opportunity_leads
-                SET
-                    status_override = %s,
-                    noise_flagged = %s,
-                    noise_reason = CASE WHEN %s IS NULL THEN noise_reason ELSE %s END
-                WHERE lead_id = ANY(%s)
-                """,
-                (status_override, noise_flagged, noise_reason, noise_reason, ids),
-            )
+            if action == "set_type" and record_type:
+                cur.execute(
+                    """
+                    UPDATE opportunity_leads
+                    SET
+                        record_type_override = %s,
+                        notice_subtype_override = %s
+                    WHERE lead_id = ANY(%s)
+                    """,
+                    (record_type, notice_subtype, ids),
+                )
+            else:
+                mapping = {
+                    "delete": ("deleted", False, None),
+                    "noise": ("noise", True, None),
+                    "approve": ("approved", False, ""),
+                    "restore": ("", False, ""),
+                }
+                status_override, noise_flagged, noise_reason = mapping[action]
+                cur.execute(
+                    """
+                    UPDATE opportunity_leads
+                    SET
+                        status_override = %s,
+                        noise_flagged = %s,
+                        noise_reason = CASE WHEN %s IS NULL THEN noise_reason ELSE %s END
+                    WHERE lead_id = ANY(%s)
+                    """,
+                    (status_override, noise_flagged, noise_reason, noise_reason, ids),
+                )
             changed = cur.rowcount
         conn.commit()
     return changed
@@ -307,6 +491,8 @@ def patch_lead(opp_id: str, patch: dict) -> bool:
         "status_override": "status_override",
         "noise_flagged": "noise_flagged",
         "noise_reason": "noise_reason",
+        "record_type_override": "record_type_override",
+        "notice_subtype_override": "notice_subtype_override",
     }
 
     if not use_db_backend():
@@ -387,13 +573,12 @@ def parse_due(raw: str | None) -> date | None:
     if not raw:
         return None
     raw = str(raw).strip()
-    if raw.lower() in {"", "not listed", "-", "unknown"}:
+    if raw.lower() in {"", "not listed", "-", "unknown", "—"}:
         return None
     fmts = ["%m/%d/%Y", "%m/%d/%y", "%B %d, %Y", "%b %d, %Y", "%Y-%m-%d", "%d-%b-%Y", "%b. %d, %Y"]
-    chunk = re.sub(r"(open|closed|advertised|pending selection)[^\d]*", "", raw, flags=re.I).strip()
     for fmt in fmts:
         try:
-            return datetime.strptime(chunk, fmt).date()
+            return datetime.strptime(raw, fmt).date()
         except ValueError:
             pass
     return None
@@ -404,30 +589,58 @@ def enrich(opp: dict) -> dict:
     due = parse_due(record.get("due_date_raw") or record.get("due_date"))
     record["due_date_parsed"] = due.isoformat() if due else None
 
-    today = date.today()
     manual = record.get("status_override")
-
+    today = date.today()
     if manual == "deleted":
         record["status"] = "deleted"
-        return record
-    if manual == "noise":
+    elif manual == "noise":
         record["status"] = "noise"
-        return record
-
-    is_noise, reason = noise_score(record)
-    if record.get("noise_flagged"):
-        record["status"] = "noise"
-        record["noise_reason"] = record.get("noise_reason") or "manually flagged"
-    elif is_noise and manual != "approved":
-        record["status"] = "noise"
-        record["noise_reason"] = reason
-    elif due and due < today:
-        record["status"] = "expired"
-    elif due:
-        record["status"] = "open"
     else:
-        record["status"] = "unknown_date"
+        is_noise, reason = noise_score(record)
+        if record.get("noise_flagged"):
+            record["status"] = "noise"
+            record["noise_reason"] = record.get("noise_reason") or "manually flagged"
+        elif is_noise and manual != "approved":
+            record["status"] = "noise"
+            record["noise_reason"] = reason
+        elif due and due < today:
+            record["status"] = "expired"
+        elif due:
+            record["status"] = "open"
+        else:
+            record["status"] = "unknown_date"
+
+    record_type, notice_subtype = classify_record(record)
+    record["record_type"] = record_type
+    record["notice_subtype"] = notice_subtype
     return record
+
+
+def sort_opps(opps: list[dict]) -> list[dict]:
+    return sorted(
+        opps,
+        key=lambda opp: (
+            1 if not opp.get("due_date_parsed") else 0,
+            opp.get("due_date_parsed") or "9999-12-31",
+            (opp.get("title") or "").lower(),
+        ),
+    )
+
+
+def group_by_urgency(opps: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
+    today = date.today()
+    cutoff = today + timedelta(days=14)
+    soon, later, nodate = [], [], []
+    for opp in opps:
+        if opp.get("due_date_parsed"):
+            due = date.fromisoformat(opp["due_date_parsed"])
+            if due <= cutoff:
+                soon.append(opp)
+            else:
+                later.append(opp)
+        else:
+            nodate.append(opp)
+    return soon, later, nodate
 
 
 @app.route("/health")
@@ -438,41 +651,43 @@ def health():
 @app.route("/")
 def index():
     opps = [enrich(opp) for opp in load_opps()]
-    today = date.today()
+    opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted")]
     active = [opp for opp in opps if opp["status"] in ("open", "unknown_date")]
     expiring = [
         opp
-        for opp in active
+        for opp in sort_opps(active)
         if opp.get("due_date_parsed")
-        and (date.fromisoformat(opp["due_date_parsed"]) - today).days <= 14
+        and (date.fromisoformat(opp["due_date_parsed"]) - date.today()).days <= 14
     ]
     stats = {
-        "open": len([opp for opp in opps if opp["status"] == "open"]),
-        "total": len([opp for opp in opps if opp["status"] not in ("noise", "deleted")]),
-        "nodate": len([opp for opp in opps if opp["status"] == "unknown_date"]),
-        "noise": len([opp for opp in opps if opp["status"] == "noise"]),
+        "construction": len([opp for opp in active if opp["record_type"] == "construction"]),
+        "professional_services": len([opp for opp in active if opp["record_type"] == "professional_services"]),
+        "public_notice": len([opp for opp in active if opp["record_type"] == "public_notice"]),
         "sources": len(load_sources()),
     }
-    return render_template("index.html", stats=stats, expiring=expiring[:6])
+    return render_template("index.html", stats=stats, expiring=expiring[:8])
 
 
-@app.route("/opportunities")
-def opportunities():
+def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
     opps = [enrich(opp) for opp in load_opps()]
-    today = date.today()
+    opps = [opp for opp in opps if opp["status"] != "deleted"]
     county = request.args.get("county", "")
     agency = request.args.get("agency", "")
     status = request.args.get("status", "active")
     q = request.args.get("q", "").lower()
 
     def keep(opp: dict) -> bool:
-        if opp["status"] == "deleted":
+        if status == "active" and opp["status"] != "open":
             return False
-        if status == "active" and opp["status"] not in ("open", "unknown_date"):
+        if status == "all" and opp["status"] not in ("open", "unknown_date"):
             return False
         if status == "expired" and opp["status"] != "expired":
             return False
         if opp["status"] in ("noise", "deleted"):
+            return False
+        if opp["record_type"] != record_type:
+            return False
+        if notice_subtype and opp.get("notice_subtype") != notice_subtype:
             return False
         if county and (opp.get("county") or "").lower() != county.lower():
             return False
@@ -483,44 +698,73 @@ def opportunities():
             return False
         return True
 
-    filtered = [opp for opp in opps if keep(opp)]
-
-    def sort_key(opp: dict):
-        if opp.get("due_date_parsed"):
-            return (0, opp["due_date_parsed"])
-        if opp["status"] == "unknown_date":
-            return (1, "")
-        return (2, "")
-
-    filtered.sort(key=sort_key)
+    filtered = sort_opps([opp for opp in opps if keep(opp)])
+    soon, later, nodate = group_by_urgency(filtered)
     counties = sorted({opp.get("county", "") for opp in opps if opp.get("county")})
     agencies = sorted({opp.get("source_name", "") for opp in opps if opp.get("source_name")})
+    today = date.today()
+    soon_cutoff = today + timedelta(days=14)
+    return {
+        "soon": soon,
+        "later": later,
+        "nodate": nodate,
+        "counties": counties,
+        "agencies": agencies,
+        "selected_county": county,
+        "selected_agency": agency,
+        "selected_status": status,
+        "q": q,
+        "total": len(filtered),
+        "record_type": record_type,
+        "notice_subtype": notice_subtype,
+        "today": today.isoformat(),
+        "soon_cutoff": soon_cutoff.isoformat(),
+    }
 
-    soon, later, nodate = [], [], []
-    for opp in filtered:
-        if opp.get("due_date_parsed"):
-            days = (date.fromisoformat(opp["due_date_parsed"]) - today).days
-            if days <= 14:
-                soon.append(opp)
-            else:
-                later.append(opp)
-        else:
-            nodate.append(opp)
 
-    return render_template(
-        "opportunities.html",
-        soon=soon,
-        later=later,
-        nodate=nodate,
-        counties=counties,
-        agencies=agencies,
-        selected_county=county,
-        selected_agency=agency,
-        selected_status=status,
-        q=q,
-        total=len(filtered),
-        now_plus14=(today + timedelta(days=14)).isoformat(),
-    )
+@app.route("/bids/construction")
+def bids_construction():
+    ctx = _opp_list_view("construction")
+    ctx["page_title"] = "Construction Bids"
+    ctx["page_desc"] = "Formal bids for roadway, bridge, drainage, pavement, and related heavy highway construction work."
+    return render_template("opportunity_list.html", **ctx)
+
+
+@app.route("/bids/professional-services")
+def bids_profserv():
+    ctx = _opp_list_view("professional_services")
+    ctx["page_title"] = "Professional Services"
+    ctx["page_desc"] = "RFPs and RFQs for engineering, design, inspection, planning, and related consulting services."
+    return render_template("opportunity_list.html", **ctx)
+
+
+@app.route("/notices")
+def notices_all():
+    ctx = _opp_list_view("public_notice")
+    ctx["page_title"] = "Public Notices"
+    ctx["page_desc"] = "Legal advertisements, notices to contractors, and pre-qualification notices across all agencies."
+    return render_template("opportunity_list.html", **ctx)
+
+
+@app.route("/notices/construction")
+def notices_construction():
+    ctx = _opp_list_view("public_notice", notice_subtype="construction")
+    ctx["page_title"] = "Public Notices - Construction"
+    ctx["page_desc"] = "Legal notices and notices to contractors related to construction work."
+    return render_template("opportunity_list.html", **ctx)
+
+
+@app.route("/notices/professional-services")
+def notices_profserv():
+    ctx = _opp_list_view("public_notice", notice_subtype="professional_services")
+    ctx["page_title"] = "Public Notices - Professional Services"
+    ctx["page_desc"] = "Legal notices and public advertisements related to professional services solicitations."
+    return render_template("opportunity_list.html", **ctx)
+
+
+@app.route("/opportunities")
+def opportunities():
+    return redirect(url_for("bids_construction"))
 
 
 @app.route("/opportunities/<opp_id>")
@@ -551,14 +795,26 @@ def sources():
 def export_csv():
     ids = request.args.get("ids", "")
     selected = {item for item in ids.split(",") if item}
-    opps = [enrich(opp) for opp in load_opps() if opp.get("status") != "deleted"]
+    opps = [enrich(opp) for opp in load_opps()]
+    opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted")]
     if selected:
         opps = [opp for opp in opps if str(opp.get("id")) in selected]
-    else:
-        opps = [opp for opp in opps if opp.get("status") not in ("noise", "deleted")]
 
     buf = StringIO()
-    fields = ["id", "title", "source_name", "county", "due_date_raw", "due_date_parsed", "status", "access_type", "platform", "official_url"]
+    fields = [
+        "id",
+        "title",
+        "source_name",
+        "county",
+        "record_type",
+        "notice_subtype",
+        "due_date_raw",
+        "due_date_parsed",
+        "status",
+        "access_type",
+        "platform",
+        "official_url",
+    ]
     writer = csv.DictWriter(buf, fieldnames=fields, extrasaction="ignore")
     writer.writeheader()
     writer.writerows(opps)
@@ -590,14 +846,18 @@ def admin_logout():
 @app.route("/admin")
 @admin_required
 def admin_dashboard():
-    opps = [enrich(opp) for opp in load_opps() if opp.get("status") != "deleted"]
+    opps = [enrich(opp) for opp in load_opps()]
+    opps = [opp for opp in opps if opp["status"] != "deleted"]
+    active = [opp for opp in opps if opp["status"] in ("open", "unknown_date")]
     stats = {
-        "total": len(opps),
         "open": len([opp for opp in opps if opp["status"] == "open"]),
+        "total": len(opps),
         "noise": len([opp for opp in opps if opp["status"] == "noise"]),
         "expired": len([opp for opp in opps if opp["status"] == "expired"]),
-        "nodate": len([opp for opp in opps if opp["status"] == "unknown_date"]),
-        "clean": len([opp for opp in opps if opp["status"] in ("open", "unknown_date")]),
+        "construction": len([opp for opp in active if opp["record_type"] == "construction"]),
+        "profserv": len([opp for opp in active if opp["record_type"] == "professional_services"]),
+        "notices": len([opp for opp in active if opp["record_type"] == "public_notice"]),
+        "uncat": len([opp for opp in active if opp["record_type"] == "uncategorized"]),
     }
     return render_template("admin_dashboard.html", stats=stats)
 
@@ -605,10 +865,12 @@ def admin_dashboard():
 @app.route("/admin/records")
 @admin_required
 def admin_records():
-    opps = [enrich(opp) for opp in load_opps() if opp.get("status") != "deleted"]
+    opps = [enrich(opp) for opp in load_opps()]
+    opps = [opp for opp in opps if opp["status"] != "deleted"]
     filt = request.args.get("filter", "all")
     q = request.args.get("q", "").lower()
     source_name = request.args.get("source", "")
+    selected_type = request.args.get("type", "")
 
     def keep(opp: dict) -> bool:
         if filt == "noise" and opp["status"] != "noise":
@@ -617,7 +879,9 @@ def admin_records():
             return False
         if filt == "nodate" and opp["status"] != "unknown_date":
             return False
-        if filt == "ooscope" and opp["status"] not in ("noise", "expired"):
+        if filt == "uncat" and opp["record_type"] != "uncategorized":
+            return False
+        if selected_type and opp["record_type"] != selected_type:
             return False
         if source_name and opp.get("source_name", "") != source_name:
             return False
@@ -634,6 +898,7 @@ def admin_records():
         filt=filt,
         q=q,
         selected_source=source_name,
+        selected_type=selected_type,
         sources=sources,
         total=len(filtered),
         all_total=len(opps),
@@ -646,11 +911,15 @@ def admin_bulk():
     data = request.get_json() or {}
     action = data.get("action")
     ids = [str(item) for item in data.get("ids", [])]
-    if action not in {"delete", "noise", "approve", "restore"}:
+    record_type = data.get("record_type")
+    notice_subtype = data.get("notice_subtype")
+    if action not in {"delete", "noise", "approve", "restore", "set_type"}:
         return jsonify({"ok": False, "msg": "Unknown action"}), 400
     if not ids:
         return jsonify({"ok": False, "msg": "No records selected"}), 400
-    changed = update_leads(ids, action)
+    if action == "set_type" and not record_type:
+        return jsonify({"ok": False, "msg": "No record type provided"}), 400
+    changed = update_leads(ids, action, record_type=record_type, notice_subtype=notice_subtype)
     return jsonify({"ok": True, "changed": changed})
 
 
