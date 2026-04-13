@@ -555,7 +555,10 @@ def init_db():
                 ('county-union','Union County Invitations to Bid','County','Union','https://ucnj.org/vendor-opportunities/invitations-to-bid/current/','Tier 1','Yes',FALSE,'manual_html'),
                 ('municipal-newark','City of Newark Bid Postings','Municipality','Essex','https://www.newarknj.gov/Bids.aspx','Tier 1','Yes',TRUE,'manual_html'),
                 ('municipal-jersey-city','City of Jersey City Bid Openings','Municipality','Hudson','https://www.jerseycitynj.gov/cityhall/finance/purchasing/publiccontracts/bid_openings','Tier 1','Yes',TRUE,'manual_html'),
-                ('municipal-hoboken','City of Hoboken Bids and RFPs','Municipality','Hudson','https://www.hobokennj.gov/bids-rfps','Tier 1','Yes',TRUE,'manual_html')
+                ('municipal-hoboken','City of Hoboken Bids and RFPs','Municipality','Hudson','https://www.hobokennj.gov/bids-rfps','Tier 1','Yes',TRUE,'manual_html'),
+                ('municipal-paterson','City of Paterson Purchasing','Municipality','Passaic','https://www.patersonnj.gov/purchasing/','Tier 1','Yes',TRUE,'manual_html'),
+                ('municipal-trenton','City of Trenton Legal Ads - Procurement','Municipality','Mercer','https://www.trentonnj.org/830/City-of-Trenton-Legal-Ads-Procurement','Tier 1','Yes',TRUE,'manual_html'),
+                ('municipal-camden','City of Camden Purchasing','Municipality','Camden','https://www.camdennj.gov/purchasing/','Tier 1','Yes',TRUE,'manual_html')
                 ON CONFLICT (source_id) DO UPDATE SET
                     source_name = EXCLUDED.source_name,
                     entity_type = EXCLUDED.entity_type,
@@ -2853,12 +2856,14 @@ def admin_leads_page(
       .searchbar input, .searchbar select {{ margin-right:8px; padding:8px; }}
       .bulkbar {{ background:white; border:1px solid #e5e7eb; border-radius:12px; padding:16px; margin-bottom:16px; }}
       .bulkbar button {{ margin-right:8px; padding:8px 12px; }}
+      .noticebar {{ background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:16px; margin-bottom:16px; }}
       a {{ color: #0b57d0; text-decoration: none; }}
     </style></head>
     <body><div class="wrap">
       <a href="/admin">← Back to admin</a>
       <h1>Admin Leads</h1>
       <p>{len(leads)} leads currently shown</p>
+      {"<div class='noticebar'><strong>Public notice review mode:</strong> this queue combines statewide, county, and municipal notice candidates ranked by relevance. Start with the highest quality rows and use the filtered bulk actions carefully.</div>" if current_public_notice_only else ""}
 
       <div class="filters">
         <a href="/admin/leads">All ({summary['lead_count']})</a>
