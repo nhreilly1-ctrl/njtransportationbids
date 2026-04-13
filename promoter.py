@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
+from app.core.filters import is_garbage_title, is_expired, clean_title
 from app.models.opportunities_live import OpportunityLive
 from app.models.opportunity_leads import OpportunityLead
 
@@ -12,6 +13,10 @@ PROMOTION_RULE_TEXT = (
 
 
 def should_promote(lead: OpportunityLead) -> bool:
+    if is_garbage_title(lead.notice_title):
+        return False
+    if is_expired(lead.due_at):
+        return False
     return (
         lead.verification_status == 'Verified'
         and (lead.official_status or '').lower() in {'open', 'open / upon contract', ''}
@@ -22,10 +27,11 @@ def should_promote(lead: OpportunityLead) -> bool:
 
 
 def promote_to_live(db: Session, lead: OpportunityLead) -> OpportunityLive:
+    clean = clean_title(lead.notice_title)
     live = OpportunityLive(
         lead_id=lead.lead_id,
         source_id=lead.source_id,
-        title=lead.notice_title,
+        title=clean,
         owner_name=lead.owner_name or '',
         owner_type=lead.owner_type,
         county=lead.county,
