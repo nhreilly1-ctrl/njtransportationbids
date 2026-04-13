@@ -259,14 +259,51 @@ PUBLIC_NOTICE_SOURCES = [
 # proves it produces direct, descriptive bid/public notice records.
 CURATED_LOCAL_NOTICE_SOURCE_IDS: set[str] = set()
 
+ACTUAL_BID_SOURCE_IDS: set[str] = {
+    "state-njdot-construction",
+    "state-njdot-profserv",
+    "state-njta",
+    "state-njtransit",
+    "state-drjtbc-construction",
+    "state-drjtbc-profserv",
+    "state-panynj-construction",
+    "state-panynj-profserv",
+    "county-monmouth",
+    "county-bergen",
+    "county-essex",
+    "county-middlesex",
+    "county-morris",
+    "county-union",
+    "county-ocean",
+    "county-mercer",
+    "municipal-jersey-city",
+    "municipal-newark",
+    "municipal-paterson",
+    "municipal-trenton",
+    "municipal-elizabeth",
+    "municipal-hoboken",
+    "municipal-edison",
+    "municipal-toms-river",
+    "municipal-woodbridge",
+}
+
 SOURCE_ROW_SELECTOR_HINTS = {
-    "county-burlington": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
-    "county-cape-may": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "county-bergen": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "county-essex": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "county-middlesex": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "county-mercer": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "county-morris": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "county-ocean": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "county-union": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
     "municipal-hoboken": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
     "municipal-jersey-city": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
     "municipal-newark": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
     "municipal-paterson": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-trenton": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
     "municipal-elizabeth": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-edison": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-toms-river": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-woodbridge": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
 }
 
 
@@ -340,9 +377,21 @@ def get_public_notice_source_ids() -> list[str]:
     return sorted(set(source_ids))
 
 
+def get_actual_bid_source_ids() -> list[str]:
+    return sorted(ACTUAL_BID_SOURCE_IDS)
+
+
 def is_registry_public_notice_candidate(source: dict) -> bool:
     source_id = source.get("source_id", "")
     return source_id in CURATED_LOCAL_NOTICE_SOURCE_IDS
+
+
+def is_actual_bid_source_id(source_id: str | None) -> bool:
+    return (source_id or "") in ACTUAL_BID_SOURCE_IDS
+
+
+def is_public_notice_source_id(source_id: str | None) -> bool:
+    return (source_id or "") in set(get_public_notice_source_ids())
 
 
 def sanitize_external_url(url: str | None, fallback: str | None = None) -> str:
@@ -573,6 +622,26 @@ def get_source_defaults(source_id: str) -> dict:
             "access_type": "Public access",
             "platform_name": "Agency website",
         },
+        "municipal-trenton": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "municipal-elizabeth": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "municipal-edison": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "municipal-toms-river": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "municipal-woodbridge": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
         "county-cape-may": {
             "access_type": "Public access",
             "platform_name": "Agency website",
@@ -746,31 +815,34 @@ def init_db():
                 ('state-sjta','South Jersey Transportation Authority Legal Notices','Transportation Authority','Atlantic','https://www.sjta.com/legal-notices','Tier 1','Yes',FALSE,'manual_html'),
                 ('state-drjtbc-construction','DRJTBC Notice To Contractors','Bi-State Authority','Warren/Hunterdon/Mercer',%s,'Tier 1','Yes',TRUE,'manual_html'),
                 ('state-drjtbc-profserv','DRJTBC Current Procurements','Bi-State Authority','Warren/Hunterdon/Mercer',%s,'Tier 1','Yes',TRUE,'manual_html'),
-                ('state-panynj-construction','Port Authority Construction Opportunities','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/Construction.html','Tier 1','Yes',FALSE,'manual_html'),
-                ('state-panynj-profserv','Port Authority Professional Services','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/professional-services.html','Tier 1','Yes',FALSE,'manual_html'),
+                ('state-panynj-construction','Port Authority Construction Opportunities','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/Construction.html','Tier 1','Yes',TRUE,'manual_html'),
+                ('state-panynj-profserv','Port Authority Professional Services','Bi-State Authority','Hudson/Essex/Union','https://www.panynj.gov/port-authority/en/business-opportunities/solicitations-advertisements/professional-services.html','Tier 1','Yes',TRUE,'manual_html'),
                 ('county-monmouth','Monmouth County Purchasing','County','Monmouth',%s,'Tier 1','Yes',TRUE,'manual_html'),
                 ('county-atlantic','Atlantic County Open Bids','County','Atlantic','https://www.atlanticcountynj.gov/government/county-departments/department-of-administrative-services/division-of-budget-and-purchasing/open-bids','Tier 1','Yes',FALSE,'manual_html'),
-                ('county-bergen','Bergen County Bids','County','Bergen','https://bergenbids.com/','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-bergen','Bergen County Bids','County','Bergen','https://bergenbids.com/','Tier 1','Yes',TRUE,'manual_html'),
                 ('county-burlington','Burlington County Bid Solicitations','County','Burlington','https://www.co.burlington.nj.us/490/Bid-Solicitations','Tier 1','Yes',FALSE,'manual_html'),
                 ('county-camden','Camden County Procurements','County','Camden','https://procurements.camdencounty.com/','Tier 1','Yes',FALSE,'manual_html'),
                 ('county-cape-may','Cape May County Bids and RFPs','County','Cape May','https://capemaycountynj.gov/1072/Bids-and-RFPs','Tier 2','Yes',FALSE,'manual_html'),
                 ('county-cumberland','Cumberland County Bids','County','Cumberland','https://www.cumberlandcountynj.gov/bids','Tier 2','Yes',FALSE,'manual_html'),
-                ('county-essex','Essex County Procurement','County','Essex','https://www.essexcountynjprocure.org/bids/search?rfp_filter_status=current','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-essex','Essex County Procurement','County','Essex','https://www.essexcountynjprocure.org/bids/search?rfp_filter_status=current','Tier 1','Yes',TRUE,'manual_html'),
                 ('county-gloucester','Gloucester County Bids','County','Gloucester','https://www.gloucestercountynj.gov/Bids.aspx','Tier 2','Yes',FALSE,'manual_html'),
                 ('county-hudson','Hudson County Purchasing','County','Hudson','https://www.hcnj.us/finance/purchasing/','Tier 1','Yes',FALSE,'manual_html'),
                 ('county-hunterdon','Hunterdon County Bids','County','Hunterdon','https://www.co.hunterdon.nj.us/Bids.aspx','Tier 2','Yes',FALSE,'manual_html'),
-                ('county-mercer','Mercer County Bidding Opportunities','County','Mercer','https://www.mercercounty.org/departments/purchasing/bidding-opportunities','Tier 1','Yes',FALSE,'manual_html'),
-                ('county-middlesex','Middlesex County Improvement Authority Opportunities','County','Middlesex','https://www.middlesexcountynj.gov/government/departments/department-of-economic-development/middlesex-county-improvement-authority/current-bidding-opportunities','Tier 1','Yes',FALSE,'manual_html'),
-                ('county-morris','Morris County Bids and Quotes','County','Morris','https://www.morriscountynj.gov/Departments/Purchasing/Bids-and-Quotes','Tier 1','Yes',FALSE,'manual_html'),
-                ('county-ocean','Ocean County Purchasing','County','Ocean','https://www.co.ocean.nj.us/oc/purchasing/frmhomepdept.aspx','Tier 1','Yes',FALSE,'manual_html'),
-                ('county-union','Union County Invitations to Bid','County','Union','https://ucnj.org/vendor-opportunities/invitations-to-bid/current/','Tier 1','Yes',FALSE,'manual_html'),
+                ('county-mercer','Mercer County Bidding Opportunities','County','Mercer','https://www.mercercounty.org/departments/purchasing/bidding-opportunities','Tier 1','Yes',TRUE,'manual_html'),
+                ('county-middlesex','Middlesex County Improvement Authority Opportunities','County','Middlesex','https://www.middlesexcountynj.gov/government/departments/department-of-economic-development/middlesex-county-improvement-authority/current-bidding-opportunities','Tier 1','Yes',TRUE,'manual_html'),
+                ('county-morris','Morris County Bids and Quotes','County','Morris','https://www.morriscountynj.gov/Departments/Purchasing/Bids-and-Quotes','Tier 1','Yes',TRUE,'manual_html'),
+                ('county-ocean','Ocean County Purchasing','County','Ocean','https://www.co.ocean.nj.us/oc/purchasing/frmhomepdept.aspx','Tier 1','Yes',TRUE,'manual_html'),
+                ('county-union','Union County Invitations to Bid','County','Union','https://ucnj.org/vendor-opportunities/invitations-to-bid/current/','Tier 1','Yes',TRUE,'manual_html'),
                 ('municipal-newark','City of Newark Bid Postings','Municipality','Essex','https://www.newarknj.gov/Bids.aspx','Tier 1','Yes',TRUE,'manual_html'),
                 ('municipal-jersey-city','City of Jersey City Bid Openings','Municipality','Hudson','https://www.jerseycitynj.gov/cityhall/finance/purchasing/publiccontracts/bid_openings','Tier 1','Yes',TRUE,'manual_html'),
                 ('municipal-hoboken','City of Hoboken Bids and RFPs','Municipality','Hudson','https://www.hobokennj.gov/bids-rfps','Tier 1','Yes',TRUE,'manual_html'),
                 ('municipal-paterson','City of Paterson Purchasing','Municipality','Passaic','https://www.patersonnj.gov/purchasing/','Tier 1','Yes',TRUE,'manual_html'),
                 ('municipal-trenton','City of Trenton Legal Ads - Procurement','Municipality','Mercer','https://www.trentonnj.org/830/City-of-Trenton-Legal-Ads-Procurement','Tier 1','Yes',TRUE,'manual_html'),
                 ('municipal-camden','City of Camden Purchasing','Municipality','Camden','https://www.camdennj.gov/purchasing/','Tier 1','Yes',TRUE,'manual_html'),
-                ('municipal-elizabeth','City of Elizabeth Bid Postings','Municipality','Union','https://www.elizabethnj.org/Bids.aspx','Tier 1','Yes',TRUE,'manual_html')
+                ('municipal-elizabeth','City of Elizabeth Bid Postings','Municipality','Union','https://www.elizabethnj.org/Bids.aspx','Tier 1','Yes',TRUE,'manual_html'),
+                ('municipal-edison','Township of Edison Bid Opportunities','Municipality','Middlesex','https://www.edisonnj.org/departments/finance/purchasing.php','Tier 1','Yes',TRUE,'manual_html'),
+                ('municipal-toms-river','Township of Toms River Bid Opportunities','Municipality','Ocean','https://www.tomsrivertownship.com/bids-rfps/','Tier 1','Yes',TRUE,'manual_html'),
+                ('municipal-woodbridge','Township of Woodbridge Bid Opportunities','Municipality','Middlesex','https://www.twp.woodbridge.nj.us/Bids.aspx','Tier 1','Yes',TRUE,'manual_html')
                 ON CONFLICT (source_id) DO UPDATE SET
                     source_name = EXCLUDED.source_name,
                     entity_type = EXCLUDED.entity_type,
@@ -855,6 +927,15 @@ def is_public_opportunity_record(title: str, opportunity_url: str | None, agency
     return (
         is_descriptive_opportunity_title(title, title, agency or "")
         and sanitize_external_url(opportunity_url) != "#"
+        and opportunity_is_active_for_feed(status_text, due_date_text, include_expired)
+    )
+
+
+def is_public_notice_record(title: str, source_url: str | None, status_text: str | None, due_date_text: str | None, source_id: str | None, include_expired: bool = False) -> bool:
+    return (
+        is_public_notice_source_id(source_id)
+        and is_descriptive_opportunity_title(title, title, source_id or "")
+        and sanitize_external_url(source_url) != "#"
         and opportunity_is_active_for_feed(status_text, due_date_text, include_expired)
     )
 
@@ -979,6 +1060,8 @@ def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=No
     source_map = fetch_source_map()
     opportunities = []
     for row in rows:
+        if not is_actual_bid_source_id(row[4]):
+            continue
         if not is_public_opportunity_record(row[1], row[7], row[2], row[6], row[5], include_expired):
             continue
         opportunities.append({
@@ -1020,6 +1103,8 @@ def fetch_opportunity_by_id(opportunity_id):
         return None
 
     source_map = fetch_source_map()
+    if not is_actual_bid_source_id(row[4]):
+        return None
     if not is_public_opportunity_record(row[1], row[7], row[2], row[6], row[5], True):
         return None
 
@@ -1172,6 +1257,56 @@ def fetch_filtered_lead_ids(status_filter=None, q=None, source_filter=None, publ
 
 def count_public_opportunities(include_expired: bool = False) -> int:
     return len(fetch_opportunities(include_expired=include_expired))
+
+
+def fetch_public_notices(include_expired: bool = False, q: str | None = None):
+    sql = """
+        SELECT lead_id, source_id, title, agency, county, posted_date, due_date, status,
+               source_url, quality_score, admin_notes, access_type, platform_name, next_step, created_at
+        FROM opportunity_leads
+        WHERE status = 'Promoted'
+    """
+    params = []
+    notice_ids = get_public_notice_source_ids()
+    placeholders = ", ".join(["%s"] * len(notice_ids))
+    sql += f" AND source_id IN ({placeholders})"
+    params.extend(notice_ids)
+    if q:
+        like_val = f"%{q.lower()}%"
+        sql += " AND (LOWER(title) LIKE %s OR LOWER(COALESCE(agency,'')) LIKE %s OR LOWER(COALESCE(county,'')) LIKE %s)"
+        params.extend([like_val, like_val, like_val])
+    sql += " ORDER BY created_at DESC LIMIT 500"
+
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, tuple(params))
+            rows = cur.fetchall()
+
+    source_map = fetch_source_map()
+    items = []
+    for row in rows:
+        if not is_public_notice_record(row[2], row[8], row[7], row[6], row[1], include_expired):
+            continue
+        items.append({
+            "lead_id": row[0],
+            "source_id": row[1],
+            "source_name": source_map.get(row[1], {}).get("source_name", row[1]),
+            "title": row[2],
+            "agency": row[3],
+            "county": row[4],
+            "posted_date": row[5],
+            "due_date": row[6],
+            "status": row[7],
+            "source_url": sanitize_external_url(row[8]),
+            "quality_score": row[9],
+            "admin_notes": row[10] or "",
+            "access_type": row[11] or "",
+            "platform_name": row[12] or "",
+            "next_step": row[13] or "",
+            "created_at": str(row[14]),
+        })
+    items.sort(key=lambda item: due_date_sort_value(item["due_date"]))
+    return items
 
 
 def fetch_crawl_runs(limit=150):
@@ -2295,6 +2430,22 @@ def manual_crawl_drjtbc_profserv():
     )
 
 
+def parse_empty_titles(cleaned):
+    return []
+
+
+def manual_crawl_structured_source(source: dict):
+    return crawl_generic(
+        source["source_url"],
+        parse_empty_titles,
+        source["source_id"],
+        source["source_id"],
+        source["source_name"],
+        source.get("county") or "",
+        source["source_name"],
+    )
+
+
 def run_enabled_crawlers():
     results = []
     for source in fetch_enabled_crawl_sources():
@@ -2328,6 +2479,8 @@ def run_enabled_crawlers():
                 result = manual_crawl_drjtbc_construction()
             elif sid == "state-drjtbc-profserv":
                 result = manual_crawl_drjtbc_profserv()
+            elif sid in ACTUAL_BID_SOURCE_IDS and source.get("source_url"):
+                result = manual_crawl_structured_source(source)
             else:
                 continue
 
@@ -2382,6 +2535,16 @@ def bulk_update_leads(lead_ids, action):
                         )
                         continue
 
+                    if not is_actual_bid_source_id(row[1]) and not is_public_notice_source_id(row[1]):
+                        note = (row[13] or "").strip()
+                        blocked_note = "Blocked promotion: source is not in the approved live bid or public notice feed."
+                        updated_note = f"{note} | {blocked_note}" if note and blocked_note not in note else (note or blocked_note)
+                        cur.execute(
+                            "UPDATE opportunity_leads SET admin_notes = %s, status = 'Rejected', expires_at = CURRENT_TIMESTAMP WHERE lead_id = %s",
+                            (updated_note, lead_id),
+                        )
+                        continue
+
                     cur.execute("""
                         SELECT COUNT(*)
                         FROM opportunities
@@ -2390,6 +2553,10 @@ def bulk_update_leads(lead_ids, action):
                           AND COALESCE(due_date, '') = COALESCE(%s, '')
                     """, (row[1], row[2], row[5]))
                     duplicate_count = cur.fetchone()[0]
+
+                    if is_public_notice_source_id(row[1]):
+                        cur.execute("UPDATE opportunity_leads SET status = 'Promoted', expires_at = NULL WHERE lead_id = %s", (lead_id,))
+                        continue
 
                     if duplicate_count == 0:
                         opportunity_id = f"opp-{row[0]}"
@@ -2572,6 +2739,7 @@ def home():
     sources = fetch_sources()
     summary = fetch_admin_summary()
     recent = fetch_recent_opportunities(limit=8)
+    public_notice_count = len(fetch_public_notices())
 
     cards = ""
     for opp in recent:
@@ -2634,11 +2802,13 @@ def home():
             <div class="stats">
               <div class="stat"><strong>{len(sources)}</strong><br>live source records</div>
               <div class="stat"><strong>{summary['opportunity_count']}</strong><br>published opportunities</div>
+              <div class="stat"><strong>{public_notice_count}</strong><br>public notices</div>
               <div class="stat"><strong>{summary['lead_count']}</strong><br>total leads</div>
               <div class="stat"><strong>{summary['access_populated_count']}</strong><br>leads with access info</div>
             </div>
             <div class="nav">
               <a href="/opportunities">Browse Opportunities</a>
+              <a href="/public-notices">Browse Public Notices</a>
               <a href="/sources">Browse Sources</a>
               <a href="/export/opportunities.csv" class="secondary">Export Opportunities CSV</a>
               <a href="/admin" class="secondary">Admin</a>
@@ -3172,10 +3342,11 @@ def opportunities_page(
 ):
     opportunities = fetch_opportunities(county, agency, source_id, q, access_type, platform_name, include_expired, sort_by)
     sources = fetch_sources()
+    bid_sources = [s for s in sources if is_actual_bid_source_id(s["source_id"])]
 
-    counties = sorted({s["county"] for s in sources if s["county"]})
+    counties = sorted({s["county"] for s in bid_sources if s["county"]})
     agencies = sorted({o["agency"] for o in fetch_opportunities(include_expired=include_expired) if o["agency"]})
-    source_opts = sorted({(s["source_id"], s["source_name"]) for s in sources})
+    source_opts = sorted({(s["source_id"], s["source_name"]) for s in bid_sources})
 
     county_options = "<option value=''>All counties</option>" + "".join(
         f"<option value='{c}' {'selected' if county == c else ''}>{c}</option>" for c in counties
@@ -3279,6 +3450,68 @@ def opportunities_page(
       </form>
 
       <div class="grid">{cards}</div>
+    </div></body></html>
+    """
+
+
+@app.get("/public-notices", response_class=HTMLResponse)
+def public_notices_page(q: str | None = None, include_expired: bool = False):
+    notices = fetch_public_notices(include_expired=include_expired, q=q)
+
+    cards = ""
+    for row in notices:
+        cards += f"""
+        <div class="opp-card">
+            <div class="opp-linkhint">Public notice</div>
+            <div class="opp-title"><a href="{row['source_url']}" target="_blank" rel="noopener noreferrer">{row['title']}</a></div>
+            <div class="opp-meta">{row['source_name']} • {row['county'] or ''}</div>
+            <div class="opp-badges">
+                <span class="badge">{row['access_type'] or 'Public access'}</span>
+                <span class="badge">{row['platform_name'] or 'Agency website'}</span>
+            </div>
+            <div class="opp-next"><strong>Next step:</strong> {row['next_step'] or 'Open the notice and confirm whether it signals an upcoming letting, a legal ad, or a procurement announcement.'}</div>
+            <div class="opp-footer">
+                <span>Due: {row['due_date'] or 'Not listed'}</span>
+                <span><a href="{row['source_url']}" target="_blank" rel="noopener noreferrer">Open public notice</a></span>
+            </div>
+        </div>
+        """
+
+    return f"""
+    <html><head><title>Public Notices</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 40px; background: #f8fafc; color: #111827; }}
+      .wrap {{ max-width: 1280px; margin: 0 auto; }}
+      .intro, .filters {{ background:white; border:1px solid #e5e7eb; border-radius:16px; padding:20px; margin-bottom:18px; }}
+      .grid {{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }}
+      .opp-card {{ background:white; border:1px solid #e5e7eb; border-radius:16px; padding:18px; }}
+      .opp-linkhint {{ font-size:12px; color:#7c3aed; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; }}
+      .opp-title {{ font-weight:bold; font-size:18px; margin-bottom:8px; }}
+      .opp-title a {{ color:#0b57d0; text-decoration:underline; text-decoration-thickness:2px; }}
+      .opp-meta {{ color:#4b5563; margin-bottom:10px; }}
+      .opp-badges {{ margin-bottom:10px; }}
+      .badge {{ display:inline-block; background:#ede9fe; border-radius:999px; padding:4px 10px; margin-right:8px; font-size:12px; }}
+      .opp-next {{ margin-bottom:12px; background:#faf5ff; border:1px solid #e9d5ff; border-radius:12px; padding:12px; }}
+      .opp-footer {{ display:flex; justify-content:space-between; gap:12px; font-size:14px; color:#374151; }}
+      a {{ color:#0b57d0; text-decoration:underline; text-decoration-thickness:2px; }}
+      @media (max-width: 900px) {{ body {{ margin:18px; }} .grid {{ grid-template-columns:1fr; }} }}
+    </style></head>
+    <body><div class="wrap">
+      <a href="/">← Back to home</a>
+      <h1>Public Notices</h1>
+      <p>{len(notices)} public notices currently shown</p>
+      <div class="intro">
+        <strong>What belongs here:</strong> legal notices, public procurement notices, and pre-solicitation signals. This is separate from bids out for letting.
+      </div>
+      <form method="get" action="/public-notices" class="filters">
+        <input type="text" name="q" placeholder="Search title / agency / county" value="{q or ''}" style="padding:8px; width:260px; margin-right:10px;">
+        <label style="display:inline-flex; align-items:center; gap:6px; margin-right:10px;">
+          <input type="checkbox" name="include_expired" value="true" {'checked' if include_expired else ''}>
+          Include expired
+        </label>
+        <button type="submit">Filter</button>
+      </form>
+      <div class="grid">{cards or '<p>No public notices matched the current filter.</p>'}</div>
     </div></body></html>
     """
 
