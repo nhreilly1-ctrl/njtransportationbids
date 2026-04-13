@@ -1,4 +1,6 @@
 import csv
+from datetime import date, datetime, timedelta
+from difflib import SequenceMatcher
 import hashlib
 import io
 import os
@@ -162,6 +164,24 @@ GENERIC_BAD_TITLE_PATTERNS = [
     r"\blegal ads\b$",
 ]
 
+ADMIN_TITLE_BLOCKLIST_PREFIXES = [
+    "website sign in",
+    "staff directory",
+    "built to help vendors",
+    "in order to maintain a current list",
+    "contract documents",
+    "contract awards",
+    "professional services / current procurements",
+    "notice to contractors home /",
+    "rfb's (request for bids) awarded",
+    "rfb's (request for bids) upcoming",
+    "rfpq's (request for professional",
+]
+
+ADMIN_TITLE_BLOCKLIST_CONTAINS = [
+    "how do i search home departments",
+]
+
 GENERIC_BAD_TITLE_PHRASES = [
     "sign up to receive",
     "text message or email",
@@ -238,6 +258,16 @@ PUBLIC_NOTICE_SOURCES = [
 # Keep this opt-in and empty until a source has a source-specific parser or
 # proves it produces direct, descriptive bid/public notice records.
 CURATED_LOCAL_NOTICE_SOURCE_IDS: set[str] = set()
+
+SOURCE_ROW_SELECTOR_HINTS = {
+    "county-burlington": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "county-cape-may": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-hoboken": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-jersey-city": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-newark": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-paterson": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+    "municipal-elizabeth": ["table tr", ".views-row", ".bid-item", ".solicitation-row"],
+}
 
 
 def get_conn():
@@ -322,6 +352,49 @@ def sanitize_external_url(url: str | None, fallback: str | None = None) -> str:
     if fallback and fallback.lower().startswith(("http://", "https://")):
         return fallback
     return "#"
+
+
+def normalize_url_for_compare(url: str | None) -> str:
+    safe = sanitize_external_url(url)
+    if safe == "#":
+        return ""
+    safe = safe.split("#", 1)[0].split("?", 1)[0].strip().lower()
+    safe = re.sub(r"^https?://", "", safe)
+    return safe.rstrip("/")
+
+
+def url_is_source_index(candidate_url: str | None, source_root_url: str | None) -> bool:
+    candidate = normalize_url_for_compare(candidate_url)
+    source_root = normalize_url_for_compare(source_root_url)
+    if not candidate or not source_root:
+        return False
+    return candidate == source_root
+
+
+def parse_date_text(value: str | None) -> date | None:
+    if not value:
+        return None
+    text = re.sub(r"\s+", " ", str(value)).strip()
+    for fmt in ("%B %d, %Y", "%m/%d/%Y", "%m/%d/%y", "%Y-%m-%d"):
+        try:
+            parsed = datetime.strptime(text, fmt).date()
+            if parsed.year < 2000:
+                return None
+            return parsed
+        except ValueError:
+            continue
+    return None
+
+
+def due_date_sort_value(value: str | None) -> tuple[int, date, str]:
+    parsed = parse_date_text(value)
+    if parsed:
+        return (0, parsed, "")
+    return (1, date.max, (value or ""))
+
+
+def today_local() -> date:
+    return datetime.now().date()
 
 
 def normalize_for_rules(text: str | None) -> str:
@@ -480,12 +553,60 @@ def get_source_defaults(source_id: str) -> dict:
             "docs_path_note": "Document access may depend on the county procurement system",
             "addenda_note": "Check the official source for updates and addenda",
         },
+        "county-burlington": {
+            "access_type": "Free registration required",
+            "platform_name": "County procurement portal",
+        },
+        "municipal-hoboken": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "municipal-jersey-city": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "municipal-newark": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "municipal-paterson": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "county-cape-may": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "county-atlantic": {
+            "access_type": "Free registration required",
+            "platform_name": "BidNet",
+        },
+        "county-bergen": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
+        "county-essex": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
+        },
         "county-camden": {
             "access_type": "Limited public details",
             "platform_name": "County procurement portal",
             "next_step": "Treat this as a county procurement portal, not a direct bid notice. Look for the specific solicitation or contact the county purchasing office.",
             "docs_path_note": "This source may route through a vendor portal or registration workflow instead of a direct bid package.",
             "addenda_note": "Use the specific solicitation page, if available, for active documents and updates.",
+        },
+        "state-panynj-construction": {
+            "access_type": "Free registration required",
+            "platform_name": "Agency website",
+        },
+        "state-panynj-profserv": {
+            "access_type": "Free registration required",
+            "platform_name": "Agency website",
+        },
+        "state-sjta": {
+            "access_type": "Public access",
+            "platform_name": "Agency website",
         },
     }
 
@@ -526,6 +647,7 @@ def init_db():
                     due_date TEXT,
                     status TEXT,
                     opportunity_url TEXT,
+                    expires_at TIMESTAMP NULL,
                     access_type TEXT,
                     platform_name TEXT,
                     next_step TEXT,
@@ -547,6 +669,7 @@ def init_db():
                     due_date TEXT,
                     status TEXT,
                     source_url TEXT,
+                    expires_at TIMESTAMP NULL,
                     raw_text TEXT,
                     duplicate_key TEXT,
                     possible_duplicate BOOLEAN DEFAULT FALSE,
@@ -584,6 +707,7 @@ def init_db():
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS duplicate_key TEXT;")
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS possible_duplicate BOOLEAN DEFAULT FALSE;")
+            cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP NULL;")
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS quality_score INTEGER DEFAULT 0;")
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS admin_notes TEXT;")
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS access_type TEXT;")
@@ -594,6 +718,7 @@ def init_db():
             cur.execute("ALTER TABLE opportunity_leads ADD COLUMN IF NOT EXISTS access_notes TEXT;")
 
             cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;")
+            cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP NULL;")
             cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS access_type TEXT;")
             cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS platform_name TEXT;")
             cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS next_step TEXT;")
@@ -714,8 +839,34 @@ def fetch_recent_opportunities(limit=8):
     return fetch_opportunities()[:limit]
 
 
-def is_public_opportunity_record(title: str, opportunity_url: str | None, agency: str | None = None) -> bool:
-    return is_descriptive_opportunity_title(title, title, agency or "") and sanitize_external_url(opportunity_url) != "#"
+def opportunity_is_active_for_feed(status_text: str | None, due_date_text: str | None, include_expired: bool = False) -> bool:
+    normalized_status = (status_text or "").strip().lower()
+    if normalized_status in {"duplicate", "expired", "stale - no due date", "rejected"}:
+        return False if not include_expired else normalized_status != "duplicate"
+    if normalized_status and normalized_status not in {"open", "published"} and not include_expired:
+        return False
+    due = parse_date_text(due_date_text)
+    if due and due < today_local():
+        return include_expired
+    return True
+
+
+def is_public_opportunity_record(title: str, opportunity_url: str | None, agency: str | None = None, status_text: str | None = None, due_date_text: str | None = None, include_expired: bool = False) -> bool:
+    return (
+        is_descriptive_opportunity_title(title, title, agency or "")
+        and sanitize_external_url(opportunity_url) != "#"
+        and opportunity_is_active_for_feed(status_text, due_date_text, include_expired)
+    )
+
+
+def lead_is_publishable(title: str, raw_text: str | None, agency: str | None, item_source_url: str | None, source_root_url: str | None) -> tuple[bool, str]:
+    if title_hits_admin_blocklist(title):
+        return False, "Auto-rejected by title blocklist."
+    if not is_descriptive_opportunity_title(title, raw_text, agency):
+        return False, "Auto-rejected: title is not descriptive enough."
+    if url_is_source_index(item_source_url, source_root_url):
+        return False, "Auto-rejected: official source URL only points to the source index page."
+    return True, ""
 
 
 def fetch_source_detail(source_id: str):
@@ -789,7 +940,7 @@ def fetch_source_detail(source_id: str):
     }
 
 
-def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=None, q=None, access_filter=None, platform_filter=None):
+def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=None, q=None, access_filter=None, platform_filter=None, include_expired: bool = False, sort_by: str = "due_date"):
     sql = """
         SELECT opportunity_id, title, agency, county, source_id, due_date, status, opportunity_url,
                access_type, platform_name, next_step, docs_path_note, addenda_note, created_at
@@ -818,7 +969,7 @@ def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=No
         sql += " AND (LOWER(title) LIKE %s OR LOWER(agency) LIKE %s OR LOWER(COALESCE(county, '')) LIKE %s)"
         params.extend([like_val, like_val, like_val])
 
-    sql += " ORDER BY created_at DESC, due_date NULLS LAST, title LIMIT 500"
+    sql += " ORDER BY created_at DESC, title LIMIT 1000"
 
     with get_conn() as conn:
         with conn.cursor() as cur:
@@ -828,7 +979,7 @@ def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=No
     source_map = fetch_source_map()
     opportunities = []
     for row in rows:
-        if not is_public_opportunity_record(row[1], row[7], row[2]):
+        if not is_public_opportunity_record(row[1], row[7], row[2], row[6], row[5], include_expired):
             continue
         opportunities.append({
             "opportunity_id": row[0],
@@ -847,6 +998,10 @@ def fetch_opportunities(county_filter=None, agency_filter=None, source_filter=No
             "addenda_note": row[12],
             "created_at": str(row[13]),
         })
+    if sort_by == "created_at":
+        opportunities.sort(key=lambda item: item["created_at"], reverse=True)
+    else:
+        opportunities.sort(key=lambda item: due_date_sort_value(item["due_date"]))
     return opportunities
 
 
@@ -865,7 +1020,7 @@ def fetch_opportunity_by_id(opportunity_id):
         return None
 
     source_map = fetch_source_map()
-    if not is_public_opportunity_record(row[1], row[7], row[2]):
+    if not is_public_opportunity_record(row[1], row[7], row[2], row[6], row[5], True):
         return None
 
     return {
@@ -1015,6 +1170,10 @@ def fetch_filtered_lead_ids(status_filter=None, q=None, source_filter=None, publ
     return [row[0] for row in rows]
 
 
+def count_public_opportunities(include_expired: bool = False) -> int:
+    return len(fetch_opportunities(include_expired=include_expired))
+
+
 def fetch_crawl_runs(limit=150):
     with get_conn() as conn:
         with conn.cursor() as cur:
@@ -1070,7 +1229,8 @@ def fetch_admin_summary():
 
     return {
         "source_count": source_count,
-        "opportunity_count": opportunity_count,
+        "opportunity_count": count_public_opportunities(),
+        "total_opportunity_count": opportunity_count,
         "lead_count": lead_count,
         "new_lead_count": new_lead_count,
         "promoted_lead_count": promoted_lead_count,
@@ -1094,6 +1254,7 @@ def strip_html(text):
 
 
 def cleanup_title(title):
+    title = re.sub(r"[\u200b\u200c\u200d\ufeff]", "", title or "")
     title = re.sub(r"\s+", " ", title).strip()
     title = re.sub(r"\s*-\s*", " - ", title)
     title = re.sub(r"^(ADVERTISEMENT|NOTICE|SOLICITATION)\s*[:\-]\s*", "", title, flags=re.I)
@@ -1115,6 +1276,17 @@ def is_generic_link_text(text: str) -> bool:
     return normalized in GENERIC_LINK_TEXT or len(normalized) < 10
 
 
+def title_hits_admin_blocklist(title: str) -> bool:
+    normalized = normalize_for_rules(title)
+    if not normalized or len(normalized) < 15:
+        return True
+    if any(normalized.startswith(prefix) for prefix in ADMIN_TITLE_BLOCKLIST_PREFIXES):
+        return True
+    if any(fragment in normalized for fragment in ADMIN_TITLE_BLOCKLIST_CONTAINS):
+        return True
+    return False
+
+
 def title_has_bid_signal(text: str) -> bool:
     normalized = normalize_for_rules(text)
     if not normalized:
@@ -1126,6 +1298,8 @@ def is_descriptive_opportunity_title(title: str, raw_text: str | None = None, so
     cleaned = normalize_title(title)
     normalized = normalize_for_rules(cleaned)
     if not normalized or len(cleaned) < 18:
+        return False
+    if title_hits_admin_blocklist(cleaned):
         return False
     if is_generic_link_text(cleaned):
         return False
@@ -1379,6 +1553,181 @@ def refresh_duplicate_flags():
         conn.commit()
 
 
+def dedupe_existing_opportunities():
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT opportunity_id, source_id, title, due_date, opportunity_url, access_type, platform_name, status
+                FROM opportunities
+            """)
+            rows = cur.fetchall()
+
+            records = [
+                {
+                    "opportunity_id": row[0],
+                    "source_id": row[1],
+                    "title": row[2] or "",
+                    "due_date": row[3],
+                    "opportunity_url": row[4] or "",
+                    "access_type": row[5] or "",
+                    "platform_name": row[6] or "",
+                    "status": row[7] or "",
+                }
+                for row in rows
+            ]
+
+            visited = set()
+            duplicate_ids = set()
+            for i, record in enumerate(records):
+                if record["opportunity_id"] in visited:
+                    continue
+                cluster = [record]
+                visited.add(record["opportunity_id"])
+                for other in records[i + 1:]:
+                    if other["opportunity_id"] in visited:
+                        continue
+                    same_url = normalize_url_for_compare(record["opportunity_url"]) and (
+                        normalize_url_for_compare(record["opportunity_url"]) == normalize_url_for_compare(other["opportunity_url"])
+                    )
+                    title_ratio = 0.0
+                    if record["source_id"] == other["source_id"]:
+                        title_ratio = SequenceMatcher(
+                            None,
+                            normalize_for_rules(record["title"]),
+                            normalize_for_rules(other["title"]),
+                        ).ratio()
+                    if same_url or title_ratio > 0.85:
+                        cluster.append(other)
+                        visited.add(other["opportunity_id"])
+
+                if len(cluster) <= 1:
+                    continue
+
+                cluster.sort(
+                    key=lambda item: (
+                        1 if parse_date_text(item["due_date"]) else 0,
+                        1 if item["access_type"] and item["access_type"] != "Unknown" else 0,
+                        1 if item["platform_name"] and item["platform_name"] != "Unknown" else 0,
+                        len(item["title"]),
+                    ),
+                    reverse=True,
+                )
+                keeper = cluster[0]["opportunity_id"]
+                duplicate_ids.update(item["opportunity_id"] for item in cluster[1:] if item["opportunity_id"] != keeper)
+
+            if duplicate_ids:
+                cur.execute(
+                    "UPDATE opportunities SET status = 'Duplicate', expires_at = CURRENT_TIMESTAMP WHERE opportunity_id = ANY(%s)",
+                    (list(duplicate_ids),),
+                )
+        conn.commit()
+
+
+def clean_existing_titles_and_statuses():
+    today = today_local()
+    stale_cutoff = datetime.combine(today - timedelta(days=180), datetime.min.time())
+
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT lead_id, title FROM opportunity_leads")
+            for lead_id, title in cur.fetchall():
+                cleaned = cleanup_title(title or "")
+                if cleaned != (title or ""):
+                    cur.execute("UPDATE opportunity_leads SET title = %s WHERE lead_id = %s", (cleaned, lead_id))
+
+            cur.execute("SELECT opportunity_id, title FROM opportunities")
+            for opportunity_id, title in cur.fetchall():
+                cleaned = cleanup_title(title or "")
+                if cleaned != (title or ""):
+                    cur.execute("UPDATE opportunities SET title = %s WHERE opportunity_id = %s", (cleaned, opportunity_id))
+
+            cur.execute(
+                "UPDATE opportunity_leads SET due_date = NULL WHERE source_id = 'county-burlington' AND due_date IN ('January 1, 2023', '01/01/2023', '01/01/23')"
+            )
+            cur.execute(
+                "UPDATE opportunities SET due_date = NULL WHERE source_id = 'county-burlington' AND due_date IN ('January 1, 2023', '01/01/2023', '01/01/23')"
+            )
+
+            cur.execute("SELECT lead_id, due_date, created_at FROM opportunity_leads")
+            for lead_id, due_date, created_at in cur.fetchall():
+                parsed_due = parse_date_text(due_date)
+                if parsed_due and parsed_due < today:
+                    cur.execute(
+                        "UPDATE opportunity_leads SET status = 'Expired', expires_at = CURRENT_TIMESTAMP WHERE lead_id = %s",
+                        (lead_id,),
+                    )
+                elif not parsed_due and created_at and created_at < stale_cutoff:
+                    cur.execute(
+                        "UPDATE opportunity_leads SET status = 'Stale - no due date', expires_at = CURRENT_TIMESTAMP WHERE lead_id = %s",
+                        (lead_id,),
+                    )
+
+            cur.execute("SELECT opportunity_id, due_date, created_at FROM opportunities")
+            for opportunity_id, due_date, created_at in cur.fetchall():
+                parsed_due = parse_date_text(due_date)
+                if parsed_due and parsed_due < today:
+                    cur.execute(
+                        "UPDATE opportunities SET status = 'Expired', expires_at = CURRENT_TIMESTAMP WHERE opportunity_id = %s",
+                        (opportunity_id,),
+                    )
+                elif not parsed_due and created_at and created_at < stale_cutoff:
+                    cur.execute(
+                        "UPDATE opportunities SET status = 'Stale - no due date', expires_at = CURRENT_TIMESTAMP WHERE opportunity_id = %s",
+                        (opportunity_id,),
+                    )
+                else:
+                    cur.execute(
+                        "UPDATE opportunities SET status = 'Open', expires_at = NULL WHERE opportunity_id = %s AND status NOT IN ('Duplicate')",
+                        (opportunity_id,),
+                    )
+        conn.commit()
+
+    dedupe_existing_opportunities()
+    refresh_duplicate_flags()
+
+
+def is_duplicate_lead(cur, source_id: str, title: str, official_url: str | None, threshold: float = 0.85) -> bool:
+    normalized_url = normalize_url_for_compare(official_url)
+    cur.execute(
+        """
+        SELECT source_id, title, source_url
+        FROM opportunity_leads
+        WHERE source_id = %s OR (%s <> '' AND source_url = %s)
+        ORDER BY created_at DESC
+        LIMIT 250
+        """,
+        (source_id, official_url or "", official_url or ""),
+    )
+    existing = cur.fetchall()
+    for existing_source_id, existing_title, existing_url in existing:
+        if normalized_url and normalize_url_for_compare(existing_url) == normalized_url:
+            return True
+        if existing_source_id == source_id:
+            ratio = SequenceMatcher(None, normalize_for_rules(existing_title), normalize_for_rules(title)).ratio()
+            if ratio > threshold:
+                return True
+
+    cur.execute(
+        """
+        SELECT source_id, title, opportunity_url
+        FROM opportunities
+        WHERE source_id = %s OR (%s <> '' AND opportunity_url = %s)
+        ORDER BY created_at DESC
+        LIMIT 250
+        """,
+        (source_id, official_url or "", official_url or ""),
+    )
+    existing_opps = cur.fetchall()
+    for existing_source_id, existing_title, existing_url in existing_opps:
+        if normalized_url and normalize_url_for_compare(existing_url) == normalized_url:
+            return True
+        if existing_source_id == source_id:
+            ratio = SequenceMatcher(None, normalize_for_rules(existing_title), normalize_for_rules(title)).ratio()
+            if ratio > threshold:
+                return True
+    return False
+
+
 def upsert_leads(source_key, source_id, agency, county, source_url, titles):
     inserted = 0
 
@@ -1408,22 +1757,31 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
 
                 if not title:
                     continue
-                if not is_descriptive_opportunity_title(title, raw_text, agency):
-                    continue
+                is_publishable, rejection_reason = lead_is_publishable(title, raw_text, agency, item_source_url, source_url)
 
                 duplicate_key = make_duplicate_key(source_id, title, due_date)
                 if quality_score is None:
                     quality_score = compute_quality_score(title, due_date, agency, county)
 
                 guidance = classify_access_guidance(source_id, title, raw_text)
+                status_text = "New"
+                expires_at = None
+                if not is_publishable:
+                    status_text = "Rejected"
+                    admin_notes = f"{admin_notes} | {rejection_reason}".strip(" |")
+                    expires_at = datetime.now()
+                elif is_duplicate_lead(cur, source_id, title, item_source_url):
+                    status_text = "Duplicate"
+                    admin_notes = f"{admin_notes} | Auto-marked duplicate at ingestion.".strip(" |")
+                    expires_at = datetime.now()
 
                 cur.execute("""
                     INSERT INTO opportunity_leads (
                         lead_id, source_id, title, agency, county, posted_date, due_date, status,
-                        source_url, raw_text, duplicate_key, quality_score, admin_notes,
+                        source_url, expires_at, raw_text, duplicate_key, quality_score, admin_notes,
                         access_type, platform_name, next_step, docs_path_note, addenda_note, access_notes
                     )
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (lead_id) DO UPDATE SET
                         title = EXCLUDED.title,
                         agency = EXCLUDED.agency,
@@ -1432,6 +1790,7 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
                         due_date = EXCLUDED.due_date,
                         status = EXCLUDED.status,
                         source_url = EXCLUDED.source_url,
+                        expires_at = EXCLUDED.expires_at,
                         raw_text = EXCLUDED.raw_text,
                         duplicate_key = EXCLUDED.duplicate_key,
                         quality_score = EXCLUDED.quality_score,
@@ -1443,8 +1802,8 @@ def upsert_leads(source_key, source_id, agency, county, source_url, titles):
                         addenda_note = EXCLUDED.addenda_note,
                         access_notes = EXCLUDED.access_notes
                 """, (
-                    lead_id, source_id, title, agency, county, posted_date, due_date, "New",
-                    item_source_url, raw_text, duplicate_key, quality_score, admin_notes,
+                    lead_id, source_id, title, agency, county, posted_date, due_date, status_text,
+                    item_source_url, expires_at, raw_text, duplicate_key, quality_score, admin_notes,
                     guidance["access_type"],
                     guidance["platform_name"],
                     guidance["next_step"],
@@ -1721,12 +2080,26 @@ def parse_public_notice_entries(html: str, page_url: str, source_key: str, sourc
     return fallback_entries[:40]
 
 
-def parse_structured_listing_entries(html: str, page_url: str, source_key: str, agency: str, county: str) -> list[dict]:
+def parse_structured_listing_entries(html: str, page_url: str, source_key: str, source_id: str, agency: str, county: str) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     entries = []
     seen = set()
+    candidate_links = []
+    selector_hints = SOURCE_ROW_SELECTOR_HINTS.get(source_id, [])
+    if selector_hints:
+        seen_links = set()
+        for selector in selector_hints:
+            for container in soup.select(selector):
+                for link in container.find_all("a", href=True):
+                    key = (id(link), link.get("href", ""))
+                    if key in seen_links:
+                        continue
+                    seen_links.add(key)
+                    candidate_links.append(link)
+    else:
+        candidate_links = list(soup.find_all("a", href=True))
 
-    for link in soup.find_all("a", href=True):
+    for link in candidate_links:
         href = link.get("href", "").strip()
         full_url = sanitize_external_url(urljoin(page_url, href) if href else None)
         if full_url == "#":
@@ -1773,7 +2146,7 @@ def crawl_generic(url, parser, source_key, source_id, agency, county, source_nam
     try:
         resp = requests.get(url, headers=headers, timeout=30)
         resp.raise_for_status()
-        structured_entries = parse_structured_listing_entries(resp.text, resp.url, source_key, agency, county)
+        structured_entries = parse_structured_listing_entries(resp.text, resp.url, source_key, source_id, agency, county)
         if structured_entries:
             deduped = structured_entries
         else:
@@ -1982,6 +2355,7 @@ def promote_lead(lead_id):
 def bulk_update_leads(lead_ids, action):
     if not lead_ids:
         return
+    source_map = fetch_source_map()
 
     with get_conn() as conn:
         with conn.cursor() as cur:
@@ -1997,12 +2371,13 @@ def bulk_update_leads(lead_ids, action):
                     if not row:
                         continue
 
-                    if not is_descriptive_opportunity_title(row[2], row[12], row[3]):
+                    is_publishable, rejection_reason = lead_is_publishable(row[2], row[12], row[3], row[6], source_map.get(row[1], {}).get("source_url"))
+                    if not is_publishable:
                         note = (row[13] or "").strip()
-                        blocked_note = "Blocked promotion: title is not descriptive enough to represent a real bid opportunity."
+                        blocked_note = f"Blocked promotion: {rejection_reason}"
                         updated_note = f"{note} | {blocked_note}" if note and blocked_note not in note else (note or blocked_note)
                         cur.execute(
-                            "UPDATE opportunity_leads SET admin_notes = %s, status = 'New' WHERE lead_id = %s",
+                            "UPDATE opportunity_leads SET admin_notes = %s, status = 'Rejected', expires_at = CURRENT_TIMESTAMP WHERE lead_id = %s",
                             (updated_note, lead_id),
                         )
                         continue
@@ -2021,9 +2396,9 @@ def bulk_update_leads(lead_ids, action):
                         cur.execute("""
                             INSERT INTO opportunities (
                                 opportunity_id, title, agency, county, source_id, due_date, status,
-                                opportunity_url, access_type, platform_name, next_step, docs_path_note, addenda_note
+                                opportunity_url, expires_at, access_type, platform_name, next_step, docs_path_note, addenda_note
                             )
-                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                             ON CONFLICT (opportunity_id) DO UPDATE SET
                                 title = EXCLUDED.title,
                                 agency = EXCLUDED.agency,
@@ -2032,6 +2407,7 @@ def bulk_update_leads(lead_ids, action):
                                 due_date = EXCLUDED.due_date,
                                 status = EXCLUDED.status,
                                 opportunity_url = EXCLUDED.opportunity_url,
+                                expires_at = EXCLUDED.expires_at,
                                 access_type = EXCLUDED.access_type,
                                 platform_name = EXCLUDED.platform_name,
                                 next_step = EXCLUDED.next_step,
@@ -2039,15 +2415,15 @@ def bulk_update_leads(lead_ids, action):
                                 addenda_note = EXCLUDED.addenda_note
                         """, (
                             opportunity_id, row[2], row[3] or "Unknown Agency",
-                            row[4], row[1], row[5], "Open", row[6],
+                            row[4], row[1], row[5], "Open", row[6], None,
                             row[7], row[8], row[9], row[10], row[11]
                         ))
-                    cur.execute("UPDATE opportunity_leads SET status = 'Promoted' WHERE lead_id = %s", (lead_id,))
+                    cur.execute("UPDATE opportunity_leads SET status = 'Promoted', expires_at = NULL WHERE lead_id = %s", (lead_id,))
 
                 elif action == "reject":
-                    cur.execute("UPDATE opportunity_leads SET status = 'Rejected' WHERE lead_id = %s", (lead_id,))
+                    cur.execute("UPDATE opportunity_leads SET status = 'Rejected', expires_at = CURRENT_TIMESTAMP WHERE lead_id = %s", (lead_id,))
                 elif action == "reset":
-                    cur.execute("UPDATE opportunity_leads SET status = 'New' WHERE lead_id = %s", (lead_id,))
+                    cur.execute("UPDATE opportunity_leads SET status = 'New', expires_at = NULL WHERE lead_id = %s", (lead_id,))
         conn.commit()
 
     refresh_duplicate_flags()
@@ -2187,6 +2563,7 @@ def rerun_auto_guidance_for_new_leads():
 @app.on_event("startup")
 def startup_event():
     init_db()
+    clean_existing_titles_and_statuses()
     refresh_duplicate_flags()
 
 
@@ -2790,12 +3167,14 @@ def opportunities_page(
     q: str | None = None,
     access_type: str | None = None,
     platform_name: str | None = None,
+    sort_by: str = "due_date",
+    include_expired: bool = False,
 ):
-    opportunities = fetch_opportunities(county, agency, source_id, q, access_type, platform_name)
+    opportunities = fetch_opportunities(county, agency, source_id, q, access_type, platform_name, include_expired, sort_by)
     sources = fetch_sources()
 
     counties = sorted({s["county"] for s in sources if s["county"]})
-    agencies = sorted({o["agency"] for o in fetch_opportunities() if o["agency"]})
+    agencies = sorted({o["agency"] for o in fetch_opportunities(include_expired=include_expired) if o["agency"]})
     source_opts = sorted({(s["source_id"], s["source_name"]) for s in sources})
 
     county_options = "<option value=''>All counties</option>" + "".join(
@@ -2812,6 +3191,10 @@ def opportunities_page(
     )
     platform_options = "<option value=''>All platforms</option>" + "".join(
         f"<option value='{p}' {'selected' if platform_name == p else ''}>{p}</option>" for p in PLATFORM_NAME_OPTIONS
+    )
+    sort_options = (
+        f"<option value='due_date' {'selected' if sort_by == 'due_date' else ''}>Due date</option>"
+        f"<option value='created_at' {'selected' if sort_by == 'created_at' else ''}>Newest added</option>"
     )
 
     cards = ""
@@ -2886,8 +3269,13 @@ def opportunities_page(
         <select name="agency">{agency_options}</select>
         <select name="source_id">{source_options}</select>
         <select name="access_type">{access_options}</select>
-        <select name="platform_name">{platform_options}</select>
-        <button type="submit">Filter</button>
+              <select name="platform_name">{platform_options}</select>
+              <select name="sort_by">{sort_options}</select>
+              <label style="display:inline-flex; align-items:center; gap:6px; margin-right:10px;">
+                <input type="checkbox" name="include_expired" value="true" {'checked' if include_expired else ''}>
+                Include expired
+              </label>
+              <button type="submit">Filter</button>
       </form>
 
       <div class="grid">{cards}</div>
