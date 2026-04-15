@@ -42,6 +42,30 @@
     .nav-admin { font-size: 12px; color: var(--text3); text-decoration: none; padding: 5px 10px; border: 0.5px solid var(--border2); border-radius: var(--r); background: var(--bg2); }
     .nav-admin:hover { background: var(--bg3); color: var(--text2); }
     .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+    .home-outer { display:grid; grid-template-columns:1fr 260px; gap:1.5rem; align-items:start; }
+    .sb-card { background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); overflow:hidden; margin-bottom:12px; }
+    .sb-head { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; padding:9px 14px 8px; border-bottom:0.5px solid var(--border); display:flex; align-items:center; gap:6px; }
+    .sb-head .dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .sb-link { display:flex; align-items:center; justify-content:space-between; padding:7px 14px; font-size:12.5px; color:var(--text); text-decoration:none; border-bottom:0.5px solid var(--border); gap:8px; }
+    .sb-link:last-child { border-bottom:none; }
+    .sb-link:hover { background:var(--bg2); }
+    .sb-link-label { flex:1; min-width:0; }
+    .sb-link-sub { font-size:11px; color:var(--text3); display:block; margin-top:1px; }
+    .sb-ext { font-size:10px; background:var(--bg3); color:var(--text3); padding:2px 7px; border-radius:12px; flex-shrink:0; }
+    .sb-guide { font-size:10px; background:var(--blue-bg); color:var(--blue); padding:2px 7px; border-radius:12px; flex-shrink:0; font-weight:500; }
+    .sb-section { font-size:10px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.07em; padding:7px 14px 3px; border-top:0.5px solid var(--border); background:var(--bg2); display:block; }
+    .sb-section.first { border-top:none; }
+    .wage-row { display:flex; justify-content:space-between; align-items:center; padding:5px 14px; font-size:12px; border-bottom:0.5px solid var(--border); }
+    .wage-row:last-of-type { border-bottom:none; }
+    .wage-rate { font-weight:500; font-family:monospace; }
+    .wage-note { font-size:10px; color:var(--text3); padding:5px 14px 7px; border-top:0.5px solid var(--border); display:block; }
+    .board-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:1rem; }
+    .board-card { background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); padding:.85rem 1rem; cursor:pointer; text-decoration:none; display:block; transition:border-color .15s; }
+    .board-card:hover { border-color:var(--border2); }
+    .board-icon { font-size:17px; margin-bottom:.3rem; }
+    .board-name { font-size:13px; font-weight:500; color:var(--text); margin-bottom:2px; }
+    .board-meta { font-size:11px; color:var(--text3); }
+    @media(max-width:860px){ .home-outer { grid-template-columns:1fr; } .home-sidebar { display:none; } }
     .page-header { margin-bottom: 1.25rem; }
     .page-header h1 { font-size: 20px; font-weight: 500; margin-bottom: 3px; }
     .page-header p  { font-size: 13px; color: var(--text2); }
