@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Notice Crawl Health — Admin{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+  <h1 style="font-size:18px;font-weight:500;">Notice crawl health</h1>
+  <div style="margin-left:auto;display:flex;gap:8px;">
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm">← Admin</a>
+  </div>
+</div>
+
+<div class="stats-row" style="margin-bottom:1.25rem;">
+  <div class="stat-card"><div class="num c-green">{{ stats.active }}</div><div class="lbl">Active notices</div></div>
+  <div class="stat-card"><div class="num c-blue">{{ stats.state }}</div><div class="lbl">From state agencies</div></div>
+  <div class="stat-card"><div class="num c-amber">{{ stats.county }}</div><div class="lbl">From county portals</div></div>
+  <div class="stat-card"><div class="num" style="color:var(--amber)">{{ stats.municipal }}</div><div class="lbl">From municipal sites</div></div>
+</div>
+
+{% set tiers = [(1,'State agencies'),(2,'County portals'),(3,'Municipal websites'),(4,'Platforms')] %}
+{% for tier_num, tier_label in tiers %}
+  {% set tier_entries = crawl_log | selectattr('crawl_tier','equalto', tier_num) | list %}
+  {% if tier_entries %}
+    <div class="section-label">{{ tier_label }}</div>
+    {% for e in tier_entries %}
+      <div class="source-card" style="margin-bottom:8px;">
+        <div class="h-dot {{ 'h-good' if e.health == 'ok' else 'h-bad' }}"></div>
+        <div style="flex:1;min-width:0;">
+          <div class="source-name">{{ e.source_name }}</div>
+          <div class="source-meta">
+            Last crawl: {{ e.ago }} &nbsp;·&nbsp;
+            {{ e.last_count or 0 }} records
+            {% if e.last_error %}
+              &nbsp;·&nbsp; <span style="color:var(--red);">{{ e.last_error[:80] }}</span>
+            {% endif %}
+          </div>
+        </div>
+        {% if e.health == 'ok' %}
+          <span class="badge badge-open" style="font-size:11px;">Healthy</span>
+        {% else %}
+          <span class="badge badge-noise" style="font-size:11px;">Error</span>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+{% if not crawl_log %}
+  <div style="padding:3rem;text-align:center;color:var(--text2);">
+    No crawl runs recorded yet. Run <code>python crawlers/notice_runner.py</code> to start.
+  </div>
+{% endif %}
+
+{% endblock %}

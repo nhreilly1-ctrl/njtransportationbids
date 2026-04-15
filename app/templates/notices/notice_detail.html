@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}{{ notice.title[:65] }} — NJ Transportation Bids{% endblock %}
+{% block content %}
+
+{% set tier = notice.source_tier %}
+{% set dot_color = '#639922' if tier == 'state' else '#378add' if tier == 'county' else '#ba7517' if tier == 'municipal' else '#888780' %}
+
+<div style="margin-bottom:.75rem;">
+  <a href="{{ url_for('notices2.notices_all') }}"
+     style="font-size:13px;color:var(--text2);text-decoration:none;">← Public notices</a>
+</div>
+
+<div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);
+            padding:1.5rem;margin-bottom:1rem;">
+  <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap;">
+    <div style="flex:1;min-width:0;">
+
+      {# Source tier indicator #}
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:.5rem;">
+        <span style="width:9px;height:9px;border-radius:50%;background:{{ dot_color }};display:inline-block;flex-shrink:0;"></span>
+        <span style="font-size:11px;color:var(--text3);">{{ notice.source_name }}</span>
+        {% if notice.county %}
+          <span style="font-size:11px;color:var(--border2);">·</span>
+          <span style="font-size:11px;color:var(--text3);">{{ notice.county }}</span>
+        {% endif %}
+        {% if notice.contract_number %}
+          <span style="font-size:11px;color:var(--border2);">·</span>
+          <span style="font-size:11px;font-family:monospace;color:var(--text3);">{{ notice.contract_number }}</span>
+        {% endif %}
+      </div>
+
+      <h1 style="font-size:17px;font-weight:500;margin-bottom:.75rem;line-height:1.45;">
+        {{ notice.title }}</h1>
+
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1rem;">
+        {# Status #}
+        {% if notice.status == 'open' and notice.urgent %}
+          <span class="badge" style="background:#fcebeb;color:#a32d2d;">Closing soon</span>
+        {% elif notice.status == 'open' %}
+          <span class="badge badge-open">Open</span>
+        {% elif notice.status == 'expired' %}
+          <span class="badge badge-expired">Expired</span>
+        {% else %}
+          <span class="badge badge-nodate">No due date</span>
+        {% endif %}
+
+        {# Type badges #}
+        {% if notice.notice_subtype == 'construction' or notice.notice_type == 'construction' %}
+          <span class="badge badge-type-c">Construction notice</span>
+        {% elif notice.notice_subtype == 'professional_services' or notice.notice_type == 'professional_services' %}
+          <span class="badge badge-type-p">Professional services notice</span>
+        {% else %}
+          <span class="badge badge-nodate">Public notice</span>
+        {% endif %}
+
+        {# Source tier #}
+        {% if tier == 'state' %}
+          <span class="badge" style="background:var(--green-bg);color:#27500a;font-weight:400;">State agency</span>
+        {% elif tier == 'county' %}
+          <span class="badge" style="background:var(--blue-bg);color:#0c447c;font-weight:400;">County portal</span>
+        {% elif tier == 'municipal' %}
+          <span class="badge" style="background:var(--amber-bg);color:#633806;font-weight:400;">Municipal website</span>
+        {% endif %}
+
+        {% if notice.paywalled %}
+          <span class="badge" style="background:var(--gray-bg);color:#5f5e5a;">{{ notice.platform }} — notice only</span>
+        {% elif notice.access_type and notice.access_type not in ('Unknown','') %}
+          <span class="badge badge-access">{{ notice.access_type }}</span>
+        {% endif %}
+
+        {% if notice.prequal_codes %}
+          {% for code in notice.prequal_codes %}
+            <span class="badge badge-access">Prequalification: {{ code }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+    </div>
+
+    {# Due date callout #}
+    {% if notice.due_date_raw and notice.due_date_raw not in ('Not listed','—','') %}
+    <div style="text-align:right;flex-shrink:0;">
+      <div style="font-size:11px;color:var(--text3);">Due / bid opening</div>
+      <div style="font-size:22px;font-weight:500;
+                  {{ 'color:var(--red)' if notice.urgent and notice.status == 'open'
+                     else 'color:var(--text)' }};">
+        {{ notice.due_date_raw }}
+      </div>
+      {% if notice.days_until_due is not none and notice.status == 'open' %}
+        <div style="font-size:12px;color:{{ 'var(--red)' if notice.urgent else 'var(--text2)' }};">
+          {{ notice.days_until_due }} day{{ 's' if notice.days_until_due != 1 }} remaining
+        </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  {# Notice excerpt / text preview #}
+  {% if notice.notice_excerpt %}
+    <div style="background:var(--bg2);border-radius:var(--r);padding:.85rem 1rem;
+                font-size:13px;color:var(--text2);line-height:1.7;
+                font-family:'Courier New',monospace;
+                border-left:3px solid var(--border2);margin-top:.5rem;">
+      {{ notice.notice_excerpt }}
+    </div>
+  {% endif %}
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+
+  {# Next step #}
+  <div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);padding:1.25rem;">
+    <div class="section-label" style="margin-top:0;">Next step</div>
+    {% if notice.paywalled %}
+      <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">
+        This notice was retrieved from <strong>{{ notice.platform }}</strong>.
+        The notice text is available here. Full bid documents (plans, specs, addenda)
+        require a {{ notice.platform }} subscription. Open the link below and follow
+        the platform's instructions to obtain bid documents.
+      </p>
+    {% else %}
+      <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">
+        Open the official source and verify the notice before committing estimating time.
+        Confirm due dates, submission method, and any addenda directly with the agency.
+      </p>
+    {% endif %}
+    {% if notice.official_url %}
+      <a href="{{ notice.official_url }}" target="_blank" rel="noopener"
+         class="btn btn-primary">Open official source ↗</a>
+    {% endif %}
+  </div>
+
+  {# Record details #}
+  <div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);padding:1.25rem;">
+    <div class="section-label" style="margin-top:0;">Record details</div>
+    <table style="width:100%;font-size:13px;border-collapse:collapse;">
+      <tr><td style="color:var(--text2);padding:4px 0;width:45%;">Notice type</td>
+          <td>{{ notice.notice_type | replace('_',' ') | title }}
+            {% if notice.notice_subtype %} — {{ notice.notice_subtype | replace('_',' ') | title }}{% endif %}</td></tr>
+      <tr><td style="color:var(--text2);padding:4px 0;">Source</td>
+          <td>{{ notice.source_name }}</td></tr>
+      <tr><td style="color:var(--text2);padding:4px 0;">Source tier</td>
+          <td>{% if tier == 'state' %}State agency{% elif tier == 'county' %}County portal{% elif tier == 'municipal' %}Municipal website{% else %}Platform{% endif %}</td></tr>
+      <tr><td style="color:var(--text2);padding:4px 0;">County</td>
+          <td>{{ notice.county or 'Statewide' }}</td></tr>
+      <tr><td style="color:var(--text2);padding:4px 0;">Access</td>
+          <td>{{ notice.access_type or '—' }}</td></tr>
+      <tr><td style="color:var(--text2);padding:4px 0;">Platform</td>
+          <td>{{ notice.platform or '—' }}</td></tr>
+      {% if notice.contract_number %}
+      <tr><td style="color:var(--text2);padding:4px 0;">Contract / ID</td>
+          <td style="font-family:monospace;font-size:12px;">{{ notice.contract_number }}</td></tr>
+      {% endif %}
+      <tr><td style="color:var(--text2);padding:4px 0;">Crawled</td>
+          <td style="font-size:12px;color:var(--text3);">{{ notice._ago }}</td></tr>
+    </table>
+  </div>
+</div>
+
+{% if user and session.get('admin') %}
+  <div style="background:var(--blue-bg);border:0.5px solid #b5d4f4;border-radius:var(--r);
+              padding:.7rem 1rem;font-size:12px;color:var(--blue);">
+    Admin: ID {{ notice.id }} · status {{ notice.status }}
+    {% if notice.status_override %} · override: {{ notice.status_override }}{% endif %}
+    {% if notice.noise_reason %} · noise: {{ notice.noise_reason }}{% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

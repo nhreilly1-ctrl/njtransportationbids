@@ -14,6 +14,13 @@ from flask import Flask, Response, jsonify, redirect, render_template, request, 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-prod")
 
+from app.notice_routes import notice_bp
+app.register_blueprint(notice_bp)
+
+@app.context_processor
+def inject_globals():
+    return {"today_date": date.today().isoformat()}
+
 BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA = os.path.join(BASE, "data") if os.path.isdir(os.path.join(BASE, "data")) else os.path.join(BASE, "data_store")
 OPP_F = os.path.join(DATA, "opportunities.json")
@@ -41,6 +48,14 @@ SOURCE_TYPE_MAP = {
     "south jersey transportation authority legal": "public_notice",
     "nj treasury legal": "public_notice",
     "city of trenton legal": "public_notice",
+}
+
+SOURCE_ID_FALLBACK_TYPES = {
+    "state-njdot-construction": "construction",
+    "state-njdot-profserv": "professional_services",
+    "state-drjtbc-construction": "construction",
+    "state-drjtbc-profserv": "professional_services",
+    "state-njta": "construction",
 }
 
 TITLE_TYPE_RULES = [
@@ -437,7 +452,7 @@ def classify_record(opp: dict) -> tuple[str, str | None]:
             title_type = record_type
             break
 
-    record_type = src_type or title_type or "uncategorized"
+    record_type = title_type or src_type or SOURCE_ID_FALLBACK_TYPES.get(source_id) or "uncategorized"
     notice_subtype = None
     if record_type == "public_notice":
         if any(keyword in title for keyword in PUBLIC_NOTICE_CONSTRUCTION_SIGNALS):
@@ -790,30 +805,6 @@ def bids_profserv():
     ctx = _opp_list_view("professional_services")
     ctx["page_title"] = "Professional Services"
     ctx["page_desc"] = "RFPs and RFQs for engineering, design, inspection, planning, and related consulting services."
-    return render_template("opportunity_list.html", **ctx)
-
-
-@app.route("/notices")
-def notices_all():
-    ctx = _opp_list_view("public_notice")
-    ctx["page_title"] = "Public Notices"
-    ctx["page_desc"] = "Legal advertisements, notices to contractors, and pre-qualification notices across all agencies."
-    return render_template("opportunity_list.html", **ctx)
-
-
-@app.route("/notices/construction")
-def notices_construction():
-    ctx = _opp_list_view("public_notice", notice_subtype="construction")
-    ctx["page_title"] = "Public Notices - Construction"
-    ctx["page_desc"] = "Legal notices and notices to contractors related to construction work."
-    return render_template("opportunity_list.html", **ctx)
-
-
-@app.route("/notices/professional-services")
-def notices_profserv():
-    ctx = _opp_list_view("public_notice", notice_subtype="professional_services")
-    ctx["page_title"] = "Public Notices - Professional Services"
-    ctx["page_desc"] = "Legal notices and public advertisements related to professional services solicitations."
     return render_template("opportunity_list.html", **ctx)
 
 
