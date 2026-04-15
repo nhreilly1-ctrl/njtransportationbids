@@ -1,0 +1,242 @@
+[
+  {
+    "source_id": "state-njdot-construction",
+    "history": [
+      {
+        "at": "2026-04-15T02:38:39.343841+00:00",
+        "count": 0,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:10.870677+00:00",
+        "count": 0,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:05.669473+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:05.669438+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-njdot-profserv",
+    "history": [
+      {
+        "at": "2026-04-15T02:38:42.161185+00:00",
+        "count": 23,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:13.478374+00:00",
+        "count": 23,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:08.331618+00:00",
+        "count": 23,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:08.331584+00:00",
+    "last_count": 23,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-njdot-notices",
+    "history": [
+      {
+        "at": "2026-04-15T02:38:44.371892+00:00",
+        "count": 0,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:15.571542+00:00",
+        "count": 0,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:10.391579+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:10.391549+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-njta",
+    "history": [
+      {
+        "at": "2026-04-15T02:38:46.771963+00:00",
+        "count": 34,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:17.851825+00:00",
+        "count": 34,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:12.678675+00:00",
+        "count": 35,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:12.678643+00:00",
+    "last_count": 35,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-njtransit",
+    "history": [
+      {
+        "at": "2026-04-15T02:38:50.496510+00:00",
+        "count": 0,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:26.452431+00:00",
+        "count": 0,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:16.241197+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:16.241158+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-drjtbc-construction",
+    "history": [
+      {
+        "at": "2026-04-15T02:38:53.847703+00:00",
+        "count": 3,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:28.712577+00:00",
+        "count": 3,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:18.555763+00:00",
+        "count": 3,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:18.555725+00:00",
+    "last_count": 3,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-drjtbc-profserv",
+    "history": [
+      {
+        "at": "2026-04-15T02:38:57.143655+00:00",
+        "count": 6,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:31.004254+00:00",
+        "count": 6,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:20.900501+00:00",
+        "count": 6,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:20.900469+00:00",
+    "last_count": 6,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-dos-legal",
+    "history": [
+      {
+        "at": "2026-04-15T02:38:59.469721+00:00",
+        "count": 2,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:33.219375+00:00",
+        "count": 2,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:23.218782+00:00",
+        "count": 2,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:23.218750+00:00",
+    "last_count": 2,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-sjta",
+    "history": [
+      {
+        "at": "2026-04-15T02:39:01.928474+00:00",
+        "count": 0,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:35.354551+00:00",
+        "count": 0,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:25.330755+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:25.330710+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-treasury",
+    "history": [
+      {
+        "at": "2026-04-15T02:39:04.116736+00:00",
+        "count": 2,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:40:37.530403+00:00",
+        "count": 2,
+        "error": null
+      },
+      {
+        "at": "2026-04-15T02:43:27.566411+00:00",
+        "count": 2,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-04-15T02:43:27.566382+00:00",
+    "last_count": 2,
+    "last_error": null,
+    "health": "ok"
+  }
+]
