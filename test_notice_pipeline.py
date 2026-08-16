@@ -208,6 +208,14 @@ class PublicSeoTests(unittest.TestCase):
         self.assertNotIn("/opportunities/expired-bid", xml)
         self.assertNotIn("<loc>https://www.njtransportationbids.com/notices</loc>", xml)
 
+    def test_google_verification_file_is_served_at_site_root(self):
+        response = app_main.app.test_client().get("/google0a60cf7052b4fd95.html")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.get_data(as_text=True).strip(),
+            "google-site-verification: google0a60cf7052b4fd95.html",
+        )
+
     def test_detail_metadata_structured_data_and_calendar(self):
         client = app_main.app.test_client()
         with patch.object(app_main, "load_public_opps", return_value=[self.active]):

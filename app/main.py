@@ -865,6 +865,14 @@ def robots_txt():
     return Response(body, mimetype="text/plain")
 
 
+@app.route("/google0a60cf7052b4fd95.html")
+def google_site_verification():
+    return Response(
+        "google-site-verification: google0a60cf7052b4fd95.html\n",
+        mimetype="text/html",
+    )
+
+
 @app.route("/sitemap.xml")
 def sitemap_xml():
     paths = [
