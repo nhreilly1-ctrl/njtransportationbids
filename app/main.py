@@ -288,7 +288,7 @@ def admin_required(view):
 
 
 def use_db_backend() -> bool:
-    backend = os.environ.get("DATA_BACKEND", "database").strip().lower()
+    backend = os.environ.get("DATA_BACKEND", "file").strip().lower()
     return backend != "file" and bool(os.environ.get("DATABASE_URL"))
 
 
