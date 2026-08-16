@@ -733,11 +733,16 @@ def enrich(opp: dict) -> dict:
             record["status"] = "deleted"
         elif record.get("noise_flagged"):
             record["status"] = "noise"
+        elif record.get("source_inactive"):
+            record["status"] = "expired"
+        elif record.get("is_planned") or record.get("status") == "upcoming":
+            record["status"] = "upcoming"
         elif due and due < date.today():
             record["status"] = "expired"
-        else:
-            # Notices without a published due date remain discoverable.
+        elif due or record.get("status") == "open" or record.get("source_status") in ("open", "advertised", "current"):
             record["status"] = "open"
+        else:
+            record["status"] = "unknown_date"
         record["record_type"] = record.get("notice_type") or "uncategorized"
         record["notice_subtype"] = record.get("notice_subtype")
         return record
@@ -799,6 +804,9 @@ def group_by_urgency(opps: list[dict]) -> tuple[list[dict], list[dict], list[dic
     cutoff = today + timedelta(days=14)
     soon, later, nodate = [], [], []
     for opp in opps:
+        if opp.get("status") == "upcoming":
+            later.append(opp)
+            continue
         if opp.get("due_date_parsed"):
             due = date.fromisoformat(opp["due_date_parsed"])
             if due <= cutoff:
@@ -832,7 +840,7 @@ def health():
 def index():
     opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted", "disabled")]
-    active = [opp for opp in opps if opp["status"] == "open"]
+    active = [opp for opp in opps if opp["status"] in ("open", "upcoming")]
     expiring = [
         opp
         for opp in sort_opps(active)
@@ -857,9 +865,9 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
     q = request.args.get("q", "").lower()
 
     def keep(opp: dict) -> bool:
-        if status == "active" and opp["status"] != "open":
+        if status == "active" and opp["status"] not in ("open", "upcoming"):
             return False
-        if status == "all" and opp["status"] not in ("open", "review_required", "ai_review"):
+        if status == "all" and opp["status"] not in ("open", "upcoming", "review_required", "ai_review"):
             return False
         if status == "review" and opp["status"] not in ("review_required", "ai_review"):
             return False
@@ -943,7 +951,8 @@ def sources():
         source["total"] = len(related)
         source["noise"] = len([opp for opp in related if opp["status"] == "noise"])
         source["expired"] = len([opp for opp in related if opp["status"] == "expired"])
-        source["open"] = len([opp for opp in related if opp["status"] == "open"])
+        source["open"] = len([opp for opp in related if opp["status"] in ("open", "upcoming")])
+        source["upcoming"] = len([opp for opp in related if opp["status"] == "upcoming"])
         source["review_required"] = len([opp for opp in related if opp["status"] == "review_required"])
         source["ai_review"] = len([opp for opp in related if opp["status"] == "ai_review"])
         ratio = source["noise"] / max(source["total"], 1)
@@ -957,7 +966,7 @@ def export_csv():
     ids = request.args.get("ids", "")
     selected = {item for item in ids.split(",") if item}
     opps = [enrich(opp) for opp in load_public_opps()]
-    opps = [opp for opp in opps if opp["status"] == "open"]
+    opps = [opp for opp in opps if opp["status"] in ("open", "upcoming")]
     if selected:
         opps = [opp for opp in opps if str(opp.get("id")) in selected]
 

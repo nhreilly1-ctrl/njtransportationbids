@@ -26,10 +26,20 @@
         "at": "2026-08-16T17:39:42.161064+00:00",
         "count": 5,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:16:14.483177+00:00",
+        "count": 5,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:04.940439+00:00",
+        "count": 13,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:42.161045+00:00",
-    "last_count": 5,
+    "last_crawl": "2026-08-16T18:22:04.940439+00:00",
+    "last_count": 13,
     "last_error": null,
     "health": "ok"
   },
@@ -60,9 +70,19 @@
         "at": "2026-08-16T17:39:44.256061+00:00",
         "count": 22,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:16:17.005231+00:00",
+        "count": 22,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:08.103401+00:00",
+        "count": 22,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:44.256046+00:00",
+    "last_crawl": "2026-08-16T18:22:08.103401+00:00",
     "last_count": 22,
     "last_error": null,
     "health": "ok"
@@ -94,12 +114,22 @@
         "at": "2026-08-16T17:39:45.809199+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:16:23.331344+00:00",
+        "count": 0,
+        "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:15.176101+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:45.809182+00:00",
-    "last_count": 0,
-    "last_error": "zero_records",
-    "health": "error"
+    "last_crawl": "2026-08-16T18:22:15.176101+00:00",
+    "last_count": 1,
+    "last_error": null,
+    "health": "ok"
   },
   {
     "source_id": "state-njta",
@@ -128,10 +158,25 @@
         "at": "2026-08-16T17:39:47.475763+00:00",
         "count": 34,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:16:25.149081+00:00",
+        "count": 8,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:16.949970+00:00",
+        "count": 8,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:25:46.995399+00:00",
+        "count": 8,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:47.475742+00:00",
-    "last_count": 34,
+    "last_crawl": "2026-08-16T18:25:46.995399+00:00",
+    "last_count": 8,
     "last_error": null,
     "health": "ok"
   },
@@ -162,12 +207,22 @@
         "at": "2026-08-16T17:39:49.977878+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:16:37.420757+00:00",
+        "count": 9,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:24.969422+00:00",
+        "count": 9,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:49.977861+00:00",
-    "last_count": 0,
-    "last_error": "zero_records",
-    "health": "error"
+    "last_crawl": "2026-08-16T18:22:24.969422+00:00",
+    "last_count": 9,
+    "last_error": null,
+    "health": "ok"
   },
   {
     "source_id": "state-drjtbc-construction",
@@ -196,10 +251,20 @@
         "at": "2026-08-16T17:39:52.535943+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:16:41.411159+00:00",
+        "count": 1,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:27.170119+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:52.535928+00:00",
-    "last_count": 2,
+    "last_crawl": "2026-08-16T18:22:27.170119+00:00",
+    "last_count": 1,
     "last_error": null,
     "health": "ok"
   },
@@ -230,10 +295,20 @@
         "at": "2026-08-16T17:39:54.146766+00:00",
         "count": 6,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:16:44.138359+00:00",
+        "count": 5,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:28.919838+00:00",
+        "count": 5,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:54.146749+00:00",
-    "last_count": 6,
+    "last_crawl": "2026-08-16T18:22:28.919838+00:00",
+    "last_count": 5,
     "last_error": null,
     "health": "ok"
   },
@@ -264,10 +339,20 @@
         "at": "2026-08-16T17:39:55.786889+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:16:46.441902+00:00",
+        "count": 0,
+        "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:30.707245+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:55.786872+00:00",
-    "last_count": 2,
+    "last_crawl": "2026-08-16T18:22:30.707245+00:00",
+    "last_count": 0,
     "last_error": null,
     "health": "ok"
   },
@@ -298,12 +383,22 @@
         "at": "2026-08-16T17:39:57.591660+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:16:48.194314+00:00",
+        "count": 0,
+        "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:34.229227+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:57.591636+00:00",
+    "last_crawl": "2026-08-16T18:22:34.229227+00:00",
     "last_count": 0,
-    "last_error": "zero_records",
-    "health": "error"
+    "last_error": null,
+    "health": "ok"
   },
   {
     "source_id": "state-treasury",
@@ -322,10 +417,15 @@
         "at": "2026-04-15T02:43:27.566411+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:16:50.078705+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:27.566382+00:00",
-    "last_count": 2,
+    "last_crawl": "2026-08-16T18:16:50.078705+00:00",
+    "last_count": 1,
     "last_error": null,
     "health": "ok"
   },
@@ -341,10 +441,15 @@
         "at": "2026-08-16T17:39:59.372397+00:00",
         "count": 94,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:36.136353+00:00",
+        "count": 4,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:39:59.372382+00:00",
-    "last_count": 94,
+    "last_crawl": "2026-08-16T18:22:36.136353+00:00",
+    "last_count": 4,
     "last_error": null,
     "health": "ok"
   },
@@ -360,10 +465,20 @@
         "at": "2026-08-16T17:40:01.329746+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:38.230620+00:00",
+        "count": 4,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:24:23.852159+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:40:01.329728+00:00",
-    "last_count": 3,
+    "last_crawl": "2026-08-16T18:24:23.852159+00:00",
+    "last_count": 1,
     "last_error": null,
     "health": "ok"
   },
@@ -379,12 +494,17 @@
         "at": "2026-08-16T17:40:03.233946+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:40.132544+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:03.233930+00:00",
-    "last_count": 3,
-    "last_error": null,
-    "health": "ok"
+    "last_crawl": "2026-08-16T18:22:40.132544+00:00",
+    "last_count": 0,
+    "last_error": "zero_records",
+    "health": "error"
   },
   {
     "source_id": "county-bergen",
@@ -398,9 +518,14 @@
         "at": "2026-08-16T17:40:04.839584+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:41.787023+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:04.839568+00:00",
+    "last_crawl": "2026-08-16T18:22:41.787023+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -417,9 +542,14 @@
         "at": "2026-08-16T17:40:06.787166+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:43.844186+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:06.787151+00:00",
+    "last_crawl": "2026-08-16T18:22:43.844186+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -436,9 +566,14 @@
         "at": "2026-08-16T17:40:09.522465+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:46.638080+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:09.522449+00:00",
+    "last_crawl": "2026-08-16T18:22:46.638080+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -455,12 +590,17 @@
         "at": "2026-08-16T17:40:12.333102+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:49.437119+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:12.333086+00:00",
-    "last_count": 2,
-    "last_error": null,
-    "health": "ok"
+    "last_crawl": "2026-08-16T18:22:49.437119+00:00",
+    "last_count": 0,
+    "last_error": "zero_records",
+    "health": "error"
   },
   {
     "source_id": "county-middlesex",
@@ -474,9 +614,14 @@
         "at": "2026-08-16T17:40:14.205472+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:51.371505+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:14.205457+00:00",
+    "last_crawl": "2026-08-16T18:22:51.371505+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -493,9 +638,14 @@
         "at": "2026-08-16T17:40:16.237374+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:53.610691+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:16.237359+00:00",
+    "last_crawl": "2026-08-16T18:22:53.610691+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -512,12 +662,17 @@
         "at": "2026-08-16T17:40:18.057600+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:55.689425+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:18.057584+00:00",
-    "last_count": 2,
-    "last_error": null,
-    "health": "ok"
+    "last_crawl": "2026-08-16T18:22:55.689425+00:00",
+    "last_count": 0,
+    "last_error": "zero_records",
+    "health": "error"
   },
   {
     "source_id": "county-ocean",
@@ -531,12 +686,17 @@
         "at": "2026-08-16T17:40:19.809483+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:57.584614+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:19.809468+00:00",
-    "last_count": 1,
-    "last_error": null,
-    "health": "ok"
+    "last_crawl": "2026-08-16T18:22:57.584614+00:00",
+    "last_count": 0,
+    "last_error": "zero_records",
+    "health": "error"
   },
   {
     "source_id": "county-mercer",
@@ -550,9 +710,14 @@
         "at": "2026-08-16T17:40:21.657150+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:22:59.276469+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:21.657136+00:00",
+    "last_crawl": "2026-08-16T18:22:59.276469+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -569,9 +734,14 @@
         "at": "2026-08-16T17:40:23.249291+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:23:01.005028+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:23.249274+00:00",
+    "last_crawl": "2026-08-16T18:23:01.005028+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -588,9 +758,14 @@
         "at": "2026-08-16T17:40:25.086945+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-16T18:23:03.001806+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T17:40:25.086929+00:00",
+    "last_crawl": "2026-08-16T18:23:03.001806+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -607,10 +782,48 @@
         "at": "2026-08-16T17:40:26.982024+00:00",
         "count": 5,
         "error": null
+      },
+      {
+        "at": "2026-08-16T18:23:05.010457+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T17:40:26.982008+00:00",
-    "last_count": 5,
+    "last_crawl": "2026-08-16T18:23:05.010457+00:00",
+    "last_count": 2,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-njdot-profserv-upcoming",
+    "history": [
+      {
+        "at": "2026-08-16T18:16:21.603925+00:00",
+        "count": 64,
+        "error": null
+      },
+      {
+        "at": "2026-08-16T18:22:13.453964+00:00",
+        "count": 64,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T18:22:13.453964+00:00",
+    "last_count": 64,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "state-njdot-design-build",
+    "history": [
+      {
+        "at": "2026-08-16T18:22:09.787974+00:00",
+        "count": 2,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T18:22:09.787974+00:00",
+    "last_count": 2,
     "last_error": null,
     "health": "ok"
   }

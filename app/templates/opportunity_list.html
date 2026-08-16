@@ -25,8 +25,8 @@
     {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
   </select>
   <select name="status" onchange="this.form.submit()">
-    <option value="active"  {{ 'selected' if selected_status == 'active' }}>Open only</option>
-    <option value="all"     {{ 'selected' if selected_status == 'all' }}>Open + review queues</option>
+    <option value="active"  {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
+    <option value="all"     {{ 'selected' if selected_status == 'all' }}>Active + review queues</option>
     <option value="review"  {{ 'selected' if selected_status == 'review' }}>Review queues only</option>
     <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired only</option>
   </select>
@@ -40,7 +40,7 @@
 {% macro bid_card(o) %}
   {% set is_soon = o.due_date_parsed and o.due_date_parsed <= soon_cutoff and o.status == 'open' %}
   <div class="bid-card {{ 'soon' if is_soon }}">
-    <div class="bid-dot {{ 'dot-green' if o.status == 'open' }} {{ 'dot-amber' if o.status in ('review_required', 'ai_review') }} {{ 'dot-gray' if o.status == 'expired' }} {{ 'dot-red' if o.status == 'noise' }}"></div>
+    <div class="bid-dot {{ 'dot-green' if o.status == 'open' }} {{ 'dot-amber' if o.status in ('upcoming', 'review_required', 'ai_review') }} {{ 'dot-gray' if o.status == 'expired' }} {{ 'dot-red' if o.status == 'noise' }}"></div>
     <div class="bid-main">
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
       <div class="bid-meta">
@@ -53,6 +53,7 @@
       </div>
       <div class="bid-tags">
         {% if o.status == 'open' %}<span class="badge badge-open">Open</span>
+        {% elif o.status == 'upcoming' %}<span class="badge badge-type-p">Upcoming</span>
         {% elif o.status == 'review_required' %}<span class="badge badge-nodate">Review required</span>
         {% elif o.status == 'ai_review' %}<span class="badge badge-type-p">AI review</span>
         {% elif o.status == 'expired' %}<span class="badge badge-expired">Expired</span>{% endif %}
@@ -62,7 +63,7 @@
     </div>
     <div class="bid-due {{ 'soon-due' if is_soon }}">
       {% if o.due_date_raw and o.due_date_raw not in ('Not listed','-', '') %}
-        <span class="due-label">Due</span><span class="due-date">{{ o.due_date_raw }}</span>
+        <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ o.due_date_raw }}</span>
       {% else %}
         <span class="due-date" style="color:var(--text3); font-weight:400;">No date</span>
       {% endif %}
@@ -71,7 +72,7 @@
 {% endmacro %}
 
 {% if soon %}<div class="section-label">Due within 14 days</div>{% for o in soon %}{{ bid_card(o) }}{% endfor %}{% endif %}
-{% if later %}<div class="section-label">{{ 'Upcoming' if soon else 'Open' }}</div>{% for o in later %}{{ bid_card(o) }}{% endfor %}{% endif %}
+{% if later %}<div class="section-label">Open and upcoming</div>{% for o in later %}{{ bid_card(o) }}{% endfor %}{% endif %}
 {% if nodate %}<div class="section-label">Queued for review</div>{% for o in nodate %}{{ bid_card(o) }}{% endfor %}{% endif %}
 
 {% if not soon and not later and not nodate %}

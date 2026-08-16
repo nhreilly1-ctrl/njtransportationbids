@@ -22,6 +22,7 @@
       <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }}{% if opp.county %} &middot; {{ opp.county }}{% endif %}</div>
       <div style="display:flex; gap:7px; flex-wrap:wrap;">
         {% if opp.status == 'open' %}<span class="badge badge-open">Open</span>
+        {% elif opp.status == 'upcoming' %}<span class="badge badge-type-p">Upcoming</span>
         {% elif opp.status == 'expired' %}<span class="badge badge-expired">Expired</span>
         {% elif opp.status == 'unknown_date' %}<span class="badge badge-nodate">No due date</span>{% endif %}
         {% if opp.record_type == 'construction' %}<span class="badge badge-type-c">Construction Bid</span>
@@ -33,7 +34,7 @@
     </div>
     {% if opp.due_date_raw and opp.due_date_raw != 'Not listed' %}
     <div style="text-align:right; flex-shrink:0;">
-      <div style="font-size:11px; color:var(--text3);">Due date</div>
+      <div style="font-size:11px; color:var(--text3);">{{ 'Expected' if opp.status == 'upcoming' else 'Due date' }}</div>
       <div style="font-size:20px; font-weight:500; {{ 'color:var(--red)' if opp.status == 'expired' else '' }}">{{ opp.due_date_raw }}</div>
     </div>
     {% endif %}

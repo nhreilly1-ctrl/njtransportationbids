@@ -19,12 +19,15 @@ Output notice dict shape:
   }
 """
 
-import re, hashlib, time, logging
-from datetime import datetime, timezone
+import io, re, hashlib, time, logging
+from datetime import date, datetime, timezone
+from difflib import SequenceMatcher
 from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
+from openpyxl import load_workbook
+from pypdf import PdfReader
 
 log = logging.getLogger(__name__)
 
@@ -74,23 +77,50 @@ def _excerpt(text, chars=400):
     return cut + "..."
 
 # Transportation keyword filter — applied to municipal/county generic crawls
-TRANSPORT_KW = [
+PROFESSIONAL_SCOPE_KW = [
+    "architectural", "architecture", "engineering services",
+    "engineering assistance", "engineering support", "engineering design",
+    "construction management", "construction inspection", "bridge inspection",
+    "design services", "surveying services", "traffic engineering",
+    "transportation planning", "corridor plan", "program management",
+    "cost estimating", "constructability", "geotechnical", "structural evaluation",
+]
+
+CONSTRUCTION_SCOPE_KW = [
     "roadway", "road improvement", "road resurfacing", "road repair",
     "bridge", "culvert", "drainage", "pavement", "paving", "milling",
     "overlay", "curb", "sidewalk", "intersection", "signal",
     "guardrail", "guide rail", "highway", "transportation",
-    "engineering services", "construction inspection", "cei",
-    "professional services", "rfp", "rfq", "design services",
-    "structural", "geotechnical", "survey", "environmental",
     "traffic", "streetscape", "resurfacing", "reconstruction",
-    "maintenance contract", "joc", "job order contract",
-    "notice to bidders", "notice to contractors", "legal notice",
-    "bid solicitation", "bid opening", "sealed bids",
+    "maintenance contract", "job order contract", "rail rehabilitation",
+    "track rehabilitation", "station rehabilitation", "platform lift",
+    "structural repair", "hvac overhaul", "tank installation", "ferry retrofit",
 ]
 
+SCOPE_EXCLUSIONS = [
+    "advertising management", "ticket stock", "cleaning services",
+    "broker dealer", "towing and recovery", "office supplies",
+    "software subscription", "insurance services", "legal services",
+    "purchase and delivery", "parts and supplies",
+]
+
+
+def _classify_transport_scope(title, body=""):
+    text = f"{title} {body}".lower()
+    def has_keyword(keyword):
+        return re.search(rf"(?<!\w){re.escape(keyword)}(?!\w)", text) is not None
+
+    if any(has_keyword(keyword) for keyword in SCOPE_EXCLUSIONS):
+        return None
+    if any(has_keyword(keyword) for keyword in PROFESSIONAL_SCOPE_KW):
+        return "professional_services"
+    if any(has_keyword(keyword) for keyword in CONSTRUCTION_SCOPE_KW):
+        return "construction"
+    return None
+
+
 def _is_transport_relevant(title, body=""):
-    text = (title + " " + body).lower()
-    return any(kw in text for kw in TRANSPORT_KW)
+    return _classify_transport_scope(title, body) is not None
 
 
 # ── NJDOT Construction ────────────────────────────────────────────────────────
@@ -118,13 +148,63 @@ def parse_njdot_construction(source):
             if values[0].lower() in {"letting date", "contract no", "contract number"}:
                 continue
             if len(values) == 2:
-                let_date, description = values
-                contract_no, counties = "", "Statewide"
-            else:
-                contract_no = values[0]
-                description = values[1]
-                counties = values[2] or "Statewide"
-                let_date = values[3] if len(values) > 3 else ""
+                let_date = values[0]
+                project_blocks = [
+                    block for block in cells[1].find_all("p", recursive=False)
+                    if _clean(block.get_text(" ", strip=True))
+                ] or [cells[1]]
+
+                for block in project_blocks:
+                    raw_description = _clean(block.get_text(" ", strip=True))
+                    if len(raw_description) < 20 or raw_description.lower().startswith("the bid date change"):
+                        continue
+                    if not re.search(r"\b(?:contract|project|route|maintenance|bridge|pavement|vegetation)\b", raw_description, re.I):
+                        continue
+
+                    changed_date = re.search(
+                        r"date for receipt of bids is changed to\s+"
+                        r"((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\.?\s+\d{1,2},?\s+\d{4})",
+                        raw_description,
+                        re.I,
+                    )
+                    project_due = changed_date.group(1) if changed_date else let_date
+                    description = re.sub(
+                        r"\s*[-\u2013\u2014]\s*The date for receipt of Bids is CHANGED.*$",
+                        "",
+                        raw_description,
+                        flags=re.I,
+                    ).strip()
+                    contract_match = re.search(r"\bContract\s+(?:No\.?|#)\s*([A-Z0-9.-]+)", description, re.I)
+                    contract_no = contract_match.group(1) if contract_match else ""
+                    link = block.find("a", href=True)
+                    official_url = urljoin(source["url"], link["href"]) if link else source["url"]
+
+                    records.append({
+                        "id": _make_id(source["id"], description),
+                        "title": description,
+                        "notice_excerpt": f"NJDOT construction contract. {description}",
+                        "source_id": source["id"],
+                        "source_name": source["name"],
+                        "source_tier": source["source_tier"],
+                        "source_url": source["url"],
+                        "official_url": official_url,
+                        "county": "Statewide",
+                        "entity_type": source["entity_type"],
+                        "notice_type": "construction",
+                        "notice_subtype": "construction",
+                        "due_date_raw": project_due,
+                        "contract_number": contract_no,
+                        "access_type": source["access_type"],
+                        "platform": source["platform"],
+                        "paywalled": False,
+                        "source_status": "open",
+                        "crawled_at": _now(),
+                    })
+                continue
+            contract_no = values[0]
+            description = values[1]
+            counties = values[2] or "Statewide"
+            let_date = values[3] if len(values) > 3 else ""
 
             # Get download link
             link = cells[-1].find("a") if cells else None
@@ -221,11 +301,25 @@ def parse_njdot_profserv(source):
             cells = row.find_all(["td","th"])
             if len(cells) < 4: continue
 
-            tp_num      = _clean(cells[0].get_text())
-            due_date    = _clean(cells[1].get_text())
-            discipline  = _clean(cells[2].get_text()) if len(cells) > 2 else ""
-            description = _clean(cells[3].get_text()) if len(cells) > 3 else ""
-            status      = _clean(cells[-1].get_text()) if cells else ""
+            values = [_clean(cell.get_text(" ", strip=True)) for cell in cells]
+            if values[0].lower() == "tp number":
+                continue
+
+            tp_num = values[0]
+            # Current layout: TP Number | Posting Date | Project Type |
+            # Project Description | Status | Due Date.
+            if len(values) >= 6:
+                posting_date = values[1]
+                discipline = values[2]
+                description = values[3]
+                status = values[4]
+                due_date = values[5]
+            else:
+                posting_date = ""
+                due_date = values[1]
+                discipline = values[2]
+                description = values[3]
+                status = values[-1]
 
             # Parse discipline codes like "B-1 Level A H-1 Level B"
             codes = re.findall(r'[A-Z]-\d+', discipline + " " + description)
@@ -254,6 +348,8 @@ def parse_njdot_profserv(source):
                 "notice_type":    "professional_services",
                 "notice_subtype": "professional_services",
                 "due_date_raw":   due_date,
+                "posting_date_raw": posting_date,
+                "source_status": status,
                 "contract_number":tp_num,
                 "prequal_codes":  codes,
                 "access_type":    source["access_type"],
@@ -263,6 +359,196 @@ def parse_njdot_profserv(source):
             })
 
     log.info(f"NJDOT prof services: {len(records)} records")
+    return records
+
+
+def _anticipated_period_end(raw):
+    """Return an approximate period end for NJDOT seasonal schedules."""
+    match = re.search(r"\b(spring|summer|fall|winter)\s+(20)?(\d{2})\b", raw or "", re.I)
+    if not match:
+        return None
+    season = match.group(1).lower()
+    year = int((match.group(2) or "20") + match.group(3))
+    month_day = {
+        "spring": (6, 30),
+        "summer": (9, 30),
+        "fall": (12, 31),
+        "winter": (3, 31),
+    }[season]
+    return date(year, *month_day)
+
+
+def parse_njdot_profserv_upcoming(source):
+    """Parse NJDOT's official anticipated professional-services workbooks."""
+    records = []
+    seen = set()
+    page = _get(source["url"])
+    if not page:
+        return records
+
+    soup = _soup(page.text)
+    current_descriptions = []
+    current_url = source.get("current_url")
+    if current_url:
+        current_page = _get(current_url)
+        if current_page:
+            current_soup = _soup(current_page.text)
+            for row in current_soup.find_all("tr"):
+                cells = row.find_all("td")
+                if len(cells) >= 4:
+                    current_descriptions.append(_clean(cells[3].get_text(" ", strip=True)).lower())
+    workbook_urls = [
+        urljoin(source["url"], link["href"])
+        for link in soup.find_all("a", href=True)
+        if link["href"].lower().endswith(".xlsx")
+    ]
+
+    for workbook_url in workbook_urls:
+        response = _get(workbook_url, timeout=30)
+        if not response:
+            continue
+        try:
+            workbook = load_workbook(io.BytesIO(response.content), data_only=True, read_only=True)
+        except Exception as exc:
+            log.warning(f"Unable to parse NJDOT anticipated workbook {workbook_url}: {exc}")
+            continue
+
+        for sheet in workbook.worksheets:
+            for row in sheet.iter_rows(values_only=True):
+                values = [str(value).strip() if value is not None else "" for value in row]
+                if len(values) < 7:
+                    continue
+                work_type, description = values[2], values[3]
+                county, funding, schedule = values[4], values[5], values[6]
+                period_end = _anticipated_period_end(schedule)
+                if not description or not period_end or period_end < date.today():
+                    continue
+                if work_type.lower() in {"none", "none at this time", "tbd"}:
+                    continue
+
+                key = re.sub(r"\W+", " ", f"{work_type} {description}".lower()).strip()
+                if key in seen:
+                    continue
+                normalized_description = re.sub(r"\W+", " ", description.lower()).strip()
+                if any(
+                    SequenceMatcher(None, normalized_description, current).ratio() >= 0.72
+                    for current in current_descriptions
+                ):
+                    continue
+                seen.add(key)
+                title = f"NJDOT upcoming: {description}"
+                records.append({
+                    "id": _make_id(source["id"], title),
+                    "title": title,
+                    "notice_excerpt": (
+                        f"Anticipated NJDOT professional-services solicitation. "
+                        f"Type: {work_type}. Expected posting: {schedule}. Funding: {funding}."
+                    ),
+                    "source_id": source["id"],
+                    "source_name": source["name"],
+                    "source_tier": source["source_tier"],
+                    "source_url": source["url"],
+                    "official_url": workbook_url,
+                    "county": county or "Statewide",
+                    "entity_type": source["entity_type"],
+                    "notice_type": "professional_services",
+                    "notice_subtype": "professional_services",
+                    "due_date_raw": schedule,
+                    "anticipated_date_raw": schedule,
+                    "contract_number": "",
+                    "access_type": source["access_type"],
+                    "platform": source["platform"],
+                    "paywalled": False,
+                    "is_planned": True,
+                    "source_status": "upcoming",
+                    "crawled_at": _now(),
+                })
+
+    log.info(f"NJDOT anticipated professional services: {len(records)} records")
+    return records
+
+
+def parse_njdot_design_build(source):
+    """Parse active and future projects from NJDOT Alternative Project Delivery."""
+    records = []
+    response = _get(source["url"])
+    if not response:
+        return records
+    soup = _soup(response.text)
+
+    for row in soup.find_all("tr"):
+        cells = row.find_all("td")
+        values = [_clean(cell.get_text(" ", strip=True)) for cell in cells]
+        if len(values) < 3 or not values[0].upper().startswith("DB"):
+            continue
+        contract_match = re.match(r"DB\D{0,3}(\d+)", values[0], re.I)
+        contract_no = f"DB-{contract_match.group(1)}" if contract_match else ""
+        project = values[2]
+        if not project:
+            continue
+        # A populated best-value selection means the procurement is complete.
+        if len(values) >= 6 and values[5]:
+            continue
+        link = cells[0].find("a", href=True)
+        official_url = urljoin(source["url"], link["href"]) if link else source["url"]
+        title = f"NJDOT {contract_no} - {project}"
+        records.append({
+            "id": _make_id(source["id"], title, contract_no),
+            "title": title,
+            "notice_excerpt": _excerpt(f"NJDOT design-build opportunity. {values[0]}. {values[1]}"),
+            "source_id": source["id"],
+            "source_name": source["name"],
+            "source_tier": source["source_tier"],
+            "source_url": source["url"],
+            "official_url": official_url,
+            "county": "Statewide",
+            "entity_type": source["entity_type"],
+            "notice_type": "construction",
+            "notice_subtype": "construction",
+            "due_date_raw": "",
+            "contract_number": contract_no,
+            "access_type": source["access_type"],
+            "platform": source["platform"],
+            "paywalled": False,
+            "source_status": "open",
+            "crawled_at": _now(),
+        })
+
+    page_text = _clean(soup.get_text(" ", strip=True))
+    future_match = re.search(
+        r"Project Name:\s*(.+?)\s+Location:\s*(.+?)\s+Project Type:\s*(.+?)\s+Schedule:\s*(.+?)(?:Future|About NJDOT|$)",
+        page_text,
+        re.I,
+    )
+    if future_match:
+        project, location, project_type, schedule = future_match.groups()
+        schedule = re.sub(r"\s+NJDOT.*$", "", schedule, flags=re.I).strip()
+        title = f"NJDOT upcoming design-build: {project}"
+        records.append({
+            "id": _make_id(source["id"], title),
+            "title": title,
+            "notice_excerpt": f"Future NJDOT design-build project. Type: {project_type}. Location: {location}.",
+            "source_id": source["id"],
+            "source_name": source["name"],
+            "source_tier": source["source_tier"],
+            "source_url": source["url"],
+            "official_url": source["url"],
+            "county": "Mercer" if "Mercer" in location else "Statewide",
+            "entity_type": source["entity_type"],
+            "notice_type": "construction",
+            "notice_subtype": "construction",
+            "due_date_raw": schedule,
+            "anticipated_date_raw": schedule,
+            "contract_number": "",
+            "access_type": source["access_type"],
+            "platform": source["platform"],
+            "paywalled": False,
+            "is_planned": True,
+            "source_status": "upcoming",
+            "crawled_at": _now(),
+        })
+
+    log.info(f"NJDOT design-build: {len(records)} open/upcoming records")
     return records
 
 
@@ -304,17 +590,32 @@ def parse_njta(source):
         )
         due_date = date_match.group(0) if date_match else ""
 
-        # Determine type
-        is_profserv = any(kw in text.lower() for kw in [
-            "professional services", "engineering services", "ops no", "order for professional",
-            "design services", "inspection services", "t4", "p4", "p3"
-        ])
-        notice_type = "professional_services" if is_profserv else "construction"
+        lower = text.lower()
+        if "engineering professional services" in lower:
+            notice_type = "professional_services"
+        elif "construction & maintenance" in lower or "construction and maintenance" in lower:
+            notice_type = "construction"
+        else:
+            continue
 
-        # Skip non-transportation items
-        if not _is_transport_relevant(text): continue
-
-        title = text[:200]
+        status_match = re.search(r"\b(Open|Closed)\b", text, re.I)
+        if not status_match or not due_date:
+            continue
+        source_status = status_match.group(1).lower() if status_match else ""
+        title = re.sub(
+            r"^(?:\w+\s+\d{1,2},\s+\d{4}\s+)?(?:Open|Closed)\s+",
+            "",
+            text,
+            flags=re.I,
+        )
+        title = re.sub(
+            r"(?:Engineering Professional Services|Construction\s*(?:&|and)\s*Maintenance).*$",
+            "",
+            title,
+            flags=re.I,
+        ).strip()[:250]
+        if len(title) < 12:
+            continue
         records.append({
             "id":             _make_id(source["id"], title),
             "title":          title,
@@ -329,6 +630,7 @@ def parse_njta(source):
             "notice_type":    notice_type,
             "notice_subtype": notice_type,
             "due_date_raw":   due_date,
+            "source_status":  source_status,
             "contract_number":contract_no,
             "access_type":    source["access_type"],
             "platform":       source["platform"],
@@ -338,6 +640,222 @@ def parse_njta(source):
 
     log.info(f"NJTA: {len(records)} records")
     return records
+
+
+def _extract_calendar_title(description, contract_no):
+    quoted = re.search(r'["\u201c](.+?)["\u201d]', description)
+    if quoted:
+        return _clean(quoted.group(1).strip(" ."))
+    cleaned = re.sub(r"^(?:Electronic\s+)?(?:Bids?|Proposals?)\s+Due:?\s*", "", description, flags=re.I)
+    if contract_no:
+        cleaned = re.sub(re.escape(contract_no), "", cleaned, count=1, flags=re.I)
+    return _clean(cleaned).strip(" ,-.")[:250]
+
+
+def _parse_njtransit_upcoming_pdf(source, pdf_url):
+    records = []
+    response = _get(pdf_url, timeout=30)
+    if not response:
+        return records
+    try:
+        pages = PdfReader(io.BytesIO(response.content)).pages
+        text = "\n\n".join(page.extract_text() or "" for page in pages)
+    except Exception as exc:
+        log.warning(f"Unable to parse NJ TRANSIT upcoming PDF {pdf_url}: {exc}")
+        return records
+
+    period = ""
+    category = ""
+    for block in re.split(r"\n\s*\n", text):
+        block = _clean(block)
+        if not block:
+            continue
+        period_match = re.search(r"Expected Advertisement:\s*(.+?)(?:Requests|Invitations|$)", block, re.I)
+        if period_match:
+            period = period_match.group(1).strip()
+        if "Requests for Proposals" in block:
+            category = "professional_services"
+        if "Invitations for Bid" in block:
+            category = "construction"
+
+        bullet_match = re.search(r"(?:^|\s)[\u2022\ufffd]\s+(.+)", block)
+        if not bullet_match:
+            continue
+        content = bullet_match.group(1).strip()
+        title = re.split(r"NJ TRANSIT is seeking", content, maxsplit=1, flags=re.I)[0].strip(" .")
+        if not title:
+            continue
+        notice_type = _classify_transport_scope(title, content)
+        if notice_type not in ("construction", "professional_services"):
+            continue
+        if any(exclusion in content.lower() for exclusion in SCOPE_EXCLUSIONS):
+            continue
+
+        records.append({
+            "id": _make_id(source["id"], "upcoming:" + title),
+            "title": f"NJ TRANSIT upcoming: {title}",
+            "notice_excerpt": _excerpt(content),
+            "source_id": source["id"],
+            "source_name": source["name"],
+            "source_tier": source["source_tier"],
+            "source_url": source["url"],
+            "official_url": pdf_url,
+            "county": source.get("county", "Statewide"),
+            "entity_type": source["entity_type"],
+            "notice_type": notice_type,
+            "notice_subtype": notice_type,
+            "due_date_raw": period,
+            "anticipated_date_raw": period,
+            "contract_number": "",
+            "access_type": source["access_type"],
+            "platform": source["platform"],
+            "paywalled": False,
+            "is_planned": True,
+            "source_status": "upcoming",
+            "crawled_at": _now(),
+        })
+    return records
+
+
+def parse_njtransit(source):
+    """Parse future bid/proposal due rows and the upcoming-opportunities PDF."""
+    records = []
+    response = _get(source["url"], timeout=40)
+    if not response:
+        return records
+    soup = _soup(response.text)
+
+    for row in soup.find_all("tr"):
+        cells = row.find_all(["td", "th"])
+        if len(cells) < 4:
+            continue
+        values = [_clean(cell.get_text(" ", strip=True)) for cell in cells]
+        try:
+            due = datetime.strptime(values[0], "%m/%d/%y").date()
+        except ValueError:
+            continue
+        description, contract_no = values[2], values[3]
+        if due < date.today() or not re.search(r"\b(?:electronic )?(?:bids?|proposals?) due\b", description, re.I):
+            continue
+        notice_type = _classify_transport_scope(description)
+        if not notice_type:
+            continue
+        title = _extract_calendar_title(description, contract_no)
+        link = cells[2].find("a", href=True)
+        official_url = urljoin(source["url"], link["href"]) if link else source["url"]
+        records.append({
+            "id": _make_id(source["id"], title, contract_no),
+            "title": f"NJ TRANSIT {contract_no} - {title}" if contract_no else f"NJ TRANSIT - {title}",
+            "notice_excerpt": _excerpt(description),
+            "source_id": source["id"],
+            "source_name": source["name"],
+            "source_tier": source["source_tier"],
+            "source_url": source["url"],
+            "official_url": official_url,
+            "county": source.get("county", "Statewide"),
+            "entity_type": source["entity_type"],
+            "notice_type": notice_type,
+            "notice_subtype": notice_type,
+            "due_date_raw": values[0],
+            "contract_number": contract_no,
+            "access_type": source["access_type"],
+            "platform": source["platform"],
+            "paywalled": False,
+            "source_status": "open",
+            "crawled_at": _now(),
+        })
+
+    upcoming_link = soup.find("a", href=re.compile(r"upcoming.*\.pdf", re.I))
+    if upcoming_link:
+        upcoming = _parse_njtransit_upcoming_pdf(
+            source, urljoin(source["url"], upcoming_link["href"])
+        )
+        open_titles = [record["title"].lower() for record in records]
+        for candidate in upcoming:
+            candidate_title = candidate["title"].replace("NJ TRANSIT upcoming: ", "").lower()
+            if any(SequenceMatcher(None, candidate_title, title).ratio() >= 0.78 for title in open_titles):
+                continue
+            records.append(candidate)
+
+    log.info(f"NJ TRANSIT: {len(records)} open/upcoming records")
+    return records
+
+
+def parse_sjta(source):
+    """Parse active SJTA Bid Express solicitations and exclude goods purchases."""
+    records = []
+    response = _get(source["url"], timeout=30)
+    if not response:
+        raise RuntimeError("SJTA Bid Express page could not be fetched")
+    soup = _soup(response.text)
+
+    for row in soup.find_all("tr"):
+        cells = row.find_all("td")
+        if len(cells) != 2:
+            continue
+        title = _clean(cells[0].get_text(" ", strip=True))
+        deadline = _clean(cells[1].get_text(" ", strip=True))
+        date_match = re.search(r"\b\d{1,2}/\d{1,2}/\d{4}\b", deadline)
+        if not title or not date_match:
+            continue
+        try:
+            due = datetime.strptime(date_match.group(0), "%m/%d/%Y").date()
+        except ValueError:
+            continue
+        if due < date.today():
+            continue
+        notice_type = _classify_transport_scope(title)
+        if not notice_type:
+            continue
+        link = cells[0].find("a", href=True)
+        official_url = urljoin(source["url"], link["href"]) if link else source["url"]
+        contract_match = re.match(r"([A-Z0-9-]+)\s+", title)
+        contract_no = contract_match.group(1) if contract_match else ""
+        records.append({
+            "id": _make_id(source["id"], title, contract_no),
+            "title": f"SJTA {title}",
+            "notice_excerpt": f"South Jersey Transportation Authority solicitation. Deadline: {deadline}.",
+            "source_id": source["id"],
+            "source_name": source["name"],
+            "source_tier": source["source_tier"],
+            "source_url": source["url"],
+            "official_url": official_url,
+            "county": source.get("county", "Atlantic"),
+            "entity_type": source["entity_type"],
+            "notice_type": notice_type,
+            "notice_subtype": notice_type,
+            "due_date_raw": date_match.group(0),
+            "contract_number": contract_no,
+            "access_type": source["access_type"],
+            "platform": source["platform"],
+            "paywalled": False,
+            "source_status": "open",
+            "crawled_at": _now(),
+        })
+
+    log.info(f"SJTA: {len(records)} scoped open records")
+    return records
+
+
+def _extract_pdf_due_date(url):
+    response = _get(url, timeout=30)
+    if not response:
+        return ""
+    try:
+        pages = PdfReader(io.BytesIO(response.content)).pages[:2]
+        text = " ".join(page.extract_text() or "" for page in pages)
+    except Exception as exc:
+        log.warning(f"Unable to read deadline PDF {url}: {exc}")
+        return ""
+
+    month_date = (
+        r"(?:January|February|March|April|May|June|July|August|September|"
+        r"October|November|December)\s+\d{1,2},?\s+\d{4}"
+    )
+    match = re.search(rf"\buntil\b.{{0,140}}?({month_date})", text, re.I | re.S)
+    if not match:
+        match = re.search(rf"\b(?:bids?|proposals?)\s+due\b.{{0,100}}?({month_date})", text, re.I | re.S)
+    return _clean(match.group(1)) if match else ""
 
 
 # ── DRJTBC ────────────────────────────────────────────────────────────────────
@@ -359,7 +877,8 @@ def parse_drjtbc(source):
         title_el = block.find(["h2","h3","h4","strong"])
         if not title_el: continue
         title = _clean(title_el.get_text())
-        if len(title) < 10: continue
+        if len(title) < 10 or title.lower().startswith("current notice"):
+            continue
 
         body = _clean(block.get_text())
         link = block.find("a", href=re.compile(r'\.(pdf|doc|htm)', re.I))
@@ -367,6 +886,8 @@ def parse_drjtbc(source):
 
         date_match = re.search(r'\b\d{1,2}/\d{1,2}/\d{2,4}\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\.?\s+\d{1,2},?\s*\d{4}\b', body, re.I)
         due_date = date_match.group(0) if date_match else ""
+        if not due_date and official_url.lower().endswith(".pdf"):
+            due_date = _extract_pdf_due_date(official_url)
 
         contract_match = re.search(r'\b(?:Contract|DB|C)-?\s*[A-Z0-9]{3,10}\b', body, re.I)
         contract_no = contract_match.group(0) if contract_match else ""
@@ -387,6 +908,7 @@ def parse_drjtbc(source):
             "notice_type":    notice_type,
             "notice_subtype": notice_type,
             "due_date_raw":   due_date,
+            "source_status":  "open",
             "contract_number":contract_no,
             "access_type":    source["access_type"],
             "platform":       source["platform"],
@@ -401,6 +923,7 @@ def parse_drjtbc(source):
             if len(text) < 30 or not _is_transport_relevant(text): continue
             link = p.find("a")
             official_url = urljoin(source["url"], link["href"]) if link and link.get("href") else source["url"]
+            due_date = _extract_pdf_due_date(official_url) if official_url.lower().endswith(".pdf") else ""
             records.append({
                 "id":             _make_id(source["id"], text[:80]),
                 "title":          text[:150],
@@ -414,7 +937,8 @@ def parse_drjtbc(source):
                 "entity_type":    source["entity_type"],
                 "notice_type":    "professional_services" if is_profserv else "construction",
                 "notice_subtype": "professional_services" if is_profserv else "construction",
-                "due_date_raw":   "",
+                "due_date_raw":   due_date,
+                "source_status":  "open",
                 "contract_number":"",
                 "access_type":    source["access_type"],
                 "platform":       source["platform"],
@@ -457,11 +981,10 @@ def parse_nj_dos_legal(source):
         due_date = date_match.group(0) if date_match else ""
 
         # Classify notice subtype
-        is_prof = any(k in text.lower() for k in ["rfp","rfq","professional services","engineering","consultant"])
-        is_constr = any(k in text.lower() for k in ["notice to bidders","notice to contractors","sealed bids","roadway","bridge","paving"])
-        if is_prof:
+        scoped_type = _classify_transport_scope(text)
+        if scoped_type == "professional_services":
             ntype, nsub = "public_notice", "professional_services"
-        elif is_constr:
+        elif scoped_type == "construction":
             ntype, nsub = "public_notice", "construction"
         else:
             ntype, nsub = "public_notice", None
@@ -569,8 +1092,9 @@ def parse_generic_html_list(source):
         contract_no = contract_match.group(0) if contract_match else ""
 
         # Classify
-        is_prof = any(k in text.lower() for k in ["rfp","rfq","professional","engineering","consultant","design"])
-        ntype = "professional_services" if is_prof else "construction"
+        ntype = _classify_transport_scope(text, context)
+        if not ntype:
+            continue
 
         records.append({
             "id":             _make_id(source["id"], text),
@@ -654,8 +1178,9 @@ def parse_essex_county(source):
         date_match = re.search(r'\b\d{1,2}/\d{1,2}/\d{2,4}\b', context)
         due_date = date_match.group(0) if date_match else ""
 
-        is_prof = "rfp" in text.lower() or "rfq" in text.lower()
-        ntype = "professional_services" if is_prof else "construction"
+        ntype = _classify_transport_scope(text, context)
+        if not ntype:
+            continue
 
         records.append({
             "id":             _make_id(source["id"], text),
@@ -704,8 +1229,9 @@ def parse_camden_county(source):
         date_match = re.search(r'\b\d{1,2}/\d{1,2}/\d{2,4}\b|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\.?\s+\d{1,2},?\s*\d{4}\b', context, re.I)
         due_date = date_match.group(0) if date_match else ""
 
-        is_prof = "rfp" in title.lower() or "rfq" in title.lower() or "professional" in title.lower()
-        ntype = "professional_services" if is_prof else "construction"
+        ntype = _classify_transport_scope(title, context)
+        if not ntype:
+            continue
 
         records.append({
             "id":             _make_id(source["id"], title),
@@ -762,8 +1288,9 @@ def parse_monmouth_county(source):
         link = row.find("a", href=True)
         official_url = urljoin(open_bids_url, link["href"]) if link else source["url"]
 
-        is_prof = "rfp" in title.lower() or "rfq" in title.lower()
-        ntype = "professional_services" if is_prof else "construction"
+        ntype = _classify_transport_scope(title)
+        if not ntype:
+            continue
 
         records.append({
             "id":             _make_id(source["id"], title),
@@ -809,8 +1336,9 @@ def parse_gloucester_county(source):
         official_url = urljoin(source["url"], link["href"]) if link else source["url"]
         date_cell = _clean(cells[1].get_text()) if len(cells) > 1 else ""
 
-        is_prof = "rfp" in title.lower() or "rfq" in title.lower()
-        ntype = "professional_services" if is_prof else "construction"
+        ntype = _classify_transport_scope(title, _clean(row.get_text()))
+        if not ntype:
+            continue
 
         records.append({
             "id":             _make_id(source["id"], title),
@@ -863,8 +1391,11 @@ def parse_municipal_from_sos(entity_url, entity_name, county=""):
 PARSER_MAP = {
     "njdot_construction":   parse_njdot_construction,
     "njdot_profserv":       parse_njdot_profserv,
+    "njdot_profserv_upcoming": parse_njdot_profserv_upcoming,
+    "njdot_design_build":  parse_njdot_design_build,
     "njta":                 parse_njta,
-    "njtransit":            parse_generic_html_list,   # NJ TRANSIT calendar
+    "njtransit":            parse_njtransit,
+    "sjta":                 parse_sjta,
     "drjtbc":               parse_drjtbc,
     "nj_dos_legal":         parse_nj_dos_legal,
     "sos_directory":        parse_sos_directory,

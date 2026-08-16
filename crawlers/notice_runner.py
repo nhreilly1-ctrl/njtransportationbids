@@ -47,6 +47,21 @@ CRAWL_LOG_F  = DATA_DIR / "crawl_log.json"
 SOS_ENT_F    = DATA_DIR / "sos_entities.json"
 OPP_F        = BASE / "data" / "opportunities.json"   # legacy file for merge
 
+AUTHORITATIVE_PARSERS = {
+    "njdot_construction",
+    "njdot_profserv",
+    "njdot_profserv_upcoming",
+    "njdot_design_build",
+    "njta",
+    "njtransit",
+    "drjtbc",
+    "sjta",
+    "essex_county",
+    "camden_county",
+    "monmouth_county",
+    "gloucester_county",
+}
+
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -74,41 +89,43 @@ def _dedupe(notices):
     Remove duplicates. Priority:
     1. Exact ID match — keep newer crawled_at
     2. Same (source_id + contract_number) — keep newer
-    3. Title similarity within same source — keep newer
+    3. Same normalized title within a source — keep newer
     """
-    seen_ids     = {}
-    seen_contract = {}
-
-    for n in sorted(notices, key=lambda x: x.get("crawled_at",""), reverse=True):
-        nid = n.get("id","")
-        src = n.get("source_id","")
-        cno = (n.get("contract_number","") or "").strip().upper()
-        title_key = f"{src}:{n.get('title','')[:80].lower()}"
-
-        if nid in seen_ids:
-            continue
-        if cno and f"{src}:{cno}" in seen_contract:
-            continue
-
-        seen_ids[nid] = True
-        if cno:
-            seen_contract[f"{src}:{cno}"] = True
-
-    # Rebuild list in original order, keeping first occurrence
+    # Prefer a currently observed record over an inactive historical copy,
+    # then prefer the newest crawl. This matters when a parser improvement
+    # changes an ID while retaining the same agency contract number.
+    ordered = sorted(
+        notices,
+        key=lambda item: (
+            not item.get("source_inactive", False),
+            item.get("crawled_at", ""),
+        ),
+        reverse=True,
+    )
     deduped = []
-    seen_ids_final = set()
-    seen_contract_final = set()
-    for n in notices:
+    seen_ids = set()
+    seen_contracts = set()
+    seen_titles = set()
+    for n in ordered:
         nid = n.get("id","")
         src = n.get("source_id","")
         cno = (n.get("contract_number","") or "").strip().upper()
         ck  = f"{src}:{cno}" if cno else None
+        normalized_title = " ".join((n.get("title") or "").lower().split())
+        title_key = f"{src}:{normalized_title}"
 
-        if nid in seen_ids_final: continue
-        if ck and ck in seen_contract_final: continue
+        if nid in seen_ids:
+            continue
+        if ck and ck in seen_contracts:
+            continue
+        if normalized_title and title_key in seen_titles:
+            continue
 
-        seen_ids_final.add(nid)
-        if ck: seen_contract_final.add(ck)
+        seen_ids.add(nid)
+        if ck:
+            seen_contracts.add(ck)
+        if normalized_title:
+            seen_titles.add(title_key)
         deduped.append(n)
 
     return deduped
@@ -144,12 +161,22 @@ def _enrich(n):
     n["due_date_parsed"]  = due.isoformat() if due else None
     n["days_until_due"]   = (due - today).days if due else None
 
+    source_status = (n.get("source_status") or "").strip().lower()
+
     # Status
     if n.get("noise_flagged") or n.get("status_override") == "noise":
         n["status"] = "noise"
+    elif n.get("source_inactive"):
+        n["status"] = "expired"
+    elif source_status in ("closed", "awarded", "cancelled", "canceled", "withdrawn"):
+        n["status"] = "expired"
+    elif n.get("is_planned") or source_status in ("upcoming", "planned", "anticipated"):
+        n["status"] = "upcoming"
     elif due and due < today:
         n["status"] = "expired"
     elif due:
+        n["status"] = "open"
+    elif source_status in ("open", "advertised", "current"):
         n["status"] = "open"
     else:
         n["status"] = "unknown_date"
@@ -214,14 +241,24 @@ def _is_noise(n):
 
 # ── Merge with existing notices ───────────────────────────────────────────────
 
-def _merge(existing, fresh):
+def _merge(existing, fresh, refreshed_source_ids=None):
     """
     Merge fresh crawl results into existing notices.
     - Preserve manual overrides (status_override, noise_flagged)
     - Update crawled_at and notice_excerpt for existing records
     - Add genuinely new records
     """
+    refreshed_source_ids = set(refreshed_source_ids or [])
+    fresh_ids = {n["id"] for n in fresh}
     existing_by_id = {n["id"]: n for n in existing}
+
+    # An authoritative current-listing crawl can safely retire records that
+    # disappeared. Generic pages are excluded because a partial parse there
+    # should not close valid opportunities.
+    for old in existing_by_id.values():
+        if old.get("source_id") in refreshed_source_ids and old.get("id") not in fresh_ids:
+            old["source_inactive"] = True
+            old["inactive_reason"] = "removed from current agency listing"
 
     for n in fresh:
         nid = n["id"]
@@ -233,8 +270,11 @@ def _merge(existing, fresh):
                     n[field] = old[field]
             # Update freshness fields
             n["crawled_at"] = _now()
+            n["source_inactive"] = False
+            n["inactive_reason"] = ""
             existing_by_id[nid] = n
         else:
+            n["source_inactive"] = False
             existing_by_id[nid] = n
 
     return list(existing_by_id.values())
@@ -318,23 +358,26 @@ def run_tier3_municipal():
 # ── Main runner ───────────────────────────────────────────────────────────────
 
 def run_crawl(sources_to_crawl):
-    """Run crawl for a list of source dicts. Return all records."""
+    """Run crawls and return records plus authoritative sources refreshed."""
     all_fresh = []
+    refreshed_source_ids = set()
     for source in sources_to_crawl:
         log.info(f"Crawling: {source['name']} ({source['id']})")
         try:
             records = crawl_source(source)
-            crawl_error = "zero_records" if not records else None
+            crawl_error = "zero_records" if not records and not source.get("allow_empty") else None
             _log_crawl(source["id"], len(records), crawl_error)
             log.info(f"  → {len(records)} records")
             if crawl_error:
                 log.warning(f"{source['id']} returned zero records; parser or source may have changed")
+            elif source.get("parser") in AUTHORITATIVE_PARSERS:
+                refreshed_source_ids.add(source["id"])
             all_fresh.extend(records)
         except Exception as e:
             log.error(f"  → FAILED: {e}")
             _log_crawl(source["id"], 0, str(e))
 
-    return all_fresh
+    return all_fresh, refreshed_source_ids
 
 
 def main():
@@ -379,7 +422,7 @@ def main():
     sources = [s for s in sources if s.get("parser") != "sos_directory"]
 
     log.info(f"Crawling {len(sources)} sources...")
-    fresh = run_crawl(sources)
+    fresh, refreshed_source_ids = run_crawl(sources)
 
     # Tier 3 municipal if requested
     if args.tier == 3 or args.weekly:
@@ -413,7 +456,7 @@ def main():
 
     # Load existing, merge, dedupe, save
     existing = _load(NOTICES_F)
-    merged   = _merge(existing, enriched)
+    merged   = _merge(existing, enriched, refreshed_source_ids)
     deduped  = _dedupe(merged)
 
     # Re-evaluate every retained record, not only records fetched today. This
@@ -431,7 +474,7 @@ def main():
     _save(NOTICES_F, deduped)
 
     # Summary
-    active  = [n for n in deduped if n.get("status") in ("open","unknown_date") and not n.get("noise_flagged")]
+    active  = [n for n in deduped if n.get("status") in ("open", "upcoming") and not n.get("noise_flagged")]
     urgent  = [n for n in active if n.get("urgent")]
     log.info(f"Saved {len(deduped)} total notices")
     log.info(f"  Active: {len(active)}  |  Urgent (≤7 days): {len(urgent)}  |  Noise: {len(noise)}")

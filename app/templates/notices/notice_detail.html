@@ -38,6 +38,8 @@
           <span class="badge" style="background:#fcebeb;color:#a32d2d;">Closing soon</span>
         {% elif notice.status == 'open' %}
           <span class="badge badge-open">Open</span>
+        {% elif notice.status == 'upcoming' %}
+          <span class="badge badge-type-p">Upcoming</span>
         {% elif notice.status == 'expired' %}
           <span class="badge badge-expired">Expired</span>
         {% else %}

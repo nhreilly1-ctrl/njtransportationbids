@@ -1,0 +1,115 @@
+import sys
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+
+
+CRAWLERS = Path(__file__).resolve().parent / "crawlers"
+sys.path.insert(0, str(CRAWLERS))
+
+import notice_crawlers
+import notice_runner
+
+
+SOURCE = {
+    "id": "test-source",
+    "name": "Test Transportation Agency",
+    "source_tier": "state",
+    "url": "https://agency.example/bids/",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "access_type": "Public access",
+    "platform": "Agency website",
+}
+
+
+class NoticeCrawlerTests(unittest.TestCase):
+    def test_njdot_professional_services_uses_due_date_column(self):
+        html = """
+        <table>
+          <tr><th>TP Number</th><th>Posting Date</th><th>Project Type</th>
+              <th>Project Description</th><th>Status</th><th>Due Date</th></tr>
+          <tr><td>TP-999</td><td>8/1/26</td><td>Design B-1 Level A</td>
+              <td>Bridge design services</td><td>Advertised</td><td>9/30/2026</td></tr>
+        </table>
+        """
+        response = SimpleNamespace(text=html)
+        with patch.object(notice_crawlers, "_get", return_value=response):
+            records = notice_crawlers.parse_njdot_profserv(SOURCE)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["posting_date_raw"], "8/1/26")
+        self.assertEqual(records[0]["due_date_raw"], "9/30/2026")
+        self.assertEqual(records[0]["source_status"], "Advertised")
+
+    def test_njtransit_keeps_transport_work_and_rejects_general_goods(self):
+        html = """
+        <table>
+          <tr><th>Event Date</th><th>Time</th><th>Description</th><th>IFB/RFP No</th></tr>
+          <tr><td>12/31/68</td><td>11:00</td>
+              <td>Proposals Due: RFP No. 100, "Bridge Engineering Services."</td>
+              <td>RFP No. 100</td></tr>
+          <tr><td>12/31/68</td><td>11:00</td>
+              <td>Electronic Bids Due for IFB No. 200, "Ticket Stock."</td>
+              <td>IFB No. 200</td></tr>
+        </table>
+        """
+        response = SimpleNamespace(text=html)
+        with patch.object(notice_crawlers, "_get", return_value=response):
+            records = notice_crawlers.parse_njtransit(SOURCE)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["notice_type"], "professional_services")
+        self.assertIn("Bridge Engineering Services", records[0]["title"])
+
+    def test_generic_procurement_words_are_not_transportation_scope(self):
+        self.assertIsNone(notice_crawlers._classify_transport_scope("RFP for legal services"))
+        self.assertIsNone(notice_crawlers._classify_transport_scope("Demolition of a building on Broadway"))
+        self.assertEqual(
+            notice_crawlers._classify_transport_scope("RFP for bridge inspection services"),
+            "professional_services",
+        )
+
+
+class NoticeLifecycleTests(unittest.TestCase):
+    def test_planned_notice_is_upcoming(self):
+        record = {"title": "Future bridge design", "is_planned": True, "due_date_raw": "Fall 2099"}
+        self.assertEqual(notice_runner._enrich(record)["status"], "upcoming")
+
+    def test_authoritative_refresh_retires_missing_record(self):
+        existing = [{"id": "old", "source_id": "agency", "title": "Old bid"}]
+        merged = notice_runner._merge(existing, [], {"agency"})
+        self.assertTrue(merged[0]["source_inactive"])
+        self.assertEqual(notice_runner._enrich(merged[0])["status"], "expired")
+
+    def test_failed_refresh_does_not_retire_existing_record(self):
+        existing = [{"id": "old", "source_id": "agency", "title": "Old bid"}]
+        merged = notice_runner._merge(existing, [], set())
+        self.assertFalse(merged[0].get("source_inactive", False))
+
+    def test_dedupe_prefers_fresh_active_contract_record(self):
+        records = [
+            {
+                "id": "old",
+                "source_id": "agency",
+                "contract_number": "P100",
+                "title": "Old title",
+                "source_inactive": True,
+                "crawled_at": "2026-01-01T00:00:00+00:00",
+            },
+            {
+                "id": "new",
+                "source_id": "agency",
+                "contract_number": "P100",
+                "title": "Improved title",
+                "source_inactive": False,
+                "crawled_at": "2026-08-16T00:00:00+00:00",
+            },
+        ]
+        deduped = notice_runner._dedupe(records)
+        self.assertEqual([record["id"] for record in deduped], ["new"])
+
+
+if __name__ == "__main__":
+    unittest.main()

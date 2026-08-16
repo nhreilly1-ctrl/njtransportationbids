@@ -117,7 +117,7 @@
     <option value="paywalled"{{ 'selected' if selected_tier == 'paywalled' }}>Paywalled — notice only</option>
   </select>
   <select name="status" onchange="this.form.submit()">
-    <option value="active"  {{ 'selected' if selected_status == 'active' }}>Open only</option>
+    <option value="active"  {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
     <option value="urgent"  {{ 'selected' if selected_status == 'urgent' }}>Urgent only (≤7 days)</option>
     <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired</option>
   </select>
@@ -174,6 +174,8 @@
           <span class="badge" style="background:#fcebeb;color:#a32d2d;">Closing soon</span>
         {% elif n.status == 'open' %}
           <span class="badge badge-open">Open</span>
+        {% elif n.status == 'upcoming' %}
+          <span class="badge badge-type-p">Upcoming</span>
         {% elif n.status == 'expired' %}
           <span class="badge badge-expired">Expired</span>
         {% elif n.status == 'unknown_date' %}
@@ -240,7 +242,8 @@
     <div class="bid-due {{ 'soon-due' if is_urgent }}">
       {% if n.due_date_raw and n.due_date_raw not in ('Not listed','—','') %}
         <span class="due-label">
-          {% if 'bid opening' in (n.notice_excerpt or '').lower() %}Bid opening
+          {% if n.status == 'upcoming' %}Expected
+          {% elif 'bid opening' in (n.notice_excerpt or '').lower() %}Bid opening
           {% elif 'proposals due' in (n.notice_excerpt or '').lower() %}Proposals due
           {% else %}Due{% endif %}
         </span>
@@ -283,7 +286,7 @@
 {% endif %}
 
 {% if month %}
-  <div class="section-label">{{ 'Upcoming — 30+ days' if week or urgent else 'Open notices' }}</div>
+  <div class="section-label">Open and upcoming</div>
   {% for n in month %}{{ notice_card(n) }}{% endfor %}
 {% endif %}
 

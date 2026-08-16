@@ -72,7 +72,7 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
 
         # Status
         st = n.get("status","")
-        if status_filter == "active"  and st not in ("open","unknown_date"): continue
+        if status_filter == "active"  and st not in ("open", "upcoming"): continue
         if status_filter == "expired" and st != "expired":                   continue
         if status_filter == "urgent"  and not n.get("urgent"):               continue
 
@@ -124,8 +124,9 @@ def _sort_notices(notices):
         due    = n.get("due_date_parsed") or "9999"
         if urgent:             return (0, due)
         if st == "open":       return (1, due)
-        if st == "unknown_date": return (2, due)
-        return (3, due)
+        if st == "upcoming":   return (2, due)
+        if st == "unknown_date": return (3, due)
+        return (4, due)
     return sorted(notices, key=key)
 
 
@@ -138,6 +139,10 @@ def _group_by_urgency(notices):
 
         if st == "expired":
             expired.append(n)
+            continue
+
+        if st == "upcoming":
+            month.append(n)
             continue
 
         if not due:
@@ -153,7 +158,7 @@ def _group_by_urgency(notices):
 
 
 def _build_stats(notices):
-    active   = [n for n in notices if n.get("status") in ("open","unknown_date")
+    active   = [n for n in notices if n.get("status") in ("open", "upcoming")
                 and not n.get("noise_flagged")]
     today    = date.today()
     posted_today = [n for n in active
@@ -264,7 +269,7 @@ def notice_detail(notice_id):
 @notice_bp.route("/export/notices.csv")
 def export_notices_csv():
     notices = _load_notices()
-    active  = [n for n in notices if n.get("status") in ("open","unknown_date")
+    active  = [n for n in notices if n.get("status") in ("open", "upcoming")
                and not n.get("noise_flagged")]
     buf = StringIO()
     fields = ["id","title","source_name","source_tier","county","notice_type",
