@@ -288,7 +288,8 @@ def admin_required(view):
 
 
 def use_db_backend() -> bool:
-    return bool(os.environ.get("DATABASE_URL"))
+    backend = os.environ.get("DATA_BACKEND", "database").strip().lower()
+    return backend != "file" and bool(os.environ.get("DATABASE_URL"))
 
 
 def get_conn():
@@ -811,13 +812,16 @@ def group_by_urgency(opps: list[dict]) -> tuple[list[dict], list[dict], list[dic
 
 @app.route("/health")
 def health():
-    db_configured = use_db_backend()
-    db_available = is_db_available() if db_configured else False
+    db_configured = bool(os.environ.get("DATABASE_URL"))
+    db_enabled = use_db_backend()
+    db_available = is_db_available() if db_enabled else False
     return jsonify(
         {
             "ok": True,
+            "data_backend": "database" if db_enabled else "file",
             "database": {
                 "configured": db_configured,
+                "enabled": db_enabled,
                 "available": db_available,
             },
         }

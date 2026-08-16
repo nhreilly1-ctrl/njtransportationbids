@@ -17,6 +17,8 @@ services:
         fromDatabase:
           name: nj-bid-registry-db
           property: connectionString
+      - key: DATA_BACKEND
+        value: file
       - key: ADMIN_USERNAME
         sync: false
       - key: ADMIN_PASSWORD
