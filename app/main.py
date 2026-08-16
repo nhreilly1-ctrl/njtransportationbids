@@ -851,7 +851,7 @@ def index():
         "construction": len([opp for opp in active if opp["record_type"] == "construction"]),
         "professional_services": len([opp for opp in active if opp["record_type"] == "professional_services"]),
         "public_notice": len([opp for opp in active if opp["record_type"] == "public_notice"]),
-        "sources": len(load_sources()),
+        "sources": len(load_public_sources()),
     }
     return render_template("index.html", stats=stats, expiring=expiring[:8])
 

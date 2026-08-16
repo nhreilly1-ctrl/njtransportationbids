@@ -10,6 +10,7 @@ sys.path.insert(0, str(CRAWLERS))
 
 import notice_crawlers
 import notice_runner
+from app import main as app_main
 
 
 SOURCE = {
@@ -109,6 +110,27 @@ class NoticeLifecycleTests(unittest.TestCase):
         ]
         deduped = notice_runner._dedupe(records)
         self.assertEqual([record["id"] for record in deduped], ["new"])
+
+
+class PublicDashboardTests(unittest.TestCase):
+    def test_homepage_counts_canonical_crawler_sources(self):
+        enriched = {
+            "status": "open",
+            "record_type": "construction",
+            "due_date_parsed": None,
+        }
+        with (
+            patch.object(app_main, "load_public_opps", return_value=[{"id": "one"}]),
+            patch.object(app_main, "load_public_sources", return_value=[{"id": "agency"}]),
+            patch.object(app_main, "enrich", return_value=enriched),
+        ):
+            response = app_main.app.test_client().get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRegex(
+            response.get_data(as_text=True),
+            r'<div class="num">\s*1\s*</div>\s*<div class="lbl">Sources monitored</div>',
+        )
 
 
 if __name__ == "__main__":
