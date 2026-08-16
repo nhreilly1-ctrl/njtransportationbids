@@ -20,9 +20,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642667+00:00",
     "due_date_parsed": "2026-04-14",
-    "days_until_due": 0,
-    "status": "open",
-    "urgent": true
+    "days_until_due": -124,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-beccbfa0a875",
@@ -45,9 +47,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642706+00:00",
     "due_date_parsed": "2026-04-14",
-    "days_until_due": 0,
-    "status": "open",
-    "urgent": true
+    "days_until_due": -124,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-90f5091e6747",
@@ -70,9 +74,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642715+00:00",
     "due_date_parsed": "2026-04-14",
-    "days_until_due": 0,
-    "status": "open",
-    "urgent": true
+    "days_until_due": -124,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-238005760179",
@@ -95,9 +101,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642724+00:00",
     "due_date_parsed": "2026-04-08",
-    "days_until_due": -6,
+    "days_until_due": -130,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-b4c73cac35db",
@@ -120,9 +128,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642733+00:00",
     "due_date_parsed": "2026-04-06",
-    "days_until_due": -8,
+    "days_until_due": -132,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-6d118946ae4c",
@@ -145,9 +155,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642740+00:00",
     "due_date_parsed": "2026-03-23",
-    "days_until_due": -22,
+    "days_until_due": -146,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-34474d9c8a0c",
@@ -170,9 +182,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642749+00:00",
     "due_date_parsed": "2026-03-23",
-    "days_until_due": -22,
+    "days_until_due": -146,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-7d3b7faf5dd4",
@@ -195,9 +209,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642756+00:00",
     "due_date_parsed": "2026-03-19",
-    "days_until_due": -26,
+    "days_until_due": -150,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-3cfa607ccc8b",
@@ -220,9 +236,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642763+00:00",
     "due_date_parsed": "2026-03-19",
-    "days_until_due": -26,
+    "days_until_due": -150,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-befd4df59960",
@@ -245,9 +263,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642769+00:00",
     "due_date_parsed": "2026-03-19",
-    "days_until_due": -26,
+    "days_until_due": -150,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-174243c2238b",
@@ -270,9 +290,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642776+00:00",
     "due_date_parsed": "2026-03-16",
-    "days_until_due": -29,
+    "days_until_due": -153,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-4c1ef6156c34",
@@ -295,9 +317,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642783+00:00",
     "due_date_parsed": "2026-03-16",
-    "days_until_due": -29,
+    "days_until_due": -153,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-ee7661874fd2",
@@ -320,9 +344,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642790+00:00",
     "due_date_parsed": "2026-03-10",
-    "days_until_due": -35,
+    "days_until_due": -159,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-0495cd66303c",
@@ -345,9 +371,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642797+00:00",
     "due_date_parsed": "2026-03-06",
-    "days_until_due": -39,
+    "days_until_due": -163,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-664c064ca856",
@@ -368,11 +396,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557035+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005467+00:00",
     "due_date_parsed": "2026-02-02",
     "days_until_due": -195,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-338cff2bf4a9",
@@ -395,9 +425,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642809+00:00",
     "due_date_parsed": "2026-01-28",
-    "days_until_due": -76,
+    "days_until_due": -200,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-8a4888fe5a11",
@@ -418,11 +450,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557046+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005469+00:00",
     "due_date_parsed": "2026-01-15",
     "days_until_due": -213,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-542b8b4e7fdb",
@@ -445,9 +479,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642823+00:00",
     "due_date_parsed": "2026-01-15",
-    "days_until_due": -89,
+    "days_until_due": -213,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-f265e6ef0d50",
@@ -470,9 +506,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642829+00:00",
     "due_date_parsed": "2025-12-18",
-    "days_until_due": -117,
+    "days_until_due": -241,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-02a995ef00c5",
@@ -495,9 +533,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642836+00:00",
     "due_date_parsed": "2025-12-05",
-    "days_until_due": -130,
+    "days_until_due": -254,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-84f48df70ca8",
@@ -518,11 +558,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557049+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005471+00:00",
     "due_date_parsed": "2025-12-05",
     "days_until_due": -254,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-8e5c06205bf9",
@@ -545,9 +587,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642850+00:00",
     "due_date_parsed": "2025-10-10",
-    "days_until_due": -186,
+    "days_until_due": -310,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-16519ad31762",
@@ -570,9 +614,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642856+00:00",
     "due_date_parsed": "2025-09-23",
-    "days_until_due": -203,
+    "days_until_due": -327,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-8807e68451e4",
@@ -592,10 +638,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557060+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005543+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: trip planningtoll calculator",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -616,10 +664,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557062+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005547+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: safetripnj app",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -640,10 +690,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557065+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005550+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: traffic information. get the app",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -664,10 +716,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557068+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005552+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: forms & records",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -690,9 +744,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642917+00:00",
     "due_date_parsed": "2026-05-11",
-    "days_until_due": 27,
-    "status": "open",
-    "urgent": false
+    "days_until_due": -97,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-ba6ed97b54cf",
@@ -714,9 +770,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642924+00:00",
     "due_date_parsed": "2026-05-07",
-    "days_until_due": 23,
-    "status": "open",
-    "urgent": false
+    "days_until_due": -101,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-d9b2d3d5c8b4",
@@ -738,9 +796,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642930+00:00",
     "due_date_parsed": "2026-05-05",
-    "days_until_due": 21,
-    "status": "open",
-    "urgent": false
+    "days_until_due": -103,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-19ad16719337",
@@ -762,9 +822,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642937+00:00",
     "due_date_parsed": "2026-05-04",
-    "days_until_due": 20,
-    "status": "open",
-    "urgent": false
+    "days_until_due": -104,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-4a527682cf3f",
@@ -786,9 +848,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642943+00:00",
     "due_date_parsed": "2026-04-21",
-    "days_until_due": 7,
-    "status": "open",
-    "urgent": true
+    "days_until_due": -117,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-bb3df162c1aa",
@@ -810,9 +874,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642949+00:00",
     "due_date_parsed": "2026-04-17",
-    "days_until_due": 3,
-    "status": "open",
-    "urgent": true
+    "days_until_due": -121,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-94286c1c86ab",
@@ -834,9 +900,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642956+00:00",
     "due_date_parsed": "2026-04-16",
-    "days_until_due": 2,
-    "status": "open",
-    "urgent": true
+    "days_until_due": -122,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-ab34202c15b5",
@@ -858,9 +926,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642963+00:00",
     "due_date_parsed": "2026-04-10",
-    "days_until_due": -4,
+    "days_until_due": -128,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-329d3964b819",
@@ -882,9 +952,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642970+00:00",
     "due_date_parsed": "2026-04-08",
-    "days_until_due": -6,
+    "days_until_due": -130,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-1916bf81ad7a",
@@ -906,9 +978,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642976+00:00",
     "due_date_parsed": "2026-04-07",
-    "days_until_due": -7,
+    "days_until_due": -131,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-3d32f8fccfac",
@@ -930,9 +1004,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642983+00:00",
     "due_date_parsed": "2026-03-31",
-    "days_until_due": -14,
+    "days_until_due": -138,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-cc256a9e6b17",
@@ -954,9 +1030,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642989+00:00",
     "due_date_parsed": "2026-03-31",
-    "days_until_due": -14,
+    "days_until_due": -138,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-e37011c729a1",
@@ -978,9 +1056,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.642996+00:00",
     "due_date_parsed": "2026-03-31",
-    "days_until_due": -14,
+    "days_until_due": -138,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-23117ee3c87c",
@@ -1002,9 +1082,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.643011+00:00",
     "due_date_parsed": "2026-03-30",
-    "days_until_due": -15,
+    "days_until_due": -139,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-49c8d3fb38dc",
@@ -1026,9 +1108,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.643019+00:00",
     "due_date_parsed": "2026-03-24",
-    "days_until_due": -21,
+    "days_until_due": -145,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-d3255d2f1781",
@@ -1050,9 +1134,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.643026+00:00",
     "due_date_parsed": "2026-03-24",
-    "days_until_due": -21,
+    "days_until_due": -145,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-7d6741063723",
@@ -1074,9 +1160,11 @@
     "paywalled": false,
     "crawled_at": "2026-04-15T02:43:27.643033+00:00",
     "due_date_parsed": "2026-03-18",
-    "days_until_due": -27,
+    "days_until_due": -151,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-9b74e7680848",
@@ -1096,10 +1184,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557074+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005560+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: roadway, bridge, facility, and other construction",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -1120,10 +1210,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557076+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005562+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: design, supervision, environmental",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -1144,10 +1236,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557078+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005564+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: services for the njta and troop d",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -1168,10 +1262,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557080+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005567+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: learn more.",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -1195,8 +1291,10 @@
     "crawled_at": "2026-04-15T02:43:27.643067+00:00",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
-    "urgent": false
+    "status": "noise",
+    "urgent": false,
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: bid results"
   },
   {
     "id": "notice-148c9196c9dc",
@@ -1219,8 +1317,10 @@
     "crawled_at": "2026-04-15T02:43:27.643075+00:00",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
-    "urgent": false
+    "status": "noise",
+    "urgent": false,
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: provide comment on the delaware river joint toll bridge"
   },
   {
     "id": "notice-25e42aa80787",
@@ -1240,10 +1340,12 @@
     "access_type": "Public access",
     "platform": "DRJTBC procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557088+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005573+00:00",
+    "noise_flagged": true,
+    "noise_reason": "out of scope: electronic surveillance",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -1264,11 +1366,13 @@
     "access_type": "Public access",
     "platform": "DRJTBC procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557090+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005514+00:00",
     "due_date_parsed": null,
     "days_until_due": null,
     "status": "unknown_date",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-1c11b169bb5a",
@@ -1292,7 +1396,9 @@
     "due_date_parsed": null,
     "days_until_due": null,
     "status": "unknown_date",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-460f237db082",
@@ -1316,7 +1422,9 @@
     "due_date_parsed": null,
     "days_until_due": null,
     "status": "unknown_date",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-d19f0847c7c0",
@@ -1339,8 +1447,10 @@
     "crawled_at": "2026-04-15T02:43:27.643118+00:00",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
-    "urgent": false
+    "status": "noise",
+    "urgent": false,
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: provide comment on the delaware river joint toll bridge"
   },
   {
     "id": "notice-bb04fa33a15d",
@@ -1363,8 +1473,10 @@
     "crawled_at": "2026-04-15T02:43:27.643125+00:00",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
-    "urgent": false
+    "status": "noise",
+    "urgent": false,
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: nj dept. of transportation procurement division"
   },
   {
     "id": "notice-2a20e2585343",
@@ -1384,7 +1496,7 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557100+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005545+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -1410,7 +1522,7 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557102+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005554+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -1440,7 +1552,7 @@
     "noise_flagged": true,
     "noise_reason": "out of scope: health benefits program",
     "due_date_parsed": "2026-05-06",
-    "days_until_due": 22,
+    "days_until_due": -102,
     "status": "noise",
     "urgent": false
   },
@@ -1462,7 +1574,7 @@
     "access_type": "Public access",
     "platform": "DRJTBC procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557104+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005569+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -1488,7 +1600,7 @@
     "access_type": "Public access",
     "platform": "NJDOS legal notices portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557106+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005575+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -1514,7 +1626,7 @@
     "access_type": "Public access",
     "platform": "NJDOS legal notices portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557109+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005577+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -1569,8 +1681,10 @@
     "crawled_at": "2026-04-15T02:43:11.129935+00:00",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
-    "urgent": false
+    "status": "noise",
+    "urgent": false,
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: key to saving money with e"
   },
   {
     "id": "notice-3b3d9aa337bb",
@@ -1591,11 +1705,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.293408+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005423+00:00",
     "due_date_parsed": "2026-06-29",
     "days_until_due": -48,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-a252e9c27b8c",
@@ -1616,11 +1732,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.293747+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005431+00:00",
     "due_date_parsed": "2026-06-22",
     "days_until_due": -55,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-e730a2faf45f",
@@ -1641,11 +1759,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.294196+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005437+00:00",
     "due_date_parsed": "2026-06-22",
     "days_until_due": -55,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-c5eb6f61be70",
@@ -1666,11 +1786,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.294609+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005442+00:00",
     "due_date_parsed": "2026-06-16",
     "days_until_due": -61,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-63e00e6aa2bc",
@@ -1691,11 +1813,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.295036+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005444+00:00",
     "due_date_parsed": "2026-06-16",
     "days_until_due": -61,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-08dd485b34b5",
@@ -1716,11 +1840,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.295451+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005446+00:00",
     "due_date_parsed": "2026-06-11",
     "days_until_due": -66,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-a9140ab85c56",
@@ -1741,11 +1867,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.295851+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005448+00:00",
     "due_date_parsed": "2026-06-04",
     "days_until_due": -73,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-ebcdb2bc4820",
@@ -1766,11 +1894,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.296275+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005450+00:00",
     "due_date_parsed": "2026-06-03",
     "days_until_due": -74,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-3021debdac0a",
@@ -1791,11 +1921,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.296677+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005452+00:00",
     "due_date_parsed": "2026-05-29",
     "days_until_due": -79,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-2fe5528fd64e",
@@ -1816,11 +1948,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.297083+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005454+00:00",
     "due_date_parsed": "2026-05-27",
     "days_until_due": -81,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-c68ab5a1ba77",
@@ -1841,11 +1975,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.297474+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005456+00:00",
     "due_date_parsed": "2026-05-27",
     "days_until_due": -81,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-4b3a02c9bed8",
@@ -1866,11 +2002,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.297871+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005458+00:00",
     "due_date_parsed": "2026-05-12",
     "days_until_due": -96,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-4fc70637632d",
@@ -1891,11 +2029,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.298301+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005460+00:00",
     "due_date_parsed": "2026-04-28",
     "days_until_due": -110,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-c980fb972e01",
@@ -1916,11 +2056,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.298700+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005462+00:00",
     "due_date_parsed": "2026-04-28",
     "days_until_due": -110,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-93a4e275759c",
@@ -1941,11 +2083,13 @@
     "access_type": "Public access",
     "platform": "NJDOT website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:33:58.299118+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005464+00:00",
     "due_date_parsed": "2026-04-28",
     "days_until_due": -110,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-f68afd1251e5",
@@ -1965,10 +2109,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.654785+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005556+00:00",
+    "noise_flagged": true,
+    "noise_reason": "out of scope: extra heavy duty towing",
     "due_date_parsed": "2026-09-08",
     "days_until_due": 23,
-    "status": "open",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -1989,10 +2135,12 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.654846+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005558+00:00",
+    "noise_flagged": true,
+    "noise_reason": "out of scope: broker dealer",
     "due_date_parsed": "2026-08-31",
     "days_until_due": 15,
-    "status": "open",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -2013,11 +2161,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.654982+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005473+00:00",
     "due_date_parsed": "2026-08-18",
     "days_until_due": 2,
     "status": "open",
-    "urgent": true
+    "urgent": true,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-cdd79fd951bf",
@@ -2037,11 +2187,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655045+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005476+00:00",
     "due_date_parsed": "2026-08-13",
     "days_until_due": -3,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-9879b67a5cc9",
@@ -2061,11 +2213,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655139+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005478+00:00",
     "due_date_parsed": "2026-08-12",
     "days_until_due": -4,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-baac42124f2b",
@@ -2085,11 +2239,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655199+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005480+00:00",
     "due_date_parsed": "2026-08-12",
     "days_until_due": -4,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-d119bb0069fd",
@@ -2109,11 +2265,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655279+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005482+00:00",
     "due_date_parsed": "2026-08-06",
     "days_until_due": -10,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-8b4cc079e887",
@@ -2133,11 +2291,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655337+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005484+00:00",
     "due_date_parsed": "2026-07-22",
     "days_until_due": -25,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-5304300999a7",
@@ -2157,11 +2317,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655414+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005486+00:00",
     "due_date_parsed": "2026-07-21",
     "days_until_due": -26,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-f8a0cac681ce",
@@ -2181,11 +2343,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655471+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005488+00:00",
     "due_date_parsed": "2026-07-21",
     "days_until_due": -26,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-80f8a7945e63",
@@ -2205,11 +2369,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655524+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005491+00:00",
     "due_date_parsed": "2026-07-21",
     "days_until_due": -26,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-0ffe81034a16",
@@ -2229,11 +2395,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655594+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005493+00:00",
     "due_date_parsed": "2026-07-16",
     "days_until_due": -31,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-c39079f1c109",
@@ -2253,11 +2421,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655652+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005495+00:00",
     "due_date_parsed": "2026-07-14",
     "days_until_due": -33,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-c436bceaffb3",
@@ -2277,11 +2447,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655813+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005497+00:00",
     "due_date_parsed": "2026-06-25",
     "days_until_due": -52,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-d0f5b22d5fae",
@@ -2301,11 +2473,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655866+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005499+00:00",
     "due_date_parsed": "2026-06-25",
     "days_until_due": -52,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-91f6b1cfd5ec",
@@ -2325,11 +2499,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.655947+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005500+00:00",
     "due_date_parsed": "2026-06-25",
     "days_until_due": -52,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-6b9a6eed71a8",
@@ -2349,11 +2525,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.656002+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005502+00:00",
     "due_date_parsed": "2026-06-15",
     "days_until_due": -62,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-1ba7fa2b3c6f",
@@ -2373,11 +2551,13 @@
     "access_type": "Public access",
     "platform": "NJTA procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:01.656063+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005504+00:00",
     "due_date_parsed": "2026-06-11",
     "days_until_due": -66,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-4768037bfa40",
@@ -2397,11 +2577,13 @@
     "access_type": "Public access",
     "platform": "DRJTBC procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:05.323544+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005506+00:00",
     "due_date_parsed": null,
     "days_until_due": null,
     "status": "unknown_date",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-bb990e81f943",
@@ -2421,16 +2603,18 @@
     "access_type": "Public access",
     "platform": "DRJTBC procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:07.604811+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005508+00:00",
     "due_date_parsed": null,
     "days_until_due": null,
     "status": "unknown_date",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-f42ab9341e4f",
-    "title": "Professional engineering services for Construction Management / Inspection Services for the Easton \u2014 Philipsburg Toll Bridge Route 22 Viaduct sidewalk",
-    "notice_excerpt": "Professional engineering services for Construction Management / Inspection Services for the Easton \u2014 Philipsburg Toll Bridge Route 22 Viaduct sidewalk replacement over Broad Street in Philipsburg, New Jersey.",
+    "title": "Professional engineering services for Construction Management / Inspection Services for the Trenton \u2014 Morrisville Toll Bridge Electronic Surveillance ",
+    "notice_excerpt": "Professional engineering services for Construction Management / Inspection Services for the Trenton \u2014 Morrisville Toll Bridge Electronic Surveillance System (ESS) Cameras and Highway Lighting Improvements in Trenton, New Jersey and Morrisville, Pennsylvania.",
     "source_id": "state-drjtbc-profserv",
     "source_name": "DRJTBC Current Procurements",
     "source_tier": "state",
@@ -2445,10 +2629,12 @@
     "access_type": "Public access",
     "platform": "DRJTBC procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557085+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005571+00:00",
+    "noise_flagged": true,
+    "noise_reason": "out of scope: electronic surveillance",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -2469,11 +2655,13 @@
     "access_type": "Public access",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:15.493844+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005516+00:00",
     "due_date_parsed": "2026-09-23",
     "days_until_due": 38,
     "status": "open",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-57f18ffec447",
@@ -2493,11 +2681,13 @@
     "access_type": "Public access",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:15.494074+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005518+00:00",
     "due_date_parsed": "2026-09-09",
     "days_until_due": 24,
     "status": "open",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-8f18be78fbcb",
@@ -2517,11 +2707,13 @@
     "access_type": "Public access",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:15.494445+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005520+00:00",
     "due_date_parsed": "2026-08-27",
     "days_until_due": 11,
     "status": "open",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-5767ff5061ac",
@@ -2541,10 +2733,12 @@
     "access_type": "Limited public details",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:17.874695+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005778+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: upcoming rfpq",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -2565,10 +2759,12 @@
     "access_type": "Limited public details",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:17.874788+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005780+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: awarded rfp",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -2589,10 +2785,12 @@
     "access_type": "Public access",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:35.073611+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005790+00:00",
+    "noise_flagged": true,
+    "noise_reason": "noise phrase: legal notice regarding online public notices",
     "due_date_parsed": null,
     "days_until_due": null,
-    "status": "unknown_date",
+    "status": "noise",
     "urgent": false
   },
   {
@@ -2613,11 +2811,13 @@
     "access_type": "Public access",
     "platform": "Agency website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:43.030587+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005522+00:00",
     "due_date_parsed": "2026-08-11",
     "days_until_due": -5,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-b11b1976aaf1",
@@ -2637,11 +2837,13 @@
     "access_type": "Public access",
     "platform": "Agency website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:43.030750+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005524+00:00",
     "due_date_parsed": "2026-08-10",
     "days_until_due": -6,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-184ba93aa81d",
@@ -2661,11 +2863,13 @@
     "access_type": "Public access",
     "platform": "Agency website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:43.030936+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005526+00:00",
     "due_date_parsed": "2026-08-05",
     "days_until_due": -11,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-12be7292bdb4",
@@ -2685,11 +2889,13 @@
     "access_type": "Public access",
     "platform": "Agency website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:43.031069+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005528+00:00",
     "due_date_parsed": "2026-08-04",
     "days_until_due": -12,
     "status": "expired",
-    "urgent": false
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   },
   {
     "id": "notice-422fddeee10a",
@@ -2709,7 +2915,7 @@
     "access_type": "Free registration required",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557126+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005602+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2735,7 +2941,7 @@
     "access_type": "Free registration required",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557120+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005596+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2761,7 +2967,7 @@
     "access_type": "Free registration required",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557265+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005774+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2787,7 +2993,7 @@
     "access_type": "Free registration required",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:44.557124+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005600+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2813,7 +3019,7 @@
     "access_type": "Limited public details",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:17.874583+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005776+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2839,7 +3045,7 @@
     "access_type": "Public access",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:26.558304+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005782+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2865,7 +3071,7 @@
     "access_type": "Public access",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:26.558590+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005784+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2891,7 +3097,7 @@
     "access_type": "Public access",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:33.161484+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005786+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2917,7 +3123,7 @@
     "access_type": "Public access",
     "platform": "County procurement portal",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:33.161589+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005788+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
@@ -2943,12 +3149,142 @@
     "access_type": "Public access",
     "platform": "Agency website",
     "paywalled": false,
-    "crawled_at": "2026-08-16T17:34:43.031539+00:00",
+    "crawled_at": "2026-08-16T17:40:27.005792+00:00",
     "noise_flagged": true,
     "noise_reason": "title too short",
     "due_date_parsed": null,
     "days_until_due": null,
     "status": "noise",
     "urgent": false
+  },
+  {
+    "id": "notice-d4e9e5626cac",
+    "title": "Route 168, Merchant Street to Ferry Avenue, Pavement, Contract No. 090103410, Audobon Borough, Audobon Park Borough, Haddon Township, Mount Eprhaim Borough, Camden City, and Woodlynne Borough, Camden County; Federal Project No: 0168(305), UPC No: 103410, PE No: 0426516, CE No: 0426519, DP No: 25132. The bid date change is available from the NJDOT Bid Express web site as Amendment No. 2. Vegetation Safety Management Project, Route 55 \u2014 Section 2, Gloucester County; Federal Project No: D00S(975), UPC No: N/A, PE No: 2622619, CE No: 2207970, DP No: 25465. Route 23, High Crest Drive to Macopin River, Contract No. 017153000, Roadway Rehabilitation, West Milford Township, Passaic County and Kinnelon Borough, Morris County; Federal Project No: 0023(343), UPC No: 153000, PE No: 1605514, CE No: 1605523, DP No: 26101. \u2014 The date for receipt of Bids is CHANGED to June 2, 2026. Route 23, Route 80 and Route 46 Interchange, Contract No. 053009234, Grading, Paving and Structures, Township of Fairfield, County of Essex, Township of Wayne and Borough of Totowa, County of Passaic; Route 202/Route 23; Milepost 63.93 to Route 23; Milepost 5.00 (SB) & 5.03 (NB), Route 80; Milepost 52.53 to 54.57, Route 46 EB; Milepost 56.02 to 56.33, Route 46 WB; Milepost 55.92 to 56.30; Federal Project No: 0023(349), UPC No: 009234, PE No: 1604511, CE No: 1604515, DP No: 26105. \u2014 The date for receipt of Bids is CHANGED to June 2, 2026. Route 440, Goldsborough Road to Route 1 & 9/ Communipaw Avenue, Contract No. 021253830, Pavement Preservation, City of Bayonne and City of Jersey City, Hudson County; Federal Project No: 0440305, UPC No: 253830, PE No: 2207030, CE No: 0913503, DP No: 26110.",
+    "notice_excerpt": "NJDOT construction contract. Route 168, Merchant Street to Ferry Avenue, Pavement, Contract No. 090103410, Audobon Borough, Audobon Park Borough, Haddon Township, Mount Eprhaim Borough, Camden City, and Woodlynne Borough, Camden County; Federal Project No: 0168(305), UPC No: 103410, PE No: 0426516, CE No: 0426519, DP No: 25132. The bid date change is available from the NJDOT Bid Express web site as Amendment No. 2. Vegetation Safety Management Project, Route 55 \u2014 Section 2, Gloucester County; Federal Project No: D00S(975), UPC No: N/A, PE No: 2622619, CE No: 2207970, DP No: 25465. Route 23, High Crest Drive to Macopin River, Contract No. 017153000, Roadway Rehabilitation, West Milford Township, Passaic County and Kinnelon Borough, Morris County; Federal Project No: 0023(343), UPC No: 153000, PE No: 1605514, CE No: 1605523, DP No: 26101. \u2014 The date for receipt of Bids is CHANGED to June 2, 2026. Route 23, Route 80 and Route 46 Interchange, Contract No. 053009234, Grading, Paving and Structures, Township of Fairfield, County of Essex, Township of Wayne and Borough of Totowa, County of Passaic; Route 202/Route 23; Milepost 63.93 to Route 23; Milepost 5.00 (SB) & 5.03 (NB), Route 80; Milepost 52.53 to 54.57, Route 46 EB; Milepost 56.02 to 56.33, Route 46 WB; Milepost 55.92 to 56.30; Federal Project No: 0023(349), UPC No: 009234, PE No: 1604511, CE No: 1604515, DP No: 26105. \u2014 The date for receipt of Bids is CHANGED to June 2, 2026. Route 440, Goldsborough Road to Route 1 & 9/ Communipaw Avenue, Contract No. 021253830, Pavement Preservation, City of Bayonne and City of Jersey City, Hudson County; Federal Project No: 0440305, UPC No: 253830, PE No: 2207030, CE No: 0913503, DP No: 26110.. Counties: Statewide.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://www.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP25132.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "5/28/26",
+    "contract_number": "",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "crawled_at": "2026-08-16T17:39:40.533147+00:00",
+    "due_date_parsed": "2026-05-28",
+    "days_until_due": -80,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-76c9504e2fec",
+    "title": "Route 18, CR 3 (Tennent Road) to Rue's Lane (CR 617), Contract No 030254310, Pavement Preservation, Township of Marlboro, Townships of Old Bridge & East Brunswick, Monmouth & Middlesex County; Federal Project No: 0018(313), UPC No: 254310, PE No: 2207030, CE No: 6600357, DP No: 26111. Vegetation Safety Management Project, I \u2014 195 & NJ 138, Mercer, Monmouth, and Ocean Counties; Federal Project No: F00S(035), UPC No: N/A, PE No: 2622619, CE No: 2208049, DP No: 26414. Route 23, High Crest Drive to Macopin River, Contract No. 017153000, Roadway Rehabilitation, West Milford Township, Passaic County and Kinnelon Borough, Morris County; Federal Project No: 0023(343), UPC No: 153000, PE No: 1605514, CE No: 1605523, DP No: 26101. The bid date change is available from the NJDOT Bid Express web site as Amendment No. 2. Route 23, Route 80 and Route 46 Interchange, Contract No. 053009234, Grading, Paving and Structures, Township of Fairfield, County of Essex, Township of Wayne and Borough of Totowa, County of Passaic; Route 202/Route 23; Milepost 63.93 to Route 23; Milepost 5.00 (SB) & 5.03 (NB), Route 80; Milepost 52.53 to 54.57, Route 46 EB; Milepost 56.02 to 56.33, Route 46 WB; Milepost 55.92 to 56.30; Federal Project No: 0023(349), UPC No: 009234, PE No: 1604511, CE No: 1604515, DP No: 26105. The bid date change is available from the NJDOT Bid Express web site as Amendment No. 10.",
+    "notice_excerpt": "NJDOT construction contract. Route 18, CR 3 (Tennent Road) to Rue's Lane (CR 617), Contract No 030254310, Pavement Preservation, Township of Marlboro, Townships of Old Bridge & East Brunswick, Monmouth & Middlesex County; Federal Project No: 0018(313), UPC No: 254310, PE No: 2207030, CE No: 6600357, DP No: 26111. Vegetation Safety Management Project, I \u2014 195 & NJ 138, Mercer, Monmouth, and Ocean Counties; Federal Project No: F00S(035), UPC No: N/A, PE No: 2622619, CE No: 2208049, DP No: 26414. Route 23, High Crest Drive to Macopin River, Contract No. 017153000, Roadway Rehabilitation, West Milford Township, Passaic County and Kinnelon Borough, Morris County; Federal Project No: 0023(343), UPC No: 153000, PE No: 1605514, CE No: 1605523, DP No: 26101. The bid date change is available from the NJDOT Bid Express web site as Amendment No. 2. Route 23, Route 80 and Route 46 Interchange, Contract No. 053009234, Grading, Paving and Structures, Township of Fairfield, County of Essex, Township of Wayne and Borough of Totowa, County of Passaic; Route 202/Route 23; Milepost 63.93 to Route 23; Milepost 5.00 (SB) & 5.03 (NB), Route 80; Milepost 52.53 to 54.57, Route 46 EB; Milepost 56.02 to 56.33, Route 46 WB; Milepost 55.92 to 56.30; Federal Project No: 0023(349), UPC No: 009234, PE No: 1604511, CE No: 1604515, DP No: 26105. The bid date change is available from the NJDOT Bid Express web site as Amendment No. 10.. Counties: Statewide.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://www.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26111.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "6/2/26",
+    "contract_number": "",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "crawled_at": "2026-08-16T17:39:40.533382+00:00",
+    "due_date_parsed": "2026-06-02",
+    "days_until_due": -75,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-e794b27f9c9f",
+    "title": "Vegetation Safety Management Project, Route I \u2014 280, Morris, Essex, and Hudson Counties; Federal Project No: 0280(343), UPC No: N/A, PE No: 2622619, CE No: 2208101, DP No: 26416.",
+    "notice_excerpt": "NJDOT construction contract. Vegetation Safety Management Project, Route I \u2014 280, Morris, Essex, and Hudson Counties; Federal Project No: 0280(343), UPC No: N/A, PE No: 2622619, CE No: 2208101, DP No: 26416.. Counties: Statewide.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://www.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticeToContractors_DP26416.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "6/4/26",
+    "contract_number": "",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "crawled_at": "2026-08-16T17:39:40.533493+00:00",
+    "due_date_parsed": "2026-06-04",
+    "days_until_due": -73,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-2673caf8f0f6",
+    "title": "Signature Bridge Preventive Maintenance Contract 2025 \u2014 1, Monmouth, Ocean and Middlesex Counties; Federal Project No: D00S(987), PE No: 2622627, CE No: 2207967, DP No: 25417. Route 30, Weymouth Road (CR 640) to Haddon Avenue & Route 130, Branch Pike (CR 606) to Charleston Road/Cooper Street (CR 630) & Route 206, Route 130 to CR 524, Contract No. 032254260, Pavement Preservation, Bordentown, Cinnaminson, Delanco, Delran, Edgewater Park, Galloway, Hamilton, Mullica, Willingboro, Hammonton Townships, City of Absecon, Counties of Atlantic, Burlington and Mercer; Federal Project No: F00S146, UPC No: 254260, PE No: 2207030, CE No: 2208200, DP No: 26108.",
+    "notice_excerpt": "NJDOT construction contract. Signature Bridge Preventive Maintenance Contract 2025 \u2014 1, Monmouth, Ocean and Middlesex Counties; Federal Project No: D00S(987), PE No: 2622627, CE No: 2207967, DP No: 25417. Route 30, Weymouth Road (CR 640) to Haddon Avenue & Route 130, Branch Pike (CR 606) to Charleston Road/Cooper Street (CR 630) & Route 206, Route 130 to CR 524, Contract No. 032254260, Pavement Preservation, Bordentown, Cinnaminson, Delanco, Delran, Edgewater Park, Galloway, Hamilton, Mullica, Willingboro, Hammonton Townships, City of Absecon, Counties of Atlantic, Burlington and Mercer; Federal Project No: F00S146, UPC No: 254260, PE No: 2207030, CE No: 2208200, DP No: 26108.. Counties: Statewide.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://www.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticeToContractors_DP25417.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "6/9/26",
+    "contract_number": "",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "crawled_at": "2026-08-16T17:39:40.533645+00:00",
+    "due_date_parsed": "2026-06-09",
+    "days_until_due": -68,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-701d7391c185",
+    "title": "Route 45, Route 40 (East Avenue)/Main Street (CR 672) to Route 322 Business (Mullica Glassboro Road), Contract No. 009253880, Pavement Preservation, Harrison, Pilesgrove, and South Harrison Townships, Gloucester and Salem Counties; Federal Project No: 0045148, UPC No: 253880, PE No: 2207030, CE No: 1705504, DP No: 26104.",
+    "notice_excerpt": "NJDOT construction contract. Route 45, Route 40 (East Avenue)/Main Street (CR 672) to Route 322 Business (Mullica Glassboro Road), Contract No. 009253880, Pavement Preservation, Harrison, Pilesgrove, and South Harrison Townships, Gloucester and Salem Counties; Federal Project No: 0045148, UPC No: 253880, PE No: 2207030, CE No: 1705504, DP No: 26104.. Counties: Statewide.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://www.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26104_Rev.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "6/11/26",
+    "contract_number": "",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "crawled_at": "2026-08-16T17:39:40.533786+00:00",
+    "due_date_parsed": "2026-06-11",
+    "days_until_due": -66,
+    "status": "expired",
+    "urgent": false,
+    "noise_flagged": false,
+    "noise_reason": ""
   }
 ]
