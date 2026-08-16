@@ -2,6 +2,7 @@ import sys
 import json
 import re
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -13,6 +14,7 @@ sys.path.insert(0, str(CRAWLERS))
 import notice_crawlers
 import notice_runner
 import notice_sources
+import source_health
 from app import main as app_main
 from app import notice_routes as notice_app
 
@@ -104,6 +106,69 @@ class NoticeCrawlerTests(unittest.TestCase):
             "professional_services",
         )
 
+    def test_panynj_model_parser_keeps_nj_construction(self):
+        source = notice_sources.SOURCES_BY_ID["state-panynj-construction"]
+        payload = {
+            "component": {
+                "text": """
+                    <table><tr><th>Contract Number</th><th>Due Date</th><th>Description</th></tr>
+                    <tr><td><a href='/ewr.pdf'>EWR-100</a></td><td>20-Aug-2026</td>
+                    <td><p>Newark Airport roadway rehabilitation</p></td></tr>
+                    <tr><td><a href='/jfk.pdf'>JFK-200</a></td><td>21-Aug-2026</td>
+                    <td><p>JFK Airport roadway rehabilitation</p></td></tr></table>
+                """,
+            }
+        }
+        response = SimpleNamespace(json=lambda: payload)
+        with patch.object(notice_crawlers, "_get", return_value=response):
+            records = notice_crawlers.parse_panynj(source)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["contract_number"], "EWR-100")
+        self.assertEqual(records[0]["due_date_raw"], "20-Aug-2026")
+
+    def test_drpa_parser_reads_detail_deadline(self):
+        source = notice_sources.SOURCES_BY_ID["state-drpa-patco"]
+        listing = SimpleNamespace(text="""
+            <table><tr><td><h3>Request For Qualifications -- Construction Monitoring Services
+            for Contract No. BF-65-2026 Benjamin Franklin Bridge Rehabilitation</h3>
+            <a href='detail.asp'>[More]</a></td></tr></table>
+        """)
+        detail = SimpleNamespace(text="""
+            <p>Statement of Qualification Due Date: August 28, 2026 2:00 PM EST</p>
+        """)
+        with patch.object(notice_crawlers, "_get", side_effect=[listing, detail]):
+            records = notice_crawlers.parse_drpa(source)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["notice_type"], "professional_services")
+        self.assertEqual(records[0]["due_date_raw"], "August 28, 2026")
+
+    def test_njtpa_parser_keeps_active_rfps(self):
+        source = notice_sources.SOURCES_BY_ID["state-njtpa"]
+        response = SimpleNamespace(text="""
+            <a class='rfp-item' href='/rfps/bridge-study/'>
+              <h2 class='rfp-title'>County Bridge Local Concept Development Study</h2>
+              <span class='rfp-status active'>Active</span>
+              <div class='rfp-meta-item'><span class='label'>Deadline:</span>
+                <time datetime='September 2, 2026 2:00 PM'>September 2, 2026</time></div>
+            </a>
+        """)
+        with patch.object(notice_crawlers, "_get", return_value=response):
+            records = notice_crawlers.parse_njtpa(source)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["notice_type"], "professional_services")
+        self.assertEqual(records[0]["due_date_raw"], "September 2, 2026")
+
+    def test_crawl_source_propagates_parser_failure(self):
+        def fail(_source):
+            raise RuntimeError("boom")
+
+        with patch.dict(notice_crawlers.PARSER_MAP, {"broken": fail}):
+            with self.assertRaisesRegex(RuntimeError, "boom"):
+                notice_crawlers.crawl_source(dict(SOURCE, parser="broken"), delay=0)
+
 
 class NoticeLifecycleTests(unittest.TestCase):
     def test_planned_notice_is_upcoming(self):
@@ -142,6 +207,52 @@ class NoticeLifecycleTests(unittest.TestCase):
         ]
         deduped = notice_runner._dedupe(records)
         self.assertEqual([record["id"] for record in deduped], ["new"])
+
+
+class SourceHealthTests(unittest.TestCase):
+    def setUp(self):
+        self.now = datetime(2026, 8, 16, 18, tzinfo=timezone.utc)
+        self.source = {
+            "id": "critical-source",
+            "name": "Critical Source",
+            "url": "https://agency.example/bids",
+            "crawl_tier": 1,
+            "source_tier": "state",
+            "crawl_freq": "daily",
+            "parser": "dedicated",
+            "critical": True,
+        }
+
+    def test_missing_critical_source_is_an_error(self):
+        health = source_health.evaluate_source(self.source, now=self.now)
+        self.assertEqual(health["status"], "never_run")
+        self.assertEqual(health["severity"], "error")
+
+    def test_stale_source_is_detected(self):
+        entry = {"last_crawl": (self.now - timedelta(hours=60)).isoformat(), "last_count": 5}
+        health = source_health.evaluate_source(self.source, entry, self.now)
+        self.assertEqual(health["status"], "stale")
+
+    def test_large_count_drop_is_a_warning(self):
+        history = [
+            {"at": f"2026-08-{day:02d}T18:00:00+00:00", "count": count, "error": None}
+            for day, count in ((12, 20), (13, 22), (14, 21), (16, 3))
+        ]
+        entry = {
+            "last_crawl": history[-1]["at"],
+            "last_count": 3,
+            "last_error": None,
+            "history": history,
+        }
+        health = source_health.evaluate_source(self.source, entry, self.now)
+        self.assertEqual(health["status"], "count_drop")
+        self.assertEqual(health["severity"], "warning")
+
+    def test_summary_includes_never_run_sources_and_county_coverage(self):
+        summary = source_health.build_health_summary(notice_sources.NOTICE_SOURCES, [], self.now)
+        self.assertEqual(summary["configured_sources"], len(notice_sources.NOTICE_SOURCES))
+        self.assertEqual(summary["coverage"]["county_sources"], 21)
+        self.assertEqual(summary["coverage"]["missing_counties"], [])
 
 
 class PublicDashboardTests(unittest.TestCase):

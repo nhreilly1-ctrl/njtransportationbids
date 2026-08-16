@@ -31,6 +31,7 @@
       <a href="{{ url_for('admin_records') }}?filter=expired" class="btn">Review expired &nbsp;<span class="badge badge-expired">{{ stats.expired }}</span></a>
       <a href="{{ url_for('admin_records') }}?filter=uncat" class="btn">Uncategorized &nbsp;<span class="badge badge-nodate">{{ stats.uncat }}</span></a>
       <a href="{{ url_for('admin_sources') }}" class="btn">Manage sources</a>
+      <a href="{{ url_for('notices2.admin_notice_health') }}" class="btn">Crawler health and coverage</a>
     </div>
   </div>
   <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); padding:1.25rem;">

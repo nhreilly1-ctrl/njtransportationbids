@@ -44,7 +44,7 @@ jobs:
         if: github.event.inputs.mode == 'daily' || github.event_name == 'schedule' && github.event.schedule == '0 10 * * *'
         run: |
           cd crawlers
-          python notice_runner.py
+          python notice_runner.py --strict-health
         env:
           PYTHONPATH: ${{ github.workspace }}
 
@@ -53,7 +53,7 @@ jobs:
         run: |
           cd crawlers
           python notice_runner.py --seed-sos
-          python notice_runner.py --weekly
+          python notice_runner.py --weekly --strict-health
         env:
           PYTHONPATH: ${{ github.workspace }}
 
@@ -61,7 +61,7 @@ jobs:
         if: github.event.inputs.mode == 'tier1'
         run: |
           cd crawlers
-          python notice_runner.py --tier 1
+          python notice_runner.py --tier 1 --strict-health
         env:
           PYTHONPATH: ${{ github.workspace }}
 
@@ -74,6 +74,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
 
       - name: Commit updated data
+        if: always()
         run: |
           git config user.name  "crawl-bot"
           git config user.email "bot@njtransportationbids.com"

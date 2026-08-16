@@ -30,6 +30,7 @@ from notice_sources import (
     SOURCES_BY_ID
 )
 from notice_crawlers import crawl_source, parse_sos_directory, parse_municipal_from_sos
+from source_health import build_health_summary
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -44,6 +45,7 @@ BASE         = Path(__file__).parent.parent
 DATA_DIR     = BASE / "data" / "notices"
 NOTICES_F    = DATA_DIR / "notices.json"
 CRAWL_LOG_F  = DATA_DIR / "crawl_log.json"
+HEALTH_F     = DATA_DIR / "health_summary.json"
 SOS_ENT_F    = DATA_DIR / "sos_entities.json"
 OPP_F        = BASE / "data" / "opportunities.json"   # legacy file for merge
 
@@ -56,6 +58,9 @@ AUTHORITATIVE_PARSERS = {
     "njtransit",
     "drjtbc",
     "sjta",
+    "panynj",
+    "drpa",
+    "njtpa",
     "essex_county",
     "camden_county",
     "monmouth_county",
@@ -290,12 +295,15 @@ def _log_crawl(source_id, count, error=None):
         entry = {"source_id": source_id, "history": []}
         log_data.append(entry)
 
-    entry["last_crawl"]    = _now()
+    crawled_at = _now()
+    entry["last_crawl"]    = crawled_at
     entry["last_count"]    = count
     entry["last_error"]    = error
     entry["health"]        = "ok" if not error else "error"
+    if not error:
+        entry["last_successful_crawl"] = entry["last_crawl"]
     entry["history"]       = (entry.get("history",[]) + [{
-        "at": _now(), "count": count, "error": error
+        "at": crawled_at, "count": count, "error": error
     }])[-30:]   # keep last 30 runs
 
     _save(CRAWL_LOG_F, log_data)
@@ -370,7 +378,9 @@ def run_crawl(sources_to_crawl):
             log.info(f"  → {len(records)} records")
             if crawl_error:
                 log.warning(f"{source['id']} returned zero records; parser or source may have changed")
-            elif source.get("parser") in AUTHORITATIVE_PARSERS:
+            elif source.get("parser") in AUTHORITATIVE_PARSERS and (
+                records or source.get("empty_is_authoritative")
+            ):
                 refreshed_source_ids.add(source["id"])
             all_fresh.extend(records)
         except Exception as e:
@@ -387,6 +397,11 @@ def main():
     parser.add_argument("--source",  type=str, help="Run only one source by ID")
     parser.add_argument("--seed-sos",action="store_true", help="Refresh SoS entity directory")
     parser.add_argument("--dry-run", action="store_true", help="Print records, don't save")
+    parser.add_argument(
+        "--strict-health",
+        action="store_true",
+        help="Exit non-zero after saving when a critical source is unhealthy",
+    )
     args = parser.parse_args()
 
     log.info("=" * 60)
@@ -473,12 +488,26 @@ def main():
 
     _save(NOTICES_F, deduped)
 
+    health_summary = build_health_summary(NOTICE_SOURCES, _load(CRAWL_LOG_F))
+    _save(HEALTH_F, health_summary)
+
     # Summary
     active  = [n for n in deduped if n.get("status") in ("open", "upcoming") and not n.get("noise_flagged")]
     urgent  = [n for n in active if n.get("urgent")]
     log.info(f"Saved {len(deduped)} total notices")
     log.info(f"  Active: {len(active)}  |  Urgent (≤7 days): {len(urgent)}  |  Noise: {len(noise)}")
+    log.info(
+        "  Source health: %s healthy | %s warnings | %s errors | %s critical",
+        health_summary["healthy_sources"],
+        health_summary["warning_sources"],
+        health_summary["error_sources"],
+        health_summary["critical_failures"],
+    )
     log.info("Done.")
+
+    if args.strict_health and health_summary["critical_failures"]:
+        log.error("Critical crawler source failures detected; see health_summary.json")
+        sys.exit(2)
 
 
 if __name__ == "__main__":

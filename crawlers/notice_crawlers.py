@@ -81,7 +81,7 @@ def _excerpt(text, chars=400):
 PROFESSIONAL_SCOPE_KW = [
     "architectural", "architecture", "engineering services",
     "engineering assistance", "engineering support", "engineering design",
-    "construction management", "construction inspection", "bridge inspection",
+    "construction management", "construction inspection", "construction monitoring", "bridge inspection",
     "design services", "surveying services", "traffic engineering",
     "transportation planning", "corridor plan", "program management",
     "cost estimating", "constructability", "geotechnical", "structural evaluation",
@@ -93,7 +93,7 @@ CONSTRUCTION_SCOPE_KW = [
     "overlay", "curb", "sidewalk", "intersection", "signal",
     "guardrail", "guide rail", "highway", "transportation",
     "traffic", "streetscape", "resurfacing", "reconstruction",
-    "maintenance contract", "job order contract", "rail rehabilitation",
+    "maintenance contract", "job order contract", "rail rehabilitation", "rail grinding",
     "track rehabilitation", "station rehabilitation", "platform lift",
     "structural repair", "hvac overhaul", "tank installation", "ferry retrofit",
 ]
@@ -122,6 +122,30 @@ def _classify_transport_scope(title, body=""):
 
 def _is_transport_relevant(title, body=""):
     return _classify_transport_scope(title, body) is not None
+
+
+def _base_record(source, title, official_url, notice_type, due_date="", contract_number="", excerpt=""):
+    return {
+        "id": _make_id(source["id"], title, contract_number or official_url),
+        "title": title,
+        "notice_excerpt": _excerpt(excerpt or title),
+        "source_id": source["id"],
+        "source_name": source["name"],
+        "source_tier": source["source_tier"],
+        "source_url": source["url"],
+        "official_url": official_url,
+        "county": source.get("county", "Statewide"),
+        "entity_type": source["entity_type"],
+        "notice_type": notice_type,
+        "notice_subtype": notice_type,
+        "due_date_raw": due_date,
+        "contract_number": contract_number,
+        "access_type": source["access_type"],
+        "platform": source["platform"],
+        "paywalled": False,
+        "source_status": "open",
+        "crawled_at": _now(),
+    }
 
 
 # ── NJDOT Construction ────────────────────────────────────────────────────────
@@ -586,6 +610,220 @@ def parse_njdot_design_build(source):
 
 # ── NJTA ──────────────────────────────────────────────────────────────────────
 
+PANYNJ_NJ_SIGNALS = (
+    "newark", "ewr", "path", "holland tunnel", "lincoln tunnel",
+    "george washington bridge", "gwb", "bayonne bridge", "goethals bridge",
+    "outerbridge", "port newark", "port elizabeth", "new jersey",
+    "new york and new jersey", "all facilities", "port authority facilities",
+)
+
+
+def _json_text_fragments(value):
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if key == "text" and isinstance(child, str):
+                yield child
+            else:
+                yield from _json_text_fragments(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _json_text_fragments(child)
+
+
+def parse_panynj(source):
+    """Parse Port Authority tables from its public Adobe AEM model."""
+    model_url = source["url"].replace(".html", ".model.json")
+    response = _get(model_url, timeout=40)
+    if not response:
+        raise RuntimeError("Port Authority solicitation data could not be fetched")
+    try:
+        payload = response.json()
+    except ValueError as exc:
+        raise RuntimeError("Port Authority returned invalid solicitation data") from exc
+
+    notice_type = source["notice_type"]
+    records = []
+    seen = set()
+    for fragment in _json_text_fragments(payload):
+        if "<table" not in fragment.lower():
+            continue
+        soup = _soup(fragment)
+        for table in soup.find_all("table"):
+            first_row = table.find("tr")
+            headers = _clean(first_row.get_text(" ", strip=True)).lower() if first_row else ""
+            number_header = "contract number" if notice_type == "construction" else "proposal number"
+            if number_header not in headers or "due date" not in headers or "description" not in headers:
+                continue
+
+            for row in table.find_all("tr"):
+                cells = row.find_all(["td", "th"])
+                if len(cells) < 3:
+                    continue
+                values = [_clean(cell.get_text(" ", strip=True)) for cell in cells]
+                contract_number = values[0]
+                if not contract_number or number_header in contract_number.lower():
+                    continue
+
+                description_el = cells[2].find("p")
+                description = _clean(description_el.get_text(" ", strip=True) if description_el else values[2])
+                if len(description) < 12:
+                    continue
+                if notice_type == "construction" and not any(signal in description.lower() for signal in PANYNJ_NJ_SIGNALS):
+                    continue
+
+                due_match = re.search(
+                    r"\b\d{1,2}-[A-Za-z]{3}-\d{4}\b|"
+                    r"\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[A-Za-z]*\s+\d{1,2},?\s+\d{4}\b|"
+                    r"\b\d{1,2}/\d{1,2}/\d{2,4}\b",
+                    values[1],
+                    re.I,
+                )
+                due_date = due_match.group(0) if due_match else ""
+                parsed_due = None
+                for fmt in ("%d-%b-%Y", "%B %d, %Y", "%b %d, %Y", "%m/%d/%Y"):
+                    try:
+                        parsed_due = datetime.strptime(due_date, fmt).date()
+                        break
+                    except ValueError:
+                        continue
+                if parsed_due and parsed_due < date.today():
+                    continue
+                if notice_type == "professional_services" and not due_date:
+                    continue
+
+                link = cells[0].find("a", href=True)
+                official_url = urljoin(source["url"], link["href"]) if link else source["url"]
+                key = (contract_number.lower(), description.lower())
+                if key in seen:
+                    continue
+                seen.add(key)
+
+                title = f"PANYNJ {contract_number} - {description}"[:300]
+                records.append(_base_record(
+                    source,
+                    title,
+                    official_url,
+                    notice_type,
+                    due_date=due_date,
+                    contract_number=contract_number,
+                    excerpt=f"Port Authority of New York and New Jersey solicitation. {description}",
+                ))
+
+    log.info(f"PANYNJ {notice_type}: {len(records)} records")
+    return records
+
+
+def _extract_due_date_from_text(text):
+    month_date = (
+        r"(?:January|February|March|April|May|June|July|August|September|"
+        r"October|November|December)\s+\d{1,2},?\s+\d{4}"
+    )
+    patterns = [
+        rf"(?:qualification|proposal|bid)?\s*due date\s*:\s*({month_date})",
+        rf"no later than\s+.{{0,200}}?({month_date})",
+        rf"(?:bids?|proposals?|statements?)\s+(?:are\s+)?due\s+.{{0,200}}?({month_date})",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text, re.I | re.S)
+        if match:
+            return _clean(match.group(1))
+    return ""
+
+
+def parse_drpa(source):
+    """Parse transportation construction and consulting solicitations from DRPA/PATCO."""
+    response = _get(source["url"], timeout=30)
+    if not response:
+        raise RuntimeError("DRPA/PATCO solicitation page could not be fetched")
+    soup = _soup(response.text)
+    records = []
+    for cell in soup.find_all("td"):
+        heading = cell.find("h3")
+        if not heading:
+            continue
+        heading_text = _clean(heading.get_text(" ", strip=True))
+        context = _clean(cell.get_text(" ", strip=True))
+        notice_type = _classify_transport_scope(heading_text, context)
+        if not notice_type:
+            continue
+        link = cell.find("a", href=True)
+        official_url = urljoin(source["url"], link["href"]) if link else source["url"]
+        detail_response = _get(official_url, timeout=30) if link else None
+        detail_text = context
+        if detail_response:
+            detail_text = _clean(_soup(detail_response.text).get_text(" ", strip=True))
+        due_date = _extract_due_date_from_text(detail_text)
+        contract_match = re.search(
+            r"\b(?:Contract\s+No\.?|RFP|RFQ|IFB)\s*[-:#]?\s*([A-Z0-9-]+)",
+            heading_text,
+            re.I,
+        )
+        contract_number = contract_match.group(1) if contract_match else ""
+        title = re.sub(
+            r"^(?:Request For (?:Proposals|Qualifications)|Advertisement for Bid)\s*--\s*",
+            "",
+            heading_text,
+            flags=re.I,
+        )
+        records.append(_base_record(
+            source,
+            f"DRPA/PATCO - {title}"[:300],
+            official_url,
+            notice_type,
+            due_date=due_date,
+            contract_number=contract_number,
+            excerpt=detail_text,
+        ))
+
+    log.info(f"DRPA/PATCO: {len(records)} scoped records")
+    return records
+
+
+def parse_njtpa(source):
+    """Parse active NJTPA transportation planning and engineering RFP cards."""
+    response = _get(source["url"], timeout=30)
+    if not response:
+        raise RuntimeError("NJTPA RFP page could not be fetched")
+    soup = _soup(response.text)
+    records = []
+    for item in soup.select("a.rfp-item"):
+        title_el = item.select_one(".rfp-title")
+        if not title_el:
+            continue
+        statuses = " ".join(node.get_text(" ", strip=True) for node in item.select(".rfp-status"))
+        if "active" not in statuses.lower():
+            continue
+        title = _clean(title_el.get_text(" ", strip=True))
+        deadline = ""
+        for meta in item.select(".rfp-meta-item"):
+            label = meta.select_one(".label")
+            if not label or "deadline" not in label.get_text(" ", strip=True).lower():
+                continue
+            time_el = meta.find("time")
+            raw = time_el.get("datetime", "") if time_el else meta.get_text(" ", strip=True)
+            match = re.search(
+                r"\b(?:January|February|March|April|May|June|July|August|September|"
+                r"October|November|December)\s+\d{1,2},?\s+\d{4}\b",
+                raw,
+                re.I,
+            )
+            deadline = match.group(0) if match else raw
+            break
+        notice = item.select_one(".rfp-card-notice")
+        excerpt = _clean(notice.get_text(" ", strip=True)) if notice else title
+        records.append(_base_record(
+            source,
+            f"NJTPA - {title}"[:300],
+            urljoin(source["url"], item.get("href", "")),
+            "professional_services",
+            due_date=deadline,
+            excerpt=f"North Jersey Transportation Planning Authority RFP. {excerpt}",
+        ))
+
+    log.info(f"NJTPA: {len(records)} active RFPs")
+    return records
+
+
 def parse_njta(source):
     """
     NJ Turnpike Authority current solicitations page.
@@ -992,7 +1230,8 @@ def parse_nj_dos_legal(source):
     """
     records = []
     r = _get(source["url"])
-    if not r: return records
+    if not r:
+        raise RuntimeError("NJ Department of State notices page could not be fetched")
 
     soup = _soup(r.text)
 
@@ -1088,7 +1327,8 @@ def parse_generic_html_list(source):
     """
     records = []
     r = _get(source["url"])
-    if not r: return records
+    if not r:
+        raise RuntimeError(f"{source['name']} page could not be fetched")
 
     soup = _soup(r.text)
     seen = set()
@@ -1425,6 +1665,9 @@ PARSER_MAP = {
     "njdot_profserv":       parse_njdot_profserv,
     "njdot_profserv_upcoming": parse_njdot_profserv_upcoming,
     "njdot_design_build":  parse_njdot_design_build,
+    "panynj":               parse_panynj,
+    "drpa":                 parse_drpa,
+    "njtpa":                parse_njtpa,
     "njta":                 parse_njta,
     "njtransit":            parse_njtransit,
     "sjta":                 parse_sjta,
@@ -1444,10 +1687,6 @@ def crawl_source(source, delay=1.5):
     """Crawl a single source. Returns list of notice dicts."""
     parser_name = source.get("parser","generic_html_list")
     parser_fn   = PARSER_MAP.get(parser_name, parse_generic_html_list)
-    try:
-        records = parser_fn(source)
-        time.sleep(delay)   # polite delay between requests
-        return records
-    except Exception as e:
-        log.error(f"Error crawling {source['id']}: {e}")
-        return []
+    records = parser_fn(source)
+    time.sleep(delay)   # polite delay between requests
+    return records

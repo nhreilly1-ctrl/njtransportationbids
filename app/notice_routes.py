@@ -290,13 +290,11 @@ def admin_notice_health():
     crawl_log = _load_crawl_log()
     notices   = _load_notices()
     stats     = _build_stats(notices)
-    # Annotate log with source metadata
-    from crawlers.notice_sources import SOURCES_BY_ID
-    for e in crawl_log:
-        src = SOURCES_BY_ID.get(e.get("source_id",""),{})
-        e["source_name"] = src.get("name", e.get("source_id",""))
-        e["crawl_tier"]  = src.get("crawl_tier","")
+    from crawlers.notice_sources import NOTICE_SOURCES
+    from crawlers.source_health import build_health_summary
+
+    summary = build_health_summary(NOTICE_SOURCES, crawl_log)
+    for e in summary["sources"]:
         e["ago"]         = _fmt_ago(e.get("last_crawl",""))
-    crawl_log.sort(key=lambda e: (e.get("crawl_tier",9), e.get("source_name","")))
     return render_template("notices/admin_health.html",
-                           crawl_log=crawl_log, stats=stats)
+                           crawl_log=summary["sources"], stats=stats, summary=summary)
