@@ -16,9 +16,14 @@
         "at": "2026-04-15T02:43:05.669473+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:33:57.570622+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:05.669438+00:00",
+    "last_crawl": "2026-08-16T17:33:57.570597+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok"
@@ -40,10 +45,15 @@
         "at": "2026-04-15T02:43:08.331618+00:00",
         "count": 23,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:33:59.803730+00:00",
+        "count": 22,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:08.331584+00:00",
-    "last_count": 23,
+    "last_crawl": "2026-08-16T17:33:59.803712+00:00",
+    "last_count": 22,
     "last_error": null,
     "health": "ok"
   },
@@ -64,9 +74,14 @@
         "at": "2026-04-15T02:43:10.391579+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:34:01.451483+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:10.391549+00:00",
+    "last_crawl": "2026-08-16T17:34:01.451465+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok"
@@ -88,10 +103,15 @@
         "at": "2026-04-15T02:43:12.678675+00:00",
         "count": 35,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:34:03.158633+00:00",
+        "count": 34,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:12.678643+00:00",
-    "last_count": 35,
+    "last_crawl": "2026-08-16T17:34:03.158612+00:00",
+    "last_count": 34,
     "last_error": null,
     "health": "ok"
   },
@@ -112,9 +132,14 @@
         "at": "2026-04-15T02:43:16.241197+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:34:05.022268+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:16.241158+00:00",
+    "last_crawl": "2026-08-16T17:34:05.022250+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok"
@@ -136,10 +161,15 @@
         "at": "2026-04-15T02:43:18.555763+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:34:06.825449+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:18.555725+00:00",
-    "last_count": 3,
+    "last_crawl": "2026-08-16T17:34:06.825431+00:00",
+    "last_count": 2,
     "last_error": null,
     "health": "ok"
   },
@@ -160,9 +190,14 @@
         "at": "2026-04-15T02:43:20.900501+00:00",
         "count": 6,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:34:09.107232+00:00",
+        "count": 6,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:20.900469+00:00",
+    "last_crawl": "2026-08-16T17:34:09.107214+00:00",
     "last_count": 6,
     "last_error": null,
     "health": "ok"
@@ -184,9 +219,14 @@
         "at": "2026-04-15T02:43:23.218782+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:34:11.014842+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:23.218750+00:00",
+    "last_crawl": "2026-08-16T17:34:11.014824+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok"
@@ -208,9 +248,14 @@
         "at": "2026-04-15T02:43:25.330755+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-16T17:34:12.945302+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-04-15T02:43:25.330710+00:00",
+    "last_crawl": "2026-08-16T17:34:12.945284+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok"
@@ -236,6 +281,216 @@
     ],
     "last_crawl": "2026-04-15T02:43:27.566382+00:00",
     "last_count": 2,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-essex",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:14.782173+00:00",
+        "count": 94,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:14.782155+00:00",
+    "last_count": 94,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-camden",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:16.998215+00:00",
+        "count": 3,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:16.998196+00:00",
+    "last_count": 3,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-monmouth",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:19.377354+00:00",
+        "count": 3,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:19.377336+00:00",
+    "last_count": 3,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-bergen",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:21.210676+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:21.210659+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-hudson",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:23.267286+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:23.267267+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-gloucester",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:25.711539+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:25.711518+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-burlington",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:28.063277+00:00",
+        "count": 2,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:28.063258+00:00",
+    "last_count": 2,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-middlesex",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:30.633056+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:30.633038+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-union",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:32.949400+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:32.949380+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-morris",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:34.665326+00:00",
+        "count": 2,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:34.665306+00:00",
+    "last_count": 2,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-ocean",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:36.575984+00:00",
+        "count": 1,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:36.575966+00:00",
+    "last_count": 1,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "county-mercer",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:38.337329+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:38.337312+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "municipal-newark",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:40.115054+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:40.115036+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "municipal-jersey-city",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:42.427781+00:00",
+        "count": 0,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:42.427764+00:00",
+    "last_count": 0,
+    "last_error": null,
+    "health": "ok"
+  },
+  {
+    "source_id": "municipal-paterson",
+    "history": [
+      {
+        "at": "2026-08-16T17:34:44.535199+00:00",
+        "count": 5,
+        "error": null
+      }
+    ],
+    "last_crawl": "2026-08-16T17:34:44.535180+00:00",
+    "last_count": 5,
     "last_error": null,
     "health": "ok"
   }
