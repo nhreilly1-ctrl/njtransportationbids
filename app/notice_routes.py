@@ -238,21 +238,22 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         active_nav=active_nav,
         last_crawl_ago=last_crawl_ago,
         user=session.get("user_id"),
+        robots_meta="index, follow" if filtered else "noindex, follow",
     )
 
 
 @notice_bp.route("/notices")
 def notices_all():
-    return _notice_list_view(active_nav="notices_all")
+    return _notice_list_view(notice_type="public_notice", active_nav="notices_all")
 
 @notice_bp.route("/notices/construction")
 def notices_construction():
-    return _notice_list_view(notice_subtype="construction",
+    return _notice_list_view(notice_type="public_notice", notice_subtype="construction",
                              active_nav="notices_construction")
 
 @notice_bp.route("/notices/professional-services")
 def notices_profserv():
-    return _notice_list_view(notice_subtype="professional_services",
+    return _notice_list_view(notice_type="public_notice", notice_subtype="professional_services",
                              active_nav="notices_profserv")
 
 @notice_bp.route("/notices/<notice_id>")
@@ -261,9 +262,7 @@ def notice_detail(notice_id):
     notice  = next((n for n in notices if n.get("id") == notice_id), None)
     if not notice:
         return "Notice not found", 404
-    notice["_ago"] = _fmt_ago(notice.get("crawled_at",""))
-    return render_template("notices/notice_detail.html",
-                           notice=notice, user=session.get("user_id"))
+    return redirect(url_for("opportunity_detail", opp_id=notice_id), code=301)
 
 
 @notice_bp.route("/export/notices.csv")

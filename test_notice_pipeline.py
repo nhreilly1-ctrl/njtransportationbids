@@ -1,4 +1,6 @@
 import sys
+import json
+import re
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -12,6 +14,7 @@ import notice_crawlers
 import notice_runner
 import notice_sources
 from app import main as app_main
+from app import notice_routes as notice_app
 
 
 SOURCE = {
@@ -160,6 +163,75 @@ class PublicDashboardTests(unittest.TestCase):
             response.get_data(as_text=True),
             r'<div class="num">\s*1\s*</div>\s*<div class="lbl">Sources monitored</div>',
         )
+        self.assertIn('class="nav-toggle"', response.get_data(as_text=True))
+        self.assertIn('id="primary-navigation"', response.get_data(as_text=True))
+
+
+class PublicSeoTests(unittest.TestCase):
+    def setUp(self):
+        self.active = {
+            "id": "active-bid",
+            "_canonical_notice": True,
+            "title": "Route 1 bridge reconstruction",
+            "notice_excerpt": "NJDOT bridge reconstruction contract in Middlesex County.",
+            "source_id": "state-njdot-construction",
+            "source_name": "NJDOT Construction Services",
+            "source_tier": "state",
+            "source_url": "https://dot.nj.gov/bids",
+            "official_url": "https://dot.nj.gov/notice.pdf",
+            "county": "Middlesex",
+            "notice_type": "construction",
+            "notice_subtype": "construction",
+            "due_date_raw": "12/31/68",
+            "contract_number": "DP-12345",
+            "access_type": "Public access",
+            "platform": "NJDOT website",
+            "status": "open",
+            "source_status": "open",
+            "crawled_at": "2068-11-01T12:00:00+00:00",
+        }
+
+    def test_robots_and_sitemap_publish_canonical_active_urls(self):
+        expired = dict(self.active, id="expired-bid", due_date_raw="01/01/20", status="expired")
+        client = app_main.app.test_client()
+        robots = client.get("/robots.txt")
+        self.assertEqual(robots.status_code, 200)
+        self.assertIn("Sitemap: https://www.njtransportationbids.com/sitemap.xml", robots.get_data(as_text=True))
+        self.assertIn("Disallow: /*?", robots.get_data(as_text=True))
+
+        with patch.object(app_main, "load_public_opps", return_value=[self.active, expired]):
+            sitemap = client.get("/sitemap.xml")
+
+        xml = sitemap.get_data(as_text=True)
+        self.assertEqual(sitemap.status_code, 200)
+        self.assertIn("/opportunities/active-bid", xml)
+        self.assertNotIn("/opportunities/expired-bid", xml)
+        self.assertNotIn("<loc>https://www.njtransportationbids.com/notices</loc>", xml)
+
+    def test_detail_metadata_structured_data_and_calendar(self):
+        client = app_main.app.test_client()
+        with patch.object(app_main, "load_public_opps", return_value=[self.active]):
+            response = client.get("/opportunities/active-bid")
+            calendar = client.get("/opportunities/active-bid/calendar.ics")
+
+        html = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('rel="canonical" href="https://www.njtransportationbids.com/opportunities/active-bid"', html)
+        self.assertIn("Official-source record", html)
+        self.assertIn("Add deadline to calendar", html)
+        scripts = re.findall(r'<script type="application/ld\+json">\s*(.*?)\s*</script>', html, re.S)
+        self.assertTrue(scripts)
+        for script in scripts:
+            json.loads(script)
+        self.assertEqual(calendar.status_code, 200)
+        self.assertIn("BEGIN:VCALENDAR", calendar.get_data(as_text=True))
+
+    def test_notice_detail_redirects_to_canonical_opportunity(self):
+        with patch.object(notice_app, "_load_notices", return_value=[self.active]):
+            response = app_main.app.test_client().get("/notices/active-bid")
+
+        self.assertEqual(response.status_code, 301)
+        self.assertTrue(response.headers["Location"].endswith("/opportunities/active-bid"))
 
 
 if __name__ == "__main__":

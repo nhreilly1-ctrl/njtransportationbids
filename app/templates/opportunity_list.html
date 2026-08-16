@@ -1,5 +1,26 @@
 {% extends "base.html" %}
 {% block title %}{{ page_title }} - NJ Transportation Bids{% endblock %}
+{% block meta_description %}{{ page_desc }} Browse current deadlines, issuing agencies, counties, and direct links to official New Jersey transportation solicitations.{% endblock %}
+{% block structured_data %}
+{% set listed_opps = (soon + later + nodate)[:50] %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": {{ page_title | tojson }},
+  "url": {{ canonical_url | tojson }},
+  "numberOfItems": {{ total }},
+  "itemListElement": [
+    {% for o in listed_opps %}{
+      "@type": "ListItem",
+      "position": {{ loop.index }},
+      "name": {{ o.title | tojson }},
+      "url": {{ (site_url + url_for('opportunity_detail', opp_id=o.id)) | tojson }}
+    }{{ "," if not loop.last else "" }}{% endfor %}
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 <div class="page-header">
   <h1>{{ page_title }} <span style="font-size:14px; font-weight:400; color:var(--text2);">({{ total }})</span></h1>

@@ -4,8 +4,9 @@ import hashlib
 import json
 import logging
 import os
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from io import StringIO
+from xml.sax.saxutils import escape
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -24,13 +25,20 @@ app.register_blueprint(network_bp)
 
 @app.context_processor
 def inject_globals():
-    return {"today_date": date.today().isoformat()}
+    noindex_prefixes = ("/admin", "/network/login", "/network/register", "/export/")
+    return {
+        "today_date": date.today().isoformat(),
+        "site_url": SITE_URL,
+        "canonical_url": f"{SITE_URL}{request.path}",
+        "robots_meta": "noindex, nofollow" if request.path.startswith(noindex_prefixes) else "index, follow",
+    }
 
 BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA = os.path.join(BASE, "data") if os.path.isdir(os.path.join(BASE, "data")) else os.path.join(BASE, "data_store")
 OPP_F = os.path.join(DATA, "opportunities.json")
 SRC_F = os.path.join(DATA, "sources.json")
 NOTICE_F = os.path.join(BASE, "data", "notices", "notices.json")
+SITE_URL = os.environ.get("SITE_URL", "https://www.njtransportationbids.com").rstrip("/")
 
 ADMIN_USER = os.environ.get("ADMIN_USERNAME", "admin")
 _admin_password = os.environ.get("ADMIN_PASSWORD")
@@ -724,6 +732,9 @@ def enrich(opp: dict) -> dict:
     record = dict(opp)
     due = parse_due(record.get("due_date_raw") or record.get("due_date"))
     record["due_date_parsed"] = due.isoformat() if due else None
+    record["days_until_due"] = (due - date.today()).days if due else None
+    crawled_at = str(record.get("crawled_at") or record.get("created_at") or "")
+    record["last_verified_date"] = crawled_at[:10] if len(crawled_at) >= 10 else None
 
     if record.get("_canonical_notice"):
         record["source_rule"] = "trusted" if record.get("source_tier") == "state" else "ai_review"
@@ -836,6 +847,57 @@ def health():
     )
 
 
+@app.route("/robots.txt")
+def robots_txt():
+    body = "\n".join(
+        [
+            "User-agent: *",
+            "Allow: /",
+            "Disallow: /admin",
+            "Disallow: /export/",
+            "Disallow: /network/login",
+            "Disallow: /network/register",
+            "Disallow: /*?",
+            f"Sitemap: {SITE_URL}/sitemap.xml",
+            "",
+        ]
+    )
+    return Response(body, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    paths = [
+        "/",
+        "/bids/construction",
+        "/bids/professional-services",
+        "/sources",
+    ]
+    entries = [(f"{SITE_URL}{path}", None) for path in paths]
+    has_public_notices = False
+    for opp in load_public_opps():
+        record = enrich(opp)
+        if record.get("status") not in ("open", "upcoming"):
+            continue
+        if record.get("noise_flagged") or not record.get("id"):
+            continue
+        has_public_notices = has_public_notices or record.get("record_type") == "public_notice"
+        lastmod = record.get("last_verified_date")
+        entries.append((f"{SITE_URL}/opportunities/{record['id']}", lastmod))
+    if has_public_notices:
+        entries.append((f"{SITE_URL}/notices", None))
+
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for location, lastmod in entries:
+        lines.append("  <url>")
+        lines.append(f"    <loc>{escape(location)}</loc>")
+        if lastmod:
+            lines.append(f"    <lastmod>{escape(lastmod)}</lastmod>")
+        lines.append("  </url>")
+    lines.append("</urlset>")
+    return Response("\n".join(lines), mimetype="application/xml")
+
+
 @app.route("/")
 def index():
     opps = [enrich(opp) for opp in load_public_opps()]
@@ -935,10 +997,57 @@ def opportunities():
 
 @app.route("/opportunities/<opp_id>")
 def opportunity_detail(opp_id: str):
-    opp = next((enrich(item) for item in load_public_opps() if str(item.get("id")) == opp_id), None)
+    opportunities = [enrich(item) for item in load_public_opps()]
+    opp = next((item for item in opportunities if str(item.get("id")) == opp_id), None)
     if not opp or opp["status"] == "deleted":
         return "Not found", 404
-    return render_template("opportunity_detail.html", opp=opp)
+    related = [
+        item
+        for item in opportunities
+        if item.get("id") != opp.get("id")
+        and item.get("status") in ("open", "upcoming")
+        and item.get("record_type") == opp.get("record_type")
+        and item.get("source_id") == opp.get("source_id")
+    ]
+    return render_template("opportunity_detail.html", opp=opp, related=sort_opps(related)[:3])
+
+
+@app.route("/opportunities/<opp_id>/calendar.ics")
+def opportunity_calendar(opp_id: str):
+    opp = next((enrich(item) for item in load_public_opps() if str(item.get("id")) == opp_id), None)
+    if not opp or not opp.get("due_date_parsed") or opp.get("status") not in ("open", "upcoming"):
+        return "Calendar event not available", 404
+
+    event_date = date.fromisoformat(opp["due_date_parsed"])
+    next_date = event_date + timedelta(days=1)
+
+    def ics_text(value):
+        return str(value or "").replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
+
+    detail_url = f"{SITE_URL}/opportunities/{opp_id}"
+    calendar = "\r\n".join(
+        [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//NJ Transportation Bids//Bid Deadline//EN",
+            "BEGIN:VEVENT",
+            f"UID:{ics_text(opp_id)}@njtransportationbids.com",
+            f"DTSTAMP:{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTSTART;VALUE=DATE:{event_date.strftime('%Y%m%d')}",
+            f"DTEND;VALUE=DATE:{next_date.strftime('%Y%m%d')}",
+            f"SUMMARY:{ics_text('Bid due: ' + opp.get('title', 'Opportunity'))}",
+            f"DESCRIPTION:{ics_text((opp.get('source_name') or '') + ' - Verify submission details with the official source.')}",
+            f"URL:{detail_url}",
+            "END:VEVENT",
+            "END:VCALENDAR",
+            "",
+        ]
+    )
+    return Response(
+        calendar,
+        mimetype="text/calendar",
+        headers={"Content-Disposition": f'attachment; filename="{opp_id}-deadline.ics"'},
+    )
 
 
 @app.route("/sources")

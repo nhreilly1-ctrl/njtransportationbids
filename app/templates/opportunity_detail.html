@@ -1,5 +1,31 @@
 {% extends "base.html" %}
 {% block title %}{{ opp.title[:65] }} - NJ Transportation Bids{% endblock %}
+{% block meta_description %}{{ ((opp.notice_excerpt or opp.title) ~ (' Due ' ~ opp.due_date_raw if opp.due_date_raw else '') ~ ' Source: ' ~ (opp.source_name or 'official agency'))[:165] }}{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": {{ opp.title | tojson }},
+      "description": {{ (opp.notice_excerpt or opp.title) | tojson }},
+      "url": {{ canonical_url | tojson }}{% if opp.last_verified_date %},
+      "dateModified": {{ opp.last_verified_date | tojson }}{% endif %},
+      "isBasedOn": {{ (opp.official_url or opp.source_url or canonical_url) | tojson }}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": {{ site_url | tojson }}},
+        {"@type": "ListItem", "position": 2, "name": {{ ('Construction Bids' if opp.record_type == 'construction' else 'Professional Services') | tojson }}, "item": {{ (site_url + (url_for('bids_construction') if opp.record_type == 'construction' else url_for('bids_profserv'))) | tojson }}},
+        {"@type": "ListItem", "position": 3, "name": {{ opp.title | tojson }}}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 {% set type_label = {
   'construction': 'Construction Bid',
@@ -12,11 +38,16 @@
   'professional_services': url_for('bids_profserv'),
   'public_notice': url_for('notices2.notices_all'),
 }.get(opp.record_type, url_for('bids_construction')) %}
+{% set back_label = {
+  'construction': 'Construction Bids',
+  'professional_services': 'Professional Services',
+  'public_notice': 'Public Notices',
+}.get(opp.record_type, 'Opportunities') %}
 
-<div style="margin-bottom:.75rem;"><a href="{{ back_url }}" style="font-size:13px; color:var(--text2); text-decoration:none;">← {{ type_label }}s</a></div>
+<div style="margin-bottom:.75rem;"><a href="{{ back_url }}" style="font-size:13px; color:var(--text2); text-decoration:none;">← {{ back_label }}</a></div>
 
 <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); padding:1.5rem; margin-bottom:1rem;">
-  <div style="display:flex; align-items:flex-start; gap:1rem; flex-wrap:wrap;">
+  <div class="opportunity-hero">
     <div style="flex:1; min-width:0;">
       <h1 style="font-size:17px; font-weight:500; margin-bottom:.5rem; line-height:1.45;">{{ opp.title }}</h1>
       <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }}{% if opp.county %} &middot; {{ opp.county }}{% endif %}</div>
@@ -33,32 +64,68 @@
       </div>
     </div>
     {% if opp.due_date_raw and opp.due_date_raw != 'Not listed' %}
-    <div style="text-align:right; flex-shrink:0;">
+    <div class="opportunity-deadline">
       <div style="font-size:11px; color:var(--text3);">{{ 'Expected' if opp.status == 'upcoming' else 'Due date' }}</div>
       <div style="font-size:20px; font-weight:500; {{ 'color:var(--red)' if opp.status == 'expired' else '' }}">{{ opp.due_date_raw }}</div>
+      {% if opp.days_until_due is not none and opp.status == 'open' %}<div style="font-size:11px;color:var(--text2);">{{ opp.days_until_due }} day{{ 's' if opp.days_until_due != 1 }} remaining</div>{% endif %}
     </div>
     {% endif %}
   </div>
 </div>
 
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-  <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); padding:1.25rem;">
+<div class="trust-strip">
+  <strong>Official-source record</strong>
+  {% if opp.last_verified_date %}<span>Last verified {{ opp.last_verified_date }}</span>{% endif %}
+  {% if opp.contract_number %}<span>Reference {{ opp.contract_number }}</span>{% endif %}
+  <span>Confirm addenda before submitting</span>
+</div>
+
+{% if opp.notice_excerpt %}
+<div class="detail-card" style="margin-bottom:1rem;">
+  <div class="section-label" style="margin-top:0;">Opportunity summary</div>
+  <p style="font-size:14px; color:var(--text2); line-height:1.7;">{{ opp.notice_excerpt }}</p>
+</div>
+{% endif %}
+
+<div class="detail-grid">
+  <div class="detail-card">
     <div class="section-label" style="margin-top:0;">Next step</div>
     <p style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.next_step or 'Open the official source and follow the solicitation instructions. Confirm due dates and submission method before committing estimating time.' }}</p>
-    {% if opp.official_url %}<a href="{{ opp.official_url }}" target="_blank" rel="noopener" class="btn btn-primary" style="margin-bottom:.5rem;">Open official source ↗</a>{% endif %}
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+      {% if opp.official_url %}<a href="{{ opp.official_url }}" target="_blank" rel="noopener" class="btn btn-primary">Open official source ↗</a>{% endif %}
+      {% if opp.due_date_parsed and opp.status in ('open','upcoming') %}<a href="{{ url_for('opportunity_calendar', opp_id=opp.id) }}" class="btn">Add deadline to calendar</a>{% endif %}
+      <button type="button" class="btn" onclick="navigator.clipboard.writeText(window.location.href).then(() => this.textContent = 'Link copied')">Copy link</button>
+    </div>
   </div>
-  <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); padding:1.25rem;">
+  <div class="detail-card">
     <div class="section-label" style="margin-top:0;">Record details</div>
     <table style="width:100%; font-size:13px; border-collapse:collapse;">
       <tr><td style="color:var(--text2); padding:4px 0; width:44%;">Type</td><td style="padding:4px 0;">{{ type_label }}</td></tr>
       {% if opp.notice_subtype %}<tr><td style="color:var(--text2); padding:4px 0;">Notice subtype</td><td style="padding:4px 0;">{{ opp.notice_subtype | replace('_',' ') | title }}</td></tr>{% endif %}
+      {% if opp.contract_number %}<tr><td style="color:var(--text2); padding:4px 0;">Contract / reference</td><td style="padding:4px 0;">{{ opp.contract_number }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Source</td><td style="padding:4px 0;">{{ opp.source_name or '—' }}</td></tr>
       <tr><td style="color:var(--text2); padding:4px 0;">County</td><td style="padding:4px 0;">{{ opp.county or 'Statewide' }}</td></tr>
+      {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">{{ 'Expected' if opp.status == 'upcoming' else 'Deadline' }}</td><td style="padding:4px 0;">{{ opp.due_date_raw }}</td></tr>{% endif %}
+      {% if opp.last_verified_date %}<tr><td style="color:var(--text2); padding:4px 0;">Last verified</td><td style="padding:4px 0;">{{ opp.last_verified_date }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Access</td><td style="padding:4px 0;">{{ opp.access_type or '—' }}</td></tr>
       <tr><td style="color:var(--text2); padding:4px 0;">Platform</td><td style="padding:4px 0;">{{ opp.platform or '—' }}</td></tr>
     </table>
   </div>
 </div>
+
+{% if related %}
+<div class="section-label">More from {{ opp.source_name }}</div>
+{% for item in related %}
+<div class="bid-card">
+  <div class="bid-dot {{ 'dot-green' if item.status == 'open' else 'dot-amber' }}"></div>
+  <div class="bid-main">
+    <a href="{{ url_for('opportunity_detail', opp_id=item.id) }}" class="bid-title" title="{{ item.title }}">{{ item.title }}</a>
+    <div class="bid-meta">{{ item.county or 'Statewide' }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}</div>
+  </div>
+  <div class="bid-due"><span class="due-label">{{ 'Expected' if item.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ item.due_date_raw or 'Not listed' }}</span></div>
+</div>
+{% endfor %}
+{% endif %}
 
 {% if session.get('admin') %}
 <div style="background:var(--blue-bg); border:0.5px solid #b5d4f4; border-radius:var(--r); padding:.7rem 1rem; font-size:12px; color:var(--blue);">

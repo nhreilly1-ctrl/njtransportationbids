@@ -1,5 +1,26 @@
 {% extends "base.html" %}
 {% block title %}NJ Transportation Bids - Heavy Highway & Transportation Procurement{% endblock %}
+{% block meta_description %}Search open and upcoming NJ transportation construction bids, engineering RFPs, inspection contracts, and professional services opportunities from official agencies.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "NJ Transportation Bids",
+      "url": {{ site_url | tojson }},
+      "description": "One place to find open and upcoming New Jersey transportation construction and professional services opportunities."
+    },
+    {
+      "@type": "Organization",
+      "name": "NJ Transportation Bids",
+      "url": {{ site_url | tojson }}
+    }
+  ]
+}
+</script>
+{% endblock %}
 {% block content %}
 
 
@@ -40,7 +61,7 @@
   <!-- ── MAIN COLUMN ── -->
   <div>
 
-    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:1.5rem;">
+    <div class="home-category-grid">
       <a href="{{ url_for('bids_construction') }}" style="text-decoration:none;">
         <div style="background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); padding:1.1rem 1.25rem; transition:border-color .15s; cursor:pointer;" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
           <div style="font-size:11px; font-weight:500; color:var(--blue); text-transform:uppercase; letter-spacing:.06em; margin-bottom:.4rem;">Construction Bids</div>
@@ -199,8 +220,8 @@
         <div class="sb-link-label">NJ Transit<span class="sb-link-sub">Via Bid Express</span></div>
         <span class="sb-ext">↗</span>
       </a>
-      <a class="sb-link" href="https://www.sjta.com/doing-business/" target="_blank">
-        <div class="sb-link-label">South Jersey Transportation Auth.<span class="sb-link-sub">Atlantic City Expressway</span></div>
+      <a class="sb-link" href="https://www.bidexpress.com/businesses/29894/home" target="_blank" rel="noopener">
+        <div class="sb-link-label">South Jersey Transportation Auth.<span class="sb-link-sub">Current opportunities via Bid Express</span></div>
         <span class="sb-ext">↗</span>
       </a>
       <div class="sb-section">Bi-State Authorities</div>
@@ -243,17 +264,20 @@
       </a>
     </div>
 
-    <!-- Prevailing Wage -->
+    <!-- Wage determinations -->
     <div class="sb-card">
       <div class="sb-head" style="color:var(--amber);">
-        <div class="dot" style="background:var(--amber);"></div>Prevailing Wage — ST Rate
+        <div class="dot" style="background:var(--amber);"></div>Wage Determinations
       </div>
-      <div class="wage-row"><span style="color:var(--text2);">Laborer (Gen.)</span><span class="wage-rate">$48.20</span></div>
-      <div class="wage-row"><span style="color:var(--text2);">Operating Eng.</span><span class="wage-rate">$71.40</span></div>
-      <div class="wage-row"><span style="color:var(--text2);">Ironworker</span><span class="wage-rate">$76.15</span></div>
-      <div class="wage-row"><span style="color:var(--text2);">Teamster</span><span class="wage-rate">$52.80</span></div>
-      <div class="wage-row"><span style="color:var(--text2);">Electrician</span><span class="wage-rate">$82.30</span></div>
-      <div class="wage-note">Bergen Co. · 2024 rates · <a href="{{ url_for('network.wages') }}" style="color:var(--blue); text-decoration:none;">Full table →</a></div>
+      <a class="sb-link" href="https://www.nj.gov/labor/wageandhour/index.shtml" target="_blank" rel="noopener">
+        <div class="sb-link-label">NJ prevailing wage rates<span class="sb-link-sub">Confirm the county and project determination</span></div>
+        <span class="sb-ext">↗</span>
+      </a>
+      <a class="sb-link" href="https://sam.gov/content/wage-determinations" target="_blank" rel="noopener">
+        <div class="sb-link-label">Federal wage determinations<span class="sb-link-sub">Davis-Bacon rates for federal-aid work</span></div>
+        <span class="sb-ext">↗</span>
+      </a>
+      <div class="wage-note">Rates vary by county, trade, and contract. Verify against the solicitation before bidding.</div>
     </div>
 
     <!-- Contractor Resources -->
