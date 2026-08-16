@@ -35,8 +35,9 @@ log = logging.getLogger(__name__)
 
 HEADERS = {
     "User-Agent": (
-        "Mozilla/5.0 (compatible; NJTransportationBids-crawler/1.0; "
-        "+https://www.njtransportationbids.com)"
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/138.0.0.0 Safari/537.36"
     ),
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.5",
@@ -65,7 +66,7 @@ def _clean(text):
     """Strip excess whitespace, normalize dashes."""
     if not text: return ""
     text = re.sub(r'\s+', ' ', text).strip()
-    text = re.sub(r'\s*[-–—]\s*', ' — ', text)
+    text = re.sub(r'\s*[–—]\s*', ' - ', text)
     return text
 
 def _excerpt(text, chars=400):
@@ -158,7 +159,12 @@ def parse_njdot_construction(source):
                     raw_description = _clean(block.get_text(" ", strip=True))
                     if len(raw_description) < 20 or raw_description.lower().startswith("the bid date change"):
                         continue
-                    if not re.search(r"\b(?:contract|project|route|maintenance|bridge|pavement|vegetation)\b", raw_description, re.I):
+                    if not re.search(
+                        r"\b(?:contract|project|route|maintenance|bridge|pavement|paving|"
+                        r"drainage|reconstruction|resurfacing|vegetation)\b",
+                        raw_description,
+                        re.I,
+                    ):
                         continue
 
                     changed_date = re.search(
@@ -175,7 +181,9 @@ def parse_njdot_construction(source):
                         flags=re.I,
                     ).strip()
                     contract_match = re.search(r"\bContract\s+(?:No\.?|#)\s*([A-Z0-9.-]+)", description, re.I)
-                    contract_no = contract_match.group(1) if contract_match else ""
+                    dp_match = re.search(r"\bDP\s+No\.?\s*:?\s*([A-Z0-9.-]+)", description, re.I)
+                    contract_no = contract_match.group(1) if contract_match else f"DP-{dp_match.group(1)}" if dp_match else ""
+                    contract_no = contract_no.rstrip(".")
                     link = block.find("a", href=True)
                     official_url = urljoin(source["url"], link["href"]) if link else source["url"]
 
@@ -236,6 +244,30 @@ def parse_njdot_construction(source):
                 "paywalled":      False,
                 "crawled_at":     _now(),
             })
+
+    # NJDOT keeps an amended contract in both its original and new letting-date
+    # rows. Keep the latest row and prefer its direct notice PDF.
+    def record_rank(record):
+        raw_date = record.get("due_date_raw", "")
+        parsed_date = date.min
+        for fmt in ("%m/%d/%y", "%m/%d/%Y", "%B %d, %Y", "%b %d, %Y"):
+            try:
+                parsed_date = datetime.strptime(raw_date.replace(".", ""), fmt).date()
+                break
+            except ValueError:
+                continue
+        has_direct_notice = record.get("official_url") != source["url"]
+        return parsed_date, has_direct_notice
+
+    unique_records = {}
+    for record in records:
+        contract_key = (record.get("contract_number") or "").lower()
+        title_key = re.sub(r"\W+", "", record.get("title", "").lower())
+        key = contract_key or title_key
+        current = unique_records.get(key)
+        if current is None or record_rank(record) >= record_rank(current):
+            unique_records[key] = record
+    records = list(unique_records.values())
 
     # Also crawl planned ads page
     if source.get("planned_url"):

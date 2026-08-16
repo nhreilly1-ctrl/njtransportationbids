@@ -10,6 +10,7 @@ sys.path.insert(0, str(CRAWLERS))
 
 import notice_crawlers
 import notice_runner
+import notice_sources
 from app import main as app_main
 
 
@@ -26,6 +27,34 @@ SOURCE = {
 
 
 class NoticeCrawlerTests(unittest.TestCase):
+    def test_njdot_construction_uses_live_dot_host(self):
+        source = notice_sources.SOURCES_BY_ID["state-njdot-construction"]
+        self.assertEqual(
+            source["url"],
+            "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+        )
+
+    def test_njdot_construction_keeps_latest_amended_contract_row(self):
+        html = """
+        <table>
+          <tr><th>Letting Date</th><th>Project</th></tr>
+          <tr><td>08/25/26</td><td><p>Route 1 bridge, Contract # 027153030, DP No: 26107.</p></td></tr>
+          <tr><td>08/27/26</td><td><p>Route 33 paving, Contract No. 017254210, DP No: 26118.</p></td></tr>
+          <tr><td>09/10/26</td><td><p>Drainage restoration on I-278, DP No: 26420.</p></td></tr>
+          <tr><td>09/17/26</td><td><p><a href="notice-26107.pdf">Route 1 bridge, Contract # 027153030, DP No: 26107.</a></p></td></tr>
+        </table>
+        """
+        response = SimpleNamespace(text=html)
+        with patch.object(notice_crawlers, "_get", return_value=response):
+            records = notice_crawlers.parse_njdot_construction(SOURCE)
+
+        self.assertEqual(len(records), 3)
+        route_one = next(record for record in records if record["contract_number"] == "027153030")
+        self.assertEqual(route_one["due_date_raw"], "09/17/26")
+        self.assertEqual(route_one["official_url"], "https://agency.example/bids/notice-26107.pdf")
+        drainage = next(record for record in records if record["contract_number"] == "DP-26420")
+        self.assertIn("I-278", drainage["title"])
+
     def test_njdot_professional_services_uses_due_date_column(self):
         html = """
         <table>

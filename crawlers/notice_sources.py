@@ -26,7 +26,7 @@ NOTICE_SOURCES = [
         "source_tier":  "state",
         "crawl_tier":   1,
         "county":       "Statewide",
-        "url":          "https://www.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+        "url":          "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
         "planned_reference_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/PlannedAdv/",
         "parser":       "njdot_construction",
         "access_type":  "Public access",
