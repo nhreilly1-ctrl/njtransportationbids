@@ -4,6 +4,12 @@ permissions:
   contents: write
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'crawlers/**'
+      - '.github/workflows/crawl.yml'
   schedule:
     - cron: '0 10 * * *'      # 6:00 AM ET daily (10:00 UTC)
     - cron: '0 14 * * 1'      # Monday 10:00 AM ET — weekly sources
@@ -41,7 +47,7 @@ jobs:
         run: pip install requests beautifulsoup4 lxml openpyxl pypdf
 
       - name: Run daily crawl (Tier 1 + Tier 2)
-        if: github.event.inputs.mode == 'daily' || github.event_name == 'schedule' && github.event.schedule == '0 10 * * *'
+        if: github.event_name == 'push' || github.event.inputs.mode == 'daily' || github.event_name == 'schedule' && github.event.schedule == '0 10 * * *'
         run: |
           cd crawlers
           python notice_runner.py --strict-health
