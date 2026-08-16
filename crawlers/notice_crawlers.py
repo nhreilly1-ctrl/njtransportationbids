@@ -110,14 +110,21 @@ def parse_njdot_construction(source):
     tables = soup.find_all("table")
     for table in tables:
         rows = table.find_all("tr")
-        for row in rows[1:]:
+        for row in rows:
             cells = row.find_all(["td","th"])
-            if len(cells) < 3: continue
+            if len(cells) < 2: continue
 
-            contract_no  = _clean(cells[0].get_text())
-            description  = _clean(cells[1].get_text())
-            counties     = _clean(cells[2].get_text()) if len(cells) > 2 else "Statewide"
-            let_date     = _clean(cells[3].get_text()) if len(cells) > 3 else ""
+            values = [_clean(cell.get_text(" ", strip=True)) for cell in cells]
+            if values[0].lower() in {"letting date", "contract no", "contract number"}:
+                continue
+            if len(values) == 2:
+                let_date, description = values
+                contract_no, counties = "", "Statewide"
+            else:
+                contract_no = values[0]
+                description = values[1]
+                counties = values[2] or "Statewide"
+                let_date = values[3] if len(values) > 3 else ""
 
             # Get download link
             link = cells[-1].find("a") if cells else None

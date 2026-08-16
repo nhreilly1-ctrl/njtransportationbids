@@ -2,6 +2,7 @@ import csv
 import functools
 import hashlib
 import json
+import logging
 import os
 from datetime import date, datetime, timedelta
 from io import StringIO
@@ -13,6 +14,7 @@ from flask import Flask, Response, jsonify, redirect, render_template, request, 
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-prod")
+logger = logging.getLogger(__name__)
 
 from app.notice_routes import notice_bp
 app.register_blueprint(notice_bp)
@@ -28,6 +30,7 @@ BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA = os.path.join(BASE, "data") if os.path.isdir(os.path.join(BASE, "data")) else os.path.join(BASE, "data_store")
 OPP_F = os.path.join(DATA, "opportunities.json")
 SRC_F = os.path.join(DATA, "sources.json")
+NOTICE_F = os.path.join(BASE, "data", "notices", "notices.json")
 
 ADMIN_USER = os.environ.get("ADMIN_USERNAME", "admin")
 _admin_password = os.environ.get("ADMIN_PASSWORD")
@@ -295,6 +298,20 @@ def get_conn():
     return psycopg2.connect(db_url)
 
 
+def is_db_available() -> bool:
+    if not use_db_backend():
+        return False
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+                cur.fetchone()
+        return True
+    except Exception:
+        logger.exception("Database connectivity check failed.")
+        return False
+
+
 def init_db_schema() -> None:
     if not use_db_backend():
         return
@@ -418,7 +435,10 @@ def load_sources_from_db() -> list[dict]:
 
 def load_opps() -> list[dict]:
     if use_db_backend():
-        return load_opps_from_db()
+        try:
+            return load_opps_from_db()
+        except Exception:
+            logger.exception("Falling back to file-backed opportunities data.")
     return load_json_file(OPP_F)
 
 
@@ -429,8 +449,65 @@ def save_opps(opps: list[dict]) -> None:
 
 def load_sources() -> list[dict]:
     if use_db_backend():
-        return load_sources_from_db()
+        try:
+            return load_sources_from_db()
+        except Exception:
+            logger.exception("Falling back to file-backed sources data.")
     return load_json_file(SRC_F)
+
+
+def load_public_opps() -> list[dict]:
+    """Return the crawler's canonical feed for public pages.
+
+    The GitHub Actions crawler writes notices.json, while the older database
+    importer writes opportunity_leads. Public pages must not silently show a
+    different dataset from the one the crawler just refreshed.
+    """
+    notices = load_json_file(NOTICE_F)
+    if not notices:
+        return load_opps()
+
+    records = []
+    for notice in notices:
+        record = dict(notice)
+        record["_canonical_notice"] = True
+        record["id"] = str(record.get("id", ""))
+        record["title"] = record.get("title") or "Untitled notice"
+        record["source_name"] = record.get("source_name") or record.get("source_id", "Unknown source")
+        record["official_url"] = record.get("official_url") or record.get("source_url")
+        record["due_date_raw"] = record.get("due_date_raw") or ""
+        records.append(record)
+    return records
+
+
+def load_public_sources() -> list[dict]:
+    sources = {}
+    for opp in load_public_opps():
+        source_id = opp.get("source_id") or opp.get("source_name")
+        if not source_id:
+            continue
+        source = sources.setdefault(
+            source_id,
+            {
+                "id": source_id,
+                "name": opp.get("source_name") or source_id,
+                "tier": opp.get("source_tier") or source_tier(source_id, opp.get("entity_type")),
+                "county": opp.get("county"),
+                "url": opp.get("source_url") or opp.get("official_url"),
+                "total": 0,
+                "open": 0,
+                "expired": 0,
+                "noise": 0,
+            },
+        )
+        source["total"] += 1
+        if opp.get("status") == "expired":
+            source["expired"] += 1
+        elif opp.get("noise_flagged"):
+            source["noise"] += 1
+        else:
+            source["open"] += 1
+    return sorted(sources.values(), key=lambda item: item["name"].lower())
 
 
 def classify_record(opp: dict) -> tuple[str, str | None]:
@@ -646,6 +723,24 @@ def enrich(opp: dict) -> dict:
     record = dict(opp)
     due = parse_due(record.get("due_date_raw") or record.get("due_date"))
     record["due_date_parsed"] = due.isoformat() if due else None
+
+    if record.get("_canonical_notice"):
+        record["source_rule"] = "trusted" if record.get("source_tier") == "state" else "ai_review"
+        record["source_rule_label"] = "Crawler feed"
+        record["crawlability_score"] = 5.0 if record.get("source_tier") == "state" else 3.5
+        if record.get("status_override") == "deleted":
+            record["status"] = "deleted"
+        elif record.get("noise_flagged"):
+            record["status"] = "noise"
+        elif due and due < date.today():
+            record["status"] = "expired"
+        else:
+            # Notices without a published due date remain discoverable.
+            record["status"] = "open"
+        record["record_type"] = record.get("notice_type") or "uncategorized"
+        record["notice_subtype"] = record.get("notice_subtype")
+        return record
+
     rule = source_rule_for(record.get("source_id"))
     record["source_rule"] = rule["mode"]
     record["source_rule_label"] = rule["label"]
@@ -716,12 +811,22 @@ def group_by_urgency(opps: list[dict]) -> tuple[list[dict], list[dict], list[dic
 
 @app.route("/health")
 def health():
-    return jsonify({"ok": True})
+    db_configured = use_db_backend()
+    db_available = is_db_available() if db_configured else False
+    return jsonify(
+        {
+            "ok": True,
+            "database": {
+                "configured": db_configured,
+                "available": db_available,
+            },
+        }
+    )
 
 
 @app.route("/")
 def index():
-    opps = [enrich(opp) for opp in load_opps()]
+    opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted", "disabled")]
     active = [opp for opp in opps if opp["status"] == "open"]
     expiring = [
@@ -740,7 +845,7 @@ def index():
 
 
 def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
-    opps = [enrich(opp) for opp in load_opps()]
+    opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] != "deleted"]
     county = request.args.get("county", "")
     agency = request.args.get("agency", "")
@@ -818,7 +923,7 @@ def opportunities():
 
 @app.route("/opportunities/<opp_id>")
 def opportunity_detail(opp_id: str):
-    opp = next((enrich(item) for item in load_opps() if str(item.get("id")) == opp_id), None)
+    opp = next((enrich(item) for item in load_public_opps() if str(item.get("id")) == opp_id), None)
     if not opp or opp["status"] == "deleted":
         return "Not found", 404
     return render_template("opportunity_detail.html", opp=opp)
@@ -826,8 +931,8 @@ def opportunity_detail(opp_id: str):
 
 @app.route("/sources")
 def sources():
-    sources = load_sources()
-    opps = [enrich(opp) for opp in load_opps()]
+    sources = load_public_sources()
+    opps = [enrich(opp) for opp in load_public_opps()]
     for source in sources:
         source_id = source.get("id")
         related = [opp for opp in opps if opp.get("source_id") == source_id]
@@ -847,7 +952,7 @@ def sources():
 def export_csv():
     ids = request.args.get("ids", "")
     selected = {item for item in ids.split(",") if item}
-    opps = [enrich(opp) for opp in load_opps()]
+    opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] == "open"]
     if selected:
         opps = [opp for opp in opps if str(opp.get("id")) in selected]

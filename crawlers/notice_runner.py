@@ -313,8 +313,11 @@ def run_crawl(sources_to_crawl):
         log.info(f"Crawling: {source['name']} ({source['id']})")
         try:
             records = crawl_source(source)
-            _log_crawl(source["id"], len(records))
+            crawl_error = "zero_records" if not records else None
+            _log_crawl(source["id"], len(records), crawl_error)
             log.info(f"  → {len(records)} records")
+            if crawl_error:
+                log.warning(f"{source['id']} returned zero records; parser or source may have changed")
             all_fresh.extend(records)
         except Exception as e:
             log.error(f"  → FAILED: {e}")
