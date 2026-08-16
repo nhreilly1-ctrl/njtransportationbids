@@ -1,5 +1,8 @@
 name: Daily notice crawl
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: '0 10 * * *'      # 6:00 AM ET daily (10:00 UTC)

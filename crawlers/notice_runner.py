@@ -169,6 +169,16 @@ def _enrich(n):
 NOTICE_NOISE_PHRASES = [
     "staff directory","vendor portal","sign in","how do i",
     "website sign","government departments","built to help",
+    "trip planningtoll calculator","safetripnj app","forms & records",
+    "accident report request","traffic permits","learn more.",
+    "traffic information. get the app","design, supervision, environmental",
+    "services for the njta and troop d","bid results",
+    "nj dept. of transportation procurement division",
+    "key to saving money with e","upcoming rfpq","awarded rfp",
+    "legal notice regarding online public notices",
+    "roadway, bridge, facility, and other construction",
+    "goods and non-engineering services for the njta",
+    "provide comment on the delaware river joint toll bridge",
     "archive of bids","results of bid","contract awards",
     "procurement calendar","current legal notices page",
     "please take notice that pursuant to p.l. 2025",  # announcement notices
@@ -183,6 +193,7 @@ OUT_OF_SCOPE_NOTICES = [
     "health benefits program","self-funded health",
     "animal control","recreation","park maintenance",
     "refuse collection","solid waste","trash collection",
+    "extra heavy duty towing","broker dealer","electronic surveillance",
 ]
 
 def _is_noise(n):
@@ -404,6 +415,18 @@ def main():
     existing = _load(NOTICES_F)
     merged   = _merge(existing, enriched)
     deduped  = _dedupe(merged)
+
+    # Re-evaluate every retained record, not only records fetched today. This
+    # expires old deadlines and applies improved noise rules to historical
+    # records that survive the merge.
+    refreshed = []
+    for notice in deduped:
+        if not notice.get("status_override"):
+            is_n, reason = _is_noise(notice)
+            notice["noise_flagged"] = is_n
+            notice["noise_reason"] = reason if is_n else ""
+        refreshed.append(_enrich(notice))
+    deduped = refreshed
 
     _save(NOTICES_F, deduped)
 
