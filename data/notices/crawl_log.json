@@ -46,13 +46,18 @@
         "at": "2026-08-16T19:54:39.793199+00:00",
         "count": 6,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:21:47.405353+00:00",
+        "count": 6,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:54:39.793199+00:00",
+    "last_crawl": "2026-08-17T10:21:47.405353+00:00",
     "last_count": 6,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:54:39.793199+00:00"
+    "last_successful_crawl": "2026-08-17T10:21:47.405353+00:00"
   },
   {
     "source_id": "state-njdot-profserv",
@@ -96,13 +101,18 @@
         "at": "2026-08-16T19:54:42.324215+00:00",
         "count": 22,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:21:49.728256+00:00",
+        "count": 22,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:54:42.324215+00:00",
+    "last_crawl": "2026-08-17T10:21:49.728256+00:00",
     "last_count": 22,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:54:42.324215+00:00"
+    "last_successful_crawl": "2026-08-17T10:21:49.728256+00:00"
   },
   {
     "source_id": "state-njdot-notices",
@@ -146,13 +156,18 @@
         "at": "2026-08-16T19:54:50.192612+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:21:57.176957+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:54:50.192612+00:00",
+    "last_crawl": "2026-08-17T10:21:57.176957+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:54:50.192612+00:00"
+    "last_successful_crawl": "2026-08-17T10:21:57.176957+00:00"
   },
   {
     "source_id": "state-njta",
@@ -201,13 +216,18 @@
         "at": "2026-08-16T19:54:51.919043+00:00",
         "count": 8,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:21:58.888196+00:00",
+        "count": 8,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:54:51.919043+00:00",
+    "last_crawl": "2026-08-17T10:21:58.888196+00:00",
     "last_count": 8,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:54:51.919043+00:00"
+    "last_successful_crawl": "2026-08-17T10:21:58.888196+00:00"
   },
   {
     "source_id": "state-njtransit",
@@ -251,13 +271,18 @@
         "at": "2026-08-16T19:54:55.629147+00:00",
         "count": 8,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:02.425725+00:00",
+        "count": 8,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:54:55.629147+00:00",
+    "last_crawl": "2026-08-17T10:22:02.425725+00:00",
     "last_count": 8,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:54:55.629147+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:02.425725+00:00"
   },
   {
     "source_id": "state-drjtbc-construction",
@@ -301,13 +326,18 @@
         "at": "2026-08-16T19:54:58.271548+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:05.355989+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:54:58.271548+00:00",
+    "last_crawl": "2026-08-17T10:22:05.355989+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:54:58.271548+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:05.355989+00:00"
   },
   {
     "source_id": "state-drjtbc-profserv",
@@ -351,13 +381,18 @@
         "at": "2026-08-16T19:55:00.505365+00:00",
         "count": 5,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:07.601999+00:00",
+        "count": 5,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:00.505365+00:00",
+    "last_crawl": "2026-08-17T10:22:07.601999+00:00",
     "last_count": 5,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:00.505365+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:07.601999+00:00"
   },
   {
     "source_id": "state-dos-legal",
@@ -401,13 +436,18 @@
         "at": "2026-08-16T19:55:11.199998+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:18.887862+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:11.199998+00:00",
+    "last_crawl": "2026-08-17T10:22:18.887862+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:11.199998+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:18.887862+00:00"
   },
   {
     "source_id": "state-sjta",
@@ -451,13 +491,18 @@
         "at": "2026-08-16T19:55:14.777364+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:22.175298+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:14.777364+00:00",
+    "last_crawl": "2026-08-17T10:22:22.175298+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:14.777364+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:22.175298+00:00"
   },
   {
     "source_id": "state-treasury",
@@ -510,13 +555,18 @@
         "at": "2026-08-16T19:55:17.277090+00:00",
         "count": 4,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:24.170021+00:00",
+        "count": 4,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:17.277090+00:00",
+    "last_crawl": "2026-08-17T10:22:24.170021+00:00",
     "last_count": 4,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:17.277090+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:24.170021+00:00"
   },
   {
     "source_id": "county-camden",
@@ -545,13 +595,18 @@
         "at": "2026-08-16T19:55:19.659242+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:26.628939+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:19.659242+00:00",
+    "last_crawl": "2026-08-17T10:22:26.628939+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:19.659242+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:26.628939+00:00"
   },
   {
     "source_id": "county-monmouth",
@@ -575,9 +630,14 @@
         "at": "2026-08-16T19:55:22.202199+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-17T10:22:29.352201+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:22.202199+00:00",
+    "last_crawl": "2026-08-17T10:22:29.352201+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -604,9 +664,14 @@
         "at": "2026-08-16T19:55:24.194167+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-17T10:22:31.363672+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:24.194167+00:00",
+    "last_crawl": "2026-08-17T10:22:31.363672+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -633,9 +698,14 @@
         "at": "2026-08-16T19:55:27.014316+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-17T10:22:33.403460+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:27.014316+00:00",
+    "last_crawl": "2026-08-17T10:22:33.403460+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -662,9 +732,14 @@
         "at": "2026-08-16T19:55:29.466706+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-17T10:22:35.482734+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:29.466706+00:00",
+    "last_crawl": "2026-08-17T10:22:35.482734+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -691,9 +766,14 @@
         "at": "2026-08-16T19:55:32.234189+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-17T10:22:38.259015+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:32.234189+00:00",
+    "last_crawl": "2026-08-17T10:22:38.259015+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -720,9 +800,14 @@
         "at": "2026-08-16T19:55:33.227209+00:00",
         "count": 0,
         "error": "Middlesex County Improvement Authority page could not be fetched"
+      },
+      {
+        "at": "2026-08-17T10:22:39.021574+00:00",
+        "count": 0,
+        "error": "Middlesex County Improvement Authority page could not be fetched"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:33.227209+00:00",
+    "last_crawl": "2026-08-17T10:22:39.021574+00:00",
     "last_count": 0,
     "last_error": "Middlesex County Improvement Authority page could not be fetched",
     "health": "error"
@@ -749,9 +834,14 @@
         "at": "2026-08-16T19:55:34.158866+00:00",
         "count": 0,
         "error": "Union County Invitations to Bid page could not be fetched"
+      },
+      {
+        "at": "2026-08-17T10:22:39.948150+00:00",
+        "count": 0,
+        "error": "Union County Invitations to Bid page could not be fetched"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:34.158866+00:00",
+    "last_crawl": "2026-08-17T10:22:39.948150+00:00",
     "last_count": 0,
     "last_error": "Union County Invitations to Bid page could not be fetched",
     "health": "error"
@@ -778,9 +868,14 @@
         "at": "2026-08-16T19:55:34.275196+00:00",
         "count": 0,
         "error": "Morris County Bids page could not be fetched"
+      },
+      {
+        "at": "2026-08-17T10:22:40.023484+00:00",
+        "count": 0,
+        "error": "Morris County Bids page could not be fetched"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:34.275196+00:00",
+    "last_crawl": "2026-08-17T10:22:40.023484+00:00",
     "last_count": 0,
     "last_error": "Morris County Bids page could not be fetched",
     "health": "error"
@@ -807,9 +902,14 @@
         "at": "2026-08-16T19:55:36.373773+00:00",
         "count": 0,
         "error": "zero_records"
+      },
+      {
+        "at": "2026-08-17T10:22:42.166132+00:00",
+        "count": 0,
+        "error": "zero_records"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:36.373773+00:00",
+    "last_crawl": "2026-08-17T10:22:42.166132+00:00",
     "last_count": 0,
     "last_error": "zero_records",
     "health": "error"
@@ -836,9 +936,14 @@
         "at": "2026-08-16T19:55:36.666429+00:00",
         "count": 0,
         "error": "Mercer County Bidding Opportunities page could not be fetched"
+      },
+      {
+        "at": "2026-08-17T10:22:42.318550+00:00",
+        "count": 0,
+        "error": "Mercer County Bidding Opportunities page could not be fetched"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:36.666429+00:00",
+    "last_crawl": "2026-08-17T10:22:42.318550+00:00",
     "last_count": 0,
     "last_error": "Mercer County Bidding Opportunities page could not be fetched",
     "health": "error"
@@ -865,9 +970,14 @@
         "at": "2026-08-16T19:55:37.197450+00:00",
         "count": 0,
         "error": "City of Newark Bid Postings page could not be fetched"
+      },
+      {
+        "at": "2026-08-17T10:22:42.855982+00:00",
+        "count": 0,
+        "error": "City of Newark Bid Postings page could not be fetched"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:37.197450+00:00",
+    "last_crawl": "2026-08-17T10:22:42.855982+00:00",
     "last_count": 0,
     "last_error": "City of Newark Bid Postings page could not be fetched",
     "health": "error"
@@ -894,9 +1004,14 @@
         "at": "2026-08-16T19:55:37.850666+00:00",
         "count": 0,
         "error": "City of Jersey City Bid Openings page could not be fetched"
+      },
+      {
+        "at": "2026-08-17T10:22:43.274721+00:00",
+        "count": 0,
+        "error": "City of Jersey City Bid Openings page could not be fetched"
       }
     ],
-    "last_crawl": "2026-08-16T19:55:37.850666+00:00",
+    "last_crawl": "2026-08-17T10:22:43.274721+00:00",
     "last_count": 0,
     "last_error": "City of Jersey City Bid Openings page could not be fetched",
     "health": "error"
@@ -923,13 +1038,18 @@
         "at": "2026-08-16T19:55:39.970547+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:45.367261+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:39.970547+00:00",
+    "last_crawl": "2026-08-17T10:22:45.367261+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:39.970547+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:45.367261+00:00"
   },
   {
     "source_id": "state-njdot-profserv-upcoming",
@@ -948,13 +1068,18 @@
         "at": "2026-08-16T19:54:48.285795+00:00",
         "count": 64,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:21:55.124892+00:00",
+        "count": 64,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:54:48.285795+00:00",
+    "last_crawl": "2026-08-17T10:21:55.124892+00:00",
     "last_count": 64,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:54:48.285795+00:00"
+    "last_successful_crawl": "2026-08-17T10:21:55.124892+00:00"
   },
   {
     "source_id": "state-njdot-design-build",
@@ -968,13 +1093,18 @@
         "at": "2026-08-16T19:54:44.168627+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:21:51.464042+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:54:44.168627+00:00",
+    "last_crawl": "2026-08-17T10:21:51.464042+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:54:44.168627+00:00"
+    "last_successful_crawl": "2026-08-17T10:21:51.464042+00:00"
   },
   {
     "source_id": "state-panynj-construction",
@@ -983,13 +1113,18 @@
         "at": "2026-08-16T19:55:02.259945+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:09.523388+00:00",
+        "count": 3,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:02.259945+00:00",
+    "last_crawl": "2026-08-17T10:22:09.523388+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:02.259945+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:09.523388+00:00"
   },
   {
     "source_id": "state-panynj-profserv",
@@ -998,13 +1133,18 @@
         "at": "2026-08-16T19:55:04.329926+00:00",
         "count": 4,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:11.580072+00:00",
+        "count": 4,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:04.329926+00:00",
+    "last_crawl": "2026-08-17T10:22:11.580072+00:00",
     "last_count": 4,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:04.329926+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:11.580072+00:00"
   },
   {
     "source_id": "state-drpa-patco",
@@ -1013,13 +1153,18 @@
         "at": "2026-08-16T19:55:07.295087+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:14.462068+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:07.295087+00:00",
+    "last_crawl": "2026-08-17T10:22:14.462068+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:07.295087+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:14.462068+00:00"
   },
   {
     "source_id": "state-njtpa",
@@ -1028,12 +1173,17 @@
         "at": "2026-08-16T19:55:09.259375+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-17T10:22:17.056117+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-16T19:55:09.259375+00:00",
+    "last_crawl": "2026-08-17T10:22:17.056117+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-16T19:55:09.259375+00:00"
+    "last_successful_crawl": "2026-08-17T10:22:17.056117+00:00"
   }
 ]
