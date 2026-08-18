@@ -244,16 +244,16 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
 
 @notice_bp.route("/notices")
 def notices_all():
-    return _notice_list_view(notice_type="public_notice", active_nav="notices_all")
+    return _notice_list_view(active_nav="notices_all")
 
 @notice_bp.route("/notices/construction")
 def notices_construction():
-    return _notice_list_view(notice_type="public_notice", notice_subtype="construction",
+    return _notice_list_view(notice_subtype="construction",
                              active_nav="notices_construction")
 
 @notice_bp.route("/notices/professional-services")
 def notices_profserv():
-    return _notice_list_view(notice_type="public_notice", notice_subtype="professional_services",
+    return _notice_list_view(notice_subtype="professional_services",
                              active_nav="notices_profserv")
 
 @notice_bp.route("/notices/<notice_id>")

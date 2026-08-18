@@ -4,6 +4,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 from datetime import date, datetime, timedelta, timezone
 from io import StringIO
 from xml.sax.saxutils import escape
@@ -719,7 +720,10 @@ def parse_due(raw: str | None) -> date | None:
     raw = str(raw).strip()
     if raw.lower() in {"", "not listed", "-", "unknown", "—"}:
         return None
-    fmts = ["%m/%d/%Y", "%m/%d/%y", "%B %d, %Y", "%b %d, %Y", "%Y-%m-%d", "%d-%b-%Y", "%b. %d, %Y"]
+    iso_prefix = re.match(r"^(\d{4}-\d{2}-\d{2})", raw)
+    if iso_prefix:
+        return date.fromisoformat(iso_prefix.group(1))
+    fmts = ["%m/%d/%Y", "%m/%d/%y", "%m-%d-%Y", "%B %d, %Y", "%b %d, %Y", "%d-%b-%Y", "%b. %d, %Y"]
     for fmt in fmts:
         try:
             return datetime.strptime(raw, fmt).date()
@@ -889,7 +893,9 @@ def sitemap_xml():
             continue
         if record.get("noise_flagged") or not record.get("id"):
             continue
-        has_public_notices = has_public_notices or record.get("record_type") == "public_notice"
+        # The canonical crawler feed contains public procurement notices whose
+        # notice_type is their category (construction or professional services).
+        has_public_notices = has_public_notices or bool(record.get("_canonical_notice"))
         lastmod = record.get("last_verified_date")
         entries.append((f"{SITE_URL}/opportunities/{record['id']}", lastmod))
     if has_public_notices:
@@ -920,7 +926,7 @@ def index():
     stats = {
         "construction": len([opp for opp in active if opp["record_type"] == "construction"]),
         "professional_services": len([opp for opp in active if opp["record_type"] == "professional_services"]),
-        "public_notice": len([opp for opp in active if opp["record_type"] == "public_notice"]),
+        "public_notice": len(active),
         "sources": len(load_public_sources()),
     }
     return render_template("index.html", stats=stats, expiring=expiring[:8])

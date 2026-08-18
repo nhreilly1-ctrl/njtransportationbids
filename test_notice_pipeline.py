@@ -276,6 +276,49 @@ class PublicDashboardTests(unittest.TestCase):
         )
         self.assertIn('class="nav-toggle"', response.get_data(as_text=True))
         self.assertIn('id="primary-navigation"', response.get_data(as_text=True))
+        self.assertRegex(
+            response.get_data(as_text=True),
+            r'<div class="num c-amber">\s*1\s*</div>\s*<div class="lbl">Official notices active</div>',
+        )
+
+    def test_public_notice_routes_use_canonical_notice_categories(self):
+        construction = {
+            "id": "construction-notice",
+            "title": "County bridge reconstruction",
+            "status": "open",
+            "notice_type": "construction",
+            "notice_subtype": "construction",
+            "source_name": "County Purchasing",
+            "source_tier": "county",
+            "county": "Mercer",
+            "due_date_parsed": "2099-12-31",
+        }
+        professional = {
+            "id": "professional-notice",
+            "title": "Bridge engineering services",
+            "status": "open",
+            "notice_type": "professional_services",
+            "notice_subtype": "professional_services",
+            "source_name": "County Purchasing",
+            "source_tier": "county",
+            "county": "Mercer",
+            "due_date_parsed": "2099-12-31",
+        }
+        with (
+            patch.object(notice_app, "_load_notices", return_value=[construction, professional]),
+            patch.object(notice_app, "_load_crawl_log", return_value=[]),
+        ):
+            client = app_main.app.test_client()
+            all_response = client.get("/notices")
+            construction_response = client.get("/notices/construction")
+            professional_response = client.get("/notices/professional-services")
+
+        self.assertIn("County bridge reconstruction", all_response.get_data(as_text=True))
+        self.assertIn("Bridge engineering services", all_response.get_data(as_text=True))
+        self.assertIn("County bridge reconstruction", construction_response.get_data(as_text=True))
+        self.assertNotIn("Bridge engineering services", construction_response.get_data(as_text=True))
+        self.assertIn("Bridge engineering services", professional_response.get_data(as_text=True))
+        self.assertNotIn("County bridge reconstruction", professional_response.get_data(as_text=True))
 
 
 class PublicSeoTests(unittest.TestCase):
@@ -317,7 +360,13 @@ class PublicSeoTests(unittest.TestCase):
         self.assertEqual(sitemap.status_code, 200)
         self.assertIn("/opportunities/active-bid", xml)
         self.assertNotIn("/opportunities/expired-bid", xml)
-        self.assertNotIn("<loc>https://www.njtransportationbids.com/notices</loc>", xml)
+        self.assertIn("<loc>https://www.njtransportationbids.com/notices</loc>", xml)
+
+    def test_open_gov_timestamp_deadline_is_parsed(self):
+        self.assertEqual(
+            app_main.parse_due("2026-08-25T20:00:47.395Z").isoformat(),
+            "2026-08-25",
+        )
 
     def test_google_verification_file_is_served_at_site_root(self):
         response = app_main.app.test_client().get("/google0a60cf7052b4fd95.html")
