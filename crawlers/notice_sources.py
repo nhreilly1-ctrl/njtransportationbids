@@ -290,6 +290,7 @@ NOTICE_SOURCES = [
         "platform":     "NJSTART",
         "notice_type":  "public_notice",
         "crawl_freq":   "weekly",
+        "allow_empty":  True,
         "notes":        "Transportation-relevant Treasury procurements. Filter aggressively.",
     },
 
