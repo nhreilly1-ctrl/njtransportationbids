@@ -19,7 +19,7 @@ Output notice dict shape:
   }
 """
 
-import io, re, hashlib, time, logging
+import io, json, re, hashlib, time, logging
 from datetime import date, datetime, timezone
 from difflib import SequenceMatcher
 from urllib.parse import urljoin
@@ -82,7 +82,9 @@ PROFESSIONAL_SCOPE_KW = [
     "architectural", "architecture", "engineering services",
     "engineering assistance", "engineering support", "engineering design",
     "construction management", "construction inspection", "construction monitoring", "bridge inspection",
-    "design services", "surveying services", "traffic engineering",
+    "design services", "surveying services", "land surveying", "traffic engineering",
+    "professional engineering", "resident engineering",
+    "construction phase engineering",
     "transportation planning", "corridor plan", "program management",
     "cost estimating", "constructability", "geotechnical", "structural evaluation",
 ]
@@ -91,18 +93,23 @@ CONSTRUCTION_SCOPE_KW = [
     "roadway", "road improvement", "road resurfacing", "road repair",
     "bridge", "culvert", "drainage", "pavement", "paving", "milling",
     "overlay", "curb", "sidewalk", "intersection", "signal",
-    "guardrail", "guide rail", "highway", "transportation",
+    "guardrail", "guide rail", "highway", "transportation infrastructure",
     "traffic", "streetscape", "resurfacing", "reconstruction",
     "maintenance contract", "job order contract", "rail rehabilitation", "rail grinding",
     "track rehabilitation", "station rehabilitation", "platform lift",
     "structural repair", "hvac overhaul", "tank installation", "ferry retrofit",
+    "parking lot", "water main", "watermain", "wastewater", "sewer",
+    "stormwater", "pump station", "bikeway", "greenway", "living shoreline",
+    "sludge", "utility infrastructure",
 ]
 
 SCOPE_EXCLUSIONS = [
     "advertising management", "ticket stock", "cleaning services",
     "broker dealer", "towing and recovery", "office supplies",
     "software subscription", "insurance services", "legal services",
-    "purchase and delivery", "parts and supplies",
+    "purchase and delivery", "parts and supplies", "transportation of",
+    "transportation services",
+    "golf course",
 ]
 
 
@@ -146,6 +153,58 @@ def _base_record(source, title, official_url, notice_type, due_date="", contract
         "source_status": "open",
         "crawled_at": _now(),
     }
+
+
+def _parse_known_date(value):
+    """Parse the date formats used by the county procurement platforms."""
+    value = _clean(value)
+    iso_prefix = re.match(r"^(\d{4}-\d{2}-\d{2})", value)
+    if iso_prefix:
+        return datetime.strptime(iso_prefix.group(1), "%Y-%m-%d").date()
+    for fmt in ("%m/%d/%Y", "%m/%d/%y", "%m-%d-%Y", "%Y-%m-%d", "%B %d, %Y"):
+        try:
+            return datetime.strptime(value, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _deadline_is_current(value):
+    parsed = _parse_known_date(value)
+    return parsed is None or parsed >= date.today()
+
+
+def _extract_json_object(text, marker, start_at=0):
+    """Safely decode the first JSON object following marker in a script block."""
+    marker_pos = text.find(marker, start_at)
+    if marker_pos < 0:
+        raise ValueError(f"Missing JSON marker: {marker}")
+    object_start = text.find("{", marker_pos + len(marker))
+    if object_start < 0:
+        raise ValueError(f"Missing JSON object after marker: {marker}")
+
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(object_start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return json.loads(text[object_start:index + 1])
+    raise ValueError(f"Unterminated JSON object after marker: {marker}")
 
 
 # ── NJDOT Construction ────────────────────────────────────────────────────────
@@ -1295,23 +1354,32 @@ def parse_sos_directory(source):
     Call this separately from notice_runner.py to seed Tier 3.
     """
     r = _get(source["url"])
-    if not r: return []
+    if not r:
+        raise RuntimeError("NJDOS statewide notice directory could not be fetched")
 
     soup = _soup(r.text)
     entities = []
 
-    # Page lists entities with their legal notice page URLs
-    for row in soup.find_all(["tr","li","div"]):
-        link = row.find("a", href=re.compile(r'http', re.I))
-        if not link: continue
-        href = link.get("href","")
-        if not href or "nj.gov/state" in href: continue  # skip self-links
-        name = _clean(row.get_text())[:100]
-        entities.append({
-            "entity_name": name,
-            "legal_notices_url": href,
-            "discovered_at": _now(),
-        })
+    # Never infer entities from arbitrary navigation links. Only consume a
+    # table that explicitly identifies public entities or legal notices.
+    for table in soup.find_all("table"):
+        headers = _clean(" ".join(th.get_text(" ", strip=True) for th in table.find_all("th"))).lower()
+        if not any(marker in headers for marker in ("entity", "public body", "legal notice")):
+            continue
+        for row in table.find_all("tr"):
+            cells = row.find_all("td", recursive=False)
+            link = row.find("a", href=re.compile(r"^https?://", re.I))
+            if not cells or not link:
+                continue
+            href = link.get("href", "").strip()
+            name = _clean(cells[0].get_text(" ", strip=True))
+            if len(name) < 3 or not href:
+                continue
+            entities.append({
+                "entity_name": name[:150],
+                "legal_notices_url": href,
+                "discovered_at": _now(),
+            })
 
     log.info(f"SoS directory: {len(entities)} entity URLs discovered")
     return entities
@@ -1536,54 +1604,47 @@ def parse_camden_county(source):
 # ── Monmouth County ───────────────────────────────────────────────────────────
 
 def parse_monmouth_county(source):
-    """Monmouth has a searchable portal at pol.co.monmouth.nj.us."""
+    """Read Monmouth's current RFB, RFP, and engineering qualification lists."""
     records = []
+    portal_urls = source.get("portal_urls", [
+        "https://pol.co.monmouth.nj.us/UpcomingRFB",
+        "https://pol.co.monmouth.nj.us/UpcomingRFP",
+        "https://pol.co.monmouth.nj.us/UpcomingRFPQ",
+    ])
+    seen = set()
 
-    # The Monmouth portal requires POSTing a search — use generic fallback
-    # but try the open bids list first
-    open_bids_url = "https://pol.co.monmouth.nj.us/County/tblBids.aspx?Status=Open"
-    r = _get(open_bids_url)
-    if not r:
-        return parse_generic_html_list(source)
+    for listing_url in portal_urls:
+        r = _get(listing_url)
+        if not r:
+            raise RuntimeError(f"Monmouth listing could not be fetched: {listing_url}")
+        soup = _soup(r.text)
+        table = soup.find("table")
+        headers = [_clean(cell.get_text()).lower() for cell in table.find_all("th")] if table else []
+        if not table or not {"due date", "request id", "title"}.issubset(set(headers)):
+            raise RuntimeError(f"Monmouth listing schema changed: {listing_url}")
 
-    soup = _soup(r.text)
-    for row in soup.find_all("tr")[1:]:
-        cells = row.find_all("td")
-        if len(cells) < 3: continue
-
-        req_id    = _clean(cells[0].get_text())
-        due_date  = _clean(cells[1].get_text())
-        title     = _clean(cells[2].get_text())
-
-        if not title or not _is_transport_relevant(title): continue
-
-        link = row.find("a", href=True)
-        official_url = urljoin(open_bids_url, link["href"]) if link else source["url"]
-
-        ntype = _classify_transport_scope(title)
-        if not ntype:
-            continue
-
-        records.append({
-            "id":             _make_id(source["id"], title),
-            "title":          f"Monmouth County — {title}",
-            "notice_excerpt": f"Monmouth County bid solicitation. Request ID: {req_id}. Due: {due_date}. {title}",
-            "source_id":      source["id"],
-            "source_name":    source["name"],
-            "source_tier":    source["source_tier"],
-            "source_url":     open_bids_url,
-            "official_url":   official_url,
-            "county":         "Monmouth",
-            "entity_type":    source["entity_type"],
-            "notice_type":    ntype,
-            "notice_subtype": ntype,
-            "due_date_raw":   due_date,
-            "contract_number":req_id,
-            "access_type":    source["access_type"],
-            "platform":       source["platform"],
-            "paywalled":      False,
-            "crawled_at":     _now(),
-        })
+        for row in table.find_all("tr"):
+            cells = row.find_all("td", recursive=False)
+            if len(cells) < 3:
+                continue
+            due_date, req_id, title = [_clean(cell.get_text(" ", strip=True)) for cell in cells[:3]]
+            if not title or req_id in seen or not _deadline_is_current(due_date):
+                continue
+            ntype = _classify_transport_scope(title)
+            if not ntype:
+                continue
+            seen.add(req_id)
+            link = row.find("a", href=True)
+            official_url = urljoin(listing_url, link["href"]) if link else listing_url
+            records.append(_base_record(
+                source,
+                title,
+                official_url,
+                ntype,
+                due_date,
+                req_id,
+                f"Monmouth County solicitation {req_id}. Due {due_date}. {title}",
+            ))
 
     log.info(f"Monmouth County: {len(records)} records")
     return records
@@ -1595,7 +1656,8 @@ def parse_gloucester_county(source):
     """Gloucester uses .aspx bid listing with bidID params."""
     records = []
     r = _get(source["url"])
-    if not r: return records
+    if not r:
+        raise RuntimeError("Gloucester County bid page could not be fetched")
 
     soup = _soup(r.text)
     for row in soup.find_all("tr")[1:]:
@@ -1634,6 +1696,267 @@ def parse_gloucester_county(source):
         })
 
     log.info(f"Gloucester County: {len(records)} records")
+    return records
+
+
+def parse_opengov(source):
+    """Parse an OpenGov public project list from its server-rendered state."""
+    portal_code = source["portal_code"]
+    listing_url = source.get(
+        "data_url",
+        f"https://procurement.opengov.com/portal/embed/{portal_code}/project-list"
+        "?departmentId=all&status=open&limit=100",
+    )
+    r = _get(listing_url, timeout=30)
+    if not r:
+        raise RuntimeError(f"{source['name']} OpenGov listing could not be fetched")
+
+    public_project_pos = r.text.find('"publicProject"')
+    if public_project_pos < 0:
+        raise RuntimeError(f"{source['name']} OpenGov state is missing publicProject")
+    try:
+        project_data = _extract_json_object(r.text, '"govProjects"', public_project_pos)
+    except (ValueError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"{source['name']} OpenGov project data changed: {exc}") from exc
+
+    rows = project_data.get("rows")
+    if not isinstance(rows, list):
+        raise RuntimeError(f"{source['name']} OpenGov project rows are missing")
+
+    records = []
+    for project in rows:
+        title = _clean(project.get("title", ""))
+        summary = _clean(_soup(project.get("summary", "")).get_text(" ", strip=True))
+        department = _clean((project.get("department") or {}).get("name", ""))
+        ntype = _classify_transport_scope(title, f"{summary} {department}")
+        if not title or not ntype:
+            continue
+        due_date = project.get("proposalDeadline", "")
+        if not _deadline_is_current(due_date):
+            continue
+        project_id = str(project.get("id", ""))
+        contract_number = _clean(project.get("financialId", "")) or f"OG-{project_id}"
+        official_url = f"https://procurement.opengov.com/portal/{portal_code}/projects/{project_id}"
+        records.append(_base_record(
+            source, title, official_url, ntype, due_date, contract_number,
+            summary or f"{source['name']} OpenGov solicitation {contract_number}.",
+        ))
+
+    log.info(f"{source['name']} OpenGov: {len(records)} records from {len(rows)} open projects")
+    return records
+
+
+def parse_bidnet_agency(source):
+    """Parse an agency's public BidNet Direct open-solicitation table."""
+    r = _get(source["url"], timeout=30)
+    if not r:
+        raise RuntimeError(f"{source['name']} BidNet listing could not be fetched")
+    soup = _soup(r.text)
+    rows = soup.select("tr.mets-table-row")
+    page_text = _clean(soup.get_text(" ", strip=True)).lower()
+    if not rows and "no open bids" not in page_text and "no open solicitations" not in page_text:
+        raise RuntimeError(f"{source['name']} BidNet listing schema changed or was blocked")
+
+    records = []
+    for row in rows:
+        title_link = row.select_one("a.solicitation-link")
+        title = _clean(title_link.get_text(" ", strip=True)) if title_link else ""
+        context = _clean(row.get_text(" ", strip=True))
+        ntype = _classify_transport_scope(title, context)
+        if not title or not ntype:
+            continue
+        number_el = row.select_one(".sol-num")
+        due_el = row.select_one(".sol-closing-date .date-value")
+        contract_number = _clean(number_el.get_text(" ", strip=True)) if number_el else ""
+        due_date = _clean(due_el.get_text(" ", strip=True)) if due_el else ""
+        if not _deadline_is_current(due_date):
+            continue
+        records.append(_base_record(
+            source,
+            title,
+            urljoin(source["url"], title_link["href"]),
+            ntype,
+            due_date,
+            contract_number,
+            context,
+        ))
+    log.info(f"{source['name']} BidNet: {len(records)} records from {len(rows)} open projects")
+    return records
+
+
+def parse_bonfire(source):
+    """Parse the Bonfire public portal JSON used by Bergen County."""
+    session = requests.Session()
+    session.headers.update(HEADERS)
+    try:
+        landing = session.get(source["url"], timeout=30)
+        landing.raise_for_status()
+        endpoint = urljoin(source["url"], "/PublicPortal/getOpenPublicOpportunitiesSectionData")
+        response = session.get(
+            endpoint,
+            headers={"X-Requested-With": "XMLHttpRequest", "Referer": source["url"]},
+            timeout=30,
+        )
+        response.raise_for_status()
+        payload = response.json()
+    except (requests.RequestException, ValueError) as exc:
+        raise RuntimeError(f"{source['name']} Bonfire listing could not be fetched: {exc}") from exc
+
+    data = payload.get("payload", {})
+    projects = data.get("projects")
+    if payload.get("success") != 1 or not isinstance(projects, (dict, list)):
+        raise RuntimeError(f"{source['name']} Bonfire project data changed")
+    project_rows = projects.values() if isinstance(projects, dict) else projects
+    departments = data.get("departments", {})
+
+    records = []
+    for project in project_rows:
+        title = _clean(project.get("ProjectName", ""))
+        department_data = departments.get(str(project.get("DepartmentID", "")), {})
+        department = _clean(department_data.get("DepartmentName", ""))
+        ntype = _classify_transport_scope(title, department)
+        if not title or not ntype:
+            continue
+        project_id = str(project.get("ProjectID", ""))
+        due_date = project.get("DateClose", "")
+        records.append(_base_record(
+            source,
+            title,
+            urljoin(source["url"], f"/opportunities/{project_id}"),
+            ntype,
+            due_date,
+            _clean(project.get("ReferenceID", "")),
+            f"{department}. {title}",
+        ))
+    log.info(f"{source['name']} Bonfire: {len(records)} transportation records")
+    return records
+
+
+def parse_ionwave(source):
+    """Parse an IonWave public current sourcing-events table."""
+    r = _get(source["url"], timeout=30)
+    if not r:
+        raise RuntimeError(f"{source['name']} IonWave listing could not be fetched")
+    soup = _soup(r.text)
+    header_text = _clean(" ".join(cell.get_text(" ", strip=True) for cell in soup.find_all("th"))).lower()
+    if "bid number" not in header_text or "bid close date" not in header_text:
+        raise RuntimeError(f"{source['name']} IonWave listing schema changed")
+
+    records = []
+    for row in soup.find_all("tr"):
+        cells = row.find_all("td", recursive=False)
+        if len(cells) < 7:
+            continue
+        values = [_clean(cell.get_text(" ", strip=True)) for cell in cells]
+        contract_number, title = values[1], values[2]
+        due_date = values[6]
+        ntype = _classify_transport_scope(title, " ".join(values))
+        if not title or not ntype or not _deadline_is_current(due_date):
+            continue
+        link = row.find("a", href=True)
+        records.append(_base_record(
+            source,
+            title,
+            urljoin(source["url"], link["href"]) if link else source["url"],
+            ntype,
+            due_date,
+            contract_number,
+            " ".join(values),
+        ))
+    log.info(f"{source['name']} IonWave: {len(records)} records")
+    return records
+
+
+def parse_hudson_county(source):
+    """Parse Hudson County's public opportunity table and ignore expired rows."""
+    r = _get(source["url"], timeout=30)
+    if not r:
+        raise RuntimeError("Hudson County opportunity page could not be fetched")
+    soup = _soup(r.text)
+    headers = [_clean(cell.get_text()).lower() for cell in soup.find_all("th")]
+    if not {"title", "date posted", "date due", "commodities"}.issubset(set(headers)):
+        raise RuntimeError("Hudson County opportunity table schema changed")
+
+    records = []
+    for row in soup.find_all("tr"):
+        cells = row.find_all("td", recursive=False)
+        if len(cells) != 5:
+            continue
+        contract_number, title, posted, due_date, commodities = [
+            _clean(cell.get_text(" ", strip=True)) for cell in cells
+        ]
+        ntype = _classify_transport_scope(title, commodities)
+        if not title or not ntype or not _deadline_is_current(due_date):
+            continue
+        onclick = row.get("onclick", "")
+        path_match = re.search(r"document\.location=['\"]([^'\"]+)", onclick)
+        official_url = urljoin(source["url"], path_match.group(1)) if path_match else source["url"]
+        records.append(_base_record(
+            source, title, official_url, ntype, due_date, contract_number,
+            f"Posted {posted}. Commodities: {commodities}",
+        ))
+    log.info(f"Hudson County: {len(records)} current transportation records")
+    return records
+
+
+def parse_union_county(source):
+    """Parse Union County's current invitations-to-bid notices."""
+    r = _get(source["url"], timeout=30)
+    if not r:
+        raise RuntimeError("Union County invitation page could not be fetched")
+    soup = _soup(r.text)
+    if "Invitations to Bid" not in _clean(soup.get_text(" ", strip=True)):
+        raise RuntimeError("Union County invitation page schema changed")
+
+    records = []
+    for paragraph in soup.find_all("p"):
+        text = _clean(paragraph.get_text(" ", strip=True))
+        opening = re.search(r"\bOpening\s+([A-Z][a-z]+\s+\d{1,2},\s+\d{4})", text)
+        contract = re.search(r"\b(?:BA|RFP|RFQ)\s*#\s*[\w-]+", text, re.I)
+        if not opening or not contract:
+            continue
+        title = _clean(text[:contract.start()].rstrip(" .-"))
+        ntype = _classify_transport_scope(title, text)
+        if not title or not ntype or not _deadline_is_current(opening.group(1)):
+            continue
+        records.append(_base_record(
+            source, title, source["url"], ntype, opening.group(1), contract.group(0), text,
+        ))
+    log.info(f"Union County: {len(records)} current transportation records")
+    return records
+
+
+def parse_newark_water(source):
+    """Parse Newark Water and Sewer's current infrastructure bid cards."""
+    r = _get(source["url"], timeout=30)
+    if not r:
+        raise RuntimeError("Newark Water and Sewer bid page could not be fetched")
+    soup = _soup(r.text)
+    cards = soup.select("li.list-item")
+    if not cards:
+        raise RuntimeError("Newark Water and Sewer bid card schema changed")
+
+    records = []
+    for card in cards:
+        title_el = card.select_one("h2.list-item-content__title")
+        title = _clean(title_el.get_text(" ", strip=True)) if title_el else ""
+        context = _clean(card.get_text(" ", strip=True))
+        contract = re.search(r"Project ID:\s*([\w-]+)", context, re.I)
+        due = re.search(r"Due Date:\s*(\d{2}-\d{2}-\d{4})", context, re.I)
+        ntype = _classify_transport_scope(title, context)
+        if not title or not contract or not due or not ntype or not _deadline_is_current(due.group(1)):
+            continue
+        link = card.find("a", href=True)
+        records.append(_base_record(
+            source,
+            title,
+            urljoin(source["url"], link["href"]) if link else source["url"],
+            ntype,
+            due.group(1),
+            contract.group(1),
+            context,
+        ))
+    log.info(f"Newark Water and Sewer: {len(records)} current infrastructure records")
     return records
 
 
@@ -1678,6 +2001,13 @@ PARSER_MAP = {
     "camden_county":        parse_camden_county,
     "monmouth_county":      parse_monmouth_county,
     "gloucester_county":    parse_gloucester_county,
+    "opengov":              parse_opengov,
+    "bidnet_agency":        parse_bidnet_agency,
+    "bonfire":              parse_bonfire,
+    "ionwave":              parse_ionwave,
+    "hudson_county":        parse_hudson_county,
+    "union_county":         parse_union_county,
+    "newark_water":         parse_newark_water,
     "generic_html_list":    parse_generic_html_list,
     "bidnet":               parse_generic_html_list,
     "questcdn":             parse_generic_html_list,

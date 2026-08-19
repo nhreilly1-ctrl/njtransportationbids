@@ -65,6 +65,13 @@ AUTHORITATIVE_PARSERS = {
     "camden_county",
     "monmouth_county",
     "gloucester_county",
+    "opengov",
+    "bidnet_agency",
+    "bonfire",
+    "ionwave",
+    "hudson_county",
+    "union_county",
+    "newark_water",
 }
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -319,19 +326,18 @@ def run_sos_seed():
         log.error("SoS directory source not found in registry")
         return
 
-    entities = parse_sos_directory(sos_source)
-    existing  = _load(SOS_ENT_F)
-    seen_urls = {e["legal_notices_url"] for e in existing}
+    try:
+        entities = parse_sos_directory(sos_source)
+    except Exception as exc:
+        _log_crawl(sos_source["id"], 0, str(exc))
+        log.error(f"SoS seed failed: {exc}")
+        return
 
-    new_count = 0
-    for e in entities:
-        if e["legal_notices_url"] not in seen_urls:
-            existing.append(e)
-            seen_urls.add(e["legal_notices_url"])
-            new_count += 1
-
-    _save(SOS_ENT_F, existing)
-    log.info(f"SoS seed: {new_count} new entities discovered. Total: {len(existing)}")
+    deduped = {entity["legal_notices_url"]: entity for entity in entities}
+    validated = list(deduped.values())
+    _save(SOS_ENT_F, validated)
+    _log_crawl(sos_source["id"], len(validated), None)
+    log.info(f"SoS seed: {len(validated)} validated entity notice pages")
 
 
 # ── Tier 3 municipal crawl ────────────────────────────────────────────────────
@@ -352,7 +358,11 @@ def run_tier3_municipal():
         name = e.get("entity_name","Unknown municipality")
         if not url: continue
 
-        records = parse_municipal_from_sos(url, name)
+        try:
+            records = parse_municipal_from_sos(url, name)
+        except Exception as exc:
+            log.warning(f"  {name}: crawl failed: {exc}")
+            continue
         if records:
             log.info(f"  {name}: {len(records)} transport-relevant notices")
             all_records.extend(records)

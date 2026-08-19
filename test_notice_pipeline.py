@@ -105,6 +105,148 @@ class NoticeCrawlerTests(unittest.TestCase):
             notice_crawlers._classify_transport_scope("RFP for bridge inspection services"),
             "professional_services",
         )
+        self.assertIsNone(
+            notice_crawlers._classify_transport_scope(
+                "Steel for the Department of Transportation and Infrastructure"
+            )
+        )
+
+    def test_opengov_parser_reads_public_project_state(self):
+        payload = {
+            "count": 2,
+            "rows": [
+                {
+                    "id": 101,
+                    "title": "County bridge reconstruction",
+                    "summary": "<p>Replace the existing bridge deck.</p>",
+                    "proposalDeadline": "2099-09-30T20:00:00.000Z",
+                    "financialId": "IFB-101",
+                    "department": {"name": "Public Works"},
+                },
+                {
+                    "id": 102,
+                    "title": "Office paper supplies",
+                    "summary": "<p>General office supplies.</p>",
+                    "proposalDeadline": "2099-10-01T20:00:00.000Z",
+                    "financialId": "IFB-102",
+                    "department": {"name": "Administration"},
+                },
+            ],
+        }
+        html = (
+            '<script>window.__data={"govProjects":{"wrong":true},'
+            '"publicProject":{"govProjects":' + json.dumps(payload) + '},'
+            '"runtimeValue":undefined};</script>'
+        )
+        source = dict(SOURCE, parser="opengov", portal_code="testcounty")
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_opengov(source)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["contract_number"], "IFB-101")
+        self.assertEqual(records[0]["due_date_raw"], "2099-09-30T20:00:00.000Z")
+        self.assertTrue(records[0]["official_url"].endswith("/testcounty/projects/101"))
+
+    def test_bidnet_parser_keeps_work_and_rejects_transportation_supplies(self):
+        html = """
+        <table>
+          <tr class="mets-table-row">
+            <td class="sol-num">B-100</td>
+            <td class="sol-title"><a class="solicitation-link" href="/bridge">Bridge deck replacement</a></td>
+            <td class="sol-publication-date"><span class="date-value">08/01/2099</span></td>
+            <td class="sol-closing-date"><span class="date-value">09/01/2099</span></td>
+          </tr>
+          <tr class="mets-table-row">
+            <td class="sol-num">B-200</td>
+            <td class="sol-title"><a class="solicitation-link" href="/steel">Steel for Department of Transportation</a></td>
+            <td class="sol-publication-date"><span class="date-value">08/01/2099</span></td>
+            <td class="sol-closing-date"><span class="date-value">09/02/2099</span></td>
+          </tr>
+        </table>
+        """
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_bidnet_agency(SOURCE)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["contract_number"], "B-100")
+        self.assertEqual(records[0]["official_url"], "https://agency.example/bridge")
+
+    def test_hudson_parser_uses_current_direct_rows(self):
+        html = """
+        <table>
+          <tr><th>#</th><th>Title</th><th>Date Posted</th><th>Date Due</th><th>Commodities</th></tr>
+          <tr onclick="document.location='index.php?section=view&amp;id=1'">
+            <td>Bid-1</td><td>Central Avenue extension</td><td>08/01/2099</td><td>09/01/2099</td>
+            <td>Construction or Related Services Engineering Services</td>
+          </tr>
+          <tr><td>Bid-2</td><td>Old bridge repair</td><td>01/01/2020</td><td>02/01/2020</td>
+            <td>Construction or Related Services</td></tr>
+        </table>
+        """
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_hudson_county(SOURCE)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["contract_number"], "Bid-1")
+        self.assertIn("index.php", records[0]["official_url"])
+
+    def test_monmouth_parser_combines_construction_and_engineering_lists(self):
+        def table(row=""):
+            return SimpleNamespace(text=f"""
+                <table><tr><th>Due Date</th><th>Request ID</th><th>Title</th></tr>{row}</table>
+            """)
+
+        responses = [
+            table("<tr><td>09/01/2099</td><td>F-1</td><td>Bridge painting services</td><td><a href='/BidDetails?id=1'>View</a></td></tr>"),
+            table("<tr><td>09/02/2099</td><td>P-1</td><td>Health insurance administration</td></tr>"),
+            table("<tr><td>09/03/2099</td><td>P-2</td><td>Professional engineering services for roadway inspection</td><td><a href='/BidDetails?id=2'>View</a></td></tr>"),
+        ]
+        with patch.object(notice_crawlers, "_get", side_effect=responses):
+            records = notice_crawlers.parse_monmouth_county(SOURCE)
+
+        self.assertEqual({record["contract_number"] for record in records}, {"F-1", "P-2"})
+        self.assertEqual(
+            {record["notice_type"] for record in records},
+            {"construction", "professional_services"},
+        )
+
+    def test_union_and_newark_water_parse_current_infrastructure_notices(self):
+        union_html = """
+        <h1>Invitations to Bid</h1>
+        <p>East Coast Greenway Bikeway BA # 17-2099 Opening August 26, 2099 10:30 am Posted July 22, 2099</p>
+        """
+        water_html = """
+        <ul><li class="list-item"><h2 class="list-item-content__title">Citywide Water/Wastewater Infrastructure Improvements</h2>
+        <p>Project ID: 16-WS2099</p><p>Due Date: 08-27-2099</p><a href="/bid.pdf">View</a></li></ul>
+        """
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=union_html)):
+            union = notice_crawlers.parse_union_county(SOURCE)
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=water_html)):
+            water = notice_crawlers.parse_newark_water(SOURCE)
+
+        self.assertEqual(union[0]["contract_number"], "BA # 17-2099")
+        self.assertEqual(water[0]["contract_number"], "16-WS2099")
+        self.assertEqual(water[0]["official_url"], "https://agency.example/bid.pdf")
+
+    def test_sos_directory_rejects_navigation_and_accepts_explicit_entity_table(self):
+        navigation = """
+        <div><a href="https://nj.gov/">NJ.gov</a></div>
+        <li><a href="https://nj.gov/governor/">Governor</a></li>
+        """
+        directory = """
+        <table>
+          <tr><th>Public Entity</th><th>Legal Notice Website</th></tr>
+          <tr><td>Example Township</td><td><a href="https://example.gov/notices">Notices</a></td></tr>
+        </table>
+        """
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=navigation)):
+            self.assertEqual(notice_crawlers.parse_sos_directory(SOURCE), [])
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=directory)):
+            entities = notice_crawlers.parse_sos_directory(SOURCE)
+
+        self.assertEqual(len(entities), 1)
+        self.assertEqual(entities[0]["entity_name"], "Example Township")
+        self.assertEqual(entities[0]["legal_notices_url"], "https://example.gov/notices")
 
     def test_panynj_model_parser_keeps_nj_construction(self):
         source = notice_sources.SOURCES_BY_ID["state-panynj-construction"]
@@ -185,6 +327,33 @@ class NoticeLifecycleTests(unittest.TestCase):
         existing = [{"id": "old", "source_id": "agency", "title": "Old bid"}]
         merged = notice_runner._merge(existing, [], set())
         self.assertFalse(merged[0].get("source_inactive", False))
+
+    def test_verified_empty_authoritative_source_retires_stale_records(self):
+        source = dict(
+            SOURCE,
+            parser="opengov",
+            allow_empty=True,
+            empty_is_authoritative=True,
+        )
+        with (
+            patch.object(notice_runner, "crawl_source", return_value=[]),
+            patch.object(notice_runner, "_log_crawl"),
+        ):
+            fresh, refreshed = notice_runner.run_crawl([source])
+
+        self.assertEqual(fresh, [])
+        self.assertEqual(refreshed, {SOURCE["id"]})
+
+    def test_sos_seed_replaces_invalid_stale_entities(self):
+        saved = []
+        with (
+            patch.object(notice_runner, "parse_sos_directory", return_value=[]),
+            patch.object(notice_runner, "_save", side_effect=lambda path, value: saved.append((path, value))),
+            patch.object(notice_runner, "_log_crawl"),
+        ):
+            notice_runner.run_sos_seed()
+
+        self.assertEqual(saved, [(notice_runner.SOS_ENT_F, [])])
 
     def test_dedupe_prefers_fresh_active_contract_record(self):
         records = [
