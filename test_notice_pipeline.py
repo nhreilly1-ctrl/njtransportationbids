@@ -417,6 +417,20 @@ class SourceHealthTests(unittest.TestCase):
         self.assertEqual(health["status"], "count_drop")
         self.assertEqual(health["severity"], "warning")
 
+    def test_allow_empty_reclassifies_stored_zero_record_error(self):
+        source = dict(self.source, allow_empty=True)
+        entry = {
+            "last_crawl": self.now.isoformat(),
+            "last_count": 0,
+            "last_error": "zero_records",
+            "history": [{"at": self.now.isoformat(), "count": 0, "error": "zero_records"}],
+        }
+        health = source_health.evaluate_source(source, entry, self.now)
+        self.assertEqual(health["status"], "ok")
+        self.assertEqual(health["severity"], "ok")
+        self.assertIsNone(health["last_error"])
+        self.assertEqual(health["consecutive_failures"], 0)
+
     def test_summary_includes_never_run_sources_and_county_coverage(self):
         summary = source_health.build_health_summary(notice_sources.NOTICE_SOURCES, [], self.now)
         self.assertEqual(summary["configured_sources"], len(notice_sources.NOTICE_SOURCES))

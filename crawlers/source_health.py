@@ -80,6 +80,13 @@ def evaluate_source(source, entry=None, now=None):
         "message": "Latest crawl completed normally.",
     }
 
+    # Source policy can change after a crawl. Reclassify a stored empty-result
+    # error when the source is now explicitly allowed to have no matching bids.
+    if last_error == "zero_records" and source.get("allow_empty"):
+        last_error = None
+        result["last_error"] = None
+        result["consecutive_failures"] = 0
+
     if not last_crawl:
         result.update(
             status="never_run",
