@@ -110,6 +110,10 @@ class NoticeCrawlerTests(unittest.TestCase):
                 "Steel for the Department of Transportation and Infrastructure"
             )
         )
+        self.assertEqual(
+            notice_crawlers._classify_transport_scope("Snow plowing for county roads"),
+            "construction",
+        )
 
     def test_opengov_parser_reads_public_project_state(self):
         payload = {
@@ -170,6 +174,49 @@ class NoticeCrawlerTests(unittest.TestCase):
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0]["contract_number"], "B-100")
         self.assertEqual(records[0]["official_url"], "https://agency.example/bridge")
+
+    def test_bidexpress_agency_reads_only_upcoming_transportation_work(self):
+        html = """
+        <h2>Upcoming Solicitations</h2>
+        <table>
+          <tr><th>Number</th><th>Deadline</th></tr>
+          <tr><td><a href="/solicitations/100">BID # 209901 Road resurfacing program</a></td>
+              <td>09/01/2099 03:00 PM UTC</td></tr>
+          <tr><td><a href="/solicitations/200">RFP # 209902 Legal services</a></td>
+              <td>09/02/2099 03:00 PM UTC</td></tr>
+        </table>
+        <h2>Closed Solicitations</h2>
+        <table><tr><td><a href="/solicitations/300">BID # 209800 Bridge repair</a></td>
+                   <td>01/01/2098 03:00 PM UTC</td></tr></table>
+        """
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_bidexpress_agency(SOURCE)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["contract_number"], "BID # 209901")
+        self.assertEqual(records[0]["official_url"], "https://agency.example/solicitations/100")
+
+    def test_passaic_parser_reads_only_current_transportation_work(self):
+        html = """
+        <h2>Current Opportunities</h2>
+        <table>
+          <tr><th>#</th><th>Title</th><th>Date Issued</th><th>Due Date</th></tr>
+          <tr><td><a href="/bids/view?id=1">SB-99-001</a></td>
+              <td>Snow Plowing for Passaic County Roads</td><td>08/01/2099</td><td>09/01/2099</td></tr>
+          <tr><td><a href="/bids/view?id=2">RFQ-99-002</a></td>
+              <td>Outside legal counsel</td><td>08/01/2099</td><td>09/02/2099</td></tr>
+        </table>
+        <h2>Pending Award Opportunities</h2>
+        <table><tr><td><a href="/bids/view?id=3">RFP-99-003</a></td>
+                   <td>Bridge inspection services</td><td>07/01/2099</td><td>08/01/2099</td></tr></table>
+        """
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_passaic_bids(SOURCE)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["contract_number"], "SB-99-001")
+        self.assertEqual(records[0]["notice_type"], "construction")
+        self.assertEqual(records[0]["official_url"], "https://agency.example/bids/view?id=1")
 
     def test_hudson_parser_uses_current_direct_rows(self):
         html = """

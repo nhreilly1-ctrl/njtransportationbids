@@ -84,13 +84,13 @@ PROFESSIONAL_SCOPE_KW = [
     "construction management", "construction inspection", "construction monitoring", "bridge inspection",
     "design services", "surveying services", "land surveying", "traffic engineering",
     "professional engineering", "resident engineering",
-    "construction phase engineering",
+    "construction phase engineering", "construction engineering",
     "transportation planning", "corridor plan", "program management",
     "cost estimating", "constructability", "geotechnical", "structural evaluation",
 ]
 
 CONSTRUCTION_SCOPE_KW = [
-    "roadway", "road improvement", "road resurfacing", "road repair",
+    "roadway", "road improvement", "road resurfacing", "road repair", "road maintenance",
     "bridge", "culvert", "drainage", "pavement", "paving", "milling",
     "overlay", "curb", "sidewalk", "intersection", "signal",
     "guardrail", "guide rail", "highway", "transportation infrastructure",
@@ -100,7 +100,7 @@ CONSTRUCTION_SCOPE_KW = [
     "structural repair", "hvac overhaul", "tank installation", "ferry retrofit",
     "parking lot", "water main", "watermain", "wastewater", "sewer",
     "stormwater", "pump station", "bikeway", "greenway", "living shoreline",
-    "sludge", "utility infrastructure",
+    "sludge", "utility infrastructure", "snow plowing",
 ]
 
 SCOPE_EXCLUSIONS = [
@@ -1166,6 +1166,96 @@ def parse_sjta(source):
     return records
 
 
+def parse_bidexpress_agency(source):
+    """Parse the current-opportunity table on an agency's Bid Express page."""
+    response = _get(source["url"], timeout=30)
+    if not response:
+        raise RuntimeError(f"{source['name']} Bid Express page could not be fetched")
+    soup = _soup(response.text)
+    upcoming_table = None
+    for table in soup.find_all("table"):
+        heading = table.find_previous(["h1", "h2", "h3", "h4"])
+        if heading and "upcoming solicitations" in _clean(heading.get_text(" ", strip=True)).lower():
+            upcoming_table = table
+            break
+    if upcoming_table is None:
+        raise RuntimeError(f"{source['name']} Bid Express opportunity table was not found")
+
+    records = []
+    for row in upcoming_table.find_all("tr"):
+        cells = row.find_all("td")
+        if len(cells) != 2:
+            continue
+        link = cells[0].find("a", href=True)
+        title = _clean(link.get_text(" ", strip=True) if link else cells[0].get_text(" ", strip=True))
+        body = _clean(cells[0].get_text(" ", strip=True))
+        deadline = _clean(cells[1].get_text(" ", strip=True))
+        date_match = re.search(r"\b\d{1,2}/\d{1,2}/\d{4}\b", deadline)
+        if not title or not date_match or not _deadline_is_current(date_match.group(0)):
+            continue
+        notice_type = _classify_transport_scope(title, body)
+        if not notice_type:
+            continue
+        contract_match = re.search(
+            r"\b((?:BID|RFP|RFQ|CC)\s*#?\s*[A-Z0-9.-]+)", title, re.I
+        )
+        contract_number = _clean(contract_match.group(1)) if contract_match else ""
+        official_url = urljoin(source["url"], link["href"]) if link else source["url"]
+        records.append(_base_record(
+            source,
+            title,
+            official_url,
+            notice_type,
+            due_date=date_match.group(0),
+            contract_number=contract_number,
+            excerpt=body,
+        ))
+    return records
+
+
+def parse_passaic_bids(source):
+    """Parse Passaic County's public purchasing portal current-opportunity table."""
+    response = _get(source["url"], timeout=30)
+    if not response:
+        raise RuntimeError("Passaic County purchasing portal could not be fetched")
+    soup = _soup(response.text)
+    current_table = None
+    for table in soup.find_all("table"):
+        heading = table.find_previous(["h1", "h2", "h3", "h4"])
+        if heading and "current opportunities" in _clean(heading.get_text(" ", strip=True)).lower():
+            current_table = table
+            break
+    if current_table is None:
+        raise RuntimeError("Passaic County current-opportunity table was not found")
+
+    records = []
+    for row in current_table.find_all("tr"):
+        cells = row.find_all("td")
+        if len(cells) != 4:
+            continue
+        contract_number = _clean(cells[0].get_text(" ", strip=True))
+        title = _clean(cells[1].get_text(" ", strip=True))
+        issued = _clean(cells[2].get_text(" ", strip=True))
+        deadline = _clean(cells[3].get_text(" ", strip=True))
+        if not title or not _deadline_is_current(deadline):
+            continue
+        notice_type = _classify_transport_scope(title)
+        if not notice_type:
+            continue
+        link = cells[0].find("a", href=True) or cells[1].find("a", href=True)
+        official_url = urljoin(source["url"], link["href"]) if link else source["url"]
+        records.append(_base_record(
+            source,
+            title,
+            official_url,
+            notice_type,
+            due_date=deadline,
+            contract_number=contract_number,
+            excerpt=f"Issued {issued}. Responses due {deadline}.",
+        ))
+    return records
+
+
 def _extract_pdf_due_date(url):
     response = _get(url, timeout=30)
     if not response:
@@ -1994,6 +2084,8 @@ PARSER_MAP = {
     "njta":                 parse_njta,
     "njtransit":            parse_njtransit,
     "sjta":                 parse_sjta,
+    "bidexpress_agency":    parse_bidexpress_agency,
+    "passaic_bids":         parse_passaic_bids,
     "drjtbc":               parse_drjtbc,
     "nj_dos_legal":         parse_nj_dos_legal,
     "sos_directory":        parse_sos_directory,
