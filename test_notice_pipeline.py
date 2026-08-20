@@ -360,6 +360,20 @@ class NoticeCrawlerTests(unittest.TestCase):
 
 
 class NoticeLifecycleTests(unittest.TestCase):
+    def test_runner_enriches_timed_deadline_without_legacy_date_state(self):
+        record = {
+            "id": "timed-record",
+            "title": "Bridge construction bid",
+            "due_date_raw": "2099-08-25T20:00:00Z",
+            "source_status": "open",
+        }
+
+        enriched = notice_runner._enrich(record)
+
+        self.assertEqual(enriched["status"], "open")
+        self.assertEqual(enriched["deadline_at"], "2099-08-25T20:00:00Z")
+        self.assertFalse(enriched["urgent"])
+
     def test_planned_notice_is_upcoming(self):
         record = {"title": "Future bridge design", "is_planned": True, "due_date_raw": "Fall 2099"}
         self.assertEqual(notice_runner._enrich(record)["status"], "upcoming")

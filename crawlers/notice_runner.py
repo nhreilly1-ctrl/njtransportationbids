@@ -183,7 +183,8 @@ def _enrich(n):
     n["urgent"] = (
         due is not None
         and n["status"] == "open"
-        and (due - today).days <= 7
+        and n.get("days_until_due") is not None
+        and n["days_until_due"] <= 7
     )
 
     return n
