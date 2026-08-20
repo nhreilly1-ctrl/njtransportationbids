@@ -19,10 +19,8 @@
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:.5rem;">
         <span style="width:9px;height:9px;border-radius:50%;background:{{ dot_color }};display:inline-block;flex-shrink:0;"></span>
         <span style="font-size:11px;color:var(--text3);">{{ notice.source_name }}</span>
-        {% if notice.county %}
-          <span style="font-size:11px;color:var(--border2);">·</span>
-          <span style="font-size:11px;color:var(--text3);">{{ notice.county }}</span>
-        {% endif %}
+        <span style="font-size:11px;color:var(--border2);">·</span>
+        <span style="font-size:11px;color:var(--text3);">{{ notice.county_display }}</span>
         {% if notice.contract_number %}
           <span style="font-size:11px;color:var(--border2);">·</span>
           <span style="font-size:11px;font-family:monospace;color:var(--text3);">{{ notice.contract_number }}</span>
@@ -143,8 +141,8 @@
           <td>{{ notice.source_name }}</td></tr>
       <tr><td style="color:var(--text2);padding:4px 0;">Source tier</td>
           <td>{% if tier == 'state' %}State agency{% elif tier == 'county' %}County portal{% elif tier == 'municipal' %}Municipal website{% else %}Platform{% endif %}</td></tr>
-      <tr><td style="color:var(--text2);padding:4px 0;">County</td>
-          <td>{{ notice.county or 'Statewide' }}</td></tr>
+      <tr><td style="color:var(--text2);padding:4px 0;">Location</td>
+          <td>{{ notice.county_display }}</td></tr>
       <tr><td style="color:var(--text2);padding:4px 0;">Access</td>
           <td>{{ notice.access_type or '—' }}</td></tr>
       <tr><td style="color:var(--text2);padding:4px 0;">Platform</td>

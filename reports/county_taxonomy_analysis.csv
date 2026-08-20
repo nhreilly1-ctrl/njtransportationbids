@@ -1,0 +1,286 @@
+record_id,county_raw,canonical_counties,coverage_scope,region_raw,confidence,evidence
+notice-b9fc8d1f10a0,Ocean,Ocean,SINGLE_COUNTY,,LOW,"county_raw=""Ocean"" (R-01 fallback)"
+notice-d47f43d02a44,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-641a3acffbd7,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-f42ab9341e4f,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-profserv"" identifies a bi-state agency"
+notice-61f69805863f,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-9eb4e1bd371c,Passaic,Passaic,SINGLE_COUNTY,,LOW,"county_raw=""Passaic"" (R-01 fallback)"
+notice-926632aa45fb,Passaic,Passaic,SINGLE_COUNTY,,LOW,"county_raw=""Passaic"" (R-01 fallback)"
+notice-4531d15e2e38,Passaic,Passaic,SINGLE_COUNTY,,LOW,"county_raw=""Passaic"" (R-01 fallback)"
+notice-9db6e6911640,Essex,Essex,SINGLE_COUNTY,,LOW,"county_raw=""Essex"" (R-01 fallback)"
+notice-ff3fc4734370,Mercer,Mercer,SINGLE_COUNTY,,LOW,"county_raw=""Mercer"" (R-01 fallback)"
+notice-25be67d23f9a,Ocean,Ocean,SINGLE_COUNTY,,HIGH,"title:""Ocean County"""
+notice-753bfbf95b81,Ocean,Ocean,SINGLE_COUNTY,,HIGH,"title:""OCEAN COUNTY"""
+notice-1c0ba7c8482c,Morris,Morris,SINGLE_COUNTY,,LOW,"county_raw=""Morris"" (R-01 fallback)"
+notice-6ebfc6cc572a,Morris,Morris,SINGLE_COUNTY,,LOW,"county_raw=""Morris"" (R-01 fallback)"
+notice-9caea0bae9d4,Union,Union,SINGLE_COUNTY,,HIGH,"title:""County of Union"""
+notice-a6cca2a97783,Bergen,Bergen,SINGLE_COUNTY,,LOW,"county_raw=""Bergen"" (R-01 fallback)"
+notice-9ae0dfd9d280,Monmouth,Monmouth,SINGLE_COUNTY,,HIGH,"title:""MONMOUTH COUNTY"""
+notice-0002d7c371aa,Monmouth,Monmouth,SINGLE_COUNTY,,HIGH,"title:""MONMOUTH COUNTY"""
+notice-82fec72f21eb,Monmouth,Monmouth,SINGLE_COUNTY,,HIGH,"title:""MONMOUTH COUNTY"""
+notice-50339f52c99c,Northern New Jersey,,REGIONAL,Northern New Jersey,LOW,"region_raw=""Northern New Jersey"" retained without county expansion (R-04)"
+notice-d408af6223f6,Northern New Jersey,Ocean,SINGLE_COUNTY,Northern New Jersey,HIGH,"title:""Ocean County"""
+notice-ff683f4b90af,Camden/Gloucester,Camden|Gloucester,BISTATE,,LOW,"county_raw=""Camden/Gloucester"" (R-01 fallback) | source_id=""state-drpa-patco"" identifies a bi-state agency"
+notice-bd82877928a3,Camden/Gloucester,Camden|Gloucester,BISTATE,,LOW,"county_raw=""Camden/Gloucester"" (R-01 fallback) | source_id=""state-drpa-patco"" identifies a bi-state agency"
+notice-ac38e1e37a60,Statewide,,BISTATE,,MEDIUM,"source_id=""state-panynj-profserv"" identifies a bi-state agency"
+notice-be604c75a3c9,Statewide,,BISTATE,,MEDIUM,"source_id=""state-panynj-profserv"" identifies a bi-state agency"
+notice-306d6836846c,Statewide,,BISTATE,,MEDIUM,"source_id=""state-panynj-profserv"" identifies a bi-state agency"
+notice-eda666719918,Statewide,,BISTATE,,MEDIUM,"source_id=""state-panynj-profserv"" identifies a bi-state agency"
+notice-20b4f3dc3f48,Statewide,,BISTATE,,MEDIUM,"source_id=""state-panynj-construction"" identifies a bi-state agency"
+notice-8d8df12b3d55,Statewide,,BISTATE,,MEDIUM,"source_id=""state-panynj-construction"" identifies a bi-state agency"
+notice-26d80ad34746,Statewide,,BISTATE,,MEDIUM,"source_id=""state-panynj-construction"" identifies a bi-state agency"
+notice-0879acffe696,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-profserv"" identifies a bi-state agency"
+notice-bb990e81f943,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-profserv"" identifies a bi-state agency"
+notice-58e22dd4f9f8,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-construction"" identifies a bi-state agency"
+notice-21064d473da1,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-0ee280ad3f4d,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-e7015a784522,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-f3c293f763e0,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-9b0f1a9e356c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-ff88c279bc5b,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-deba59a6e155,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-28409da74419,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-0a8e5a0582b7,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-0eb4140e98a2,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-dbe774a5494b,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-3fa3d4d76aa8,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-d063f6a9df47,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-3f78c123ed11,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-ff93baab5b7b,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-5be294b87b7a,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-9e3665589907,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-fd47a5ff3d62,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-668b437ee761,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-284e9e5b80e7,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-cbf504d9df1c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-b4fe75feaec9,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-6d1f19ebfa18,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-b3a7c566b40f,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-d74a07c6204a,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-a015da037476,Central,,REGIONAL,Central,LOW,"region_raw=""Central"" retained without county expansion (R-04)"
+notice-134a0ca62f16,Central,,REGIONAL,Central,LOW,"region_raw=""Central"" retained without county expansion (R-04)"
+notice-4f4930da7aff,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-e2f0e5baa232,South,,REGIONAL,South,LOW,"region_raw=""South"" retained without county expansion (R-04)"
+notice-9bdb03a6982e,Central,,REGIONAL,Central,LOW,"region_raw=""Central"" retained without county expansion (R-04)"
+notice-5efd53108e5a,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-dc205290ac36,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-2c261290eb5c,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-5fa1f0187403,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-aca250147055,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-08f0b5a0e253,South,,REGIONAL,South,LOW,"region_raw=""South"" retained without county expansion (R-04)"
+notice-a6e4cfb7cfb1,Central,,REGIONAL,Central,LOW,"region_raw=""Central"" retained without county expansion (R-04)"
+notice-ac7aaf769feb,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-7b894ba0cdac,South,,REGIONAL,South,LOW,"region_raw=""South"" retained without county expansion (R-04)"
+notice-29a56f4b72ef,Central,,REGIONAL,Central,LOW,"region_raw=""Central"" retained without county expansion (R-04)"
+notice-f085cb05d43f,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-76c8069b8523,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-5752320c5fc5,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-a0b45a0c5d2d,Central & North,,REGIONAL,Central & North,LOW,"region_raw=""Central & North"" retained without county expansion (R-04)"
+notice-098b5bb99a07,Central & North,,REGIONAL,Central & North,LOW,"region_raw=""Central & North"" retained without county expansion (R-04)"
+notice-d9fac8f77e58,Central,,REGIONAL,Central,LOW,"region_raw=""Central"" retained without county expansion (R-04)"
+notice-10727275d81a,South,,REGIONAL,South,LOW,"region_raw=""South"" retained without county expansion (R-04)"
+notice-5c52520aff8c,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-ccd61231acda,South,,REGIONAL,South,LOW,"region_raw=""South"" retained without county expansion (R-04)"
+notice-502aeff1b100,North,,REGIONAL,North,LOW,"region_raw=""North"" retained without county expansion (R-04)"
+notice-d1d49df36cfb,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-6157f225efec,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-4cc96828d05c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-b44b15e61b6a,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-7367ae8a2b65,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-6106433f8dbe,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-268a9c218636,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-6f9ee789d8be,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-4aff805284a9,Morris/Passaic/Bergen,Bergen|Morris|Passaic,MULTI_COUNTY,,LOW,"county_raw=""Morris/Passaic/Bergen"" (R-01 fallback)"
+notice-4688a4ad6831,Bergen,Bergen,SINGLE_COUNTY,,LOW,"county_raw=""Bergen"" (R-01 fallback)"
+notice-32d0d884993f,Burlington,Burlington,SINGLE_COUNTY,,LOW,"county_raw=""Burlington"" (R-01 fallback)"
+notice-a2130ee14684,Warren,Warren,SINGLE_COUNTY,,LOW,"county_raw=""Warren"" (R-01 fallback)"
+notice-af5376ec57d0,Warren,Warren,SINGLE_COUNTY,North,LOW,"county_raw=""Warren"" (R-01 fallback)"
+notice-465ffabbce65,"Mercer, Middlesex",Mercer|Middlesex,MULTI_COUNTY,,LOW,"county_raw=""Mercer, Middlesex"" (R-01 fallback)"
+notice-e1215f765d04,"Middlesex, Monmouth",Middlesex|Monmouth,MULTI_COUNTY,,LOW,"county_raw=""Middlesex, Monmouth"" (R-01 fallback)"
+notice-75297aa782eb,Middlesex,Middlesex,SINGLE_COUNTY,,LOW,"county_raw=""Middlesex"" (R-01 fallback)"
+notice-661624ecaac1,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-9b2716e33632,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-285645fce7f1,Somerset,Somerset,SINGLE_COUNTY,,LOW,"county_raw=""Somerset"" (R-01 fallback)"
+notice-97ebd194bef2,Ocean,Ocean,SINGLE_COUNTY,,LOW,"county_raw=""Ocean"" (R-01 fallback)"
+notice-b629402c1604,Morris,Morris,SINGLE_COUNTY,,LOW,"county_raw=""Morris"" (R-01 fallback)"
+notice-da4885e9bfaf,Bergen,Bergen,SINGLE_COUNTY,,LOW,"county_raw=""Bergen"" (R-01 fallback)"
+notice-292c68a10a98,Monmouth,Monmouth,SINGLE_COUNTY,,LOW,"county_raw=""Monmouth"" (R-01 fallback)"
+notice-24a1ffc6b81e,Somerset,Somerset,SINGLE_COUNTY,,LOW,"county_raw=""Somerset"" (R-01 fallback)"
+notice-4982794d1b7c,Various,,REGIONAL,Various,LOW,"region_raw=""Various"" retained without county expansion (R-04)"
+notice-c0f0cb0fca4a,Burlington,Burlington,SINGLE_COUNTY,,LOW,"county_raw=""Burlington"" (R-01 fallback)"
+notice-06377bf07a00,Various,,REGIONAL,Various,LOW,"region_raw=""Various"" retained without county expansion (R-04)"
+notice-a717c76e1e60,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-238623237a12,Essex,Essex,SINGLE_COUNTY,,LOW,"county_raw=""Essex"" (R-01 fallback)"
+notice-2bf0f0032a16,South Region,,REGIONAL,South Region,LOW,"region_raw=""South Region"" retained without county expansion (R-04)"
+notice-db0b51b29919,Mercer,Mercer,SINGLE_COUNTY,,LOW,"county_raw=""Mercer"" (R-01 fallback)"
+notice-c060a0a49637,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-db612243beaf,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-bfa8bd073c07,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-3fe371604a5e,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-f13e5fe449e6,Statewide,Somerset,SINGLE_COUNTY,,MEDIUM,"title:""Somerset County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-1cba9bfc8500,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-d496a334c6ed,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-62d38170ca00,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-74921b00b7b4,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-4f19559518a0,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-37218a556d49,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-c123befbf4ef,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-866ba63ff5c7,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-493184fe970d,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-5e3427365768,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-61612e0abc20,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-99774bee8b5c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-e05188ef1bbf,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-243552870e3b,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-c74acc58c001,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-777083fb4c91,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-25d99b1a0fc5,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-4f6e7fea619e,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-787751a992ad,Statewide,Atlantic|Burlington|Camden|Cape May|Cumberland|Gloucester|Salem,MULTI_COUNTY,South,MEDIUM,"title:""Salem Counties"" | title:""Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester, and Salem Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-09a31913dc62,Statewide,Middlesex,SINGLE_COUNTY,,MEDIUM,"title:""County of Middlesex"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-d6cd3a5ad00c,Statewide,Hunterdon|Mercer|Middlesex|Monmouth|Ocean|Somerset,MULTI_COUNTY,Central,MEDIUM,"title:""Somerset Counties"" | title:""Hunterdon, Mercer, Middlesex, Monmouth, Ocean, and Somerset Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-e537cbbc611f,Statewide,Bergen|Essex|Hudson|Morris|Passaic|Union,MULTI_COUNTY,North,MEDIUM,"title:""Union Counties"" | title:""Bergen, Essex, Hudson, Morris, Passaic, and Union Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-2c483f1e0d5c,Statewide,Warren,SINGLE_COUNTY,North,MEDIUM,"title:""Warren County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-9171b5272a89,Statewide,Middlesex|Monmouth,MULTI_COUNTY,,MEDIUM,"title:""Middlesex County"" | title:""Monmouth County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-244d851d92ae,Passaic,Passaic,SINGLE_COUNTY,,HIGH,"title:""Passaic County"""
+notice-6db4eb12aa8e,Camden,Camden,SINGLE_COUNTY,,HIGH,"title:""Camden County"""
+notice-701d86bd99b9,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-4cf1cbd80498,Mercer,Mercer,SINGLE_COUNTY,,LOW,"county_raw=""Mercer"" (R-01 fallback)"
+notice-da285d07cdc6,Cumberland,Cumberland,SINGLE_COUNTY,,LOW,"county_raw=""Cumberland"" (R-01 fallback)"
+notice-6be589667115,Cape May,Cape May,SINGLE_COUNTY,,LOW,"county_raw=""Cape May"" (R-01 fallback)"
+notice-5661db9d794d,Cape May,Cape May,SINGLE_COUNTY,,LOW,"county_raw=""Cape May"" (R-01 fallback)"
+notice-a3457480a03c,Cape May,Cape May,SINGLE_COUNTY,,LOW,"county_raw=""Cape May"" (R-01 fallback)"
+notice-12be7292bdb4,Passaic,Passaic,SINGLE_COUNTY,,LOW,"county_raw=""Passaic"" (R-01 fallback)"
+notice-54792c5ec8b5,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-47d0f5d56965,Passaic,Passaic,SINGLE_COUNTY,,LOW,"county_raw=""Passaic"" (R-01 fallback)"
+notice-64c3a266afb4,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-b266cdbdbe2c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-b11b1976aaf1,Passaic,Passaic,SINGLE_COUNTY,,LOW,"county_raw=""Passaic"" (R-01 fallback)"
+notice-205847904d0d,Passaic,Passaic,SINGLE_COUNTY,,LOW,"county_raw=""Passaic"" (R-01 fallback)"
+notice-ddaae7865146,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-bb04fa33a15d,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-ac3eba078079,Mercer,Mercer,SINGLE_COUNTY,,HIGH,"title:""COUNTY OF MERCER"""
+notice-c73b092bb5a0,Monmouth,Monmouth,SINGLE_COUNTY,,HIGH,"title:""MONMOUTH COUNTY"""
+notice-422fddeee10a,Essex,Essex,SINGLE_COUNTY,,LOW,"county_raw=""Essex"" (R-01 fallback)"
+notice-4e556bf86ab7,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-c2c7a55ff2b8,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-0bef22ed5cc6,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-664c064ca856,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-8a4888fe5a11,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-84f48df70ca8,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-3b3d9aa337bb,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-a252e9c27b8c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-e730a2faf45f,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-c5eb6f61be70,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-63e00e6aa2bc,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-08dd485b34b5,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-a9140ab85c56,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-ebcdb2bc4820,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-3021debdac0a,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-2fe5528fd64e,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-c68ab5a1ba77,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-4b3a02c9bed8,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-4fc70637632d,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-c980fb972e01,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-93a4e275759c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-4768037bfa40,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-construction"" identifies a bi-state agency"
+notice-e794b27f9c9f,Statewide,Essex|Hudson|Morris,MULTI_COUNTY,,MEDIUM,"title:""Hudson Counties"" | title:""Morris, Essex, and Hudson Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-701d7391c185,Statewide,Gloucester|Salem,MULTI_COUNTY,,MEDIUM,"title:""Salem Counties"" | title:""Gloucester and Salem Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-454dd861d5a9,Statewide,Morris|Passaic,MULTI_COUNTY,,MEDIUM,"title:""Passaic County"" | title:""Morris County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-a06fb7d8e6a5,Statewide,Essex|Passaic,MULTI_COUNTY,,MEDIUM,"title:""County of Essex"" | title:""County of Passaic"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-8f18be78fbcb,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-b4c1737aab4f,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-05a95ece3506,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-947ef781a652,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-e41c792ebb64,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-e57a4d94bddd,Statewide,Middlesex|Monmouth|Ocean,MULTI_COUNTY,,MEDIUM,"title:""Middlesex Counties"" | title:""Monmouth, Ocean and Middlesex Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-a4a7000b6fc4,Statewide,Atlantic|Burlington|Mercer,MULTI_COUNTY,,MEDIUM,"title:""Counties of Atlantic, Burlington and Mercer"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-8f2e1fdf37e6,Statewide,Middlesex|Monmouth,MULTI_COUNTY,,MEDIUM,"title:""Middlesex County"" | title:""Monmouth & Middlesex County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-211392edb2f6,Statewide,Mercer|Monmouth|Ocean,MULTI_COUNTY,,MEDIUM,"title:""Ocean Counties"" | title:""Mercer, Monmouth, and Ocean Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-d5a69030aef2,Statewide,Camden,SINGLE_COUNTY,,MEDIUM,"title:""Camden County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-49372b1bdc76,Statewide,Gloucester,SINGLE_COUNTY,,MEDIUM,"title:""Gloucester County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-3931903dc413,Statewide,Hudson,SINGLE_COUNTY,,MEDIUM,"title:""Hudson County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-e7feec016de4,Ocean,Ocean,SINGLE_COUNTY,,LOW,"county_raw=""Ocean"" (R-01 fallback)"
+notice-8da1fbc5495f,Morris,Morris,SINGLE_COUNTY,,LOW,"county_raw=""Morris"" (R-01 fallback)"
+notice-3535135932fd,Morris,Morris,SINGLE_COUNTY,,LOW,"county_raw=""Morris"" (R-01 fallback)"
+notice-554194a0a2ef,Burlington,Burlington,SINGLE_COUNTY,,LOW,"county_raw=""Burlington"" (R-01 fallback)"
+notice-5bef5da91170,Burlington,Burlington,SINGLE_COUNTY,,LOW,"county_raw=""Burlington"" (R-01 fallback)"
+notice-47da1eba2895,Monmouth,Monmouth,SINGLE_COUNTY,,LOW,"county_raw=""Monmouth"" (R-01 fallback)"
+notice-5767ff5061ac,Monmouth,Monmouth,SINGLE_COUNTY,,LOW,"county_raw=""Monmouth"" (R-01 fallback)"
+notice-ff2a7cd06c4b,Monmouth,Monmouth,SINGLE_COUNTY,,LOW,"county_raw=""Monmouth"" (R-01 fallback)"
+notice-f8069a2e2366,Essex,Essex,SINGLE_COUNTY,,LOW,"county_raw=""Essex"" (R-01 fallback)"
+notice-8c6e11bcbdd4,Essex,Essex,SINGLE_COUNTY,,LOW,"county_raw=""Essex"" (R-01 fallback)"
+notice-23b84de37ab8,Essex,Essex,SINGLE_COUNTY,,LOW,"county_raw=""Essex"" (R-01 fallback)"
+notice-25e42aa80787,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-profserv"" identifies a bi-state agency"
+notice-d0ec4e5eac00,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-construction"" identifies a bi-state agency"
+notice-a793b76e45d9,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-2bfebd904cf0,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-4088557e29a7,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-9b74e7680848,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-6c50dceead72,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-f68afd1251e5,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-aa134c3a58c7,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-28aa86c59ca7,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-af25fb18b2c2,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-d2f17a8f624b,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-2a20e2585343,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-8807e68451e4,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-57f18ffec447,Camden,Camden,SINGLE_COUNTY,,LOW,"county_raw=""Camden"" (R-01 fallback)"
+notice-1ba7fa2b3c6f,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-91f6b1cfd5ec,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-d0f5b22d5fae,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-c436bceaffb3,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-0ffe81034a16,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-80f8a7945e63,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-f8a0cac681ce,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-5304300999a7,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-8b4cc079e887,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-d119bb0069fd,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-cdd79fd951bf,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-2673caf8f0f6,Statewide,Atlantic|Burlington|Mercer|Middlesex|Monmouth|Ocean,MULTI_COUNTY,,MEDIUM,"title:""Middlesex Counties"" | title:""Counties of Atlantic, Burlington and Mercer"" | title:""Monmouth, Ocean and Middlesex Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-76c9504e2fec,Statewide,Essex|Mercer|Middlesex|Monmouth|Morris|Ocean|Passaic,MULTI_COUNTY,,MEDIUM,"title:""County of Essex"" | title:""County of Passaic"" | title:""Middlesex County"" | title:""Ocean Counties"" | title:""Passaic County"" | title:""Morris County"" | title:""Monmouth & Middlesex County"" | title:""Mercer, Monmouth, and Ocean Counties"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-d4e9e5626cac,Statewide,Camden|Essex|Gloucester|Hudson|Morris|Passaic,MULTI_COUNTY,,MEDIUM,"title:""County of Essex"" | title:""County of Passaic"" | title:""Camden County"" | title:""Gloucester County"" | title:""Passaic County"" | title:""Morris County"" | title:""Hudson County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-48ad038a7bb7,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-d19f0847c7c0,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-profserv"" identifies a bi-state agency"
+notice-460f237db082,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-profserv"" identifies a bi-state agency"
+notice-1c11b169bb5a,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-profserv"" identifies a bi-state agency"
+notice-148c9196c9dc,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-construction"" identifies a bi-state agency"
+notice-1b8256d491a1,Warren/Hunterdon/Mercer,Hunterdon|Mercer|Warren,BISTATE,,LOW,"county_raw=""Warren/Hunterdon/Mercer"" (R-01 fallback) | source_id=""state-drjtbc-construction"" identifies a bi-state agency"
+notice-7d6741063723,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-d3255d2f1781,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-49c8d3fb38dc,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-23117ee3c87c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-e37011c729a1,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-cc256a9e6b17,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-3d32f8fccfac,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-1916bf81ad7a,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-329d3964b819,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-ab34202c15b5,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-94286c1c86ab,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-bb3df162c1aa,Statewide,Hudson,SINGLE_COUNTY,,MEDIUM,"title:""Hudson County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-4a527682cf3f,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-19ad16719337,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-d9b2d3d5c8b4,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-ba6ed97b54cf,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-457f28a885af,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-16519ad31762,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-8e5c06205bf9,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-02a995ef00c5,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-f265e6ef0d50,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-542b8b4e7fdb,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-338cff2bf4a9,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-0495cd66303c,Statewide,Somerset,SINGLE_COUNTY,,MEDIUM,"title:""Somerset County"" | county_raw=""Statewide"" conflicts; explicit county evidence wins (R-03)"
+notice-ee7661874fd2,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-4c1ef6156c34,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-174243c2238b,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-befd4df59960,Statewide,,STATEWIDE,,HIGH,text explicitly identifies statewide/systemwide scope
+notice-3cfa607ccc8b,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-7d3b7faf5dd4,Statewide,,REGIONAL,Central,LOW,"region_raw=""Central"" retained without county expansion (R-04)"
+notice-34474d9c8a0c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-6d118946ae4c,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-b4c73cac35db,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-238005760179,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-90f5091e6747,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-beccbfa0a875,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-0e67e1a2ccc2,Statewide,,UNRESOLVED,,LOW,no explicit county evidence
+notice-ec3b32132a08,Statewide,,UNRESOLVED,,LOW,no explicit county evidence

@@ -145,7 +145,7 @@
 
       <div class="bid-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <span>{{ n.source_name }}</span>
-        {% if n.county %}<span style="color:var(--border2);">·</span><span>{{ n.county }}</span>{% endif %}
+        <span style="color:var(--border2);">·</span><span>{{ n.county_display }}</span>
         {% if n.contract_number %}
           <span style="color:var(--border2);">·</span>
           <span style="font-family:monospace;font-size:11px;color:var(--text3);">{{ n.contract_number }}</span>

@@ -31,6 +31,7 @@ from notice_sources import (
 )
 from notice_crawlers import crawl_source, parse_sos_directory, parse_municipal_from_sos
 from source_health import build_health_summary
+from app.core.geography import enrich_geography
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -147,6 +148,8 @@ def _dedupe(notices):
 
 def _enrich(n):
     """Compute status, days_until_due, preserve manual overrides."""
+    enrich_geography(n)
+
     # Respect admin overrides
     if n.get("status_override") in ("approved","noise","deleted"):
         n["status"] = n["status_override"]

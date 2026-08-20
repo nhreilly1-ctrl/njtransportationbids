@@ -13,6 +13,8 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask import Flask, Response, jsonify, redirect, render_template, request, session, url_for
 
+from app.core.geography import NJ_COUNTIES, enrich_geography
+
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-prod")
@@ -734,6 +736,7 @@ def parse_due(raw: str | None) -> date | None:
 
 def enrich(opp: dict) -> dict:
     record = dict(opp)
+    enrich_geography(record)
     due = parse_due(record.get("due_date_raw") or record.get("due_date"))
     record["due_date_parsed"] = due.isoformat() if due else None
     record["days_until_due"] = (due - date.today()).days if due else None
@@ -955,18 +958,19 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
             return False
         if notice_subtype and opp.get("notice_subtype") != notice_subtype:
             return False
-        if county and (opp.get("county") or "").lower() != county.lower():
+        if county and county not in opp.get("counties", []):
             return False
         if agency and (opp.get("source_name") or "").lower() != agency.lower():
             return False
-        haystack = f"{opp.get('title', '')} {opp.get('source_name', '')} {opp.get('county', '')}".lower()
+        haystack = f"{opp.get('title', '')} {opp.get('source_name', '')} {opp.get('county_display', '')}".lower()
         if q and q not in haystack:
             return False
         return True
 
     filtered = sort_opps([opp for opp in opps if keep(opp)])
     soon, later, nodate = group_by_urgency(filtered)
-    counties = sorted({opp.get("county", "") for opp in opps if opp.get("county")})
+    available_counties = {county for opp in opps for county in opp.get("counties", [])}
+    counties = [county for county in NJ_COUNTIES if county in available_counties]
     agencies = sorted({opp.get("source_name", "") for opp in opps if opp.get("source_name")})
     today = date.today()
     soon_cutoff = today + timedelta(days=14)
@@ -1099,6 +1103,10 @@ def export_csv():
         "title",
         "source_name",
         "county",
+        "counties",
+        "coverage_scope",
+        "region_raw",
+        "geography_confidence",
         "record_type",
         "notice_subtype",
         "due_date_raw",
@@ -1110,7 +1118,8 @@ def export_csv():
     ]
     writer = csv.DictWriter(buf, fieldnames=fields, extrasaction="ignore")
     writer.writeheader()
-    writer.writerows(opps)
+    export_rows = [{**opp, "counties": "|".join(opp.get("counties", []))} for opp in opps]
+    writer.writerows(export_rows)
     return Response(
         buf.getvalue(),
         mimetype="text/csv",

@@ -50,7 +50,7 @@
   <div class="opportunity-hero">
     <div style="flex:1; min-width:0;">
       <h1 style="font-size:17px; font-weight:500; margin-bottom:.5rem; line-height:1.45;">{{ opp.title }}</h1>
-      <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }}{% if opp.county %} &middot; {{ opp.county }}{% endif %}</div>
+      <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }} &middot; {{ opp.county_display }}</div>
       <div style="display:flex; gap:7px; flex-wrap:wrap;">
         {% if opp.status == 'open' %}<span class="badge badge-open">Open</span>
         {% elif opp.status == 'upcoming' %}<span class="badge badge-type-p">Upcoming</span>
@@ -104,7 +104,7 @@
       {% if opp.notice_subtype %}<tr><td style="color:var(--text2); padding:4px 0;">Notice subtype</td><td style="padding:4px 0;">{{ opp.notice_subtype | replace('_',' ') | title }}</td></tr>{% endif %}
       {% if opp.contract_number %}<tr><td style="color:var(--text2); padding:4px 0;">Contract / reference</td><td style="padding:4px 0;">{{ opp.contract_number }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Source</td><td style="padding:4px 0;">{{ opp.source_name or '—' }}</td></tr>
-      <tr><td style="color:var(--text2); padding:4px 0;">County</td><td style="padding:4px 0;">{{ opp.county or 'Statewide' }}</td></tr>
+      <tr><td style="color:var(--text2); padding:4px 0;">Location</td><td style="padding:4px 0;">{{ opp.county_display }}</td></tr>
       {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">{{ 'Expected' if opp.status == 'upcoming' else 'Deadline' }}</td><td style="padding:4px 0;">{{ opp.due_date_raw }}</td></tr>{% endif %}
       {% if opp.last_verified_date %}<tr><td style="color:var(--text2); padding:4px 0;">Last verified</td><td style="padding:4px 0;">{{ opp.last_verified_date }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Access</td><td style="padding:4px 0;">{{ opp.access_type or '—' }}</td></tr>
@@ -120,7 +120,7 @@
   <div class="bid-dot {{ 'dot-green' if item.status == 'open' else 'dot-amber' }}"></div>
   <div class="bid-main">
     <a href="{{ url_for('opportunity_detail', opp_id=item.id) }}" class="bid-title" title="{{ item.title }}">{{ item.title }}</a>
-    <div class="bid-meta">{{ item.county or 'Statewide' }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}</div>
+    <div class="bid-meta">{{ item.county_display }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}</div>
   </div>
   <div class="bid-due"><span class="due-label">{{ 'Expected' if item.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ item.due_date_raw or 'Not listed' }}</span></div>
 </div>

@@ -18,6 +18,8 @@ from io import StringIO
 from flask import (Blueprint, render_template, request,
                    redirect, url_for, Response, session)
 
+from app.core.geography import NJ_COUNTIES as CANONICAL_NJ_COUNTIES, enrich_geography
+
 notice_bp = Blueprint("notices2", __name__)
 
 # ── Data ──────────────────────────────────────────────────────────────────────
@@ -26,17 +28,12 @@ BASE        = os.path.join(os.path.dirname(__file__), "..")
 NOTICES_F   = os.path.join(BASE, "data", "notices", "notices.json")
 CRAWL_LOG_F = os.path.join(BASE, "data", "notices", "crawl_log.json")
 
-NJ_COUNTIES = [
-    "Atlantic","Bergen","Burlington","Camden","Cape May","Cumberland",
-    "Essex","Gloucester","Hudson","Hunterdon","Mercer","Middlesex",
-    "Monmouth","Morris","Ocean","Passaic","Salem","Somerset",
-    "Sussex","Union","Warren","Statewide",
-]
+NJ_COUNTIES = list(CANONICAL_NJ_COUNTIES)
 
 def _load_notices():
     if not os.path.exists(NOTICES_F): return []
     with open(NOTICES_F, encoding="utf-8") as f:
-        return json.load(f)
+        return [enrich_geography(record) for record in json.load(f)]
 
 def _load_crawl_log():
     if not os.path.exists(CRAWL_LOG_F): return []
@@ -87,10 +84,8 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
 
         # County
         if county:
-            nc = (n.get("county") or "").lower()
-            if county.lower() not in nc and nc not in ("statewide",""):
-                if county.lower() != "statewide":
-                    continue
+            if county not in n.get("counties", []):
+                continue
 
         # Agency / source
         if agency and (n.get("source_name","").lower() != agency.lower()): continue
@@ -106,7 +101,7 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
                 n.get("notice_excerpt",""),
                 n.get("source_name",""),
                 n.get("contract_number",""),
-                n.get("county",""),
+                n.get("county_display",""),
             ]).lower()
             if ql not in searchable: continue
 
@@ -271,12 +266,14 @@ def export_notices_csv():
     active  = [n for n in notices if n.get("status") in ("open", "upcoming")
                and not n.get("noise_flagged")]
     buf = StringIO()
-    fields = ["id","title","source_name","source_tier","county","notice_type",
+    fields = ["id","title","source_name","source_tier","county","counties",
+              "coverage_scope","region_raw","geography_confidence","notice_type",
               "notice_subtype","due_date_raw","due_date_parsed","status",
               "contract_number","access_type","platform","paywalled","official_url"]
     w = csv.DictWriter(buf, fieldnames=fields, extrasaction="ignore")
     w.writeheader()
-    w.writerows(active)
+    export_rows = [{**notice, "counties": "|".join(notice.get("counties", []))} for notice in active]
+    w.writerows(export_rows)
     return Response(buf.getvalue(), mimetype="text/csv",
         headers={"Content-Disposition":"attachment; filename=njtbids-notices.csv"})
 

@@ -98,7 +98,7 @@
         <div class="bid-dot dot-red"></div>
         <div class="bid-main">
           <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
-          <div class="bid-meta">{{ o.source_name }} &middot; {{ o.county or 'Statewide' }}</div>
+          <div class="bid-meta">{{ o.source_name }} &middot; {{ o.county_display }}</div>
           <div class="bid-tags">
             <span class="badge badge-open">Open</span>
             {% if is_construction %}<span class="badge badge-type-c">Construction</span>
