@@ -107,7 +107,7 @@
             {% if o.access_type and o.access_type not in ('Unknown','') %}<span class="badge badge-access">{{ o.access_type }}</span>{% endif %}
           </div>
         </div>
-        <div class="bid-due soon-due"><span class="due-label">Due</span><span class="due-date">{{ o.due_date_raw }}</span></div>
+        <div class="bid-due soon-due"><span class="due-label">Due</span><span class="due-date">{{ o.deadline_display }}</span></div>
       </div>
     {% endfor %}
     <div class="divider"></div>

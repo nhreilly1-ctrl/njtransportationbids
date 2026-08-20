@@ -5,12 +5,20 @@
 
 <div class="page-header">
   <h1>Sources</h1>
-  <p>{{ sources | length }} procurement sources configured. Health is based on noise ratio - sources with frequent navigation text or out-of-scope records are flagged.</p>
+  <p>{{ source_summary.configured }} official procurement sources monitored. Crawl health comes from the latest agency check, including configured sources that currently list no matching opportunities.</p>
+</div>
+
+<div class="stats-grid" style="margin-bottom:1.25rem;">
+  <div class="stat-card"><div class="num">{{ source_summary.configured }}</div><div class="lbl">Configured sources</div></div>
+  <div class="stat-card"><div class="num c-green">{{ source_summary.healthy }}</div><div class="lbl">Healthy</div></div>
+  <div class="stat-card"><div class="num c-amber">{{ source_summary.warning }}</div><div class="lbl">Warnings</div></div>
+  <div class="stat-card"><div class="num c-red">{{ source_summary.error }}</div><div class="lbl">Errors</div></div>
 </div>
 
 {% set state_sources   = sources | selectattr("tier", "equalto", "state")   | list %}
 {% set county_sources  = sources | selectattr("tier", "equalto", "county")  | list %}
 {% set munic_sources   = sources | selectattr("tier", "equalto", "municipal") | list %}
+{% set platform_sources = sources | selectattr("tier", "equalto", "paywalled") | list %}
 
 {% macro source_block(src) %}
 <div class="source-card">
@@ -18,21 +26,20 @@
   <div style="flex:1; min-width:0;">
     <div class="source-name">{{ src.name }}</div>
     <div class="source-meta">
-      Last crawl: {{ src.last_crawl or 'unknown' }} &nbsp;&middot;&nbsp;
-      {{ src.total }} records &nbsp;&middot;&nbsp;
-      {% if src.noise > 0 %}
-        <span style="color:var(--red-text);">{{ src.noise }} noise</span> &nbsp;&middot;&nbsp;
-      {% endif %}
-      {{ src.open }} open
-      {% if src.review_required is defined %} &nbsp;&middot;&nbsp; {{ src.review_required }} review{% endif %}
-      {% if src.ai_review is defined %} &nbsp;&middot;&nbsp; {{ src.ai_review }} ai review{% endif %}
+      Last checked: {{ src.last_crawl_display or 'not yet recorded' }} &nbsp;&middot;&nbsp;
+      {{ src.frequency | title }} schedule
     </div>
-    <div class="source-meta">Crawlability {{ '%.1f'|format(src.crawlability_score or 0) }} / 5.0 &nbsp;&middot;&nbsp; {{ src.rule_label }}</div>
+    <div class="source-meta">
+      {{ src.open }} open &nbsp;&middot;&nbsp; {{ src.upcoming }} upcoming &nbsp;&middot;&nbsp;
+      {{ src.total }} retained record{{ '' if src.total == 1 else 's' }}
+      {% if src.last_count is not none %} &nbsp;&middot;&nbsp; latest crawl returned {{ src.last_count }}{% endif %}
+    </div>
+    <div class="source-meta" style="margin-top:3px;">{{ src.health_message }}</div>
   </div>
   {% if src.health == 'bad' %}
-    <span class="badge badge-noise" style="font-size:11px;">Needs review</span>
+    <span class="badge badge-noise" style="font-size:11px;">Crawler error</span>
   {% elif src.health == 'warn' %}
-    <span class="badge badge-nodate" style="font-size:11px;">Noisy</span>
+    <span class="badge badge-nodate" style="font-size:11px;">Warning</span>
   {% else %}
     <span class="badge badge-open" style="font-size:11px;">Healthy</span>
   {% endif %}
@@ -43,18 +50,23 @@
 {% endmacro %}
 
 {% if state_sources %}
-  <div class="section-label">State agencies - high signal</div>
+  <div class="section-label">State and regional agencies</div>
   {% for s in state_sources %}{{ source_block(s) }}{% endfor %}
 {% endif %}
 
 {% if county_sources %}
-  <div class="section-label">County portals - medium signal</div>
+  <div class="section-label">All 21 county portals</div>
   {% for s in county_sources %}{{ source_block(s) }}{% endfor %}
 {% endif %}
 
 {% if munic_sources %}
-  <div class="section-label">Municipal portals - lower signal / higher noise</div>
+  <div class="section-label">Municipal notice portals</div>
   {% for s in munic_sources %}{{ source_block(s) }}{% endfor %}
+{% endif %}
+
+{% if platform_sources %}
+  <div class="section-label">Procurement platforms</div>
+  {% for s in platform_sources %}{{ source_block(s) }}{% endfor %}
 {% endif %}
 
 {% if not sources %}

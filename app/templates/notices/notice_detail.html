@@ -84,7 +84,7 @@
       <div style="font-size:22px;font-weight:500;
                   {{ 'color:var(--red)' if notice.urgent and notice.status == 'open'
                      else 'color:var(--text)' }};">
-        {{ notice.due_date_raw }}
+        {{ notice.deadline_display }}
       </div>
       {% if notice.days_until_due is not none and notice.status == 'open' %}
         <div style="font-size:12px;color:{{ 'var(--red)' if notice.urgent else 'var(--text2)' }};">

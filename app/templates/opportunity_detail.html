@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{ opp.title[:65] }} - NJ Transportation Bids{% endblock %}
-{% block meta_description %}{{ ((opp.notice_excerpt or opp.title) ~ (' Due ' ~ opp.due_date_raw if opp.due_date_raw else '') ~ ' Source: ' ~ (opp.source_name or 'official agency'))[:165] }}{% endblock %}
+{% block meta_description %}{{ ((opp.notice_excerpt or opp.title) ~ (' Due ' ~ opp.deadline_display if opp.due_date_raw else '') ~ ' Source: ' ~ (opp.source_name or 'official agency'))[:165] }}{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -66,7 +66,7 @@
     {% if opp.due_date_raw and opp.due_date_raw != 'Not listed' %}
     <div class="opportunity-deadline">
       <div style="font-size:11px; color:var(--text3);">{{ 'Expected' if opp.status == 'upcoming' else 'Due date' }}</div>
-      <div style="font-size:20px; font-weight:500; {{ 'color:var(--red)' if opp.status == 'expired' else '' }}">{{ opp.due_date_raw }}</div>
+      <div style="font-size:20px; font-weight:500; {{ 'color:var(--red)' if opp.status == 'expired' else '' }}">{{ opp.deadline_display }}</div>
       {% if opp.days_until_due is not none and opp.status == 'open' %}<div style="font-size:11px;color:var(--text2);">{{ opp.days_until_due }} day{{ 's' if opp.days_until_due != 1 }} remaining</div>{% endif %}
     </div>
     {% endif %}
@@ -105,7 +105,8 @@
       {% if opp.contract_number %}<tr><td style="color:var(--text2); padding:4px 0;">Contract / reference</td><td style="padding:4px 0;">{{ opp.contract_number }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Source</td><td style="padding:4px 0;">{{ opp.source_name or '—' }}</td></tr>
       <tr><td style="color:var(--text2); padding:4px 0;">Location</td><td style="padding:4px 0;">{{ opp.county_display }}</td></tr>
-      {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">{{ 'Expected' if opp.status == 'upcoming' else 'Deadline' }}</td><td style="padding:4px 0;">{{ opp.due_date_raw }}</td></tr>{% endif %}
+      {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">{{ 'Expected' if opp.status == 'upcoming' else 'Normalized deadline' }}</td><td style="padding:4px 0;">{{ opp.deadline_display }}</td></tr>{% endif %}
+      {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">Source deadline text</td><td style="padding:4px 0;">{{ opp.due_date_raw }}</td></tr>{% endif %}
       {% if opp.last_verified_date %}<tr><td style="color:var(--text2); padding:4px 0;">Last verified</td><td style="padding:4px 0;">{{ opp.last_verified_date }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Access</td><td style="padding:4px 0;">{{ opp.access_type or '—' }}</td></tr>
       <tr><td style="color:var(--text2); padding:4px 0;">Platform</td><td style="padding:4px 0;">{{ opp.platform or '—' }}</td></tr>
@@ -122,7 +123,7 @@
     <a href="{{ url_for('opportunity_detail', opp_id=item.id) }}" class="bid-title" title="{{ item.title }}">{{ item.title }}</a>
     <div class="bid-meta">{{ item.county_display }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}</div>
   </div>
-  <div class="bid-due"><span class="due-label">{{ 'Expected' if item.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ item.due_date_raw or 'Not listed' }}</span></div>
+  <div class="bid-due"><span class="due-label">{{ 'Expected' if item.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ item.deadline_display }}</span></div>
 </div>
 {% endfor %}
 {% endif %}

@@ -84,7 +84,7 @@
     </div>
     <div class="bid-due {{ 'soon-due' if is_soon }}">
       {% if o.due_date_raw and o.due_date_raw not in ('Not listed','-', '') %}
-        <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ o.due_date_raw }}</span>
+        <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ o.deadline_display }}</span>
       {% else %}
         <span class="due-date" style="color:var(--text3); font-weight:400;">No date</span>
       {% endif %}

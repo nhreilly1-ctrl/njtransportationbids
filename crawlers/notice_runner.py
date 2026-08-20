@@ -31,6 +31,7 @@ from notice_sources import (
 )
 from notice_crawlers import crawl_source, parse_sos_directory, parse_municipal_from_sos
 from source_health import build_health_summary
+from app.core.deadlines import deadline_date, deadline_is_past, normalize_deadline
 from app.core.geography import enrich_geography
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -149,32 +150,14 @@ def _dedupe(notices):
 def _enrich(n):
     """Compute status, days_until_due, preserve manual overrides."""
     enrich_geography(n)
+    normalize_deadline(n)
 
     # Respect admin overrides
     if n.get("status_override") in ("approved","noise","deleted"):
         n["status"] = n["status_override"]
         return n
 
-    today = date.today()
-
-    # Parse due date
-    due = None
-    raw = (n.get("due_date_raw") or "").strip()
-    if raw and raw.lower() not in ("","not listed","—","-","unknown","n/a"):
-        import re
-        from datetime import datetime as dt
-        fmts = ["%m/%d/%Y","%m/%d/%y","%B %d, %Y","%b %d, %Y",
-                "%Y-%m-%d","%d-%b-%Y","%b. %d, %Y","%B %d %Y"]
-        clean = re.sub(r"(open|closed|advertised|pending)[^\d]*","",raw,flags=re.I).strip()
-        for fmt in fmts:
-            try:
-                due = dt.strptime(clean, fmt).date()
-                break
-            except ValueError:
-                pass
-
-    n["due_date_parsed"]  = due.isoformat() if due else None
-    n["days_until_due"]   = (due - today).days if due else None
+    due = deadline_date(n)
 
     source_status = (n.get("source_status") or "").strip().lower()
 
@@ -187,7 +170,7 @@ def _enrich(n):
         n["status"] = "expired"
     elif n.get("is_planned") or source_status in ("upcoming", "planned", "anticipated"):
         n["status"] = "upcoming"
-    elif due and due < today:
+    elif deadline_is_past(n):
         n["status"] = "expired"
     elif due:
         n["status"] = "open"

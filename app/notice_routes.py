@@ -18,6 +18,7 @@ from io import StringIO
 from flask import (Blueprint, render_template, request,
                    redirect, url_for, Response, session)
 
+from app.core.deadlines import normalize_deadline
 from app.core.geography import NJ_COUNTIES as CANONICAL_NJ_COUNTIES, enrich_geography
 
 notice_bp = Blueprint("notices2", __name__)
@@ -33,7 +34,7 @@ NJ_COUNTIES = list(CANONICAL_NJ_COUNTIES)
 def _load_notices():
     if not os.path.exists(NOTICES_F): return []
     with open(NOTICES_F, encoding="utf-8") as f:
-        return [enrich_geography(record) for record in json.load(f)]
+        return [normalize_deadline(enrich_geography(record)) for record in json.load(f)]
 
 def _load_crawl_log():
     if not os.path.exists(CRAWL_LOG_F): return []
@@ -269,6 +270,9 @@ def export_notices_csv():
     fields = ["id","title","source_name","source_tier","county","counties",
               "coverage_scope","region_raw","geography_confidence","notice_type",
               "notice_subtype","due_date_raw","due_date_parsed","status",
+              "deadline_at","deadline_local","deadline_timezone",
+              "deadline_timezone_source","deadline_timezone_assumed",
+              "deadline_precision","deadline_display",
               "contract_number","access_type","platform","paywalled","official_url"]
     w = csv.DictWriter(buf, fieldnames=fields, extrasaction="ignore")
     w.writeheader()

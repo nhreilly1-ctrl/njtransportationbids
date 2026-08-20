@@ -248,7 +248,7 @@
           {% elif 'proposals due' in (n.notice_excerpt or '').lower() %}Proposals due
           {% else %}Due{% endif %}
         </span>
-        <span class="due-date">{{ n.due_date_raw }}</span>
+        <span class="due-date">{{ n.deadline_display }}</span>
         {% if n.days_until_due is not none and n.status == 'open' %}
           <span style="font-size:10px;color:{{ 'var(--red)' if n.urgent else 'var(--text3)' }};display:block;margin-top:2px;">
             {{ n.days_until_due }} day{{ 's' if n.days_until_due != 1 }}

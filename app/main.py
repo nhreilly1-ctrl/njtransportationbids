@@ -13,7 +13,15 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask import Flask, Response, jsonify, redirect, render_template, request, session, url_for
 
+from app.core.deadlines import (
+    deadline_date,
+    deadline_is_past,
+    format_eastern_timestamp,
+    normalize_deadline,
+)
 from app.core.geography import NJ_COUNTIES, enrich_geography
+from crawlers.notice_sources import NOTICE_SOURCES
+from crawlers.source_health import build_health_summary
 
 
 app = Flask(__name__)
@@ -41,6 +49,8 @@ DATA = os.path.join(BASE, "data") if os.path.isdir(os.path.join(BASE, "data")) e
 OPP_F = os.path.join(DATA, "opportunities.json")
 SRC_F = os.path.join(DATA, "sources.json")
 NOTICE_F = os.path.join(BASE, "data", "notices", "notices.json")
+CRAWL_LOG_F = os.path.join(BASE, "data", "notices", "crawl_log.json")
+HEALTH_F = os.path.join(BASE, "data", "notices", "health_summary.json")
 SITE_URL = os.environ.get("SITE_URL", "https://www.njtransportationbids.com").rstrip("/")
 
 ADMIN_USER = os.environ.get("ADMIN_USERNAME", "admin")
@@ -492,34 +502,47 @@ def load_public_opps() -> list[dict]:
     return records
 
 
+def load_source_health_summary() -> dict:
+    """Evaluate current health from the crawl log, with the snapshot as fallback."""
+    try:
+        with open(CRAWL_LOG_F, encoding="utf-8") as handle:
+            return build_health_summary(NOTICE_SOURCES, json.load(handle))
+    except (OSError, ValueError, TypeError):
+        try:
+            with open(HEALTH_F, encoding="utf-8") as handle:
+                return json.load(handle)
+        except (OSError, ValueError, TypeError):
+            return build_health_summary(NOTICE_SOURCES, [])
+
+
 def load_public_sources() -> list[dict]:
-    sources = {}
-    for opp in load_public_opps():
-        source_id = opp.get("source_id") or opp.get("source_name")
-        if not source_id:
-            continue
-        source = sources.setdefault(
-            source_id,
+    """Return every configured crawler source, including sources with zero records."""
+    summary = load_source_health_summary()
+    health_by_id = {item.get("source_id"): item for item in summary.get("sources", [])}
+    sources = []
+    for configured in NOTICE_SOURCES:
+        source_id = configured["id"]
+        health = health_by_id.get(source_id, {})
+        severity = health.get("severity", "warning")
+        sources.append(
             {
                 "id": source_id,
-                "name": opp.get("source_name") or source_id,
-                "tier": opp.get("source_tier") or source_tier(source_id, opp.get("entity_type")),
-                "county": opp.get("county"),
-                "url": opp.get("source_url") or opp.get("official_url"),
-                "total": 0,
-                "open": 0,
-                "expired": 0,
-                "noise": 0,
-            },
+                "name": configured["name"],
+                "tier": configured.get("source_tier") or "other",
+                "county": configured.get("county"),
+                "url": configured.get("url"),
+                "frequency": configured.get("crawl_freq", "weekly"),
+                "critical": bool(configured.get("critical")),
+                "last_crawl": health.get("last_crawl"),
+                "last_crawl_display": format_eastern_timestamp(health.get("last_crawl")),
+                "last_count": health.get("last_count"),
+                "status": health.get("status", "never_run"),
+                "severity": severity,
+                "health": "good" if severity == "ok" else "warn" if severity == "warning" else "bad",
+                "health_message": health.get("message", "No crawl health is available."),
+            }
         )
-        source["total"] += 1
-        if opp.get("status") == "expired":
-            source["expired"] += 1
-        elif opp.get("noise_flagged"):
-            source["noise"] += 1
-        else:
-            source["open"] += 1
-    return sorted(sources.values(), key=lambda item: item["name"].lower())
+    return sorted(sources, key=lambda item: (item["tier"], item["name"].lower()))
 
 
 def classify_record(opp: dict) -> tuple[str, str | None]:
@@ -717,29 +740,15 @@ def noise_score(opp: dict) -> tuple[bool, str]:
 
 
 def parse_due(raw: str | None) -> date | None:
-    if not raw:
-        return None
-    raw = str(raw).strip()
-    if raw.lower() in {"", "not listed", "-", "unknown", "—"}:
-        return None
-    iso_prefix = re.match(r"^(\d{4}-\d{2}-\d{2})", raw)
-    if iso_prefix:
-        return date.fromisoformat(iso_prefix.group(1))
-    fmts = ["%m/%d/%Y", "%m/%d/%y", "%m-%d-%Y", "%B %d, %Y", "%b %d, %Y", "%d-%b-%Y", "%b. %d, %Y"]
-    for fmt in fmts:
-        try:
-            return datetime.strptime(raw, fmt).date()
-        except ValueError:
-            pass
-    return None
+    normalized = normalize_deadline({"due_date_raw": raw or ""})
+    return deadline_date(normalized)
 
 
 def enrich(opp: dict) -> dict:
     record = dict(opp)
     enrich_geography(record)
-    due = parse_due(record.get("due_date_raw") or record.get("due_date"))
-    record["due_date_parsed"] = due.isoformat() if due else None
-    record["days_until_due"] = (due - date.today()).days if due else None
+    normalize_deadline(record)
+    due = deadline_date(record)
     crawled_at = str(record.get("crawled_at") or record.get("created_at") or "")
     record["last_verified_date"] = crawled_at[:10] if len(crawled_at) >= 10 else None
 
@@ -755,7 +764,7 @@ def enrich(opp: dict) -> dict:
             record["status"] = "expired"
         elif record.get("is_planned") or record.get("status") == "upcoming":
             record["status"] = "upcoming"
-        elif due and due < date.today():
+        elif deadline_is_past(record):
             record["status"] = "expired"
         elif due or record.get("status") == "open" or record.get("source_status") in ("open", "advertised", "current"):
             record["status"] = "open"
@@ -786,7 +795,7 @@ def enrich(opp: dict) -> dict:
         elif is_noise and manual != "approved":
             record["status"] = "noise"
             record["noise_reason"] = reason
-        elif due and due < today:
+        elif deadline_is_past(record):
             record["status"] = "expired"
         elif manual == "approved":
             record["status"] = "open"
@@ -1036,13 +1045,33 @@ def opportunity_calendar(opp_id: str):
     if not opp or not opp.get("due_date_parsed") or opp.get("status") not in ("open", "upcoming"):
         return "Calendar event not available", 404
 
-    event_date = date.fromisoformat(opp["due_date_parsed"])
-    next_date = event_date + timedelta(days=1)
-
     def ics_text(value):
         return str(value or "").replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,").replace("\n", "\\n")
 
     detail_url = f"{SITE_URL}/opportunities/{opp_id}"
+    event_lines = []
+    if opp.get("deadline_precision") == "datetime" and opp.get("deadline_at"):
+        event_at = datetime.fromisoformat(opp["deadline_at"].replace("Z", "+00:00"))
+        event_lines.append(f"DTSTART:{event_at.astimezone(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}")
+    else:
+        event_date = date.fromisoformat(opp["due_date_parsed"])
+        next_date = event_date + timedelta(days=1)
+        event_lines.extend(
+            [
+                f"DTSTART;VALUE=DATE:{event_date.strftime('%Y%m%d')}",
+                f"DTEND;VALUE=DATE:{next_date.strftime('%Y%m%d')}",
+            ]
+        )
+
+    description = " - ".join(
+        part
+        for part in (
+            opp.get("source_name"),
+            f"Source deadline: {opp.get('due_date_raw')}" if opp.get("due_date_raw") else None,
+            "Verify submission details with the official source.",
+        )
+        if part
+    )
     calendar = "\r\n".join(
         [
             "BEGIN:VCALENDAR",
@@ -1051,10 +1080,9 @@ def opportunity_calendar(opp_id: str):
             "BEGIN:VEVENT",
             f"UID:{ics_text(opp_id)}@njtransportationbids.com",
             f"DTSTAMP:{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
-            f"DTSTART;VALUE=DATE:{event_date.strftime('%Y%m%d')}",
-            f"DTEND;VALUE=DATE:{next_date.strftime('%Y%m%d')}",
+            *event_lines,
             f"SUMMARY:{ics_text('Bid due: ' + opp.get('title', 'Opportunity'))}",
-            f"DESCRIPTION:{ics_text((opp.get('source_name') or '') + ' - Verify submission details with the official source.')}",
+            f"DESCRIPTION:{ics_text(description)}",
             f"URL:{detail_url}",
             "END:VEVENT",
             "END:VCALENDAR",
@@ -1078,14 +1106,19 @@ def sources():
         source["total"] = len(related)
         source["noise"] = len([opp for opp in related if opp["status"] == "noise"])
         source["expired"] = len([opp for opp in related if opp["status"] == "expired"])
-        source["open"] = len([opp for opp in related if opp["status"] in ("open", "upcoming")])
+        source["open"] = len([opp for opp in related if opp["status"] == "open"])
         source["upcoming"] = len([opp for opp in related if opp["status"] == "upcoming"])
         source["review_required"] = len([opp for opp in related if opp["status"] == "review_required"])
         source["ai_review"] = len([opp for opp in related if opp["status"] == "ai_review"])
-        ratio = source["noise"] / max(source["total"], 1)
-        source["health"] = "bad" if ratio > 0.4 else "warn" if ratio > 0.15 else "good"
-    sources = sorted(sources, key=lambda s: (-s.get("crawlability_score", 0), s.get("name", "").lower()))
-    return render_template("sources.html", sources=sources)
+    severity_order = {"error": 0, "warning": 1, "ok": 2}
+    sources = sorted(sources, key=lambda s: (severity_order.get(s.get("severity"), 1), s.get("name", "").lower()))
+    source_summary = {
+        "configured": len(sources),
+        "healthy": len([source for source in sources if source.get("severity") == "ok"]),
+        "warning": len([source for source in sources if source.get("severity") == "warning"]),
+        "error": len([source for source in sources if source.get("severity") == "error"]),
+    }
+    return render_template("sources.html", sources=sources, source_summary=source_summary)
 
 
 @app.route("/export/opportunities.csv")
@@ -1111,6 +1144,13 @@ def export_csv():
         "notice_subtype",
         "due_date_raw",
         "due_date_parsed",
+        "deadline_at",
+        "deadline_local",
+        "deadline_timezone",
+        "deadline_timezone_source",
+        "deadline_timezone_assumed",
+        "deadline_precision",
+        "deadline_display",
         "status",
         "access_type",
         "platform",

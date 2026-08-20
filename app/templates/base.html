@@ -111,7 +111,7 @@
     .dot-green { background: #639922; } .dot-amber { background: #ba7517; } .dot-red { background: #e24b4a; } .dot-gray { background: #888780; }
     .bid-main { flex: 1; min-width: 0; } .bid-title { font-size: 14px; font-weight: 500; color: var(--text); text-decoration: none; display: block; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .bid-title:hover { color: var(--blue); } .bid-meta { font-size: 12px; color: var(--text2); margin-bottom: 7px; } .bid-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-    .bid-due { min-width: 88px; text-align: right; flex-shrink: 0; } .bid-due .due-label { font-size: 11px; color: var(--text3); display: block; } .bid-due .due-date { font-size: 13px; font-weight: 500; display: block; } .bid-due.soon-due .due-date { color: var(--red); }
+    .bid-due { min-width: 88px; max-width: 190px; text-align: right; flex-shrink: 0; } .bid-due .due-label { font-size: 11px; color: var(--text3); display: block; } .bid-due .due-date { font-size: 13px; font-weight: 500; display: block; } .bid-due.soon-due .due-date { color: var(--red); }
     .divider { height: 0.5px; background: var(--border); margin: 1.25rem 0; }
     .flash { padding: .65rem 1rem; border-radius: var(--r); margin-bottom: .75rem; font-size: 13px; background: var(--blue-bg); color: var(--blue); } .flash-error { background: var(--red-bg); color: var(--red); }
     .form-group { margin-bottom: 1rem; } .form-group label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 5px; }
@@ -153,7 +153,7 @@
       .nav-admin { flex:1; text-align:center; }
       .container { padding:1.1rem .9rem; }
       .bid-card { padding:.85rem; gap:.7rem; }
-      .bid-due { min-width:72px; }
+      .bid-due { min-width:72px; max-width:145px; }
       .detail-grid { grid-template-columns:1fr; }
       .opportunity-hero { flex-direction:column; }
       .opportunity-deadline { text-align:left; width:100%; padding-top:.75rem; border-top:0.5px solid var(--border); }
