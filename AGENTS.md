@@ -61,6 +61,23 @@ those numbers as a snapshot and calculate current counts from configuration.
 - A green workflow only proves execution. Verify record counts, representative known
   opportunities, health output, and public rendering.
 
+## Record Identity and Lifecycle
+
+- Parser-generated IDs are hashes of `source_id`, title, and the contract number or
+  official URL. They are implementation identifiers, not agency-issued identity.
+- Merge updates exact ID matches and preserves manual overrides. A record missing from
+  a successful authoritative current-listing crawl is marked `source_inactive`; a
+  failed or non-authoritative partial crawl must not retire it.
+- Dedupe prefers active records and then newer `crawled_at` values. It collapses, in
+  order, exact IDs, equal `(source_id, contract_number)` pairs, and equal
+  whitespace/case-normalized titles within one source.
+- An amended listing with the same source and contract number therefore resolves to
+  the newest active record. Do not assume this safely models an agency that reuses a
+  contract number for a distinct procurement cycle.
+- Any identity-rule change requires fixtures for amendments, reissues, reused contract
+  numbers, title changes, source removal, and failed refreshes. Preserve traceability
+  from the retained record to the official listing.
+
 ## Repository Map
 
 - `app/main.py`: Flask app, canonical public routes, SEO, exports, source ledger,
@@ -109,7 +126,9 @@ python crawlers/notice_runner.py --weekly --strict-health
 ```
 
 Important: crawler `--dry-run` prevents writing `notices.json`, but source crawl log
-entries are still recorded. Use an isolated worktree when validating crawler changes.
+entries are still recorded, and later health evaluation reads that log. It does not
+regenerate `health_summary.json` itself. Use an isolated worktree when validating
+crawler changes, and use a clean production crawl for publishable health evidence.
 
 ## Testing Reality
 

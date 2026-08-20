@@ -36,6 +36,8 @@ The following was verified on 2026-08-20. Treat mutable counts and health as a s
 - Public Sources page reads configured sources plus crawl health, not only sources that
   happened to return records.
 - Deadline source text is preserved while normalized UTC/Eastern fields are added.
+- Record identity and lifecycle behavior is documented once in the `Record Identity
+  and Lifecycle` section of `AGENTS.md`; do not restate or guess it from an export.
 - Current crawl health must be read from `data/notices/health_summary.json`; never rely
   on a health count quoted in an old conversation.
 
@@ -66,14 +68,32 @@ repository, Git history, Actions logs, Render state, credentials, or live browse
 - Do not label live-site scraping as repository analysis.
 - Do not recommend broad geographic inference from North/Central/South contract labels.
 - Preserve raw official values in every proposed schema or parser design.
+- Audit lifecycle values against the explicit states in `AGENTS.md`; do not merge open,
+  upcoming, expired, inactive, noise, and review states into one generic active flag.
+- Evaluate zero-result sources against the current source configuration's `allow_empty`
+  policy. Zero with `allow_empty=true` may be healthy; zero without it is a defect
+  signal, not proof that no opportunities exist.
+- Treat health evidence produced after a local `--dry-run` as potentially perturbed.
+  Dry-run updates `crawl_log.json` but not `health_summary.json`; later health evaluation
+  consumes that log. Ask for a clean production crawl when health provenance matters.
 - Flag inaccessible/paywalled/JavaScript-blocked sources rather than inventing coverage.
 
 ## What to Ask For
 
 Ask only for the minimum evidence needed. Prefer one short request from this list:
 
-- Data audit: CSV/JSON export with `id`, `title`, `source_id`, `source_name`,
-  `due_date_raw`, `county`, `official_url`, and relevant normalized fields.
+- Record audit: CSV/JSON export with identity and lifecycle fields (`id`, `title`,
+  `source_id`, `source_name`, `contract_number`, `official_url`, `status`,
+  `source_status`, `source_inactive`, `noise_flagged`, `is_planned`); raw and normalized
+  geography pairs (`county`, `counties`, `coverage_scope`, `region_raw`,
+  `geography_confidence`, `geography_evidence`); and raw and normalized deadline pairs
+  (`due_date_raw`, `due_date_parsed`, `deadline_at`, `deadline_local`,
+  `deadline_timezone`, `deadline_timezone_source`, `deadline_timezone_assumed`,
+  `deadline_precision`, `deadline_display`). Request only the applicable subset, but
+  never audit a normalized value without its raw counterpart and provenance fields.
+- Source-health audit: relevant `NOTICE_SOURCES` entries including `id`, `crawl_freq`,
+  `critical`, `allow_empty`, and parser policy, plus `crawl_log.json` and
+  `health_summary.json` from a clean production crawl.
 - Parser review: current source configuration entry, parser function, representative
   official HTML/API/PDF fixture, and existing tests.
 - UX review: public URL or screenshots plus the user goal for the page.
@@ -98,6 +118,12 @@ Evidence supplied:
 
 Observed findings:
 - Ordered by severity. Each finding includes traceable evidence.
+
+Inferred conclusions:
+- Conclusions logically derived from observed evidence but not directly stated by it.
+
+Hypotheses:
+- Plausible explanations that require repository, source, or runtime verification.
 
 Recommended behavior:
 - Specific rules and expected outputs, not implementation claims.
@@ -136,6 +162,10 @@ end with the exact CODEX HANDOFF PACKET contract so Codex can validate and imple
 Task: [REPLACE WITH THE CURRENT TASK]
 ```
 
+If the `Task` value is blank or still contains bracketed placeholder text, state that
+no task was supplied, make no task-specific or repository claims, provide only useful
+evidence-independent orientation, and request the missing objective.
+
 ## Efficient Task Patterns
 
 ### Official Source Investigation
@@ -148,8 +178,9 @@ verified delta.
 ### Dataset Audit
 
 Export only the fields needed, ask Claude for an evidence CSV or structured findings,
-and require counts by defect rule. Codex then maps each rule to current normalization
-code and writes regression tests before retagging records.
+but keep each audited raw value paired with its normalized value, confidence/provenance,
+and lifecycle state. Require counts by defect rule. Codex then maps each rule to current
+normalization code and writes regression tests before retagging records.
 
 ### PDF Review
 
