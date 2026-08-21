@@ -815,7 +815,14 @@ class PublicDashboardTests(unittest.TestCase):
         }
         with (
             patch.object(app_main, "load_public_opps", return_value=[{"id": "one"}]),
-            patch.object(app_main, "load_public_sources", return_value=[{"id": "agency"}]),
+            patch.object(
+                app_main,
+                "load_public_sources",
+                return_value=[
+                    {"id": "healthy-agency", "severity": "ok"},
+                    {"id": "limited-agency", "severity": "warning"},
+                ],
+            ),
             patch.object(app_main, "enrich", return_value=enriched),
         ):
             response = app_main.app.test_client().get("/")
@@ -823,7 +830,7 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertRegex(
             response.get_data(as_text=True),
-            r'<div class="num">\s*1\s*</div>\s*<div class="lbl">Sources monitored</div>',
+            r'<div class="num">\s*2\s*</div>\s*<div class="lbl">Sources monitored\s*<span[^>]*>1 healthy</span>',
         )
         self.assertIn('class="nav-toggle"', response.get_data(as_text=True))
         self.assertIn('id="primary-navigation"', response.get_data(as_text=True))
@@ -831,6 +838,81 @@ class PublicDashboardTests(unittest.TestCase):
             response.get_data(as_text=True),
             r'<div class="num c-amber">\s*1\s*</div>\s*<div class="lbl">Official notices active</div>',
         )
+
+    def test_homepage_uses_normalized_deadlines_and_shared_live_status(self):
+        records = [
+            self._scan_record(
+                "notice-25be67d23f9a",
+                "Construction Project Management for Various Road and Bridge Projects in Ocean County",
+                "2026-08-25T20:00:00.000Z",
+                county="Ocean",
+                platform="OpenGov",
+            ),
+            self._scan_record(
+                "notice-6ebfc6cc572a",
+                "MILLING & RESURFACING SPRING VALLEY ROAD (C.R. 601)",
+                "08/25/2026",
+                county="Morris",
+                source_name="Morris County Bids",
+                source_id="county-morris",
+            ),
+            self._scan_record(
+                "passed",
+                "PANYNJ GWB-244.306 expired bridge work",
+                "08/20/2026",
+                source_name="Port Authority NY/NJ",
+                source_id="state-panynj",
+            ),
+        ]
+
+        class FixedDate(date):
+            @classmethod
+            def today(cls):
+                return cls(2026, 8, 21)
+
+        with (
+            patch.object(app_main, "load_public_opps", return_value=records),
+            patch.object(app_main, "load_public_sources", return_value=[]),
+            patch.object(app_main, "date", FixedDate),
+        ):
+            client = app_main.app.test_client()
+            response = client.get("/")
+            detail = client.get("/opportunities/notice-6ebfc6cc572a")
+
+        html = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Closing within 7 days", html)
+        self.assertIn("Tue, Aug 25, 2026 at 4:00 PM ET", html)
+        self.assertIn("Tue, Aug 25, 2026 (time not published)", html)
+        self.assertNotRegex(html, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}")
+        self.assertNotIn("12:00 AM", html)
+        self.assertNotIn("expired bridge work", html)
+        self.assertNotIn("not resolved", html.lower())
+        self.assertIn("County not stated in notice", html)
+        self.assertIn("OpenGov", html)
+        self.assertNotIn("not resolved", detail.get_data(as_text=True).lower())
+        self.assertIn("County not stated in notice", detail.get_data(as_text=True))
+
+    def test_homepage_prioritizes_opportunities_and_resources_move_off_page(self):
+        with (
+            patch.object(app_main, "load_public_opps", return_value=[]),
+            patch.object(app_main, "load_public_sources", return_value=[]),
+        ):
+            client = app_main.app.test_client()
+            home = client.get("/")
+            resources = client.get("/resources")
+
+        home_html = home.get_data(as_text=True)
+        resources_html = resources.get_data(as_text=True)
+        self.assertEqual(resources.status_code, 200)
+        self.assertNotIn("Bidding Platforms", home_html)
+        self.assertNotIn("https://www.bidexpress.com", home_html)
+        self.assertNotIn('class="board-grid"', home_html)
+        self.assertIn("Contractor network", home_html)
+        self.assertIn("NJDOT Standard Specifications", resources_html)
+        self.assertIn("Federal wage determinations", resources_html)
+        self.assertIn("NJDOT Prequalification", resources_html)
+        self.assertIn('href="/resources"', home_html)
 
     def test_public_notice_routes_use_canonical_notice_categories(self):
         construction = {
@@ -926,6 +1008,7 @@ class PublicSeoTests(unittest.TestCase):
         self.assertNotIn("/opportunities/expired-bid", xml)
         self.assertNotIn("/opportunities/noise-bid", xml)
         self.assertIn("<loc>https://www.njtransportationbids.com/notices</loc>", xml)
+        self.assertIn("<loc>https://www.njtransportationbids.com/resources</loc>", xml)
 
     def test_detail_pages_emit_unique_evidence_safe_search_metadata(self):
         route_one = dict(

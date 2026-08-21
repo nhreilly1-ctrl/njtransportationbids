@@ -145,7 +145,7 @@ class GeographyClassifierTests(unittest.TestCase):
         unresolved = classify(title="Bridge inspection services", county="Statewide")
         self.assertEqual(statewide["coverage_scope"], "STATEWIDE")
         self.assertEqual(unresolved["coverage_scope"], "UNRESOLVED")
-        self.assertEqual(unresolved["county_display"], "Location not resolved")
+        self.assertEqual(unresolved["county_display"], "County not stated in notice")
 
     def test_bistate_source_is_not_forced_to_statewide(self):
         result = classify(

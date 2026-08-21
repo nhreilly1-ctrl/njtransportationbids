@@ -244,7 +244,7 @@ def classify_geography(record: dict[str, Any]) -> dict[str, Any]:
     elif region_raw:
         county_display = region_raw
     else:
-        county_display = "Location not resolved"
+        county_display = "County not stated in notice"
 
     return {
         "counties": counties,

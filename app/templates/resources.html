@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}NJ Transportation Contractor Resources{% endblock %}
+{% block meta_description %}Official New Jersey transportation specifications, wage determinations, prequalification, compliance, insurance, and bonding resources for contractors.{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Contractor Resources</h1>
+  <p>Official specifications, wage determinations, prequalification, and compliance references used in New Jersey transportation bidding.</p>
+</div>
+
+<div class="resource-grid">
+  <section class="resource-panel">
+    <h2>Specifications and Standards</h2>
+    <a class="resource-link" href="https://www.nj.gov/transportation/eng/specs/" target="_blank" rel="noopener">
+      <strong>NJDOT Standard Specifications</strong><span>Statewide construction specification baseline.</span>
+    </a>
+    <a class="resource-link" href="https://www.nj.gov/transportation/eng/drawings/" target="_blank" rel="noopener">
+      <strong>Standard Construction Details</strong><span>NJDOT standard drawings and construction details.</span>
+    </a>
+    <a class="resource-link" href="https://www.njta.gov" target="_blank" rel="noopener">
+      <strong>NJTA Supplemental Specifications</strong><span>Turnpike and Garden State Parkway requirements.</span>
+    </a>
+    <a class="resource-link" href="https://www.drjtbc.org" target="_blank" rel="noopener">
+      <strong>DRJTBC Requirements</strong><span>Requirements for Delaware River bridge work.</span>
+    </a>
+    <a class="resource-link" href="https://www.transit.dot.gov/regulations-and-guidance" target="_blank" rel="noopener">
+      <strong>FTA Regulations and Guidance</strong><span>Federal transit and federal-aid guidance.</span>
+    </a>
+  </section>
+
+  <section class="resource-panel">
+    <h2>Wage Determinations</h2>
+    <a class="resource-link" href="https://www.nj.gov/labor/wageandhour/index.shtml" target="_blank" rel="noopener">
+      <strong>NJ prevailing wage rates</strong><span>Confirm the county, trade, and project determination.</span>
+    </a>
+    <a class="resource-link" href="https://sam.gov/content/wage-determinations" target="_blank" rel="noopener">
+      <strong>Federal wage determinations</strong><span>Davis-Bacon rates for federal-aid work.</span>
+    </a>
+    <div style="padding:.75rem 1rem;color:var(--text2);font-size:11px;">Always verify the wage determination incorporated into the solicitation before bidding.</div>
+  </section>
+
+  <section class="resource-panel">
+    <h2>Prequalification and Compliance</h2>
+    <a class="resource-link" href="https://www.state.nj.us/transportation/business/procurement/contrprequal/" target="_blank" rel="noopener">
+      <strong>NJDOT Prequalification</strong><span>Contractor work-class and classification requirements.</span>
+    </a>
+    <a class="resource-link" href="https://www.njta.gov/business-hub/" target="_blank" rel="noopener">
+      <strong>NJTA Prequalification</strong><span>Turnpike Authority vendor and contractor requirements.</span>
+    </a>
+    <a class="resource-link" href="https://www.nj.gov/labor/wageandhour/index.shtml" target="_blank" rel="noopener">
+      <strong>NJ Prevailing Wage Act</strong><span>State public-works wage compliance.</span>
+    </a>
+    <a class="resource-link" href="https://sam.gov/content/wage-determinations" target="_blank" rel="noopener">
+      <strong>Davis-Bacon Wage Decisions</strong><span>Federal requirements for covered projects.</span>
+    </a>
+    <a class="resource-link" href="https://www.nj.gov/ethics/" target="_blank" rel="noopener">
+      <strong>NJ Ethics Commission</strong><span>State contractor disclosure and filing information.</span>
+    </a>
+  </section>
+
+  <section class="resource-panel">
+    <h2>Insurance and Bonding Guides</h2>
+    <a class="resource-link" href="{{ url_for('network.resources') }}">
+      <strong>NJDOT Insurance Minimums</strong><span>Coverage considerations for transportation contractors.</span>
+    </a>
+    <a class="resource-link" href="{{ url_for('network.resources') }}">
+      <strong>Bonding Mechanics and SBA Programs</strong><span>Bid, performance, payment bond, and small-business resources.</span>
+    </a>
+  </section>
+</div>
+
+{% endblock %}

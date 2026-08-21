@@ -1054,6 +1054,7 @@ def sitemap_xml():
         "/",
         "/bids/construction",
         "/bids/professional-services",
+        "/resources",
         "/sources",
     ]
     entries = [(f"{SITE_URL}{path}", None) for path in paths]
@@ -1087,20 +1088,30 @@ def sitemap_xml():
 def index():
     opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted", "disabled")]
-    active = [opp for opp in opps if opp["status"] in ("open", "upcoming")]
-    expiring = [
-        opp
-        for opp in sort_opps(active)
-        if opp.get("due_date_parsed")
-        and (date.fromisoformat(opp["due_date_parsed"]) - date.today()).days <= 14
-    ]
+    active = sort_opps([opp for opp in opps if opp["status"] in ("open", "upcoming")])
+    closing_soon, _, _, _, _ = group_opportunity_scan(active)
+    closing_soon = closing_soon[:8]
+    closing_ids = {opp.get("id") for opp in closing_soon}
+    more_live = [opp for opp in active if opp.get("id") not in closing_ids][:8]
+    public_sources = load_public_sources()
     stats = {
         "construction": len([opp for opp in active if opp["record_type"] == "construction"]),
         "professional_services": len([opp for opp in active if opp["record_type"] == "professional_services"]),
         "public_notice": len(active),
-        "sources": len(load_public_sources()),
+        "sources": len(public_sources),
+        "healthy_sources": len([source for source in public_sources if source.get("severity") == "ok"]),
     }
-    return render_template("index.html", stats=stats, expiring=expiring[:8])
+    return render_template(
+        "index.html",
+        stats=stats,
+        closing_soon=closing_soon,
+        more_live=more_live,
+    )
+
+
+@app.route("/resources")
+def contractor_resources():
+    return render_template("resources.html")
 
 
 def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:

@@ -92,6 +92,7 @@
     .stat-card  { background: var(--bg2); border-radius: var(--r); padding: .8rem 1rem; }
     .stat-card .num { font-size: 24px; font-weight: 500; }
     .stat-card .lbl { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .stat-detail { display:block; color:var(--text3); font-size:10px; margin-top:1px; }
     .c-green { color: var(--green); } .c-amber { color: var(--amber); } .c-red { color: var(--red); } .c-blue { color: var(--blue); } .c-teal { color: var(--teal); }
     .badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
     .badge-open { background: var(--green-bg); color: var(--green); } .badge-expired { background: var(--gray-bg); color: var(--gray); }
@@ -140,6 +141,23 @@
     .opportunity-hero { display:flex; align-items:flex-start; gap:1rem; flex-wrap:wrap; }
     .opportunity-deadline { text-align:right; flex-shrink:0; }
     .trust-strip { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin:-.4rem 0 1rem; padding:.7rem 1rem; border:0.5px solid #c7ddb5; background:var(--green-bg); border-radius:var(--r); color:var(--green); font-size:12px; }
+    .home-feed-head { display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; margin:1.5rem 0 .65rem; }
+    .home-feed-head h2 { font-size:17px; font-weight:500; }
+    .home-feed-head p { color:var(--text2); font-size:12px; }
+    .home-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .home-secondary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:1.5rem; }
+    .home-secondary-card { display:block; padding:1rem 1.15rem; border:0.5px solid var(--border); border-radius:var(--rl); background:var(--bg2); color:var(--text); text-decoration:none; }
+    .home-secondary-card:hover { border-color:var(--border2); }
+    .home-secondary-card strong { display:block; font-size:13px; margin-bottom:2px; }
+    .home-secondary-card span { display:block; color:var(--text2); font-size:12px; }
+    .resource-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .resource-panel { background:var(--bg); border:0.5px solid var(--border); border-radius:var(--rl); overflow:hidden; }
+    .resource-panel h2 { font-size:13px; font-weight:600; padding:.8rem 1rem; background:var(--bg2); border-bottom:0.5px solid var(--border); }
+    .resource-link { display:block; padding:.75rem 1rem; color:var(--text); text-decoration:none; border-bottom:0.5px solid var(--border); }
+    .resource-link:last-child { border-bottom:0; }
+    .resource-link:hover { background:var(--bg2); }
+    .resource-link strong { display:block; font-size:13px; font-weight:500; }
+    .resource-link span { display:block; color:var(--text2); font-size:11px; margin-top:1px; }
     .login-wrap { min-height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center; } .login-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--rl); padding: 2rem; width: 100%; max-width: 360px; } .login-card h1 { font-size: 17px; font-weight: 500; margin-bottom: 1.5rem; }
     .site-footer { max-width:1200px; margin:1rem auto 0; padding:1rem 1.25rem 2rem; color:var(--text3); font-size:11px; display:flex; justify-content:space-between; gap:1rem; border-top:0.5px solid var(--border); }
     .site-footer a { color:var(--text2); text-decoration:none; }
@@ -166,6 +184,8 @@
       .opportunity-deadline { text-align:left; width:100%; padding-top:.75rem; border-top:0.5px solid var(--border); }
       .home-category-grid { grid-template-columns:1fr; }
       .board-grid { grid-template-columns:repeat(2,1fr); }
+      .home-feed-head { align-items:flex-start; flex-direction:column; }
+      .home-secondary, .resource-grid { grid-template-columns:1fr; }
       .site-footer { flex-direction:column; padding:1rem .9rem 1.5rem; }
     }
   </style>
@@ -193,6 +213,7 @@
     <div class="nav-item">
       <a href="{{ url_for('network.board') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('network.') }}">Networking</a>
     </div>
+    <div class="nav-item"><a href="{{ url_for('contractor_resources') }}" class="{{ 'active' if _nav == 'contractor_resources' }}">Resources</a></div>
     <div class="nav-item"><a href="{{ url_for('sources') }}" class="{{ 'active' if _nav == 'sources' }}">Sources</a></div>
     <div class="nav-right">
       {% if session.get('admin') %}
@@ -214,7 +235,7 @@
 </main>
 <footer class="site-footer">
   <span>Independent aggregation of official public procurement sources. Always verify submission requirements with the issuing agency.</span>
-  <span><a href="{{ url_for('sources') }}">Sources and coverage</a> &middot; Updated daily</span>
+  <span><a href="{{ url_for('contractor_resources') }}">Contractor resources</a> &middot; <a href="{{ url_for('sources') }}">Sources and coverage</a> &middot; Updated daily</span>
 </footer>
 <script>
   const navToggle = document.querySelector('.nav-toggle');
