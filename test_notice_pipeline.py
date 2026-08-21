@@ -898,20 +898,116 @@ class PublicSeoTests(unittest.TestCase):
 
     def test_robots_and_sitemap_publish_canonical_active_urls(self):
         expired = dict(self.active, id="expired-bid", due_date_raw="01/01/20", status="expired")
+        upcoming = dict(
+            self.active,
+            id="upcoming-bid",
+            title="Planned Route 9 drainage improvements",
+            status="upcoming",
+            is_planned=True,
+        )
+        noise = dict(self.active, id="noise-bid", noise_flagged=True)
         client = app_main.app.test_client()
         robots = client.get("/robots.txt")
         self.assertEqual(robots.status_code, 200)
         self.assertIn("Sitemap: https://www.njtransportationbids.com/sitemap.xml", robots.get_data(as_text=True))
         self.assertIn("Disallow: /*?", robots.get_data(as_text=True))
 
-        with patch.object(app_main, "load_public_opps", return_value=[self.active, expired]):
+        with patch.object(
+            app_main,
+            "load_public_opps",
+            return_value=[self.active, upcoming, expired, noise],
+        ):
             sitemap = client.get("/sitemap.xml")
 
         xml = sitemap.get_data(as_text=True)
         self.assertEqual(sitemap.status_code, 200)
         self.assertIn("/opportunities/active-bid", xml)
+        self.assertIn("/opportunities/upcoming-bid", xml)
         self.assertNotIn("/opportunities/expired-bid", xml)
+        self.assertNotIn("/opportunities/noise-bid", xml)
         self.assertIn("<loc>https://www.njtransportationbids.com/notices</loc>", xml)
+
+    def test_detail_pages_emit_unique_evidence_safe_search_metadata(self):
+        route_one = dict(
+            self.active,
+            id="notice-09a31913dc62",
+            title=(
+                "Route 1, NB Bridge over Raritan River, Contract # 027153030, "
+                "Reconstruction, Township of Edison, City of New Brunswick, "
+                "County of Middlesex; DP No: 26107."
+            ),
+            notice_excerpt="Route 1 bridge work in Middlesex County.",
+            county="Statewide",
+            contract_number="027153030",
+            due_date_raw="12/31/68",
+        )
+        route_nine = dict(
+            self.active,
+            id="route-nine",
+            title="Route 9 drainage rehabilitation",
+            notice_excerpt="Route 9 drainage work.",
+            contract_number="009998877",
+            due_date_raw="12/30/68 2:00 PM ET",
+        )
+        client = app_main.app.test_client()
+        with patch.object(app_main, "load_public_opps", return_value=[route_one, route_nine]):
+            first = client.get("/opportunities/notice-09a31913dc62?utm_source=test")
+            second = client.get("/opportunities/route-nine")
+
+        first_html = first.get_data(as_text=True)
+        second_html = second.get_data(as_text=True)
+        first_title = re.search(r"<title>(.*?)</title>", first_html, re.S).group(1).strip()
+        second_title = re.search(r"<title>(.*?)</title>", second_html, re.S).group(1).strip()
+        first_description = re.search(
+            r'<meta name="description" content="([^"]*)">', first_html
+        ).group(1)
+        second_description = re.search(
+            r'<meta name="description" content="([^"]*)">', second_html
+        ).group(1)
+
+        self.assertNotEqual(first_title, second_title)
+        self.assertNotEqual(first_description, second_description)
+        self.assertIn("Route 1", first_title)
+        self.assertIn("027153030", first_title)
+        self.assertIn("Middlesex", first_title)
+        self.assertIn("DP 26107", first_title)
+        self.assertIn("time not published", first_description)
+        self.assertNotRegex(first_title + first_description, r"\b\d{1,2}:\d{2}\b|\b(?:AM|PM)\b")
+        self.assertIn(
+            'rel="canonical" href="https://www.njtransportationbids.com/opportunities/notice-09a31913dc62"',
+            first_html,
+        )
+        self.assertIn(route_one["title"], first_html)
+
+    def test_detail_metadata_omits_county_without_normalized_evidence(self):
+        unsupported = dict(
+            self.active,
+            id="unsupported-county",
+            title="Parts and Accessories for Snow Plows and Salt Spreaders",
+            notice_excerpt="Road department equipment parts.",
+            source_id="county-somerset",
+            source_name="Somerset County Purchasing",
+            county="Somerset",
+            contract_number="CC-0043-26",
+        )
+        with patch.object(app_main, "load_public_opps", return_value=[unsupported]):
+            response = app_main.app.test_client().get("/opportunities/unsupported-county")
+
+        html = response.get_data(as_text=True)
+        page_title = re.search(r"<title>(.*?)</title>", html, re.S).group(1)
+        description = re.search(r'<meta name="description" content="([^"]*)">', html).group(1)
+        self.assertNotIn("Somerset", page_title)
+        self.assertNotIn("Somerset", description)
+        self.assertIn("CC-0043-26", page_title)
+
+    def test_home_and_construction_metadata_target_procurement_intent(self):
+        client = app_main.app.test_client()
+        with patch.object(app_main, "load_public_opps", return_value=[self.active]):
+            home = client.get("/").get_data(as_text=True)
+            construction = client.get("/bids/construction").get_data(as_text=True)
+
+        self.assertRegex(home, r"<title>[^<]*NJDOT[^<]*</title>")
+        self.assertRegex(construction, r"<title>[^<]*NJDOT[^<]*Construction Bids[^<]*</title>")
 
     def test_open_gov_timestamp_deadline_is_parsed(self):
         self.assertEqual(

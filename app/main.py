@@ -819,6 +819,146 @@ def enrich(opp: dict) -> dict:
     return record
 
 
+SEO_GEOGRAPHY_PROVENANCE = {"NOTICE_TEXT", "SOURCE_RECORD_FIELD"}
+SEO_DP_RE = re.compile(r"\bDP\s*(?:No\.?|Number|#)?\s*:?\s*([A-Z0-9-]+)\b", re.IGNORECASE)
+SEO_MUNICIPALITY_RE = re.compile(
+    r"\b(?:Township|City|Borough|Town|Village)\s+of\s+([^,;]+)",
+    re.IGNORECASE,
+)
+
+
+def _clean_seo_text(value: object) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip(" ,.;:-")
+
+
+def _truncate_seo_text(value: str, limit: int) -> str:
+    value = _clean_seo_text(value)
+    if len(value) <= limit:
+        return value
+    shortened = value[: limit + 1].rsplit(" ", 1)[0].rstrip(" ,.;:-")
+    words = shortened.split()
+    if words and words[-1].lower() in {"and", "for", "in", "of", "on", "or", "the", "with"}:
+        shortened = " ".join(words[:-1])
+    return shortened or value[:limit].rstrip(" ,.;:-")
+
+
+def _seo_counties(record: dict) -> list[str]:
+    if record.get("geography_provenance") not in SEO_GEOGRAPHY_PROVENANCE:
+        return []
+    return [county for county in record.get("counties", []) if county in NJ_COUNTIES]
+
+
+def _strip_unsupported_counties(value: str, supported: list[str]) -> str:
+    cleaned = value
+    for county in NJ_COUNTIES:
+        if county in supported:
+            continue
+        patterns = (
+            rf"\bCounty\s+of\s+{re.escape(county)}\b",
+            rf"\b{re.escape(county)}\s+County\b",
+            rf"\b{re.escape(county)}\b",
+        )
+        for pattern in patterns:
+            cleaned = re.sub(pattern, "", cleaned, flags=re.IGNORECASE)
+    return _clean_seo_text(re.sub(r"\s*[,;|]\s*(?=[,;|]|$)", " ", cleaned))
+
+
+def _seo_agency_label(record: dict, supported_counties: list[str]) -> str:
+    source_id = _clean_seo_text(record.get("source_id")).lower()
+    source_name = _clean_seo_text(record.get("source_name"))
+    agency_aliases = (
+        (("state-njdot", "njdot"), "NJDOT"),
+        (("state-njta", "turnpike-authority"), "NJTA"),
+        (("nj-transit",), "NJ TRANSIT"),
+        (("panynj", "port-authority"), "Port Authority NY/NJ"),
+        (("drjtbc",), "DRJTBC"),
+        (("sjta",), "SJTA"),
+    )
+    haystack = f"{source_id} {source_name.lower()}"
+    for needles, label in agency_aliases:
+        if any(needle in haystack for needle in needles):
+            return label
+
+    safe_name = _strip_unsupported_counties(source_name, supported_counties)
+    if safe_name.lower() in {"", "bids", "procurement", "procurements", "purchasing"}:
+        return ""
+    return _truncate_seo_text(safe_name, 34)
+
+
+def _seo_location(record: dict, supported_counties: list[str]) -> str:
+    raw_title = _clean_seo_text(record.get("title"))
+    municipality_match = SEO_MUNICIPALITY_RE.search(raw_title)
+    municipality = _truncate_seo_text(municipality_match.group(1), 28) if municipality_match else ""
+    if len(supported_counties) == 1:
+        county_label = f"{supported_counties[0]} County"
+    elif len(supported_counties) == 2:
+        county_label = f"{supported_counties[0]} and {supported_counties[1]} Counties"
+    elif supported_counties:
+        county_label = f"{supported_counties[0]}, {supported_counties[1]} and other NJ counties"
+    else:
+        county_label = ""
+    return ", ".join(part for part in (municipality, county_label) if part)
+
+
+def build_opportunity_seo(record: dict) -> dict[str, str]:
+    """Compose evidence-safe search metadata without re-deriving county geography."""
+    supported_counties = _seo_counties(record)
+    raw_title = _clean_seo_text(record.get("title") or "New Jersey transportation opportunity")
+    project_title = re.split(
+        r",?\s*(?=(?:Contract\s*(?:No\.?|Number|#)|Federal Project|UPC\s+No\.?|PE\s+No\.?|CE\s+No\.?|DP\s+(?:No\.?|Number|#)))",
+        raw_title,
+        maxsplit=1,
+        flags=re.IGNORECASE,
+    )[0]
+    project_title = _strip_unsupported_counties(project_title, supported_counties)
+    project_title = project_title or "New Jersey transportation opportunity"
+
+    contract_number = _clean_seo_text(record.get("contract_number"))
+    contract_label = f"Contract {contract_number}" if contract_number else ""
+    dp_match = SEO_DP_RE.search(raw_title)
+    dp_label = f"DP {dp_match.group(1)}" if dp_match else ""
+    if dp_label and contract_number and dp_match.group(1).lower() in contract_number.lower():
+        dp_label = ""
+
+    location = _seo_location(record, supported_counties)
+    agency = _seo_agency_label(record, supported_counties)
+    title_location = location
+    if supported_counties and ", " in location:
+        title_location = location.split(", ", 1)[1]
+    title_tail = [part for part in (contract_label, dp_label, title_location, agency) if part]
+    reserved = len(" | ".join(title_tail)) + (3 if title_tail else 0)
+    title_project = _truncate_seo_text(project_title, max(34, 100 - reserved))
+    seo_title = " | ".join([title_project, *title_tail])
+
+    type_label = {
+        "construction": "construction bid",
+        "professional_services": "engineering and professional services opportunity",
+        "public_notice": "transportation procurement notice",
+    }.get(record.get("record_type"), "transportation procurement opportunity")
+    description_prefix = f"{agency or 'New Jersey'} {type_label}: "
+    detail_parts = []
+    references = "; ".join(part for part in (contract_label, dp_label) if part)
+    if references:
+        detail_parts.append(references)
+    if location:
+        detail_parts.append(location)
+    if record.get("due_date_raw") and record.get("deadline_display"):
+        deadline_label = "Expected" if record.get("status") == "upcoming" else "Due"
+        detail_parts.append(f"{deadline_label} {record['deadline_display']}")
+    description_tail = ". ".join(detail_parts)
+    if description_tail:
+        description_tail += "."
+    project_limit = max(36, 170 - len(description_prefix) - len(description_tail) - 1)
+    seo_description = f"{description_prefix}{_truncate_seo_text(project_title, project_limit)}."
+    if description_tail:
+        seo_description += f" {description_tail}"
+
+    return {
+        "title": seo_title,
+        "description": seo_description,
+    }
+
+
 def sort_opps(opps: list[dict]) -> list[dict]:
     return sorted(
         opps,
@@ -1032,7 +1172,12 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
 def bids_construction():
     ctx = _opp_list_view("construction")
     ctx["page_title"] = "Construction Bids"
+    ctx["seo_title"] = "Open NJDOT and NJ Transportation Construction Bids"
     ctx["page_desc"] = "Formal bids for roadway, bridge, drainage, pavement, and related heavy highway construction work."
+    ctx["seo_description"] = (
+        "Find open NJDOT, NJTA, county, and municipal roadway, bridge, drainage, "
+        "paving, and heavy construction bids across New Jersey."
+    )
     return render_template("opportunity_list.html", **ctx)
 
 
@@ -1040,7 +1185,12 @@ def bids_construction():
 def bids_profserv():
     ctx = _opp_list_view("professional_services")
     ctx["page_title"] = "Professional Services"
+    ctx["seo_title"] = "NJ Transportation Engineering RFPs and Professional Services"
     ctx["page_desc"] = "RFPs and RFQs for engineering, design, inspection, planning, and related consulting services."
+    ctx["seo_description"] = (
+        "Find open NJDOT, NJTA, county, and municipal engineering RFPs, design, "
+        "inspection, planning, and professional services opportunities."
+    )
     return render_template("opportunity_list.html", **ctx)
 
 
@@ -1063,7 +1213,14 @@ def opportunity_detail(opp_id: str):
         and item.get("record_type") == opp.get("record_type")
         and item.get("source_id") == opp.get("source_id")
     ]
-    return render_template("opportunity_detail.html", opp=opp, related=sort_opps(related)[:3])
+    seo = build_opportunity_seo(opp)
+    return render_template(
+        "opportunity_detail.html",
+        opp=opp,
+        related=sort_opps(related)[:3],
+        seo_title=seo["title"],
+        seo_description=seo["description"],
+    )
 
 
 @app.route("/opportunities/<opp_id>/calendar.ics")

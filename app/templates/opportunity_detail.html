@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{ opp.title[:65] }} - NJ Transportation Bids{% endblock %}
-{% block meta_description %}{{ ((opp.notice_excerpt or opp.title) ~ (' Due ' ~ opp.deadline_display if opp.due_date_raw else '') ~ ' Source: ' ~ (opp.source_name or 'official agency'))[:165] }}{% endblock %}
+{% block title %}{{ seo_title }}{% endblock %}
+{% block meta_description %}{{ seo_description }}{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -8,8 +8,8 @@
   "@graph": [
     {
       "@type": "WebPage",
-      "name": {{ opp.title | tojson }},
-      "description": {{ (opp.notice_excerpt or opp.title) | tojson }},
+      "name": {{ seo_title | tojson }},
+      "description": {{ seo_description | tojson }},
       "url": {{ canonical_url | tojson }}{% if opp.last_verified_date %},
       "dateModified": {{ opp.last_verified_date | tojson }}{% endif %},
       "isBasedOn": {{ (opp.official_url or opp.source_url or canonical_url) | tojson }}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{ page_title }} - NJ Transportation Bids{% endblock %}
-{% block meta_description %}{{ page_desc }} Browse current deadlines, issuing agencies, counties, and direct links to official New Jersey transportation solicitations.{% endblock %}
+{% block title %}{{ seo_title or page_title ~ ' - NJ Transportation Bids' }}{% endblock %}
+{% block meta_description %}{{ seo_description or page_desc ~ ' Browse current deadlines, issuing agencies, counties, and direct links to official New Jersey transportation solicitations.' }}{% endblock %}
 {% block structured_data %}
 {% set listed_opps = (soon + this_month + upcoming + nodate + closed)[:50] %}
 <script type="application/ld+json">
