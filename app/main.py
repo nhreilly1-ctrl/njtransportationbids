@@ -825,28 +825,43 @@ def sort_opps(opps: list[dict]) -> list[dict]:
         key=lambda opp: (
             1 if not opp.get("due_date_parsed") else 0,
             opp.get("due_date_parsed") or "9999-12-31",
+            opp.get("deadline_at") or "9999-12-31T23:59:59Z",
             (opp.get("title") or "").lower(),
         ),
     )
 
 
-def group_by_urgency(opps: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
+def group_opportunity_scan(opps: list[dict]) -> tuple[list[dict], list[dict], list[dict], list[dict], list[dict]]:
+    """Group an already deadline-sorted public result set for market scanning."""
     today = date.today()
-    cutoff = today + timedelta(days=14)
-    soon, later, nodate = [], [], []
+    cutoff = today + timedelta(days=7)
+    soon, this_month, upcoming, nodate, closed = [], [], [], [], []
     for opp in opps:
+        if opp.get("status") in ("expired", "noise"):
+            closed.append(opp)
+            continue
         if opp.get("status") == "upcoming":
-            later.append(opp)
+            upcoming.append(opp)
             continue
         if opp.get("due_date_parsed"):
             due = date.fromisoformat(opp["due_date_parsed"])
             if due <= cutoff:
                 soon.append(opp)
+            elif due.year == today.year and due.month == today.month:
+                this_month.append(opp)
             else:
-                later.append(opp)
+                upcoming.append(opp)
         else:
             nodate.append(opp)
-    return soon, later, nodate
+    closed.sort(
+        key=lambda opp: (
+            bool(opp.get("due_date_parsed")),
+            opp.get("due_date_parsed") or "",
+            (opp.get("title") or "").lower(),
+        ),
+        reverse=True,
+    )
+    return soon, this_month, upcoming, nodate, closed
 
 
 @app.route("/health")
@@ -954,18 +969,23 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
     county = request.args.get("county", "")
     agency = request.args.get("agency", "")
     status = request.args.get("status", "active")
+    show_closed = request.args.get("show_closed") == "1"
     q = request.args.get("q", "").lower()
 
     def keep(opp: dict) -> bool:
-        if status == "active" and opp["status"] not in ("open", "upcoming"):
+        current_status = opp["status"]
+        is_closed = current_status in ("expired", "noise")
+        if current_status in ("deleted", "disabled"):
             return False
-        if status == "all" and opp["status"] not in ("open", "upcoming", "review_required", "ai_review"):
+        if status == "active" and current_status not in ("open", "upcoming") and not (show_closed and is_closed):
             return False
-        if status == "review" and opp["status"] not in ("review_required", "ai_review"):
+        if status == "all" and current_status not in ("open", "upcoming", "review_required", "ai_review", "unknown_date") and not (show_closed and is_closed):
             return False
-        if status == "expired" and opp["status"] != "expired":
+        if status == "review" and current_status not in ("review_required", "ai_review", "unknown_date"):
             return False
-        if opp["status"] in ("noise", "deleted", "disabled"):
+        if status == "expired" and current_status != "expired":
+            return False
+        if current_status == "noise" and not show_closed:
             return False
         if opp["record_type"] != record_type:
             return False
@@ -981,21 +1001,24 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
         return True
 
     filtered = sort_opps([opp for opp in opps if keep(opp)])
-    soon, later, nodate = group_by_urgency(filtered)
+    soon, this_month, upcoming, nodate, closed = group_opportunity_scan(filtered)
     available_counties = {county for opp in opps for county in opp.get("counties", [])}
     counties = [county for county in NJ_COUNTIES if county in available_counties]
     agencies = sorted({opp.get("source_name", "") for opp in opps if opp.get("source_name")})
     today = date.today()
-    soon_cutoff = today + timedelta(days=14)
+    soon_cutoff = today + timedelta(days=7)
     return {
         "soon": soon,
-        "later": later,
+        "this_month": this_month,
+        "upcoming": upcoming,
         "nodate": nodate,
+        "closed": closed,
         "counties": counties,
         "agencies": agencies,
         "selected_county": county,
         "selected_agency": agency,
         "selected_status": status,
+        "show_closed": show_closed,
         "q": q,
         "total": len(filtered),
         "record_type": record_type,

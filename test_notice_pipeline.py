@@ -2,7 +2,7 @@ import sys
 import json
 import re
 import unittest
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -704,6 +704,109 @@ class SourceHealthTests(unittest.TestCase):
 
 
 class PublicDashboardTests(unittest.TestCase):
+    @staticmethod
+    def _scan_record(record_id, title, due_date_raw="", status="open", **overrides):
+        record = {
+            "id": record_id,
+            "_canonical_notice": True,
+            "title": title,
+            "source_id": "county-test",
+            "source_name": "Test County Purchasing",
+            "source_tier": "county",
+            "source_url": "https://agency.example/bids",
+            "official_url": f"https://agency.example/bids/{record_id}",
+            "county": "Statewide",
+            "notice_type": "construction",
+            "notice_subtype": "construction",
+            "due_date_raw": due_date_raw,
+            "contract_number": f"TEST-{record_id}",
+            "access_type": "Public access",
+            "platform": "Agency website",
+            "status": status,
+            "source_status": status,
+            "crawled_at": "2026-08-21T12:00:00+00:00",
+        }
+        record.update(overrides)
+        return record
+
+    def test_opportunity_scan_defaults_to_live_deadline_order(self):
+        records = [
+            self._scan_record("later", "Bridge work closing later", "09/20/2026"),
+            self._scan_record("soon", "Somerset CC-0043-26 closing soon", "08/24/2026"),
+            self._scan_record("month", "Road work closing this month", "08/31/2026"),
+            self._scan_record("planned", "Planned intersection improvements", status="upcoming", is_planned=True),
+            self._scan_record("nodate", "Current drainage work without deadline", source_status="open"),
+            self._scan_record("expired", "Expired paving contract", "08/01/2026", status="expired"),
+            self._scan_record("noise", "Excluded navigation noise", noise_flagged=True),
+        ]
+
+        class FixedDate(date):
+            @classmethod
+            def today(cls):
+                return cls(2026, 8, 21)
+
+        with (
+            patch.object(app_main, "load_public_opps", return_value=records),
+            patch.object(app_main, "date", FixedDate),
+        ):
+            response = app_main.app.test_client().get("/bids/construction")
+
+        html = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("Expired paving contract", html)
+        self.assertNotIn("Excluded navigation noise", html)
+        self.assertLess(html.index("closing soon"), html.index("closing later"))
+        self.assertIn("Closing within 7 days", html)
+        self.assertIn("Closing this month", html)
+        self.assertIn("Upcoming or planned", html)
+        self.assertIn("Deadline not resolved", html)
+        self.assertIn("Mon, Aug 24, 2026 (time not published)", html)
+        self.assertNotIn("12:00 AM", html)
+
+    def test_show_closed_includes_expired_and_noise_without_changing_data(self):
+        records = [
+            self._scan_record("live", "Live bridge contract", "09/20/2099"),
+            self._scan_record("expired", "Expired paving contract", "08/01/2020", status="expired"),
+            self._scan_record("noise", "Excluded navigation noise", noise_flagged=True),
+        ]
+        with patch.object(app_main, "load_public_opps", return_value=records):
+            response = app_main.app.test_client().get("/bids/construction?show_closed=1")
+
+        html = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Live bridge contract", html)
+        self.assertIn("Expired paving contract", html)
+        self.assertIn("Excluded navigation noise", html)
+        self.assertIn("Closed and excluded", html)
+        self.assertIn('name="show_closed" value="1"', html)
+
+    def test_scan_card_uses_normalized_geography_and_official_handoff(self):
+        explicit = self._scan_record(
+            "explicit",
+            "Bridge reconstruction in Mercer County",
+            "09/20/2099",
+        )
+        unresolved = self._scan_record(
+            "unresolved",
+            "County road resurfacing program",
+            "09/21/2099",
+            county="Salem",
+            county_provenance="AGENCY_JURISDICTION",
+        )
+        with patch.object(app_main, "load_public_opps", return_value=[explicit, unresolved]):
+            response = app_main.app.test_client().get("/bids/construction")
+
+        html = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Mercer County", html)
+        self.assertIn("County not stated in notice", html)
+        self.assertIn("Contract TEST-explicit", html)
+        self.assertIn(
+            'href="https://agency.example/bids/explicit" target="_blank" rel="noopener"',
+            html,
+        )
+        self.assertIn("View official notice", html)
+
     def test_homepage_counts_canonical_crawler_sources(self):
         enriched = {
             "status": "open",

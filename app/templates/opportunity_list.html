@@ -2,7 +2,7 @@
 {% block title %}{{ page_title }} - NJ Transportation Bids{% endblock %}
 {% block meta_description %}{{ page_desc }} Browse current deadlines, issuing agencies, counties, and direct links to official New Jersey transportation solicitations.{% endblock %}
 {% block structured_data %}
-{% set listed_opps = (soon + later + nodate)[:50] %}
+{% set listed_opps = (soon + this_month + upcoming + nodate + closed)[:50] %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -51,8 +51,12 @@
     <option value="review"  {{ 'selected' if selected_status == 'review' }}>Review queues only</option>
     <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired only</option>
   </select>
+  <label class="closed-toggle">
+    <input type="checkbox" name="show_closed" value="1" {{ 'checked' if show_closed }} onchange="this.form.submit()">
+    Show closed and excluded
+  </label>
   <button type="submit" class="btn btn-primary">Search</button>
-  {% if q or selected_county or selected_agency or selected_status != 'active' %}
+  {% if q or selected_county or selected_agency or selected_status != 'active' or show_closed %}
     <a href="{{ request.path }}" class="btn">Clear</a>
   {% endif %}
   <a href="{{ url_for('export_csv') }}" class="btn" style="margin-left:auto;">Export CSV</a>
@@ -60,12 +64,24 @@
 
 {% macro bid_card(o) %}
   {% set is_soon = o.due_date_parsed and o.due_date_parsed <= soon_cutoff and o.status == 'open' %}
-  <div class="bid-card {{ 'soon' if is_soon }}">
+  {% set evidenced_county = o.counties and o.geography_provenance in ('NOTICE_TEXT', 'SOURCE_RECORD_FIELD') %}
+  <div class="bid-card {{ 'soon' if is_soon }} {{ 'noise' if o.status == 'noise' }}">
     <div class="bid-dot {{ 'dot-green' if o.status == 'open' }} {{ 'dot-amber' if o.status in ('upcoming', 'review_required', 'ai_review') }} {{ 'dot-gray' if o.status == 'expired' }} {{ 'dot-red' if o.status == 'noise' }}"></div>
     <div class="bid-main">
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
       <div class="bid-meta">
-        {{ o.source_name }} &middot; {{ o.county_display }}
+        {{ o.source_name }}
+        {% if o.contract_number %}&middot; Contract {{ o.contract_number }}{% endif %}
+        &middot;
+        {% if evidenced_county %}
+          {{ o.counties | join(', ') }}
+        {% elif o.coverage_scope == 'STATEWIDE' and o.geography_provenance == 'NOTICE_TEXT' %}
+          Statewide
+        {% elif o.coverage_scope == 'BISTATE' and o.geography_provenance == 'NOTICE_TEXT' %}
+          Bi-state
+        {% else %}
+          County not stated in notice
+        {% endif %}
         {% if o.notice_subtype %}
           &middot;
           {% if o.notice_subtype == 'construction' %}<span style="color:var(--blue);">Construction notice</span>
@@ -77,26 +93,34 @@
         {% elif o.status == 'upcoming' %}<span class="badge badge-type-p">Upcoming</span>
         {% elif o.status == 'review_required' %}<span class="badge badge-nodate">Review required</span>
         {% elif o.status == 'ai_review' %}<span class="badge badge-type-p">AI review</span>
-        {% elif o.status == 'expired' %}<span class="badge badge-expired">Expired</span>{% endif %}
+        {% elif o.status == 'expired' %}<span class="badge badge-expired">Expired</span>
+        {% elif o.status == 'noise' %}<span class="badge badge-noise">Excluded / noise</span>{% endif %}
         {% if o.access_type and o.access_type not in ('Unknown','') %}<span class="badge badge-access">{{ o.access_type }}</span>{% endif %}
         {% if o.platform and o.platform not in ('Unknown','') %}<span class="badge badge-access">{{ o.platform }}</span>{% endif %}
+        {% if o.official_url %}<a href="{{ o.official_url }}" target="_blank" rel="noopener" class="official-link">View official notice ↗</a>{% endif %}
       </div>
     </div>
     <div class="bid-due {{ 'soon-due' if is_soon }}">
       {% if o.due_date_raw and o.due_date_raw not in ('Not listed','-', '') %}
         <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ o.deadline_display }}</span>
       {% else %}
-        <span class="due-date" style="color:var(--text3); font-weight:400;">No date</span>
+        <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not resolved</span>
       {% endif %}
     </div>
   </div>
 {% endmacro %}
 
-{% if soon %}<div class="section-label">Due within 14 days</div>{% for o in soon %}{{ bid_card(o) }}{% endfor %}{% endif %}
-{% if later %}<div class="section-label">Open and upcoming</div>{% for o in later %}{{ bid_card(o) }}{% endfor %}{% endif %}
-{% if nodate %}<div class="section-label">Queued for review</div>{% for o in nodate %}{{ bid_card(o) }}{% endfor %}{% endif %}
+{% if soon %}<div class="section-label">Closing within 7 days</div>{% for o in soon %}{{ bid_card(o) }}{% endfor %}{% endif %}
+{% if this_month %}<div class="section-label">Closing this month</div>{% for o in this_month %}{{ bid_card(o) }}{% endfor %}{% endif %}
+{% if upcoming %}<div class="section-label">Upcoming or planned</div>{% for o in upcoming %}{{ bid_card(o) }}{% endfor %}{% endif %}
+{% if nodate %}<div class="section-label">Deadline not resolved</div>{% for o in nodate %}{{ bid_card(o) }}{% endfor %}{% endif %}
+{% if closed %}
+  <div class="section-label">Closed and excluded</div>
+  <p class="section-note">Shown for research only. Verify status with the issuing agency before relying on an older notice.</p>
+  {% for o in closed %}{{ bid_card(o) }}{% endfor %}
+{% endif %}
 
-{% if not soon and not later and not nodate %}
+{% if not soon and not this_month and not upcoming and not nodate and not closed %}
   <div style="padding:3rem 0; text-align:center; color:var(--text2); font-size:14px;">
     No {{ page_title | lower }} found matching your filters. <a href="{{ request.path }}" style="color:var(--blue);">Clear filters</a>
   </div>
