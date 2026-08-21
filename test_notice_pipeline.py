@@ -101,6 +101,34 @@ class NoticeCrawlerTests(unittest.TestCase):
 
         self.assertEqual(records, [])
 
+    def test_salem_parser_reads_only_current_transportation_work(self):
+        html = (FIXTURES / "salem_current_opportunities.html").read_text(encoding="utf-8")
+        source = dict(
+            SOURCE,
+            id="county-salem",
+            name="Salem County Purchasing",
+            url="https://www.salempurchasing.org/",
+            parser="salem_county",
+        )
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_salem_county(source)
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["contract_number"], "26-20")
+        self.assertEqual(records[0]["notice_type"], "construction")
+        self.assertEqual(records[0]["due_date_raw"], "08/25/2099")
+        self.assertEqual(
+            records[0]["official_url"],
+            "https://www.salempurchasing.org/bids/view?rfp_session=signal",
+        )
+
+    def test_salem_source_uses_authoritative_daily_portal(self):
+        source = notice_sources.SOURCES_BY_ID["county-salem"]
+        self.assertEqual(source["url"], "https://www.salempurchasing.org/")
+        self.assertEqual(source["parser"], "salem_county")
+        self.assertEqual(source["crawl_freq"], "daily")
+        self.assertTrue(source["empty_is_authoritative"])
+
     def test_njdot_construction_uses_live_dot_host(self):
         source = notice_sources.SOURCES_BY_ID["state-njdot-construction"]
         self.assertEqual(
@@ -213,6 +241,17 @@ class NoticeCrawlerTests(unittest.TestCase):
         self.assertEqual(
             notice_crawlers._classify_transport_scope("Snow plowing for county roads"),
             "construction",
+        )
+        self.assertEqual(
+            notice_crawlers._classify_transport_scope("Bulk rock salt purchase and delivery"),
+            "construction",
+        )
+        self.assertEqual(
+            notice_crawlers._classify_transport_scope("Snow plow parts and supplies"),
+            "construction",
+        )
+        self.assertIsNone(
+            notice_crawlers._classify_transport_scope("Heavy duty vehicle collision repair")
         )
 
     def test_opengov_parser_reads_public_project_state(self):

@@ -45,6 +45,10 @@ those numbers as a snapshot and calculate current counts from configuration.
   source data; they never replace or erase it.
 - Publish only transportation construction, heavy civil/infrastructure, and relevant
   professional services. General goods and unrelated procurement are out of scope.
+- Include narrowly targeted road-operations materials and components such as rock
+  salt, snow-plow parts, and traffic-control devices for the supplier audience.
+  Exclude general commodities and fleet maintenance or vehicle-repair contracts.
+  Until a dedicated supplier category exists, classify included items as construction.
 - Distinguish `open`, `upcoming`, `expired`, `noise`, and unresolved/review states.
 - Never infer counties from directional contract packaging such as North, Central,
   or South.

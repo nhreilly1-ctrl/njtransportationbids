@@ -637,13 +637,15 @@ NOTICE_SOURCES = [
         "source_tier":  "county",
         "crawl_tier":   2,
         "county":       "Salem",
-        "url":          "https://www.salemcountynj.gov/purchasing",
-        "parser":       "generic_html_list",
+        "url":          "https://www.salempurchasing.org/",
+        "parser":       "salem_county",
         "access_type":  "Public access",
         "platform":     "County procurement portal",
         "notice_type":  "mixed",
-        "crawl_freq":   "weekly",
+        "crawl_freq":   "daily",
         "allow_empty":  True,
+        "empty_is_authoritative": True,
+        "notes":        "Official Salem County portal with bounded current opportunities.",
     },
 
     # ─────────────────────────────────────────────────────────────────────────

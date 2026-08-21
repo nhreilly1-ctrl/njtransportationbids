@@ -125,6 +125,11 @@ CONSTRUCTION_SCOPE_KW = [
     "sludge", "utility infrastructure", "snow plowing",
 ]
 
+ROAD_OPERATIONS_SUPPLY_KW = [
+    "rock salt", "snow plow part", "snow plow parts", "salt spreader",
+    "salt spreaders", "traffic control sign", "traffic control signs",
+]
+
 SCOPE_EXCLUSIONS = [
     "advertising management", "ticket stock", "cleaning services",
     "broker dealer", "towing and recovery", "office supplies",
@@ -140,6 +145,10 @@ def _classify_transport_scope(title, body=""):
     def has_keyword(keyword):
         return re.search(rf"(?<!\w){re.escape(keyword)}(?!\w)", text) is not None
 
+    # These narrowly targeted materials support county road operations and are
+    # useful to the site's supplier audience; generic goods remain excluded.
+    if any(has_keyword(keyword) for keyword in ROAD_OPERATIONS_SUPPLY_KW):
+        return "construction"
     if any(has_keyword(keyword) for keyword in SCOPE_EXCLUSIONS):
         return None
     if any(has_keyword(keyword) for keyword in PROFESSIONAL_SCOPE_KW):
@@ -1241,11 +1250,11 @@ def parse_bidexpress_agency(source):
     return records
 
 
-def parse_passaic_bids(source):
-    """Parse Passaic County's public purchasing portal current-opportunity table."""
+def _parse_county_purchasing_portal(source):
+    """Parse the bounded current-opportunity table used by county bid portals."""
     response = _get(source["url"], timeout=30)
     if not response:
-        raise RuntimeError("Passaic County purchasing portal could not be fetched")
+        raise RuntimeError(f"{source['name']} purchasing portal could not be fetched")
     soup = _soup(response.text)
     current_table = None
     for table in soup.find_all("table"):
@@ -1254,7 +1263,14 @@ def parse_passaic_bids(source):
             current_table = table
             break
     if current_table is None:
-        raise RuntimeError("Passaic County current-opportunity table was not found")
+        raise RuntimeError(f"{source['name']} current-opportunity table was not found")
+
+    headers = [
+        _clean(cell.get_text(" ", strip=True)).lower()
+        for cell in current_table.find_all("th")
+    ]
+    if headers[:4] != ["#", "title", "date issued", "due date"]:
+        raise RuntimeError(f"{source['name']} current-opportunity table schema changed")
 
     records = []
     for row in current_table.find_all("tr"):
@@ -1282,6 +1298,16 @@ def parse_passaic_bids(source):
             excerpt=f"Issued {issued}. Responses due {deadline}.",
         ))
     return records
+
+
+def parse_passaic_bids(source):
+    """Parse Passaic County's public purchasing portal."""
+    return _parse_county_purchasing_portal(source)
+
+
+def parse_salem_county(source):
+    """Parse Salem County's public purchasing portal."""
+    return _parse_county_purchasing_portal(source)
 
 
 def _extract_pdf_due_date(url):
@@ -1645,12 +1671,6 @@ def _parse_granicus_rfp_rows(source, html, listing_url):
 
         context = _clean(row.get_text(" ", strip=True))
         notice_type = _classify_transport_scope(title, context)
-        if source.get("id") == "county-somerset" and re.search(
-            r"\b(?:rock salt|snow plows?|salt spreaders?|traffic control signs?)\b",
-            title,
-            re.I,
-        ):
-            notice_type = "construction"
         if not title or not notice_type:
             continue
         link = cells[1].find("a", href=True)
@@ -2261,6 +2281,7 @@ PARSER_MAP = {
     "sjta":                 parse_sjta,
     "bidexpress_agency":    parse_bidexpress_agency,
     "passaic_bids":         parse_passaic_bids,
+    "salem_county":         parse_salem_county,
     "drjtbc":               parse_drjtbc,
     "nj_dos_legal":         parse_nj_dos_legal,
     "sos_directory":        parse_sos_directory,

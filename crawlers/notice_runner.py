@@ -60,6 +60,7 @@ AUTHORITATIVE_PARSERS = {
     "njtransit",
     "drjtbc",
     "sjta",
+    "passaic_bids",
     "panynj",
     "drpa",
     "njtpa",
@@ -76,6 +77,7 @@ AUTHORITATIVE_PARSERS = {
     "newark_water",
     "somerset_county",
     "warren_county",
+    "salem_county",
 }
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
