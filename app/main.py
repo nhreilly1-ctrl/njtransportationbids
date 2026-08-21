@@ -533,6 +533,8 @@ def load_public_sources() -> list[dict]:
                 "url": configured.get("url"),
                 "frequency": configured.get("crawl_freq", "weekly"),
                 "critical": bool(configured.get("critical")),
+                "access_state": configured.get("crawl_state", "accessible"),
+                "access_reason": configured.get("access_reason"),
                 "last_crawl": health.get("last_crawl"),
                 "last_crawl_display": format_eastern_timestamp(health.get("last_crawl")),
                 "last_count": health.get("last_count"),

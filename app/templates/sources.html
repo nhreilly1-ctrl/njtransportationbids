@@ -36,7 +36,9 @@
     </div>
     <div class="source-meta" style="margin-top:3px;">{{ src.health_message }}</div>
   </div>
-  {% if src.health == 'bad' %}
+  {% if src.status == 'inaccessible' %}
+    <span class="badge badge-nodate" style="font-size:11px;">Access limited</span>
+  {% elif src.health == 'bad' %}
     <span class="badge badge-noise" style="font-size:11px;">Crawler error</span>
   {% elif src.health == 'warn' %}
     <span class="badge badge-nodate" style="font-size:11px;">Warning</span>

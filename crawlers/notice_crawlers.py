@@ -26,6 +26,10 @@ from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
+try:
+    from curl_cffi import requests as browser_requests
+except ImportError:  # pragma: no cover - dependency is installed in production
+    browser_requests = None
 from openpyxl import load_workbook
 from pypdf import PdfReader
 
@@ -48,8 +52,26 @@ def _get(url, timeout=20):
         r = requests.get(url, headers=HEADERS, timeout=timeout)
         r.raise_for_status()
         return r
-    except requests.RequestException as e:
-        log.warning(f"GET {url} failed: {e}")
+    except requests.RequestException as error:
+        response = getattr(error, "response", None)
+        if response is None:
+            response = locals().get("r")
+        server = (response.headers.get("Server") or "").lower() if response is not None else ""
+        body = response.text[:1000].lower() if response is not None else ""
+        access_denied = response is not None and response.status_code == 403 and (
+            "akamai" in server or "access denied" in body
+        )
+        if not access_denied or browser_requests is None:
+            log.warning(f"GET {url} failed: {error}")
+            return None
+
+    try:
+        log.info(f"Retrying Akamai-protected source with browser transport: {url}")
+        browser_response = browser_requests.get(url, impersonate="chrome", timeout=timeout)
+        browser_response.raise_for_status()
+        return browser_response
+    except Exception as error:  # curl-cffi exposes a separate requests exception type
+        log.warning(f"Browser GET {url} failed: {error}")
         return None
 
 def _soup(html, parser="html.parser"):
@@ -1586,6 +1608,153 @@ def parse_generic_html_list(source):
     return records
 
 
+# ── Granicus county procurement pages ───────────────────────────────────────
+
+def _parse_granicus_rfp_rows(source, html, listing_url):
+    """Read the structured RFP table used by Somerset and Warren County."""
+    soup = _soup(html)
+    page_text = _clean(soup.get_text(" ", strip=True))
+    table = None
+    for candidate in soup.find_all("table"):
+        headers = [
+            _clean(cell.get_text(" ", strip=True)).lower()
+            for cell in candidate.find_all("th")
+        ]
+        if headers[:4] == ["contract number", "title", "responses due", "status"]:
+            table = candidate
+            break
+
+    if table is None:
+        if "no results found." in page_text.lower():
+            return []
+        raise RuntimeError(f"{source['name']} procurement table schema changed")
+
+    records = []
+    for row in table.find_all("tr"):
+        cells = row.find_all("td", recursive=False)
+        if len(cells) < 4:
+            continue
+        contract_number = _clean(cells[0].get_text(" ", strip=True))
+        title_raw = _clean(cells[1].get_text(" ", strip=True))
+        title = re.sub(r"\s*NEW!\s*$", "", title_raw, flags=re.I).strip()
+        due_date = _clean(cells[2].get_text(" ", strip=True))
+        source_status = _clean(cells[3].get_text(" ", strip=True))
+        status_key = source_status.lower()
+        if status_key not in {"open", "pending"}:
+            continue
+
+        context = _clean(row.get_text(" ", strip=True))
+        notice_type = _classify_transport_scope(title, context)
+        if source.get("id") == "county-somerset" and re.search(
+            r"\b(?:rock salt|snow plows?|salt spreaders?|traffic control signs?)\b",
+            title,
+            re.I,
+        ):
+            notice_type = "construction"
+        if not title or not notice_type:
+            continue
+        link = cells[1].find("a", href=True)
+        official_url = urljoin(listing_url, link["href"]) if link else listing_url
+        record = _base_record(
+            source,
+            title,
+            official_url,
+            notice_type,
+            due_date,
+            contract_number,
+            context,
+        )
+        record["title_raw"] = title_raw
+        record["source_status"] = source_status
+        if status_key == "pending":
+            record["is_planned"] = True
+        records.append(record)
+    return records
+
+
+def parse_somerset_county(source):
+    """Parse Somerset's bounded current bid and RFP listing pages."""
+    listing_urls = source.get("listing_urls") or [source["url"]]
+    records = []
+    for listing_url in listing_urls:
+        response = _get(listing_url, timeout=30)
+        if not response:
+            raise RuntimeError(f"{source['name']} page could not be fetched: {listing_url}")
+        records.extend(_parse_granicus_rfp_rows(source, response.text, listing_url))
+
+    unique = {}
+    for record in records:
+        key = (record.get("contract_number") or record["official_url"]).lower()
+        unique[key] = record
+    result = list(unique.values())
+    log.info(f"Somerset County: {len(result)} current transportation records")
+    return result
+
+
+def _parse_warren_current_notices(source, html, listing_url):
+    """Read only Warren's current legal-notice body, never page metadata."""
+    soup = _soup(html)
+    current = soup.select_one("#CurrentLegalNotices")
+    if current is None:
+        raise RuntimeError("Warren County current legal-notices section was not found")
+
+    records = []
+    inactive_markers = (
+        "award", "awarding", "resolution", "contract modification", "cancel",
+        "meeting", "hearing", "auction",
+    )
+    opportunity_pattern = re.compile(
+        r"invitation\s+(?:for|to)\s+bid|\bbid\s+#?\s*wc\w*|\brfp\b|"
+        r"request for (?:proposals|qualifications)",
+        re.I,
+    )
+    for link in current.find_all("a", href=True):
+        title = _clean(link.get_text(" ", strip=True))
+        title_lower = title.lower()
+        if not opportunity_pattern.search(title) or any(marker in title_lower for marker in inactive_markers):
+            continue
+        notice_type = _classify_transport_scope(title)
+        if not notice_type:
+            continue
+        official_url = urljoin(listing_url, link["href"])
+        due_date = _extract_pdf_due_date(official_url) if ".pdf" in official_url.lower() or "showpublished" in official_url.lower() else ""
+        if due_date and not _deadline_is_current(due_date):
+            continue
+        contract = re.search(r"\b(?:WC|RFP)[#\s-]*[A-Z0-9-]+", title, re.I)
+        records.append(_base_record(
+            source,
+            title,
+            official_url,
+            notice_type,
+            due_date,
+            contract.group(0) if contract else "",
+            title,
+        ))
+    return records
+
+
+def parse_warren_county(source):
+    """Combine Warren's RFP component and legally authoritative notice page."""
+    records = []
+    rfp_url = source.get("rfp_url") or source["url"]
+    response = _get(rfp_url, timeout=30)
+    if not response:
+        raise RuntimeError(f"{source['name']} RFP page could not be fetched")
+    records.extend(_parse_granicus_rfp_rows(source, response.text, rfp_url))
+
+    legal_url = source.get("legal_url")
+    if legal_url and legal_url != rfp_url:
+        response = _get(legal_url, timeout=30)
+        if not response:
+            raise RuntimeError(f"{source['name']} legal-notices page could not be fetched")
+        records.extend(_parse_warren_current_notices(source, response.text, legal_url))
+
+    unique = {record["id"]: record for record in records}
+    result = list(unique.values())
+    log.info(f"Warren County: {len(result)} current transportation records")
+    return result
+
+
 # ── Essex County dedicated portal ─────────────────────────────────────────────
 
 def parse_essex_county(source):
@@ -2106,6 +2275,8 @@ PARSER_MAP = {
     "hudson_county":        parse_hudson_county,
     "union_county":         parse_union_county,
     "newark_water":         parse_newark_water,
+    "somerset_county":      parse_somerset_county,
+    "warren_county":        parse_warren_county,
     "generic_html_list":    parse_generic_html_list,
     "bidnet":               parse_generic_html_list,
     "questcdn":             parse_generic_html_list,

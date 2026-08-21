@@ -69,6 +69,8 @@ def evaluate_source(source, entry=None, now=None):
         "frequency": frequency,
         "parser": source.get("parser", "generic_html_list"),
         "critical": critical,
+        "access_state": source.get("crawl_state", "accessible"),
+        "access_reason": source.get("access_reason"),
         "last_crawl": entry.get("last_crawl"),
         "last_successful_crawl": entry.get("last_successful_crawl"),
         "last_count": last_count,
@@ -79,6 +81,16 @@ def evaluate_source(source, entry=None, now=None):
         "severity": "ok",
         "message": "Latest crawl completed normally.",
     }
+
+    if source.get("crawl_state") == "inaccessible":
+        result.update(
+            status="inaccessible",
+            severity="warning",
+            last_error=None,
+            consecutive_failures=0,
+            message=source.get("access_reason", "This source cannot be crawled anonymously."),
+        )
+        return result
 
     # Source policy can change after a crawl. Reclassify a stored empty-result
     # error when the source is now explicitly allowed to have no matching bids.

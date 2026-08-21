@@ -147,6 +147,36 @@ class PublicSourceLedgerTests(unittest.TestCase):
         self.assertIn("DTSTART:20990825T200000Z", calendar)
         self.assertNotIn("DTSTART;VALUE=DATE", calendar)
 
+    def test_sources_page_discloses_inaccessible_platform_reason(self):
+        configured = [{
+            "id": "platform-gated",
+            "name": "Gated Platform",
+            "source_tier": "paywalled",
+            "url": "https://platform.example",
+            "crawl_freq": "weekly",
+            "crawl_state": "inaccessible",
+            "access_reason": "Project search requires a paid membership.",
+        }]
+        health = {"sources": [{
+            "source_id": "platform-gated",
+            "severity": "warning",
+            "status": "inaccessible",
+            "last_crawl": None,
+            "last_count": 0,
+            "message": "Project search requires a paid membership.",
+        }]}
+        with (
+            patch.object(app_main, "NOTICE_SOURCES", configured),
+            patch.object(app_main, "load_source_health_summary", return_value=health),
+            patch.object(app_main, "load_public_opps", return_value=[]),
+        ):
+            response = app_main.app.test_client().get("/sources")
+
+        html = response.get_data(as_text=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Access limited", html)
+        self.assertIn("Project search requires a paid membership.", html)
+
 
 if __name__ == "__main__":
     unittest.main()

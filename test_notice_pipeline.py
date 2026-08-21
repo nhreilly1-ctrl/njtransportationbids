@@ -30,8 +30,77 @@ SOURCE = {
     "platform": "Agency website",
 }
 
+FIXTURES = Path(__file__).resolve().parent / "test_fixtures"
+
 
 class NoticeCrawlerTests(unittest.TestCase):
+    def test_akamai_denial_retries_with_browser_transport(self):
+        denied = SimpleNamespace(
+            status_code=403,
+            headers={"Server": "AkamaiGHost"},
+            text="<title>Access Denied</title>",
+        )
+        denied.raise_for_status = lambda: (_ for _ in ()).throw(
+            notice_crawlers.requests.HTTPError(response=denied)
+        )
+        accepted = SimpleNamespace(
+            status_code=200,
+            headers={},
+            text="<html>Official listing</html>",
+            raise_for_status=lambda: None,
+        )
+        browser = SimpleNamespace(get=lambda *args, **kwargs: accepted)
+
+        with (
+            patch.object(notice_crawlers.requests, "get", return_value=denied),
+            patch.object(notice_crawlers, "browser_requests", browser),
+        ):
+            response = notice_crawlers._get("https://county.example/bids")
+
+        self.assertIs(response, accepted)
+
+    def test_somerset_parser_reads_rows_and_preserves_source_fields(self):
+        html = (FIXTURES / "somerset_list_bid.html").read_text(encoding="utf-8")
+        source = dict(
+            SOURCE,
+            id="county-somerset",
+            parser="somerset_county",
+            listing_urls=[SOURCE["url"]],
+        )
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_somerset_county(source)
+
+        self.assertEqual(
+            {record["contract_number"] for record in records},
+            {"CC-0099-26", "CC-0054-26", "CC-0001-26"},
+        )
+        traffic = next(record for record in records if record["contract_number"] == "CC-0099-26")
+        self.assertEqual(traffic["title"], "Traffic Control Signs, Supports & Hardware Devices")
+        self.assertEqual(traffic["title_raw"], "Traffic Control Signs, Supports & Hardware Devices NEW!")
+        self.assertEqual(traffic["due_date_raw"], "09/17/2099")
+        self.assertEqual(traffic["source_status"], "Open")
+        self.assertEqual(
+            traffic["official_url"],
+            "https://agency.example/Home/Components/RFP/RFP/4923/2046",
+        )
+
+        normalized = notice_runner._enrich(traffic)
+        self.assertEqual(normalized["deadline_precision"], "date")
+        self.assertIsNone(normalized["deadline_at"])
+        self.assertIn("time not published", normalized["deadline_display"])
+
+        expired = next(record for record in records if record["contract_number"] == "CC-0001-26")
+        self.assertEqual(expired["source_status"], "Open")
+        self.assertEqual(notice_runner._enrich(expired)["status"], "expired")
+
+    def test_warren_empty_body_ignores_stale_metadata(self):
+        html = (FIXTURES / "warren_rfp_empty.html").read_text(encoding="utf-8")
+        source = dict(SOURCE, parser="warren_county")
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_warren_county(source)
+
+        self.assertEqual(records, [])
+
     def test_njdot_construction_uses_live_dot_host(self):
         source = notice_sources.SOURCES_BY_ID["state-njdot-construction"]
         self.assertEqual(
@@ -436,6 +505,29 @@ class NoticeLifecycleTests(unittest.TestCase):
         self.assertEqual(fresh, [])
         self.assertEqual(refreshed, {SOURCE["id"]})
 
+    def test_inaccessible_source_is_not_crawled_or_logged_as_failure(self):
+        source = dict(
+            SOURCE,
+            parser="questcdn",
+            crawl_state="inaccessible",
+            access_reason="Project search requires a paid membership.",
+        )
+        with (
+            patch.object(notice_runner, "crawl_source") as crawl,
+            patch.object(notice_runner, "_log_crawl") as log_crawl,
+        ):
+            fresh, refreshed = notice_runner.run_crawl([source])
+
+        self.assertEqual(fresh, [])
+        self.assertEqual(refreshed, set())
+        crawl.assert_not_called()
+        log_crawl.assert_called_once_with(
+            SOURCE["id"],
+            0,
+            state="inaccessible",
+            message="Project search requires a paid membership.",
+        )
+
     def test_sos_seed_replaces_invalid_stale_entities(self):
         saved = []
         with (
@@ -522,6 +614,19 @@ class SourceHealthTests(unittest.TestCase):
         self.assertEqual(health["severity"], "ok")
         self.assertIsNone(health["last_error"])
         self.assertEqual(health["consecutive_failures"], 0)
+
+    def test_inaccessible_source_is_a_disclosed_warning_not_a_failure(self):
+        source = dict(
+            self.source,
+            critical=False,
+            crawl_state="inaccessible",
+            access_reason="Anonymous search is registration-gated.",
+        )
+        health = source_health.evaluate_source(source, now=self.now)
+
+        self.assertEqual(health["status"], "inaccessible")
+        self.assertEqual(health["severity"], "warning")
+        self.assertEqual(health["message"], "Anonymous search is registration-gated.")
 
     def test_summary_includes_never_run_sources_and_county_coverage(self):
         summary = source_health.build_health_summary(notice_sources.NOTICE_SOURCES, [], self.now)

@@ -74,6 +74,8 @@ AUTHORITATIVE_PARSERS = {
     "hudson_county",
     "union_county",
     "newark_water",
+    "somerset_county",
+    "warren_county",
 }
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -283,7 +285,7 @@ def _merge(existing, fresh, refreshed_source_ids=None):
 
 # ── Crawl log ─────────────────────────────────────────────────────────────────
 
-def _log_crawl(source_id, count, error=None):
+def _log_crawl(source_id, count, error=None, state=None, message=None):
     log_data = _load(CRAWL_LOG_F)
     # Find or create entry
     entry = next((e for e in log_data if e["source_id"] == source_id), None)
@@ -295,11 +297,14 @@ def _log_crawl(source_id, count, error=None):
     entry["last_crawl"]    = crawled_at
     entry["last_count"]    = count
     entry["last_error"]    = error
+    entry["last_state"]    = state or ("error" if error else "ok")
+    entry["last_message"]  = message
     entry["health"]        = "ok" if not error else "error"
     if not error:
         entry["last_successful_crawl"] = entry["last_crawl"]
     entry["history"]       = (entry.get("history",[]) + [{
-        "at": crawled_at, "count": count, "error": error
+        "at": crawled_at, "count": count, "error": error,
+        "state": entry["last_state"], "message": message,
     }])[-30:]   # keep last 30 runs
 
     _save(CRAWL_LOG_F, log_data)
@@ -370,6 +375,11 @@ def run_crawl(sources_to_crawl):
     refreshed_source_ids = set()
     for source in sources_to_crawl:
         log.info(f"Crawling: {source['name']} ({source['id']})")
+        if source.get("crawl_state") == "inaccessible":
+            reason = source.get("access_reason", "This source cannot be crawled anonymously.")
+            _log_crawl(source["id"], 0, state="inaccessible", message=reason)
+            log.warning(f"  -> INACCESSIBLE: {reason}")
+            continue
         try:
             records = crawl_source(source)
             crawl_error = "zero_records" if not records and not source.get("allow_empty") else None

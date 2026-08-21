@@ -2,6 +2,7 @@ flask>=3.0.0
 gunicorn>=21.2.0
 psycopg2-binary>=2.9
 requests>=2.32
+curl-cffi>=0.13
 beautifulsoup4>=4.12
 pypdf>=6.0
 sqlalchemy>=2.0

@@ -44,7 +44,7 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 lxml openpyxl pypdf
+        run: pip install requests curl-cffi beautifulsoup4 lxml openpyxl pypdf
 
       - name: Run daily crawl (Tier 1 + Tier 2)
         if: github.event_name == 'push' || github.event.inputs.mode == 'daily' || github.event_name == 'schedule' && github.event.schedule == '0 10 * * *'
