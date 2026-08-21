@@ -111,13 +111,18 @@
         "at": "2026-08-20T22:52:19.716694+00:00",
         "count": 6,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:01.356936+00:00",
+        "count": 6,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:19.716694+00:00",
+    "last_crawl": "2026-08-21T10:20:01.356936+00:00",
     "last_count": 6,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:19.716694+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:01.356936+00:00"
   },
   {
     "source_id": "state-njdot-profserv",
@@ -226,13 +231,18 @@
         "at": "2026-08-20T22:52:22.759079+00:00",
         "count": 22,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:03.753872+00:00",
+        "count": 22,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:22.759079+00:00",
+    "last_crawl": "2026-08-21T10:20:03.753872+00:00",
     "last_count": 22,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:22.759079+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:03.753872+00:00"
   },
   {
     "source_id": "state-njdot-notices",
@@ -341,13 +351,18 @@
         "at": "2026-08-20T22:52:30.868959+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:11.356955+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:30.868959+00:00",
+    "last_crawl": "2026-08-21T10:20:11.356955+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:30.868959+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:11.356955+00:00"
   },
   {
     "source_id": "state-njta",
@@ -461,13 +476,18 @@
         "at": "2026-08-20T22:52:32.625372+00:00",
         "count": 8,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:13.132273+00:00",
+        "count": 8,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:32.625372+00:00",
+    "last_crawl": "2026-08-21T10:20:13.132273+00:00",
     "last_count": 8,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:32.625372+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:13.132273+00:00"
   },
   {
     "source_id": "state-njtransit",
@@ -576,13 +596,18 @@
         "at": "2026-08-20T22:52:35.973656+00:00",
         "count": 8,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:16.737936+00:00",
+        "count": 8,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:35.973656+00:00",
+    "last_crawl": "2026-08-21T10:20:16.737936+00:00",
     "last_count": 8,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:35.973656+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:16.737936+00:00"
   },
   {
     "source_id": "state-drjtbc-construction",
@@ -691,13 +716,18 @@
         "at": "2026-08-20T22:52:38.146507+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:19.325604+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:38.146507+00:00",
+    "last_crawl": "2026-08-21T10:20:19.325604+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:38.146507+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:19.325604+00:00"
   },
   {
     "source_id": "state-drjtbc-profserv",
@@ -806,13 +836,18 @@
         "at": "2026-08-20T22:52:39.788920+00:00",
         "count": 5,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:21.473191+00:00",
+        "count": 5,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:39.788920+00:00",
+    "last_crawl": "2026-08-21T10:20:21.473191+00:00",
     "last_count": 5,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:39.788920+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:21.473191+00:00"
   },
   {
     "source_id": "state-dos-legal",
@@ -921,13 +956,18 @@
         "at": "2026-08-20T22:52:51.146751+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:32.629050+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:51.146751+00:00",
+    "last_crawl": "2026-08-21T10:20:32.629050+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:51.146751+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:32.629050+00:00"
   },
   {
     "source_id": "state-sjta",
@@ -1036,13 +1076,18 @@
         "at": "2026-08-20T22:52:55.503537+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:35.573712+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:55.503537+00:00",
+    "last_crawl": "2026-08-21T10:20:35.573712+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:55.503537+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:35.573712+00:00"
   },
   {
     "source_id": "state-treasury",
@@ -1171,13 +1216,18 @@
         "at": "2026-08-20T22:52:57.805014+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:37.702662+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:57.805014+00:00",
+    "last_crawl": "2026-08-21T10:20:37.702662+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:57.805014+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:37.702662+00:00"
   },
   {
     "source_id": "county-camden",
@@ -1271,13 +1321,18 @@
         "at": "2026-08-20T22:53:00.199393+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:40.178279+00:00",
+        "count": 3,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:00.199393+00:00",
+    "last_crawl": "2026-08-21T10:20:40.178279+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:00.199393+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:40.178279+00:00"
   },
   {
     "source_id": "county-monmouth",
@@ -1366,13 +1421,18 @@
         "at": "2026-08-20T22:53:05.478739+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:43.484613+00:00",
+        "count": 3,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:05.478739+00:00",
+    "last_crawl": "2026-08-21T10:20:43.484613+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:05.478739+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:43.484613+00:00"
   },
   {
     "source_id": "county-bergen",
@@ -1461,13 +1521,18 @@
         "at": "2026-08-20T22:53:07.889074+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:46.132055+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:07.889074+00:00",
+    "last_crawl": "2026-08-21T10:20:46.132055+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:07.889074+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:46.132055+00:00"
   },
   {
     "source_id": "county-hudson",
@@ -1556,12 +1621,17 @@
         "at": "2026-08-20T22:53:14.323303+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:16.239801+00:00",
+        "count": 0,
+        "error": "Hudson County opportunity page could not be fetched"
       }
     ],
-    "last_crawl": "2026-08-20T22:53:14.323303+00:00",
+    "last_crawl": "2026-08-21T10:21:16.239801+00:00",
     "last_count": 0,
-    "last_error": null,
-    "health": "ok",
+    "last_error": "Hudson County opportunity page could not be fetched",
+    "health": "error",
     "last_successful_crawl": "2026-08-20T22:53:14.323303+00:00"
   },
   {
@@ -1651,13 +1721,18 @@
         "at": "2026-08-20T22:53:16.970653+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:18.431668+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:16.970653+00:00",
+    "last_crawl": "2026-08-21T10:21:18.431668+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:16.970653+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:18.431668+00:00"
   },
   {
     "source_id": "county-burlington",
@@ -1746,13 +1821,18 @@
         "at": "2026-08-20T22:53:18.802635+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:20.438990+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:18.802635+00:00",
+    "last_crawl": "2026-08-21T10:21:20.438990+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:18.802635+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:20.438990+00:00"
   },
   {
     "source_id": "county-middlesex",
@@ -1841,13 +1921,18 @@
         "at": "2026-08-20T22:53:21.851742+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:22.178205+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:21.851742+00:00",
+    "last_crawl": "2026-08-21T10:21:22.178205+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:21.851742+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:22.178205+00:00"
   },
   {
     "source_id": "county-union",
@@ -1936,13 +2021,18 @@
         "at": "2026-08-20T22:53:24.011017+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:24.358834+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:24.011017+00:00",
+    "last_crawl": "2026-08-21T10:21:24.358834+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:24.011017+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:24.358834+00:00"
   },
   {
     "source_id": "county-morris",
@@ -2031,13 +2121,18 @@
         "at": "2026-08-20T22:53:26.415662+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:26.785379+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:26.415662+00:00",
+    "last_crawl": "2026-08-21T10:21:26.785379+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:26.415662+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:26.785379+00:00"
   },
   {
     "source_id": "county-ocean",
@@ -2126,13 +2221,18 @@
         "at": "2026-08-20T22:53:28.158473+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:28.724282+00:00",
+        "count": 3,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:28.158473+00:00",
+    "last_crawl": "2026-08-21T10:21:28.724282+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:28.158473+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:28.724282+00:00"
   },
   {
     "source_id": "county-mercer",
@@ -2221,13 +2321,18 @@
         "at": "2026-08-20T22:53:30.568008+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:31.071282+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:30.568008+00:00",
+    "last_crawl": "2026-08-21T10:21:31.071282+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:30.568008+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:31.071282+00:00"
   },
   {
     "source_id": "municipal-newark",
@@ -2316,13 +2421,18 @@
         "at": "2026-08-20T22:53:37.582983+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:39.419363+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:37.582983+00:00",
+    "last_crawl": "2026-08-21T10:21:39.419363+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:37.582983+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:39.419363+00:00"
   },
   {
     "source_id": "municipal-jersey-city",
@@ -2411,13 +2521,18 @@
         "at": "2026-08-20T22:53:41.838486+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:43.471906+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:41.838486+00:00",
+    "last_crawl": "2026-08-21T10:21:43.471906+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:41.838486+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:43.471906+00:00"
   },
   {
     "source_id": "municipal-paterson",
@@ -2506,13 +2621,18 @@
         "at": "2026-08-20T22:53:44.087176+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:45.747592+00:00",
+        "count": 3,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:44.087176+00:00",
+    "last_crawl": "2026-08-21T10:21:45.747592+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:44.087176+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:45.747592+00:00"
   },
   {
     "source_id": "state-njdot-profserv-upcoming",
@@ -2596,13 +2716,18 @@
         "at": "2026-08-20T22:52:29.013214+00:00",
         "count": 64,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:09.404715+00:00",
+        "count": 64,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:29.013214+00:00",
+    "last_crawl": "2026-08-21T10:20:09.404715+00:00",
     "last_count": 64,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:29.013214+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:09.404715+00:00"
   },
   {
     "source_id": "state-njdot-design-build",
@@ -2681,13 +2806,18 @@
         "at": "2026-08-20T22:52:24.680229+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:05.573569+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:24.680229+00:00",
+    "last_crawl": "2026-08-21T10:20:05.573569+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:24.680229+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:05.573569+00:00"
   },
   {
     "source_id": "state-panynj-construction",
@@ -2761,13 +2891,18 @@
         "at": "2026-08-20T22:52:41.534416+00:00",
         "count": 3,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:23.451035+00:00",
+        "count": 3,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:41.534416+00:00",
+    "last_crawl": "2026-08-21T10:20:23.451035+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:41.534416+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:23.451035+00:00"
   },
   {
     "source_id": "state-panynj-profserv",
@@ -2841,13 +2976,18 @@
         "at": "2026-08-20T22:52:43.552920+00:00",
         "count": 4,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:25.701410+00:00",
+        "count": 4,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:43.552920+00:00",
+    "last_crawl": "2026-08-21T10:20:25.701410+00:00",
     "last_count": 4,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:43.552920+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:25.701410+00:00"
   },
   {
     "source_id": "state-drpa-patco",
@@ -2921,13 +3061,18 @@
         "at": "2026-08-20T22:52:47.292936+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:28.745713+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:47.292936+00:00",
+    "last_crawl": "2026-08-21T10:20:28.745713+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:47.292936+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:28.745713+00:00"
   },
   {
     "source_id": "state-njtpa",
@@ -3001,13 +3146,18 @@
         "at": "2026-08-20T22:52:49.056898+00:00",
         "count": 2,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:20:30.758316+00:00",
+        "count": 2,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:52:49.056898+00:00",
+    "last_crawl": "2026-08-21T10:20:30.758316+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:52:49.056898+00:00"
+    "last_successful_crawl": "2026-08-21T10:20:30.758316+00:00"
   },
   {
     "source_id": "county-passaic",
@@ -3041,13 +3191,18 @@
         "at": "2026-08-20T22:53:32.799032+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:33.350076+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:32.799032+00:00",
+    "last_crawl": "2026-08-21T10:21:33.350076+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:32.799032+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:33.350076+00:00"
   },
   {
     "source_id": "county-somerset",
@@ -3100,13 +3255,18 @@
         "at": "2026-08-20T22:53:35.769872+00:00",
         "count": 0,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:37.514931+00:00",
+        "count": 0,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:35.769872+00:00",
+    "last_crawl": "2026-08-21T10:21:37.514931+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:35.769872+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:37.514931+00:00"
   },
   {
     "source_id": "county-cape-may",
@@ -3377,13 +3537,18 @@
         "at": "2026-08-20T22:53:39.531190+00:00",
         "count": 1,
         "error": null
+      },
+      {
+        "at": "2026-08-21T10:21:41.267045+00:00",
+        "count": 1,
+        "error": null
       }
     ],
-    "last_crawl": "2026-08-20T22:53:39.531190+00:00",
+    "last_crawl": "2026-08-21T10:21:41.267045+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-20T22:53:39.531190+00:00"
+    "last_successful_crawl": "2026-08-21T10:21:41.267045+00:00"
   },
   {
     "source_id": "state-sos-directory",
