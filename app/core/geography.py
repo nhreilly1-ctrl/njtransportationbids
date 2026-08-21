@@ -40,12 +40,14 @@ _COUNTY_TOKEN_RE = re.compile(rf"\b({_COUNTY_PATTERN})\b", re.IGNORECASE)
 _DIRECT_PATTERNS = (
     re.compile(rf"\bCounty\s+of\s+({_COUNTY_PATTERN})\b", re.IGNORECASE),
     re.compile(rf"\b({_COUNTY_PATTERN})\s+Count(?:y|ies)\b", re.IGNORECASE),
+    re.compile(rf"\bCount(?:y|ies)\s*:\s*({_COUNTY_PATTERN})\b", re.IGNORECASE),
 )
 _LIST_SEPARATOR = r"(?:\s*,\s*(?:and\s+)?|\s*/\s*|\s*&\s*|\s+and\s+)"
 _COUNTY_LIST = rf"({_COUNTY_PATTERN}(?:{_LIST_SEPARATOR}{_COUNTY_PATTERN})+)"
 _LIST_PATTERNS = (
     re.compile(rf"\bCounties\s+of\s+{_COUNTY_LIST}\b", re.IGNORECASE),
     re.compile(rf"\b{_COUNTY_LIST}\s+Count(?:y|ies)\b", re.IGNORECASE),
+    re.compile(rf"\bCounties\s*:\s*{_COUNTY_LIST}\b", re.IGNORECASE),
 )
 _RAW_COUNTY_LIST_RE = re.compile(rf"^\s*{_COUNTY_LIST}\s*$", re.IGNORECASE)
 
@@ -73,6 +75,8 @@ _BISTATE_SOURCE_PREFIXES = (
     "state-drjtbc",
     "state-drpa",
 )
+_DP_IDENTIFIER_RE = re.compile(r"\bDP\s+No\.?\s*:?\s*([A-Z0-9.-]+)", re.IGNORECASE)
+_RAW_PROVENANCE_VALUES = {"SOURCE_RECORD_FIELD", "AGENCY_JURISDICTION"}
 
 
 def _canonical_county(value: str) -> str:
@@ -125,6 +129,10 @@ def _is_bistate(source_id: str) -> bool:
     return normalized.startswith(_BISTATE_SOURCE_PREFIXES)
 
 
+def _multiple_dp_identifiers(title: str) -> list[str]:
+    return list(dict.fromkeys(match.group(1).rstrip(".").upper() for match in _DP_IDENTIFIER_RE.finditer(title)))
+
+
 def classify_geography(record: dict[str, Any]) -> dict[str, Any]:
     """Return normalized geography without altering the record's raw county value.
 
@@ -133,24 +141,46 @@ def classify_geography(record: dict[str, Any]) -> dict[str, Any]:
     """
     raw = str(record.get("county") or "")
     title = str(record.get("title") or "")
-    body = str(record.get("notice_text") or record.get("raw_text") or "")
+    evidence_texts = (
+        ("notice_excerpt", str(record.get("notice_excerpt") or "")),
+        ("notice_text", str(record.get("notice_text") or "")),
+        ("raw_text", str(record.get("raw_text") or "")),
+    )
 
     title_counties, title_matches = _extract_explicit_counties(title)
-    body_counties: list[str] = []
-    body_matches: list[str] = []
-    if not title_counties and body:
-        body_counties, body_matches = _extract_explicit_counties(body)
+    explicit_counties = title_counties
+    explicit_field = "title"
+    explicit_matches = title_matches
+    if not explicit_counties:
+        for field, text in evidence_texts:
+            field_counties, field_matches = _extract_explicit_counties(text)
+            if field_counties:
+                explicit_counties = field_counties
+                explicit_field = field
+                explicit_matches = field_matches
+                break
 
-    explicit_counties = title_counties or body_counties
-    explicit_field = "title" if title_counties else "notice"
-    explicit_matches = title_matches or body_matches
     raw_counties = _parse_raw_counties(raw)
     region_raw = _extract_region(raw, title)
     bistate = _is_bistate(str(record.get("source_id") or ""))
+    raw_provenance = str(record.get("county_provenance") or "").upper()
+    if raw_provenance not in _RAW_PROVENANCE_VALUES:
+        raw_provenance = "AGENCY_JURISDICTION" if raw_counties else "NONE"
+    agency_county_hint = raw if raw_counties and raw_provenance == "AGENCY_JURISDICTION" else ""
+    all_notice_text = " ".join(text for _, text in evidence_texts if text)
+    multiple_dp_ids = _multiple_dp_identifiers(title)
 
     evidence: list[str] = []
     conflict = False
-    if explicit_counties:
+    review_required = len(multiple_dp_ids) > 1
+    review_reason = ""
+    if review_required:
+        counties = []
+        confidence = "LOW"
+        provenance = "NONE"
+        review_reason = f"multiple DP identifiers in one record: {', '.join(multiple_dp_ids)}"
+        evidence.append(f"segmentation review required; {review_reason}")
+    elif explicit_counties:
         counties = explicit_counties
         for match in explicit_matches:
             evidence.append(f'{explicit_field}:"{match}"')
@@ -161,27 +191,41 @@ def classify_geography(record: dict[str, Any]) -> dict[str, Any]:
         if conflict:
             evidence.append(f'county_raw="{raw}" conflicts; explicit county evidence wins (R-03)')
         confidence = "MEDIUM" if conflict else "HIGH"
-    elif raw_counties:
+        provenance = "NOTICE_TEXT"
+    elif raw_counties and raw_provenance == "SOURCE_RECORD_FIELD":
         counties = raw_counties
-        evidence.append(f'county_raw="{raw}" (R-01 fallback)')
-        confidence = "LOW"
+        evidence.append(f'county_raw="{raw}" supplied by the official source record')
+        confidence = "HIGH"
+        provenance = "SOURCE_RECORD_FIELD"
     else:
         counties = []
         confidence = "LOW"
+        provenance = raw_provenance
+        if agency_county_hint:
+            evidence.append(f'agency_county_hint="{agency_county_hint}" is not notice-level evidence')
 
-    if bistate:
+    if review_required:
+        coverage_scope = "UNRESOLVED"
+    elif bistate:
         coverage_scope = "BISTATE"
         evidence.append(f'source_id="{record.get("source_id", "")}" identifies a bi-state agency')
-        if not explicit_counties and not raw_counties:
-            confidence = "MEDIUM"
+        counties = []
+        confidence = "MEDIUM" if explicit_counties else "LOW"
     elif len(counties) == 1:
         coverage_scope = "SINGLE_COUNTY"
     elif len(counties) > 1:
         coverage_scope = "MULTI_COUNTY"
-    elif _STATEWIDE_RE.search(title) or _STATEWIDE_RE.search(body):
+    elif _STATEWIDE_RE.search(title) or _STATEWIDE_RE.search(all_notice_text):
         coverage_scope = "STATEWIDE"
         confidence = "HIGH"
-        evidence.append('text explicitly identifies statewide/systemwide scope')
+        if _STATEWIDE_RE.search(title) or _STATEWIDE_RE.search(all_notice_text):
+            provenance = "NOTICE_TEXT"
+            evidence.append('notice text explicitly identifies statewide/systemwide scope')
+    elif raw.strip().casefold() == "statewide" and raw_provenance == "SOURCE_RECORD_FIELD":
+        coverage_scope = "STATEWIDE"
+        confidence = "HIGH"
+        provenance = "SOURCE_RECORD_FIELD"
+        evidence.append('official source record identifies statewide scope')
     elif region_raw:
         coverage_scope = "REGIONAL"
         evidence.append(f'region_raw="{region_raw}" retained without county expansion (R-04)')
@@ -189,7 +233,9 @@ def classify_geography(record: dict[str, Any]) -> dict[str, Any]:
         coverage_scope = "UNRESOLVED"
         evidence.append("no explicit county evidence")
 
-    if counties:
+    if review_required:
+        county_display = "Location requires review"
+    elif counties:
         county_display = ", ".join(counties)
     elif coverage_scope == "STATEWIDE":
         county_display = "Statewide"
@@ -205,9 +251,13 @@ def classify_geography(record: dict[str, Any]) -> dict[str, Any]:
         "coverage_scope": coverage_scope,
         "region_raw": region_raw,
         "geography_confidence": confidence,
+        "geography_provenance": provenance,
         "geography_evidence": " | ".join(dict.fromkeys(evidence)),
         "county_display": county_display,
         "geography_conflict": conflict,
+        "agency_county_hint": agency_county_hint,
+        "geography_review_required": review_required,
+        "geography_review_reason": review_reason,
     }
 
 

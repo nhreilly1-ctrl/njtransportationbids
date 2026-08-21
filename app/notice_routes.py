@@ -267,8 +267,10 @@ def export_notices_csv():
     active  = [n for n in notices if n.get("status") in ("open", "upcoming")
                and not n.get("noise_flagged")]
     buf = StringIO()
-    fields = ["id","title","source_name","source_tier","county","counties",
-              "coverage_scope","region_raw","geography_confidence","notice_type",
+    fields = ["id","title","source_name","source_tier","county","county_provenance","counties",
+              "coverage_scope","region_raw","geography_confidence",
+              "geography_provenance","geography_evidence","agency_county_hint",
+              "geography_review_required","notice_type",
               "notice_subtype","due_date_raw","due_date_parsed","status",
               "deadline_at","deadline_local","deadline_timezone",
               "deadline_timezone_source","deadline_timezone_assumed",

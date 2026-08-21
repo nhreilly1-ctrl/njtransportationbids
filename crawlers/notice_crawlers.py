@@ -142,6 +142,7 @@ def _base_record(source, title, official_url, notice_type, due_date="", contract
         "source_url": source["url"],
         "official_url": official_url,
         "county": source.get("county", "Statewide"),
+        "county_provenance": "AGENCY_JURISDICTION",
         "entity_type": source["entity_type"],
         "notice_type": notice_type,
         "notice_subtype": notice_type,
@@ -233,9 +234,11 @@ def parse_njdot_construction(source):
                 continue
             if len(values) == 2:
                 let_date = values[0]
+                candidates = cells[1].find_all(["p", "li"])
                 project_blocks = [
-                    block for block in cells[1].find_all("p", recursive=False)
-                    if _clean(block.get_text(" ", strip=True))
+                    block for block in candidates
+                    if not block.find(["p", "li"])
+                    and _clean(block.get_text(" ", strip=True))
                 ] or [cells[1]]
 
                 for block in project_blocks:
@@ -317,6 +320,7 @@ def parse_njdot_construction(source):
                 "source_url":     source["url"],
                 "official_url":   official_url,
                 "county":         counties or "Statewide",
+                "county_provenance": "SOURCE_RECORD_FIELD",
                 "entity_type":    source["entity_type"],
                 "notice_type":    "construction",
                 "notice_subtype": "construction",
@@ -384,6 +388,7 @@ def _parse_njdot_planned(source):
             "source_url":     source["planned_url"],
             "official_url":   source["planned_url"],
             "county":         counties or "Statewide",
+            "county_provenance": "SOURCE_RECORD_FIELD",
             "entity_type":    source["entity_type"],
             "notice_type":    "construction",
             "notice_subtype": "construction",
@@ -565,6 +570,7 @@ def parse_njdot_profserv_upcoming(source):
                     "source_url": source["url"],
                     "official_url": workbook_url,
                     "county": county or "Statewide",
+                    "county_provenance": "SOURCE_RECORD_FIELD",
                     "entity_type": source["entity_type"],
                     "notice_type": "professional_services",
                     "notice_subtype": "professional_services",

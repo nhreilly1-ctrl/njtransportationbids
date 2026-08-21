@@ -60,6 +60,37 @@ class NoticeCrawlerTests(unittest.TestCase):
         drainage = next(record for record in records if record["contract_number"] == "DP-26420")
         self.assertIn("I-278", drainage["title"])
 
+    def test_njdot_construction_splits_nested_project_paragraphs(self):
+        html = """
+        <table>
+          <tr><th>Letting Date</th><th>Project</th></tr>
+          <tr><td>09/17/26</td><td><div>
+            <p>Route 1 bridge in Mercer County, DP No: 26107.</p>
+            <p>Route 33 paving in Monmouth County, DP No: 26118.</p>
+          </div></td></tr>
+        </table>
+        """
+        response = SimpleNamespace(text=html)
+        with patch.object(notice_crawlers, "_get", return_value=response):
+            records = notice_crawlers.parse_njdot_construction(SOURCE)
+
+        self.assertEqual(len(records), 2)
+        self.assertEqual({record["contract_number"] for record in records}, {"DP-26107", "DP-26118"})
+        self.assertTrue(all(record["title"].count("DP No") == 1 for record in records))
+
+    def test_geography_segmentation_failure_enters_review_state(self):
+        record = notice_crawlers._base_record(
+            SOURCE,
+            "Mercer County bridge DP No: 26107. Essex County paving DP No: 26118.",
+            SOURCE["url"],
+            "construction",
+        )
+        enriched = notice_runner._enrich(record)
+
+        self.assertEqual(enriched["status"], "review_required")
+        self.assertEqual(enriched["counties"], [])
+        self.assertTrue(enriched["geography_review_required"])
+
     def test_njdot_professional_services_uses_due_date_column(self):
         html = """
         <table>
@@ -301,9 +332,9 @@ class NoticeCrawlerTests(unittest.TestCase):
             "component": {
                 "text": """
                     <table><tr><th>Contract Number</th><th>Due Date</th><th>Description</th></tr>
-                    <tr><td><a href='/ewr.pdf'>EWR-100</a></td><td>20-Aug-2026</td>
+                    <tr><td><a href='/ewr.pdf'>EWR-100</a></td><td>20-Aug-2099</td>
                     <td><p>Newark Airport roadway rehabilitation</p></td></tr>
-                    <tr><td><a href='/jfk.pdf'>JFK-200</a></td><td>21-Aug-2026</td>
+                    <tr><td><a href='/jfk.pdf'>JFK-200</a></td><td>21-Aug-2099</td>
                     <td><p>JFK Airport roadway rehabilitation</p></td></tr></table>
                 """,
             }
@@ -314,7 +345,7 @@ class NoticeCrawlerTests(unittest.TestCase):
 
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0]["contract_number"], "EWR-100")
-        self.assertEqual(records[0]["due_date_raw"], "20-Aug-2026")
+        self.assertEqual(records[0]["due_date_raw"], "20-Aug-2099")
 
     def test_drpa_parser_reads_detail_deadline(self):
         source = notice_sources.SOURCES_BY_ID["state-drpa-patco"]
@@ -497,6 +528,35 @@ class SourceHealthTests(unittest.TestCase):
         self.assertEqual(summary["configured_sources"], len(notice_sources.NOTICE_SOURCES))
         self.assertEqual(summary["coverage"]["county_sources"], 21)
         self.assertEqual(summary["coverage"]["missing_counties"], [])
+
+    def test_summary_surfaces_active_segmentation_review_records(self):
+        notices = [
+            {
+                "source_id": self.source["id"],
+                "geography_review_required": True,
+                "source_inactive": False,
+            },
+            {
+                "source_id": self.source["id"],
+                "geography_review_required": True,
+                "source_inactive": True,
+            },
+        ]
+        crawl_log = [{
+            "source_id": self.source["id"],
+            "last_crawl": self.now.isoformat(),
+            "last_count": 1,
+            "last_error": None,
+            "history": [{"at": self.now.isoformat(), "count": 1, "error": None}],
+        }]
+        summary = source_health.build_health_summary([self.source], crawl_log, self.now, notices)
+
+        self.assertEqual(summary["overall"], "warning")
+        self.assertEqual(summary["data_quality"]["active_records_requiring_segmentation_review"], 1)
+        self.assertEqual(
+            summary["data_quality"]["segmentation_review_by_source"],
+            {self.source["id"]: 1},
+        )
 
 
 class PublicDashboardTests(unittest.TestCase):

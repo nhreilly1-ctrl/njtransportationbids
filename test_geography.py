@@ -58,11 +58,50 @@ class GeographyClassifierTests(unittest.TestCase):
         self.assertEqual(prefixed["counties"], ["Atlantic", "Burlington", "Mercer"])
         self.assertEqual(ampersand["counties"], ["Middlesex", "Monmouth"])
 
-    def test_raw_slash_lists_are_supported_but_low_confidence(self):
+    def test_bistate_agency_counties_are_hints_not_filter_values(self):
         result = classify(county="Warren/Hunterdon/Mercer", source_id="state-drjtbc-construction")
-        self.assertEqual(result["counties"], ["Hunterdon", "Mercer", "Warren"])
+        self.assertEqual(result["counties"], [])
         self.assertEqual(result["coverage_scope"], "BISTATE")
         self.assertEqual(result["geography_confidence"], "LOW")
+        self.assertEqual(result["geography_provenance"], "AGENCY_JURISDICTION")
+        self.assertEqual(result["agency_county_hint"], "Warren/Hunterdon/Mercer")
+
+    def test_agency_county_default_is_not_filterable_without_notice_evidence(self):
+        result = classify(title="Legal Notices", county="Essex", source_id="county-essex")
+        self.assertEqual(result["counties"], [])
+        self.assertEqual(result["coverage_scope"], "UNRESOLVED")
+        self.assertEqual(result["agency_county_hint"], "Essex")
+        self.assertEqual(result["geography_provenance"], "AGENCY_JURISDICTION")
+
+    def test_structured_official_county_field_remains_filterable(self):
+        result = classify(
+            title="Route 9 pavement preservation",
+            county="Ocean",
+            county_provenance="SOURCE_RECORD_FIELD",
+        )
+        self.assertEqual(result["counties"], ["Ocean"])
+        self.assertEqual(result["coverage_scope"], "SINGLE_COUNTY")
+        self.assertEqual(result["geography_provenance"], "SOURCE_RECORD_FIELD")
+
+    def test_notice_excerpt_can_supply_explicit_county_evidence(self):
+        result = classify(
+            title="Roadway reconstruction",
+            county="Statewide",
+            notice_excerpt="Work is in the City of Plainfield, Union County, New Jersey.",
+        )
+        self.assertEqual(result["counties"], ["Union"])
+        self.assertEqual(result["geography_provenance"], "NOTICE_TEXT")
+        self.assertIn('notice_excerpt:"Union County"', result["geography_evidence"])
+
+    def test_multiple_dp_identifiers_require_segmentation_review(self):
+        result = classify(
+            title="Camden County bridge, DP No: 25132. Essex County paving, DP No: 26105.",
+            county="Statewide",
+        )
+        self.assertEqual(result["counties"], [])
+        self.assertEqual(result["coverage_scope"], "UNRESOLVED")
+        self.assertTrue(result["geography_review_required"])
+        self.assertEqual(result["county_display"], "Location requires review")
 
     def test_regional_tokens_never_expand_to_counties(self):
         for region in ("North", "Central", "South", "South Region", "Central & North", "Northern New Jersey", "Various"):
@@ -118,6 +157,16 @@ class GeographyClassifierTests(unittest.TestCase):
         self.assertEqual(result["counties"], [])
         self.assertEqual(result["county_display"], "Bi-state")
 
+    def test_bistate_source_does_not_expand_even_explicit_county_text(self):
+        result = classify(
+            title="Bridge rehabilitation in Mercer County",
+            county="Warren/Hunterdon/Mercer",
+            source_id="state-drjtbc-construction",
+        )
+        self.assertEqual(result["coverage_scope"], "BISTATE")
+        self.assertEqual(result["counties"], [])
+        self.assertEqual(result["geography_provenance"], "NOTICE_TEXT")
+
     def test_output_is_idempotent_and_only_contains_canonical_counties(self):
         record = {
             "title": "Gloucester and Salem Counties bridge maintenance",
@@ -166,8 +215,11 @@ class GeographyPublicPageTests(unittest.TestCase):
 
         csv_text = response.get_data(as_text=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("county,counties,coverage_scope,region_raw,geography_confidence", csv_text)
-        self.assertIn("Statewide,Middlesex|Monmouth,MULTI_COUNTY", csv_text)
+        self.assertIn(
+            "county,county_provenance,counties,coverage_scope,region_raw,geography_confidence,geography_provenance",
+            csv_text,
+        )
+        self.assertIn("Statewide,,Middlesex|Monmouth,MULTI_COUNTY", csv_text)
 
 
 if __name__ == "__main__":

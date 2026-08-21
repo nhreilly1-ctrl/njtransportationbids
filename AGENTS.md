@@ -53,6 +53,11 @@ those numbers as a snapshot and calculate current counts from configuration.
 - Use `app/core/geography.py` for county normalization. Preserve `county` as raw input
   and use `counties`, `coverage_scope`, `region_raw`, `geography_confidence`, and
   `geography_evidence` for normalized output.
+- County filters may use only explicit notice text or a structured county field from
+  an official source record. An agency's jurisdiction is a non-authoritative
+  `agency_county_hint`, not county-level evidence.
+- Bi-state authority records keep `BISTATE` scope and an empty normalized county list;
+  do not expand agency jurisdiction into New Jersey counties.
 - Use `app/core/deadlines.py` for deadline parsing. Preserve `due_date_raw`; store exact
   instants in UTC, render explicit Eastern time, label assumed time zones, and never
   invent a time for date-only records.

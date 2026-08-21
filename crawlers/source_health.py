@@ -130,7 +130,7 @@ def evaluate_source(source, entry=None, now=None):
     return result
 
 
-def build_health_summary(sources, crawl_log, now=None):
+def build_health_summary(sources, crawl_log, now=None, notices=None):
     """Build health and source-coverage metrics for all configured sources."""
     now = now or datetime.now(timezone.utc)
     log_by_id = {entry.get("source_id"): entry for entry in crawl_log}
@@ -149,8 +149,18 @@ def build_health_summary(sources, crawl_log, now=None):
     missing_counties = sorted(NJ_COUNTIES - configured_counties)
     tier_counts = Counter(str(source.get("crawl_tier", "unknown")) for source in sources)
     frequency_counts = Counter(source.get("crawl_freq", "unknown") for source in sources)
+    active_review_records = [
+        notice for notice in (notices or [])
+        if not notice.get("source_inactive")
+        and (notice.get("geography_review_required") or notice.get("parser_review_required"))
+    ]
+    review_by_source = Counter(notice.get("source_id", "unknown") for notice in active_review_records)
 
-    overall = "error" if critical_failures else "warning" if severity_counts["error"] or severity_counts["warning"] else "ok"
+    overall = (
+        "error" if critical_failures
+        else "warning" if severity_counts["error"] or severity_counts["warning"] or active_review_records
+        else "ok"
+    )
     return {
         "generated_at": now.astimezone(timezone.utc).isoformat(),
         "overall": overall,
@@ -160,6 +170,10 @@ def build_health_summary(sources, crawl_log, now=None):
         "error_sources": severity_counts["error"],
         "critical_failures": len(critical_failures),
         "status_counts": dict(status_counts),
+        "data_quality": {
+            "active_records_requiring_segmentation_review": len(active_review_records),
+            "segmentation_review_by_source": dict(review_by_source),
+        },
         "coverage": {
             "county_sources": len(configured_counties),
             "counties_expected": len(NJ_COUNTIES),

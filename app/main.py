@@ -762,6 +762,8 @@ def enrich(opp: dict) -> dict:
             record["status"] = "noise"
         elif record.get("source_inactive"):
             record["status"] = "expired"
+        elif record.get("geography_review_required") or record.get("parser_review_required"):
+            record["status"] = "review_required"
         elif record.get("is_planned") or record.get("status") == "upcoming":
             record["status"] = "upcoming"
         elif deadline_is_past(record):
@@ -1136,10 +1138,15 @@ def export_csv():
         "title",
         "source_name",
         "county",
+        "county_provenance",
         "counties",
         "coverage_scope",
         "region_raw",
         "geography_confidence",
+        "geography_provenance",
+        "geography_evidence",
+        "agency_county_hint",
+        "geography_review_required",
         "record_type",
         "notice_subtype",
         "due_date_raw",

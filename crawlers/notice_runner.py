@@ -166,6 +166,8 @@ def _enrich(n):
         n["status"] = "noise"
     elif n.get("source_inactive"):
         n["status"] = "expired"
+    elif n.get("geography_review_required") or n.get("parser_review_required"):
+        n["status"] = "review_required"
     elif source_status in ("closed", "awarded", "cancelled", "canceled", "withdrawn"):
         n["status"] = "expired"
     elif n.get("is_planned") or source_status in ("upcoming", "planned", "anticipated"):
@@ -485,7 +487,7 @@ def main():
 
     _save(NOTICES_F, deduped)
 
-    health_summary = build_health_summary(NOTICE_SOURCES, _load(CRAWL_LOG_F))
+    health_summary = build_health_summary(NOTICE_SOURCES, _load(CRAWL_LOG_F), notices=deduped)
     _save(HEALTH_F, health_summary)
 
     # Summary
