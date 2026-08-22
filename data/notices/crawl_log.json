@@ -142,13 +142,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:06.346697+00:00",
+        "count": 6,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:18:39.787668+00:00",
+    "last_crawl": "2026-08-22T10:13:06.346697+00:00",
     "last_count": 6,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:18:39.787668+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:06.346697+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -290,13 +297,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:08.587871+00:00",
+        "count": 22,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:18:41.995700+00:00",
+    "last_crawl": "2026-08-22T10:13:08.587871+00:00",
     "last_count": 22,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:18:41.995700+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:08.587871+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -438,13 +452,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:16.017197+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:18:49.137262+00:00",
+    "last_crawl": "2026-08-22T10:13:16.017197+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:18:49.137262+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:16.017197+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -591,13 +612,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:20.883524+00:00",
+        "count": 10,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:18:52.634275+00:00",
+    "last_crawl": "2026-08-22T10:13:20.883524+00:00",
     "last_count": 10,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:18:52.634275+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:20.883524+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -739,13 +767,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:24.190495+00:00",
+        "count": 8,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:18:56.213576+00:00",
+    "last_crawl": "2026-08-22T10:13:24.190495+00:00",
     "last_count": 8,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:18:56.213576+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:24.190495+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -887,13 +922,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:26.632241+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:18:58.895376+00:00",
+    "last_crawl": "2026-08-22T10:13:26.632241+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:18:58.895376+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:26.632241+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -1035,13 +1077,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:28.807529+00:00",
+        "count": 5,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:01.100724+00:00",
+    "last_crawl": "2026-08-22T10:13:28.807529+00:00",
     "last_count": 5,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:01.100724+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:28.807529+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -1183,13 +1232,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:39.185335+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:10.771302+00:00",
+    "last_crawl": "2026-08-22T10:13:39.185335+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:10.771302+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:39.185335+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -1331,13 +1387,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:42.607240+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:14.478787+00:00",
+    "last_crawl": "2026-08-22T10:13:42.607240+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:14.478787+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:42.607240+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -1499,13 +1562,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:44.522950+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:16.478749+00:00",
+    "last_crawl": "2026-08-22T10:13:44.522950+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:16.478749+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:44.522950+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -1632,13 +1702,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:46.632490+00:00",
+        "count": 3,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:19.034917+00:00",
+    "last_crawl": "2026-08-22T10:13:46.632490+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:19.034917+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:46.632490+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -1760,13 +1837,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:49.496456+00:00",
+        "count": 4,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:21.932690+00:00",
+    "last_crawl": "2026-08-22T10:13:49.496456+00:00",
     "last_count": 4,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:21.932690+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:49.496456+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -1888,13 +1972,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:51.948223+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:24.284537+00:00",
+    "last_crawl": "2026-08-22T10:13:51.948223+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:24.284537+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:51.948223+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -2016,13 +2107,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:57.837156+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:30.317422+00:00",
+    "last_crawl": "2026-08-22T10:13:57.837156+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:30.317422+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:57.837156+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -2144,13 +2242,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:59.869896+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:32.473297+00:00",
+    "last_crawl": "2026-08-22T10:13:59.869896+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:32.473297+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:59.869896+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -2272,13 +2377,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:01.638227+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:34.237603+00:00",
+    "last_crawl": "2026-08-22T10:14:01.638227+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:34.237603+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:01.638227+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -2400,13 +2512,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:03.564424+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:36.207573+00:00",
+    "last_crawl": "2026-08-22T10:14:03.564424+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:36.207573+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:03.564424+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -2528,13 +2647,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:05.636182+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:38.380874+00:00",
+    "last_crawl": "2026-08-22T10:14:05.636182+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:38.380874+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:05.636182+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -2656,13 +2782,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:08.165311+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:40.721512+00:00",
+    "last_crawl": "2026-08-22T10:14:08.165311+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:40.721512+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:08.165311+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -2784,13 +2917,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:09.873457+00:00",
+        "count": 3,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:42.427699+00:00",
+    "last_crawl": "2026-08-22T10:14:09.873457+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:42.427699+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:09.873457+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -2912,13 +3052,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:12.151850+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:44.674269+00:00",
+    "last_crawl": "2026-08-22T10:14:12.151850+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:44.674269+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:12.151850+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3040,13 +3187,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:26.181431+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:20:00.258684+00:00",
+    "last_crawl": "2026-08-22T10:14:26.181431+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:20:00.258684+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:26.181431+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3168,13 +3322,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:30.102800+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:20:04.263816+00:00",
+    "last_crawl": "2026-08-22T10:14:30.102800+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:20:04.263816+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:30.102800+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3296,13 +3457,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:32.099109+00:00",
+        "count": 3,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:20:06.294403+00:00",
+    "last_crawl": "2026-08-22T10:14:32.099109+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:20:06.294403+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:32.099109+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3419,13 +3587,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:14.160961+00:00",
+        "count": 64,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:18:47.373399+00:00",
+    "last_crawl": "2026-08-22T10:13:14.160961+00:00",
     "last_count": 64,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:18:47.373399+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:14.160961+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3537,13 +3712,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:10.430779+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:18:43.810325+00:00",
+    "last_crawl": "2026-08-22T10:13:10.430779+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:18:43.810325+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:10.430779+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3650,13 +3832,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:30.507129+00:00",
+        "count": 3,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:02.820777+00:00",
+    "last_crawl": "2026-08-22T10:13:30.507129+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:02.820777+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:30.507129+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3763,13 +3952,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:32.332034+00:00",
+        "count": 4,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:04.769778+00:00",
+    "last_crawl": "2026-08-22T10:13:32.332034+00:00",
     "last_count": 4,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:04.769778+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:32.332034+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3876,13 +4072,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:34.944509+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:07.232900+00:00",
+    "last_crawl": "2026-08-22T10:13:34.944509+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:07.232900+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:34.944509+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -3989,13 +4192,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:13:37.037538+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:08.910746+00:00",
+    "last_crawl": "2026-08-22T10:13:37.037538+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:08.910746+00:00",
+    "last_successful_crawl": "2026-08-22T10:13:37.037538+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -4062,13 +4272,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:14.147716+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:46.744426+00:00",
+    "last_crawl": "2026-08-22T10:14:14.147716+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:46.744426+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:14.147716+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -4105,15 +4322,22 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:16.890106+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:49.249595+00:00",
+    "last_crawl": "2026-08-22T10:14:16.890106+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
     "last_state": "ok",
     "last_message": null,
-    "last_successful_crawl": "2026-08-22T01:19:49.249595+00:00"
+    "last_successful_crawl": "2026-08-22T10:14:16.890106+00:00"
   },
   {
     "source_id": "county-atlantic",
@@ -4178,13 +4402,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:20.191628+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:52.693616+00:00",
+    "last_crawl": "2026-08-22T10:14:20.191628+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:52.693616+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:20.191628+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -4281,15 +4512,22 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:22.499629+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:56.575898+00:00",
+    "last_crawl": "2026-08-22T10:14:22.499629+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
     "last_state": "ok",
     "last_message": null,
-    "last_successful_crawl": "2026-08-22T01:19:56.575898+00:00"
+    "last_successful_crawl": "2026-08-22T10:14:22.499629+00:00"
   },
   {
     "source_id": "county-sussex",
@@ -4337,13 +4575,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:24.516819+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:19:58.497170+00:00",
+    "last_crawl": "2026-08-22T10:14:24.516819+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:19:58.497170+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:24.516819+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -4528,13 +4773,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-08-22T10:14:27.908199+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-08-22T01:20:02.091627+00:00",
+    "last_crawl": "2026-08-22T10:14:27.908199+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-08-22T01:20:02.091627+00:00",
+    "last_successful_crawl": "2026-08-22T10:14:27.908199+00:00",
     "last_state": "ok",
     "last_message": null
   },
