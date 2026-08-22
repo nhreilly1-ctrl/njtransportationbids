@@ -935,9 +935,27 @@ class PublicDashboardTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         html = response.get_data(as_text=True)
-        self.assertIn("1 active opportunity", html)
-        self.assertIn("2 configured sources", html)
+        stats = re.search(
+            r'<div class="stats-row home-stats".*?(?=<div class="opportunity-lanes")', html, re.S
+        ).group(0)
+        construction_lane = re.search(
+            r'<section class="opportunity-lane lane-construction".*?</section>', html, re.S
+        ).group(0)
+        professional_lane = re.search(
+            r'<section class="opportunity-lane lane-professional".*?</section>', html, re.S
+        ).group(0)
+        self.assertEqual(stats.count('class="stat-card home-stat-card"'), 4)
+        self.assertIn('<div class="num c-blue">1</div>', stats)
+        self.assertIn('<div class="num c-teal">0</div>', stats)
+        self.assertIn('<div class="num">1</div>\n    <div class="lbl">Active notices</div>', stats)
+        self.assertIn('<div class="num">2</div>\n    <div class="lbl">Sources monitored</div>', stats)
         self.assertIn("1 healthy", html)
+        self.assertIn("1 live", construction_lane)
+        self.assertIn("0 live", professional_lane)
+        self.assertIn('href="/bids/construction"', stats)
+        self.assertIn('href="/bids/professional-services"', stats)
+        self.assertIn('href="/notices"', stats)
+        self.assertIn('href="/sources"', stats)
         self.assertIn('class="nav-toggle"', html)
         self.assertIn('id="primary-navigation"', html)
 

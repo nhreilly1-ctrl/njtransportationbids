@@ -50,10 +50,24 @@
   <p>Open and upcoming construction bids, engineering solicitations, and professional services from official public agencies.</p>
 </div>
 
-<div class="home-summary-line" aria-label="Opportunity inventory summary">
-  <strong>{{ stats.active }} active {{ 'opportunity' if stats.active == 1 else 'opportunities' }}</strong>
-  <span>{{ stats.sources }} configured sources ({{ stats.healthy_sources }} healthy)</span>
-  <span>{% if stats.last_updated %}Updated {{ stats.last_updated }}{% else %}Update time unavailable{% endif %}</span>
+<div class="stats-row home-stats" aria-label="Opportunity inventory summary">
+  <a class="stat-card home-stat-card" href="{{ url_for('bids_construction') }}">
+    <div class="num c-blue">{{ stats.construction }}</div>
+    <div class="lbl">Construction</div>
+  </a>
+  <a class="stat-card home-stat-card" href="{{ url_for('bids_profserv') }}">
+    <div class="num c-teal">{{ stats.professional_services }}</div>
+    <div class="lbl">Professional services</div>
+  </a>
+  <a class="stat-card home-stat-card" href="{{ url_for('notices2.notices_all') }}">
+    <div class="num">{{ stats.active }}</div>
+    <div class="lbl">Active notices</div>
+  </a>
+  <a class="stat-card home-stat-card" href="{{ url_for('sources') }}">
+    <div class="num">{{ stats.sources }}</div>
+    <div class="lbl">Sources monitored</div>
+    <span class="stat-detail">{{ stats.healthy_sources }} healthy</span>
+  </a>
 </div>
 
 <div class="opportunity-lanes">
