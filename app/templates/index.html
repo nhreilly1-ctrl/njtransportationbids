@@ -23,93 +23,91 @@
 {% endblock %}
 {% block content %}
 
-{% macro home_card(o, urgent=false) %}
-  <div class="bid-card {{ 'soon' if urgent }}">
-    <div class="bid-dot {{ 'dot-green' if o.status == 'open' else 'dot-amber' }}"></div>
-    <div class="bid-main">
-      <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
-      <div class="bid-meta">
-        {{ o.source_name }} &middot; {{ o.county_display }}
-        {% if o.contract_number %}&middot; {{ o.contract_number }}{% endif %}
-      </div>
-      <div class="bid-tags">
-        {% if o.status == 'open' %}<span class="badge badge-open">Open</span>
-        {% else %}<span class="badge badge-type-p">Upcoming</span>{% endif %}
-        {% if o.record_type == 'construction' %}<span class="badge badge-type-c">Construction</span>
-        {% elif o.record_type == 'professional_services' %}<span class="badge badge-type-p">Professional services</span>
-        {% elif o.record_type == 'public_notice' %}<span class="badge badge-type-n">Notice</span>{% endif %}
-        {% if o.access_type and o.access_type not in ('Unknown', '') %}<span class="badge badge-access">{{ o.access_type }}</span>{% endif %}
-        {% if o.platform and o.platform not in ('Unknown', '') %}<span class="badge badge-access">{{ o.platform }}</span>{% endif %}
-      </div>
-    </div>
-    <div class="bid-due {{ 'soon-due' if urgent }}">
-      {% if o.due_date_raw and o.deadline_display %}
-        <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span>
-        <span class="due-date">{{ o.deadline_display }}</span>
+{% macro lane_row(o) %}
+  {% if o.days_until_due is none %}{% set urgency = 'undated' %}
+  {% elif o.days_until_due <= 2 %}{% set urgency = 'urgent' %}
+  {% elif o.days_until_due <= 7 %}{% set urgency = 'soon' %}
+  {% else %}{% set urgency = 'future' %}{% endif %}
+  <article class="lane-row">
+    <div class="countdown countdown-{{ urgency }}">
+      {% if o.days_until_due is none %}
+        <strong>Date</strong><span>TBA</span>
+      {% elif o.days_until_due == 0 %}
+        <strong>Today</strong><span>due</span>
+      {% elif o.days_until_due == 1 %}
+        <strong>1 day</strong><span>left</span>
       {% else %}
-        <span class="due-label">Deadline</span>
-        <span class="due-date unresolved-date">Date not published</span>
+        <strong>{{ o.days_until_due }} days</strong><span>left</span>
       {% endif %}
     </div>
-  </div>
+    <div class="lane-row-main">
+      <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="lane-title">{{ o.title }}</a>
+      <div class="lane-meta">
+        <span>{{ o.source_name }}</span>
+        <span>{{ o.county_display }}</span>
+        {% if o.contract_number %}<span>{{ o.contract_number }}</span>{% endif %}
+      </div>
+      <div class="lane-deadline">
+        {% if o.deadline_display %}{{ o.deadline_display }}{% else %}Deadline not published{% endif %}
+        {% if o.homepage_platform %}<span class="lane-platform">{{ o.homepage_platform }}</span>{% endif %}
+      </div>
+    </div>
+  </article>
 {% endmacro %}
 
-<div class="page-header">
+<div class="page-header home-page-header">
   <h1>Live New Jersey Transportation Opportunities</h1>
   <p>Open and upcoming construction bids, engineering solicitations, and professional services from official public agencies.</p>
 </div>
 
-<div class="stats-row">
-  <a href="{{ url_for('bids_construction') }}" style="text-decoration:none; color:inherit;">
-    <div class="stat-card">
-      <div class="num c-blue">{{ stats.construction }}</div>
-      <div class="lbl">Construction open + upcoming</div>
-    </div>
-  </a>
-  <a href="{{ url_for('bids_profserv') }}" style="text-decoration:none; color:inherit;">
-    <div class="stat-card">
-      <div class="num c-teal">{{ stats.professional_services }}</div>
-      <div class="lbl">Professional services active</div>
-    </div>
-  </a>
-  <a href="{{ url_for('notices2.notices_all') }}" style="text-decoration:none; color:inherit;">
-    <div class="stat-card">
-      <div class="num c-amber">{{ stats.public_notice }}</div>
-      <div class="lbl">Official notices active</div>
-    </div>
-  </a>
-  <a href="{{ url_for('sources') }}" style="text-decoration:none; color:inherit;">
-    <div class="stat-card">
-      <div class="num">{{ stats.sources }}</div>
-      <div class="lbl">Sources monitored <span class="stat-detail">{{ stats.healthy_sources }} healthy</span></div>
-    </div>
-  </a>
+<div class="home-summary-line" aria-label="Opportunity inventory summary">
+  <strong>{{ stats.active }} active {{ 'opportunity' if stats.active == 1 else 'opportunities' }}</strong>
+  <span>{{ stats.sources }} configured sources ({{ stats.healthy_sources }} healthy)</span>
+  <span>{% if stats.last_updated %}Updated {{ stats.last_updated }}{% else %}Update time unavailable{% endif %}</span>
 </div>
 
-<div class="home-feed-head">
-  <div>
-    <h2>Closing within 7 days</h2>
-    <p>Nearest published deadlines, ordered soonest first.</p>
-  </div>
-  <div class="home-actions">
-    <a href="{{ url_for('bids_construction') }}" class="btn btn-primary">All construction bids</a>
-    <a href="{{ url_for('bids_profserv') }}" class="btn">All professional services</a>
-  </div>
-</div>
-{% if closing_soon %}
-  {% for o in closing_soon %}{{ home_card(o, true) }}{% endfor %}
-{% else %}
-  <div class="detail-card"><p style="font-size:13px;color:var(--text2);">No published deadlines fall within the next seven days.</p></div>
-{% endif %}
-
-{% if more_live %}
-  <div class="home-feed-head">
-    <div>
-      <h2>More live opportunities</h2>
-      <p>Additional open and planned work from the monitored source inventory.</p>
+<div class="opportunity-lanes">
+  <section class="opportunity-lane lane-construction" aria-labelledby="construction-lane-title">
+    <div class="lane-head">
+      <div><h2 id="construction-lane-title">Construction</h2><span>{{ stats.construction }} live</span></div>
+      <a href="{{ url_for('bids_construction') }}">View all</a>
     </div>
-  </div>
-  {% for o in more_live %}{{ home_card(o) }}{% endfor %}
+    <div class="lane-list">
+      {% if construction_lane %}
+        {% for o in construction_lane %}{{ lane_row(o) }}{% endfor %}
+      {% else %}
+        <p class="lane-empty">No live construction opportunities are currently published.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="opportunity-lane lane-professional" aria-labelledby="professional-lane-title">
+    <div class="lane-head">
+      <div><h2 id="professional-lane-title">Professional services</h2><span>{{ stats.professional_services }} live</span></div>
+      <a href="{{ url_for('bids_profserv') }}">View all</a>
+    </div>
+    <div class="lane-list">
+      {% if professional_lane %}
+        {% for o in professional_lane %}{{ lane_row(o) }}{% endfor %}
+      {% else %}
+        <p class="lane-empty">No live professional-services opportunities are currently published.</p>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+{% if unclassified_lane %}
+  <section class="opportunity-lane lane-unclassified" aria-labelledby="unclassified-lane-title">
+    <div class="lane-head">
+      <div>
+        <h2 id="unclassified-lane-title">Type not yet classified</h2>
+        <span>{{ unclassified_lane|length }} live {{ 'record' if unclassified_lane|length == 1 else 'records' }} awaiting review</span>
+      </div>
+    </div>
+    <div class="lane-list lane-list-unclassified">
+      {% for o in unclassified_lane %}{{ lane_row(o) }}{% endfor %}
+    </div>
+  </section>
 {% endif %}
 
 <div class="home-secondary">

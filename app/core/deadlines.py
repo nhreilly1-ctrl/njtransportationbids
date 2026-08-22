@@ -198,6 +198,21 @@ def deadline_date(record: dict) -> date | None:
         return None
 
 
+def deadline_days_remaining(record: dict, now: datetime | date | None = None) -> int | None:
+    """Count Eastern calendar dates, not elapsed 24-hour periods."""
+    due = deadline_date(record)
+    if not due:
+        return None
+    if isinstance(now, date) and not isinstance(now, datetime):
+        today = now
+    else:
+        current = now or datetime.now(EASTERN)
+        if current.tzinfo is None:
+            current = current.replace(tzinfo=EASTERN)
+        today = current.astimezone(EASTERN).date()
+    return (due - today).days
+
+
 def deadline_is_past(record: dict, now: datetime | None = None) -> bool:
     """Use the exact instant when published; otherwise expire after the local date."""
     now = now or datetime.now(EASTERN)

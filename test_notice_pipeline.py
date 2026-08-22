@@ -809,9 +809,14 @@ class PublicDashboardTests(unittest.TestCase):
 
     def test_homepage_counts_canonical_crawler_sources(self):
         enriched = {
+            "id": "one",
+            "title": "One live construction opportunity",
+            "source_name": "Agency One",
             "status": "open",
             "record_type": "construction",
             "due_date_parsed": None,
+            "deadline_display": "Date not published",
+            "county_display": "County not stated in notice",
         }
         with (
             patch.object(app_main, "load_public_opps", return_value=[{"id": "one"}]),
@@ -828,16 +833,12 @@ class PublicDashboardTests(unittest.TestCase):
             response = app_main.app.test_client().get("/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertRegex(
-            response.get_data(as_text=True),
-            r'<div class="num">\s*2\s*</div>\s*<div class="lbl">Sources monitored\s*<span[^>]*>1 healthy</span>',
-        )
-        self.assertIn('class="nav-toggle"', response.get_data(as_text=True))
-        self.assertIn('id="primary-navigation"', response.get_data(as_text=True))
-        self.assertRegex(
-            response.get_data(as_text=True),
-            r'<div class="num c-amber">\s*1\s*</div>\s*<div class="lbl">Official notices active</div>',
-        )
+        html = response.get_data(as_text=True)
+        self.assertIn("1 active opportunity", html)
+        self.assertIn("2 configured sources", html)
+        self.assertIn("1 healthy", html)
+        self.assertIn('class="nav-toggle"', html)
+        self.assertIn('id="primary-navigation"', html)
 
     def test_homepage_uses_normalized_deadlines_and_shared_live_status(self):
         records = [
@@ -881,7 +882,8 @@ class PublicDashboardTests(unittest.TestCase):
 
         html = response.get_data(as_text=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Closing within 7 days", html)
+        self.assertIn("Construction", html)
+        self.assertIn("Professional services", html)
         self.assertIn("Tue, Aug 25, 2026 at 4:00 PM ET", html)
         self.assertIn("Tue, Aug 25, 2026 (time not published)", html)
         self.assertNotRegex(html, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}")
@@ -892,6 +894,67 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertIn("OpenGov", html)
         self.assertNotIn("not resolved", detail.get_data(as_text=True).lower())
         self.assertIn("County not stated in notice", detail.get_data(as_text=True))
+
+    def test_homepage_uses_canonical_lanes_and_an_unclassified_fallback(self):
+        records = [
+            self._scan_record(
+                "construction",
+                "Route resurfacing due tomorrow",
+                "08/22/2026 11:00 PM ET",
+            ),
+            self._scan_record(
+                "professional",
+                "Bridge design services",
+                "08/23/2026",
+                notice_type="professional_services",
+                notice_subtype="professional_services",
+                platform="BidNet Direct",
+            ),
+            self._scan_record(
+                "unknown",
+                "NJTA opportunity awaiting type review",
+                "08/24/2026",
+                source_id="state-njta",
+                source_name="New Jersey Turnpike Authority",
+                notice_type="uncategorized",
+                notice_subtype=None,
+            ),
+            self._scan_record("expired", "Expired construction work", "08/20/2026"),
+        ]
+
+        class FixedDate(date):
+            @classmethod
+            def today(cls):
+                return cls(2026, 8, 21)
+
+        with (
+            patch.object(app_main, "load_public_opps", return_value=records),
+            patch.object(app_main, "load_public_sources", return_value=[]),
+            patch.object(app_main, "date", FixedDate),
+        ):
+            response = app_main.app.test_client().get("/")
+
+        html = response.get_data(as_text=True)
+        construction_lane = re.search(
+            r'<section class="opportunity-lane lane-construction".*?</section>', html, re.S
+        ).group(0)
+        professional_lane = re.search(
+            r'<section class="opportunity-lane lane-professional".*?</section>', html, re.S
+        ).group(0)
+        unclassified_lane = re.search(
+            r'<section class="opportunity-lane lane-unclassified".*?</section>', html, re.S
+        ).group(0)
+
+        self.assertIn("Route resurfacing due tomorrow", construction_lane)
+        self.assertNotIn("Bridge design services", construction_lane)
+        self.assertIn("Bridge design services", professional_lane)
+        self.assertNotIn("NJTA opportunity awaiting type review", professional_lane)
+        self.assertIn("NJTA opportunity awaiting type review", unclassified_lane)
+        self.assertIn("1 day", construction_lane)
+        self.assertIn("time not published", professional_lane)
+        self.assertIn("BidNet Direct", professional_lane)
+        self.assertNotIn("Agency website", construction_lane)
+        self.assertNotIn("Expired construction work", html)
 
     def test_homepage_prioritizes_opportunities_and_resources_move_off_page(self):
         with (

@@ -15,6 +15,7 @@ from flask import Flask, Response, jsonify, redirect, render_template, request, 
 
 from app.core.deadlines import (
     deadline_date,
+    deadline_days_remaining,
     deadline_is_past,
     format_eastern_timestamp,
     normalize_deadline,
@@ -1084,28 +1085,74 @@ def sitemap_xml():
     return Response("\n".join(lines), mimetype="application/xml")
 
 
+HOMEPAGE_ACCESS_PLATFORMS = (
+    "bid express",
+    "bidnet",
+    "njstart",
+    "opengov",
+    "planetbids",
+    "questcdn",
+)
+
+
+def _homepage_platform(record: dict) -> str:
+    """Only surface platforms that change how a contractor gets bid documents."""
+    platform = str(record.get("platform") or "").strip()
+    normalized = platform.lower()
+    if any(name in normalized for name in HOMEPAGE_ACCESS_PLATFORMS):
+        return platform
+    return ""
+
+
+def _latest_homepage_update(records: list[dict]) -> str | None:
+    latest = None
+    for record in records:
+        value = record.get("crawled_at") or record.get("created_at")
+        if not value:
+            continue
+        try:
+            parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+        except (TypeError, ValueError):
+            continue
+        if latest is None or parsed.astimezone(timezone.utc) > latest:
+            latest = parsed.astimezone(timezone.utc)
+    return format_eastern_timestamp(latest.isoformat()) if latest else None
+
+
 @app.route("/")
 def index():
     opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted", "disabled")]
     active = sort_opps([opp for opp in opps if opp["status"] in ("open", "upcoming")])
-    closing_soon, _, _, _, _ = group_opportunity_scan(active)
-    closing_soon = closing_soon[:8]
-    closing_ids = {opp.get("id") for opp in closing_soon}
-    more_live = [opp for opp in active if opp.get("id") not in closing_ids][:8]
+    today = date.today()
+    for opp in active:
+        opp["days_until_due"] = deadline_days_remaining(opp, today)
+        opp["homepage_platform"] = _homepage_platform(opp)
+
+    construction = [opp for opp in active if opp.get("record_type") == "construction"]
+    professional = [opp for opp in active if opp.get("record_type") == "professional_services"]
+    unclassified = [
+        opp
+        for opp in active
+        if opp.get("record_type") not in ("construction", "professional_services")
+    ]
     public_sources = load_public_sources()
     stats = {
-        "construction": len([opp for opp in active if opp["record_type"] == "construction"]),
-        "professional_services": len([opp for opp in active if opp["record_type"] == "professional_services"]),
-        "public_notice": len(active),
+        "construction": len(construction),
+        "professional_services": len(professional),
+        "active": len(active),
         "sources": len(public_sources),
         "healthy_sources": len([source for source in public_sources if source.get("severity") == "ok"]),
+        "last_updated": _latest_homepage_update(opps),
     }
     return render_template(
         "index.html",
         stats=stats,
-        closing_soon=closing_soon,
-        more_live=more_live,
+        construction_lane=construction[:6],
+        professional_lane=professional[:6],
+        unclassified_lane=unclassified[:8],
     )
 
 

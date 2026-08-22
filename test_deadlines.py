@@ -4,7 +4,7 @@ from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
 from app import main as app_main
-from app.core.deadlines import deadline_is_past, normalize_deadline
+from app.core.deadlines import deadline_days_remaining, deadline_is_past, normalize_deadline
 
 
 class DeadlineNormalizationTests(unittest.TestCase):
@@ -70,6 +70,24 @@ class DeadlineNormalizationTests(unittest.TestCase):
 
         self.assertFalse(deadline_is_past(record, before))
         self.assertTrue(deadline_is_past(record, after))
+
+    def test_days_remaining_uses_eastern_calendar_dates(self):
+        record = normalize_deadline(
+            {"due_date_raw": "08/22/2026 11:00 PM ET"},
+            today=date(2026, 8, 21),
+        )
+        late_evening = datetime(2026, 8, 21, 23, 30, tzinfo=ZoneInfo("America/New_York"))
+
+        self.assertEqual(deadline_days_remaining(record, late_evening), 1)
+
+    def test_date_only_countdown_preserves_unpublished_time(self):
+        record = normalize_deadline(
+            {"due_date_raw": "08/22/2026"},
+            today=date(2026, 8, 21),
+        )
+
+        self.assertEqual(deadline_days_remaining(record, date(2026, 8, 21)), 1)
+        self.assertEqual(record["deadline_display"], "Sat, Aug 22, 2026 (time not published)")
 
 
 class PublicSourceLedgerTests(unittest.TestCase):
