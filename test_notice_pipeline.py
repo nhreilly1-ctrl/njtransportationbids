@@ -801,6 +801,17 @@ class PublicDashboardTests(unittest.TestCase):
         record.update(overrides)
         return record
 
+    def test_homepage_calendar_date_is_anchored_to_eastern_time(self):
+        class FixedDatetime(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                if tz != app_main.EASTERN:
+                    raise AssertionError("homepage clock must request Eastern time")
+                return cls(2026, 8, 21, 21, 30, tzinfo=tz)
+
+        with patch.object(app_main, "datetime", FixedDatetime):
+            self.assertEqual(app_main._homepage_today(), date(2026, 8, 21))
+
     def test_opportunity_scan_defaults_to_live_deadline_order(self):
         records = [
             self._scan_record("later", "Bridge work closing later", "09/20/2026"),
@@ -964,7 +975,7 @@ class PublicDashboardTests(unittest.TestCase):
         with (
             patch.object(app_main, "load_public_opps", return_value=records),
             patch.object(app_main, "load_public_sources", return_value=[]),
-            patch.object(app_main, "date", FixedDate),
+            patch.object(app_main, "_homepage_today", return_value=FixedDate(2026, 8, 21)),
         ):
             client = app_main.app.test_client()
             response = client.get("/")
@@ -1022,7 +1033,7 @@ class PublicDashboardTests(unittest.TestCase):
         with (
             patch.object(app_main, "load_public_opps", return_value=records),
             patch.object(app_main, "load_public_sources", return_value=[]),
-            patch.object(app_main, "date", FixedDate),
+            patch.object(app_main, "_homepage_today", return_value=FixedDate(2026, 8, 21)),
         ):
             response = app_main.app.test_client().get("/")
 
@@ -1079,7 +1090,7 @@ class PublicDashboardTests(unittest.TestCase):
         with (
             patch.object(app_main, "load_public_opps", return_value=records),
             patch.object(app_main, "load_public_sources", return_value=[]),
-            patch.object(app_main, "date", FixedDate),
+            patch.object(app_main, "_homepage_today", return_value=FixedDate(2026, 8, 22)),
         ):
             response = app_main.app.test_client().get("/")
 

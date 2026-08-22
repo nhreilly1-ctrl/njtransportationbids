@@ -14,6 +14,7 @@ from psycopg2.extras import RealDictCursor
 from flask import Flask, Response, jsonify, redirect, render_template, request, session, url_for
 
 from app.core.deadlines import (
+    EASTERN,
     deadline_date,
     deadline_days_remaining,
     deadline_is_past,
@@ -1127,6 +1128,10 @@ def _latest_homepage_update(records: list[dict]) -> str | None:
     return format_eastern_timestamp(latest.isoformat()) if latest else None
 
 
+def _homepage_today() -> date:
+    return datetime.now(EASTERN).date()
+
+
 def _homepage_deadline_time(record: dict) -> str:
     """Render only a published bid time; date-only records stay silent."""
     if not record.get("deadline_has_time") or not record.get("deadline_local"):
@@ -1179,7 +1184,7 @@ def index():
     opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted", "disabled")]
     active = sort_opps([opp for opp in opps if opp["status"] in ("open", "upcoming")])
-    today = date.today()
+    today = _homepage_today()
     for opp in active:
         opp["days_until_due"] = None if opp.get("deadline_conflict") else deadline_days_remaining(opp, today)
         opp["homepage_platform"] = _homepage_platform(opp)
