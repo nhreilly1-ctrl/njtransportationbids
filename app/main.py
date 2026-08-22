@@ -19,6 +19,7 @@ from app.core.deadlines import (
     deadline_is_past,
     format_eastern_timestamp,
     normalize_deadline,
+    reconcile_authoritative_open_deadline,
 )
 from app.core.geography import NJ_COUNTIES, enrich_geography
 from crawlers.notice_sources import NOTICE_SOURCES
@@ -751,6 +752,7 @@ def enrich(opp: dict) -> dict:
     record = dict(opp)
     enrich_geography(record)
     normalize_deadline(record)
+    deadline_conflict = reconcile_authoritative_open_deadline(record)
     due = deadline_date(record)
     crawled_at = str(record.get("crawled_at") or record.get("created_at") or "")
     record["last_verified_date"] = crawled_at[:10] if len(crawled_at) >= 10 else None
@@ -769,6 +771,8 @@ def enrich(opp: dict) -> dict:
             record["status"] = "review_required"
         elif record.get("is_planned") or record.get("status") == "upcoming":
             record["status"] = "upcoming"
+        elif deadline_conflict:
+            record["status"] = "open"
         elif deadline_is_past(record):
             record["status"] = "expired"
         elif due or record.get("status") == "open" or record.get("source_status") in ("open", "advertised", "current"):
@@ -800,6 +804,8 @@ def enrich(opp: dict) -> dict:
         elif is_noise and manual != "approved":
             record["status"] = "noise"
             record["noise_reason"] = reason
+        elif deadline_conflict:
+            record["status"] = "open"
         elif deadline_is_past(record):
             record["status"] = "expired"
         elif manual == "approved":
@@ -964,8 +970,8 @@ def sort_opps(opps: list[dict]) -> list[dict]:
     return sorted(
         opps,
         key=lambda opp: (
-            1 if not opp.get("due_date_parsed") else 0,
-            opp.get("due_date_parsed") or "9999-12-31",
+            1 if not opp.get("due_date_parsed") or opp.get("deadline_conflict") else 0,
+            "9999-12-31" if opp.get("deadline_conflict") else opp.get("due_date_parsed") or "9999-12-31",
             opp.get("deadline_at") or "9999-12-31T23:59:59Z",
             (opp.get("title") or "").lower(),
         ),
@@ -1128,7 +1134,7 @@ def index():
     active = sort_opps([opp for opp in opps if opp["status"] in ("open", "upcoming")])
     today = date.today()
     for opp in active:
-        opp["days_until_due"] = deadline_days_remaining(opp, today)
+        opp["days_until_due"] = None if opp.get("deadline_conflict") else deadline_days_remaining(opp, today)
         opp["homepage_platform"] = _homepage_platform(opp)
 
     construction = [opp for opp in active if opp.get("record_type") == "construction"]

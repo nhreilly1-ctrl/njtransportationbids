@@ -4,7 +4,12 @@ from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
 from app import main as app_main
-from app.core.deadlines import deadline_days_remaining, deadline_is_past, normalize_deadline
+from app.core.deadlines import (
+    deadline_days_remaining,
+    deadline_is_past,
+    normalize_deadline,
+    reconcile_authoritative_open_deadline,
+)
 
 
 class DeadlineNormalizationTests(unittest.TestCase):
@@ -88,6 +93,27 @@ class DeadlineNormalizationTests(unittest.TestCase):
 
         self.assertEqual(deadline_days_remaining(record, date(2026, 8, 21)), 1)
         self.assertEqual(record["deadline_display"], "Sat, Aug 22, 2026 (time not published)")
+
+    def test_authoritative_open_status_marks_a_past_deadline_as_conflicted(self):
+        record = normalize_deadline(
+            {
+                "due_date_raw": "August 6, 2026",
+                "source_status": "Open",
+                "source_status_authoritative": True,
+            },
+            today=date(2026, 8, 21),
+        )
+
+        conflicted = reconcile_authoritative_open_deadline(
+            record,
+            datetime(2026, 8, 21, 12, 0, tzinfo=ZoneInfo("America/New_York")),
+        )
+
+        self.assertTrue(conflicted)
+        self.assertTrue(record["deadline_conflict"])
+        self.assertIsNone(record["days_until_due"])
+        self.assertIn("currently lists this opportunity as Open", record["deadline_display"])
+        self.assertIn("Thu, Aug 6, 2026", record["published_deadline_display"])
 
 
 class PublicSourceLedgerTests(unittest.TestCase):

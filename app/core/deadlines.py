@@ -145,6 +145,8 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
         deadline_display="Deadline not published",
         due_date_parsed=None,
         days_until_due=None,
+        deadline_conflict=False,
+        published_deadline_display=None,
     )
     if raw.lower() in UNKNOWN_VALUES:
         return record
@@ -211,6 +213,30 @@ def deadline_days_remaining(record: dict, now: datetime | date | None = None) ->
             current = current.replace(tzinfo=EASTERN)
         today = current.astimezone(EASTERN).date()
     return (due - today).days
+
+
+def reconcile_authoritative_open_deadline(
+    record: dict,
+    now: datetime | None = None,
+) -> bool:
+    """Keep an authoritative Open record live while disclosing a stale deadline."""
+    source_status = str(record.get("source_status") or "").strip().lower()
+    if not record.get("source_status_authoritative") or source_status != "open":
+        return False
+    if not deadline_is_past(record, now):
+        return False
+
+    published_display = record.get("deadline_display") or "Published closing date"
+    record.update(
+        deadline_conflict=True,
+        published_deadline_display=published_display,
+        deadline_display=(
+            f"{published_display} - agency currently lists this opportunity as Open; "
+            "verify the closing date"
+        ),
+        days_until_due=None,
+    )
+    return True
 
 
 def deadline_is_past(record: dict, now: datetime | None = None) -> bool:

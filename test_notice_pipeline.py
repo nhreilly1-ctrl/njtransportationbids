@@ -136,6 +136,78 @@ class NoticeCrawlerTests(unittest.TestCase):
             "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
         )
 
+    def test_njta_parser_separates_status_category_deadline_and_contract_fields(self):
+        listing = (FIXTURES / "njta_current_solicitations.html").read_text(encoding="utf-8")
+        source = dict(
+            SOURCE,
+            id="state-njta",
+            name="NJ Turnpike Authority",
+            url="https://www.njta.gov/business-hub/current-solicitations/",
+            parser="njta",
+        )
+
+        def response_for(url, **_kwargs):
+            if url.startswith(source["url"] + "?"):
+                return SimpleNamespace(text=listing)
+            if url.endswith("/towing/"):
+                return SimpleNamespace(text="<h1>Towing</h1><p>Closing Date: September 8, 2026 at 3:00 PM</p>")
+            return SimpleNamespace(text="<h1>Solicitation detail</h1>")
+
+        with patch.object(notice_crawlers, "_get", side_effect=response_for) as get_mock:
+            records = notice_crawlers.parse_njta(source)
+
+        self.assertEqual(get_mock.call_args_list[0].args[0], source["url"] + "?status=open")
+
+        by_url = {record["official_url"].rstrip("/").rsplit("/", 1)[-1]: record for record in records}
+        towing = by_url["towing"]
+        signals = by_url["signals"]
+        mileage = by_url["mileage"]
+        vms = by_url["vms"]
+
+        self.assertEqual(towing["notice_type"], "construction")
+        self.assertEqual(towing["notice_subtype"], "roadway_support_services")
+        self.assertEqual(towing["due_date_raw"], "September 8, 2026 at 3:00 PM")
+        self.assertEqual(towing["closing_date_raw"], "September 8, 2026")
+        self.assertEqual(towing["source_status_raw"], "Open")
+        self.assertTrue(towing["source_status_authoritative"])
+        self.assertEqual(towing["contract_number_raw"], "RM — 202112")
+        self.assertEqual(towing["contract_number_match"], "RM-202112")
+        self.assertFalse(notice_runner._is_noise(towing)[0])
+
+        self.assertEqual(signals["contract_number_raw"], "A200.915 — 1")
+        self.assertEqual(signals["contract_number_match"], "A200.915-1")
+        self.assertEqual(signals["notice_type"], "construction")
+        self.assertEqual(mileage["title"], "Roadway Improvements Milepost 103.5 to 106.3")
+        self.assertEqual(mileage["njta_category"], "Construction & Maintenance")
+        self.assertEqual(vms["notice_type"], "out_of_scope")
+        self.assertTrue(vms["scope_excluded"])
+        self.assertEqual(notice_runner._is_noise(vms)[1], "out of scope: NJTA Goods & Non-Engineering Services")
+
+        self.assertTrue(notice_runner._is_noise(by_url["broker"])[0])
+        self.assertTrue(notice_runner._is_noise(by_url["health"])[0])
+
+    def test_njta_navigation_guards_and_open_status_precedence(self):
+        for title in ("Traffic Cameras", "SafeTripNJ App", "Trip PlanningToll Calculator", "Forms & Records"):
+            is_noise, _ = notice_runner._is_noise({"title": title, "source_id": "state-njta"})
+            self.assertTrue(is_noise, title)
+
+        record = {
+            "id": "njta-signals",
+            "title": "Maintenance and Repair of Traffic Signals",
+            "source_id": "state-njta",
+            "source_status": "open",
+            "source_status_authoritative": True,
+            "due_date_raw": "August 6, 2026",
+            "notice_type": "construction",
+            "county": "Statewide",
+        }
+        now = datetime(2026, 8, 21, 12, 0, tzinfo=timezone(timedelta(hours=-4)))
+        enriched = notice_runner._enrich(record, now=now)
+
+        self.assertEqual(enriched["status"], "open")
+        self.assertTrue(enriched["deadline_conflict"])
+        self.assertFalse(enriched["urgent"])
+
     def test_njdot_construction_keeps_latest_amended_contract_row(self):
         html = """
         <table>
@@ -762,6 +834,24 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertIn("Deadline not resolved", html)
         self.assertIn("Mon, Aug 24, 2026 (time not published)", html)
         self.assertNotIn("12:00 AM", html)
+
+    def test_canonical_njta_open_deadline_conflict_stays_live_and_sorts_as_undated(self):
+        conflicted = self._scan_record(
+            "njta-conflict",
+            "NJTA traffic signal maintenance",
+            "01/01/2000",
+            source_id="state-njta",
+            source_name="NJ Turnpike Authority",
+            source_status="open",
+            source_status_authoritative=True,
+        )
+        future = app_main.enrich(self._scan_record("future", "Future bridge contract", "12/31/2099"))
+        enriched = app_main.enrich(conflicted)
+
+        self.assertEqual(enriched["status"], "open")
+        self.assertTrue(enriched["deadline_conflict"])
+        self.assertIsNone(enriched["days_until_due"])
+        self.assertEqual(app_main.sort_opps([enriched, future])[-1]["id"], "njta-conflict")
 
     def test_show_closed_includes_expired_and_noise_without_changing_data(self):
         records = [

@@ -31,7 +31,12 @@ from notice_sources import (
 )
 from notice_crawlers import crawl_source, parse_sos_directory, parse_municipal_from_sos
 from source_health import build_health_summary
-from app.core.deadlines import deadline_date, deadline_is_past, normalize_deadline
+from app.core.deadlines import (
+    deadline_date,
+    deadline_is_past,
+    normalize_deadline,
+    reconcile_authoritative_open_deadline,
+)
 from app.core.geography import enrich_geography
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -127,7 +132,7 @@ def _dedupe(notices):
     for n in ordered:
         nid = n.get("id","")
         src = n.get("source_id","")
-        cno = (n.get("contract_number","") or "").strip().upper()
+        cno = (n.get("contract_number_match") or n.get("contract_number","") or "").strip().upper()
         ck  = f"{src}:{cno}" if cno else None
         normalized_title = " ".join((n.get("title") or "").lower().split())
         title_key = f"{src}:{normalized_title}"
@@ -151,10 +156,12 @@ def _dedupe(notices):
 
 # ── Enrichment ────────────────────────────────────────────────────────────────
 
-def _enrich(n):
+def _enrich(n, now=None):
     """Compute status, days_until_due, preserve manual overrides."""
     enrich_geography(n)
-    normalize_deadline(n)
+    today = now.date() if now is not None else None
+    normalize_deadline(n, today=today)
+    deadline_conflict = reconcile_authoritative_open_deadline(n, now)
 
     # Respect admin overrides
     if n.get("status_override") in ("approved","noise","deleted"):
@@ -176,7 +183,9 @@ def _enrich(n):
         n["status"] = "expired"
     elif n.get("is_planned") or source_status in ("upcoming", "planned", "anticipated"):
         n["status"] = "upcoming"
-    elif deadline_is_past(n):
+    elif deadline_conflict:
+        n["status"] = "open"
+    elif deadline_is_past(n, now):
         n["status"] = "expired"
     elif due:
         n["status"] = "open"
@@ -189,6 +198,7 @@ def _enrich(n):
     n["urgent"] = (
         due is not None
         and n["status"] == "open"
+        and not n.get("deadline_conflict")
         and n.get("days_until_due") is not None
         and n["days_until_due"] <= 7
     )
@@ -233,6 +243,9 @@ def _is_noise(n):
     excerpt = (n.get("notice_excerpt") or "").lower()
     text = title + " " + excerpt
 
+    if n.get("scope_excluded"):
+        reason = n.get("scope_exclusion_reason") or "published category"
+        return True, f"out of scope: {reason}"
     if len(title.split()) < 5:
         return True, "title too short"
     for p in NOTICE_NOISE_PHRASES:
@@ -240,6 +253,12 @@ def _is_noise(n):
             return True, f"noise phrase: {p}"
     for k in OUT_OF_SCOPE_NOTICES:
         if k in title:
+            if (
+                n.get("source_id") == "state-njta"
+                and n.get("notice_subtype") == "roadway_support_services"
+                and k == "extra heavy duty towing"
+            ):
+                continue
             return True, f"out of scope: {k}"
     return False, ""
 

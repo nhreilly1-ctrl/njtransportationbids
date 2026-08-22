@@ -920,88 +920,148 @@ def parse_njtpa(source):
     return records
 
 
+NJTA_CATEGORY_SUFFIX_RE = re.compile(
+    r"(Engineering\s+Professional\s+Services|Construction\s*(?:&|and)\s*Maintenance|"
+    r"Goods\s*&\s*Non\s*(?:[-\u2013\u2014]\s*)?Engineering\s+Services)\s*$",
+    re.I,
+)
+NJTA_ROADWAY_SUPPORT_KW = (
+    "towing",
+    "tree trimming",
+    "snow removal",
+    "salting services",
+    "roadway sweeping",
+)
+
+
+def _njta_contract_fields(title_raw):
+    patterns = (
+        r"\b((?:RM|R)\s*[-\u2013\u2014]\s*\d{6})\b",
+        r"\b(OPS\s+No\.\s*[A-Z]\d+)\b",
+        r"\bOrder\s+(?:for\s+)?Professional\s+Services\s+No\.\s*([A-Z]\d+)\b",
+        r"\b([A-Z]\d{3}\.\d{3}(?:\s*[-\u2013\u2014]\s*\d+)?)\b",
+    )
+    raw = ""
+    for pattern in patterns:
+        match = re.search(pattern, title_raw, re.I)
+        if match:
+            raw = re.sub(r"\s+", " ", match.group(1)).strip()
+            break
+    normalized = re.sub(r"\s*[-\u2013\u2014]\s*", "-", raw)
+    ops = re.fullmatch(r"OPS\s+No\.\s*([A-Z]\d+)", normalized, re.I)
+    if ops:
+        normalized = f"OPS-{ops.group(1).upper()}"
+    else:
+        normalized = re.sub(r"\s+", "", normalized).upper()
+    return raw, normalized
+
+
+def _njta_category_fields(category_raw, title):
+    category = _clean(category_raw).replace("Non - Engineering", "Non-Engineering")
+    lower_category = category.lower()
+    lower_title = title.lower()
+    if "construction" in lower_category and "maintenance" in lower_category:
+        return "construction", "construction", False, "", "Construction & Maintenance"
+    if "engineering professional services" in lower_category:
+        return "professional_services", "professional_services", False, "", "Engineering Professional Services"
+    if "goods" in lower_category and "non-engineering" in lower_category:
+        if any(keyword in lower_title for keyword in NJTA_ROADWAY_SUPPORT_KW):
+            return "construction", "roadway_support_services", False, "", "Goods & Non-Engineering Services"
+        return (
+            "out_of_scope",
+            "goods_non_engineering",
+            True,
+            "NJTA Goods & Non-Engineering Services",
+            "Goods & Non-Engineering Services",
+        )
+    return "", "", False, "", category
+
+
+def _njta_detail_deadline(url):
+    response = _get(url)
+    if not response:
+        return ""
+    text = _clean(_soup(response.text).get_text(" ", strip=True))
+    match = re.search(
+        r"Closing\s+Date:\s*((?:January|February|March|April|May|June|July|August|"
+        r"September|October|November|December)\s+\d{1,2},?\s+\d{4}"
+        r"(?:\s+at\s+\d{1,2}:\d{2}\s*(?:AM|PM))?)",
+        text,
+        re.I,
+    )
+    return match.group(1) if match else ""
+
+
 def parse_njta(source):
-    """
-    NJ Turnpike Authority current solicitations page.
-    Lists construction contracts (T-series, P-series) and
-    engineering professional services (OPS numbers) together.
-    """
+    """Parse NJTA's structured closing-date, status, description, and category table."""
+    separator = "&" if "?" in source["url"] else "?"
+    response = _get(f"{source['url']}{separator}status=open")
+    if not response:
+        return []
+
     records = []
-    r = _get(source["url"])
-    if not r: return records
-
-    soup = _soup(r.text)
-
-    # NJTA page uses structured sections with h3/h4 headers and ul/table lists
-    # Strategy: find all links with context
-    for item in soup.find_all(["li", "tr", "p"]):
-        text = _clean(item.get_text())
-        if len(text) < 15: continue
-
-        link = item.find("a")
-        official_url = urljoin(source["url"], link["href"]) if link and link.get("href") else source["url"]
-
-        # Extract contract number
-        contract_match = re.search(
-            r'\b([TP]\d{3}\.\d{3,4}|[TP]-?\d{3,4}|OPS No\. [A-Z]\d+|Order [A-Z]?\d+)\b',
-            text, re.I
-        )
-        contract_no = contract_match.group(0) if contract_match else ""
-
-        # Extract date
-        date_match = re.search(
-            r'\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b'
-            r'|\b\d{1,2}/\d{1,2}/\d{2,4}\b',
-            text, re.I
-        )
-        due_date = date_match.group(0) if date_match else ""
-
-        lower = text.lower()
-        if "engineering professional services" in lower:
-            notice_type = "professional_services"
-        elif "construction & maintenance" in lower or "construction and maintenance" in lower:
-            notice_type = "construction"
-        else:
+    soup = _soup(response.text)
+    for row in soup.find_all("tr"):
+        link = row.find("a", href=True)
+        time_el = row.find("time")
+        status_el = row.select_one(".status")
+        if not link or not time_el or not status_el:
             continue
 
-        status_match = re.search(r"\b(Open|Closed)\b", text, re.I)
-        if not status_match or not due_date:
-            continue
-        source_status = status_match.group(1).lower() if status_match else ""
-        title = re.sub(
-            r"^(?:\w+\s+\d{1,2},\s+\d{4}\s+)?(?:Open|Closed)\s+",
-            "",
-            text,
-            flags=re.I,
-        )
-        title = re.sub(
-            r"(?:Engineering Professional Services|Construction\s*(?:&|and)\s*Maintenance).*$",
-            "",
+        title_raw = re.sub(r"\s+", " ", link.get_text(" ", strip=True)).strip()
+        category_el = row.select_one(".has-body-sm-font-size")
+        category_raw = re.sub(r"\s+", " ", category_el.get_text(" ", strip=True)).strip() if category_el else ""
+        suffix = NJTA_CATEGORY_SUFFIX_RE.search(title_raw)
+        if suffix:
+            category_raw = category_raw or suffix.group(1)
+            title_raw = title_raw[:suffix.start()].strip()
+
+        title = _clean(title_raw)[:300]
+        notice_type, notice_subtype, excluded, exclusion_reason, category = _njta_category_fields(
+            category_raw,
             title,
-            flags=re.I,
-        ).strip()[:250]
-        if len(title) < 12:
+        )
+        if not notice_type or len(title) < 12:
             continue
+
+        closing_date = _clean(time_el.get_text(" ", strip=True))
+        source_status_raw = re.sub(r"\s+", " ", status_el.get_text(" ", strip=True)).strip()
+        official_url = urljoin(source["url"], link["href"])
+        due_date = closing_date
+        if source_status_raw.lower() == "open" and not excluded:
+            due_date = _njta_detail_deadline(official_url) or closing_date
+        contract_raw, contract_match = _njta_contract_fields(title_raw)
+
         records.append({
-            "id":             _make_id(source["id"], title),
-            "title":          title,
-            "notice_excerpt": text[:400],
-            "source_id":      source["id"],
-            "source_name":    source["name"],
-            "source_tier":    source["source_tier"],
-            "source_url":     source["url"],
-            "official_url":   official_url,
-            "county":         "Statewide",
-            "entity_type":    source["entity_type"],
-            "notice_type":    notice_type,
-            "notice_subtype": notice_type,
-            "due_date_raw":   due_date,
-            "source_status":  source_status,
-            "contract_number":contract_no,
-            "access_type":    source["access_type"],
-            "platform":       source["platform"],
-            "paywalled":      False,
-            "crawled_at":     _now(),
+            "id": _make_id(source["id"], title),
+            "title": title,
+            "title_raw": title_raw,
+            "notice_excerpt": _excerpt(row.get_text(" ", strip=True)),
+            "source_id": source["id"],
+            "source_name": source["name"],
+            "source_tier": source["source_tier"],
+            "source_url": source["url"],
+            "official_url": official_url,
+            "county": source.get("county", "Statewide"),
+            "county_provenance": "AGENCY_JURISDICTION",
+            "entity_type": source["entity_type"],
+            "notice_type": notice_type,
+            "notice_subtype": notice_subtype,
+            "njta_category": category,
+            "scope_excluded": excluded,
+            "scope_exclusion_reason": exclusion_reason,
+            "closing_date_raw": closing_date,
+            "due_date_raw": due_date,
+            "source_status": source_status_raw.lower(),
+            "source_status_raw": source_status_raw,
+            "source_status_authoritative": True,
+            "contract_number": contract_raw,
+            "contract_number_raw": contract_raw,
+            "contract_number_match": contract_match,
+            "access_type": source["access_type"],
+            "platform": source["platform"],
+            "paywalled": False,
+            "crawled_at": _now(),
         })
 
     log.info(f"NJTA: {len(records)} records")
