@@ -974,10 +974,12 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Construction", html)
         self.assertIn("Professional services", html)
-        self.assertIn("Tue, Aug 25, 2026 at 4:00 PM ET", html)
-        self.assertIn("Tue, Aug 25, 2026 (time not published)", html)
+        self.assertEqual(html.count("Closes Tuesday, Aug 25 - in 4 days"), 1)
+        self.assertIn("4:00 PM ET", html)
+        self.assertNotIn("time not published", html)
         self.assertNotRegex(html, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}")
         self.assertNotIn("12:00 AM", html)
+        self.assertNotIn('class="countdown', html)
         self.assertNotIn("expired bridge work", html)
         self.assertNotIn("not resolved", html.lower())
         self.assertIn("County not stated in notice", html)
@@ -1040,11 +1042,59 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertIn("Bridge design services", professional_lane)
         self.assertNotIn("NJTA opportunity awaiting type review", professional_lane)
         self.assertIn("NJTA opportunity awaiting type review", unclassified_lane)
-        self.assertIn("1 day", construction_lane)
-        self.assertIn("time not published", professional_lane)
+        self.assertIn("Closes Saturday, Aug 22 - in 1 day", construction_lane)
+        self.assertIn("Closes Sunday, Aug 23 - in 2 days", professional_lane)
+        self.assertNotIn("time not published", professional_lane)
         self.assertIn("BidNet Direct", professional_lane)
         self.assertNotIn("Agency website", construction_lane)
         self.assertNotIn("Expired construction work", html)
+
+    def test_homepage_groups_shared_deadlines_and_orders_each_lane(self):
+        records = [
+            self._scan_record(f"construction-{index}", f"Construction work {index}", "08/25/2026")
+            for index in range(6)
+        ]
+        records.extend([
+            self._scan_record(
+                "professional-later",
+                "Professional work closing later",
+                "08/27/2026",
+                notice_type="professional_services",
+                notice_subtype="professional_services",
+            ),
+            self._scan_record(
+                "professional-sooner",
+                "Professional work closing sooner",
+                "08/24/2026",
+                notice_type="professional_services",
+                notice_subtype="professional_services",
+            ),
+        ])
+
+        class FixedDate(date):
+            @classmethod
+            def today(cls):
+                return cls(2026, 8, 22)
+
+        with (
+            patch.object(app_main, "load_public_opps", return_value=records),
+            patch.object(app_main, "load_public_sources", return_value=[]),
+            patch.object(app_main, "date", FixedDate),
+        ):
+            response = app_main.app.test_client().get("/")
+
+        html = response.get_data(as_text=True)
+        professional_lane = re.search(
+            r'<section class="opportunity-lane lane-professional".*?</section>', html, re.S
+        ).group(0)
+        self.assertEqual(html.count("Closes Tuesday, Aug 25 - in 3 days"), 1)
+        self.assertEqual(html.count('class="lane-row"'), 8)
+        self.assertNotIn('class="countdown', html)
+        self.assertNotIn("time not published", html)
+        self.assertLess(
+            professional_lane.index("Closes Monday, Aug 24 - in 2 days"),
+            professional_lane.index("Closes Thursday, Aug 27 - in 5 days"),
+        )
 
     def test_homepage_prioritizes_opportunities_and_resources_move_off_page(self):
         with (

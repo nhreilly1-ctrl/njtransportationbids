@@ -1127,6 +1127,53 @@ def _latest_homepage_update(records: list[dict]) -> str | None:
     return format_eastern_timestamp(latest.isoformat()) if latest else None
 
 
+def _homepage_deadline_time(record: dict) -> str:
+    """Render only a published bid time; date-only records stay silent."""
+    if not record.get("deadline_has_time") or not record.get("deadline_local"):
+        return ""
+    try:
+        local = datetime.fromisoformat(str(record["deadline_local"]))
+    except (TypeError, ValueError):
+        return ""
+    rendered = local.strftime("%I:%M %p").lstrip("0") + " ET"
+    if record.get("deadline_timezone_assumed"):
+        rendered += " (time zone assumed)"
+    return rendered
+
+
+def _group_homepage_lane(records: list[dict], today: date) -> list[dict]:
+    """Group a lane by its normalized Eastern closing date, soonest first."""
+    groups: dict[str, dict] = {}
+    for record in sort_opps(records):
+        due = None if record.get("deadline_conflict") else deadline_date(record)
+        key = due.isoformat() if due else "undated"
+        if key not in groups:
+            if due:
+                days_remaining = (due - today).days
+                if days_remaining == 0:
+                    timing = "today"
+                elif days_remaining == 1:
+                    timing = "in 1 day"
+                else:
+                    timing = f"in {days_remaining} days"
+                heading = f"Closes {due.strftime('%A, %b %d').replace(' 0', ' ')} - {timing}"
+                urgency = "urgent" if days_remaining <= 2 else "soon" if days_remaining <= 7 else "future"
+            else:
+                days_remaining = None
+                heading = "Closing date not confirmed"
+                urgency = "undated"
+            groups[key] = {
+                "key": key,
+                "heading": heading,
+                "days_remaining": days_remaining,
+                "urgency": urgency,
+                "opportunities": [],
+            }
+        record["homepage_deadline_time"] = _homepage_deadline_time(record)
+        groups[key]["opportunities"].append(record)
+    return list(groups.values())
+
+
 @app.route("/")
 def index():
     opps = [enrich(opp) for opp in load_public_opps()]
@@ -1156,9 +1203,9 @@ def index():
     return render_template(
         "index.html",
         stats=stats,
-        construction_lane=construction[:6],
-        professional_lane=professional[:6],
-        unclassified_lane=unclassified[:8],
+        construction_lane=_group_homepage_lane(construction[:6], today),
+        professional_lane=_group_homepage_lane(professional[:6], today),
+        unclassified_lane=_group_homepage_lane(unclassified[:8], today),
     )
 
 

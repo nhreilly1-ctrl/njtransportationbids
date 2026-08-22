@@ -24,35 +24,25 @@
 {% block content %}
 
 {% macro lane_row(o) %}
-  {% if o.days_until_due is none %}{% set urgency = 'undated' %}
-  {% elif o.days_until_due <= 2 %}{% set urgency = 'urgent' %}
-  {% elif o.days_until_due <= 7 %}{% set urgency = 'soon' %}
-  {% else %}{% set urgency = 'future' %}{% endif %}
   <article class="lane-row">
-    <div class="countdown countdown-{{ urgency }}">
-      {% if o.days_until_due is none %}
-        <strong>Date</strong><span>TBA</span>
-      {% elif o.days_until_due == 0 %}
-        <strong>Today</strong><span>due</span>
-      {% elif o.days_until_due == 1 %}
-        <strong>1 day</strong><span>left</span>
-      {% else %}
-        <strong>{{ o.days_until_due }} days</strong><span>left</span>
-      {% endif %}
-    </div>
     <div class="lane-row-main">
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="lane-title">{{ o.title }}</a>
       <div class="lane-meta">
         <span>{{ o.source_name }}</span>
         <span>{{ o.county_display }}</span>
         {% if o.contract_number %}<span>{{ o.contract_number }}</span>{% endif %}
-      </div>
-      <div class="lane-deadline">
-        {% if o.deadline_display %}{{ o.deadline_display }}{% else %}Deadline not published{% endif %}
+        {% if o.homepage_deadline_time %}<span>{{ o.homepage_deadline_time }}</span>{% endif %}
         {% if o.homepage_platform %}<span class="lane-platform">{{ o.homepage_platform }}</span>{% endif %}
       </div>
     </div>
   </article>
+{% endmacro %}
+
+{% macro lane_group(group) %}
+  <div class="lane-date-group">
+    <h3 class="lane-date-heading lane-date-{{ group.urgency }}">{{ group.heading }}</h3>
+    {% for o in group.opportunities %}{{ lane_row(o) }}{% endfor %}
+  </div>
 {% endmacro %}
 
 <div class="page-header home-page-header">
@@ -74,7 +64,7 @@
     </div>
     <div class="lane-list">
       {% if construction_lane %}
-        {% for o in construction_lane %}{{ lane_row(o) }}{% endfor %}
+        {% for group in construction_lane %}{{ lane_group(group) }}{% endfor %}
       {% else %}
         <p class="lane-empty">No live construction opportunities are currently published.</p>
       {% endif %}
@@ -88,7 +78,7 @@
     </div>
     <div class="lane-list">
       {% if professional_lane %}
-        {% for o in professional_lane %}{{ lane_row(o) }}{% endfor %}
+        {% for group in professional_lane %}{{ lane_group(group) }}{% endfor %}
       {% else %}
         <p class="lane-empty">No live professional-services opportunities are currently published.</p>
       {% endif %}
@@ -105,7 +95,7 @@
       </div>
     </div>
     <div class="lane-list lane-list-unclassified">
-      {% for o in unclassified_lane %}{{ lane_row(o) }}{% endfor %}
+      {% for group in unclassified_lane %}{{ lane_group(group) }}{% endfor %}
     </div>
   </section>
 {% endif %}
