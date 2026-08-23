@@ -1048,27 +1048,27 @@ class PublicDashboardTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         html = response.get_data(as_text=True)
-        stats = re.search(
-            r'<div class="stats-row home-stats".*?(?=<div class="opportunity-lanes")', html, re.S
+        scoreboard = re.search(
+            r'<div class="market-scoreboard".*?</div>\s*</section>', html, re.S
         ).group(0)
-        construction_lane = re.search(
-            r'<section class="opportunity-lane lane-construction".*?</section>', html, re.S
+        switchboard = re.search(
+            r'<nav class="market-switchboard".*?</nav>', html, re.S
         ).group(0)
-        professional_lane = re.search(
-            r'<section class="opportunity-lane lane-professional".*?</section>', html, re.S
+        bid_brief = re.search(
+            r'<section class="bid-brief".*?</section>\s*<aside', html, re.S
         ).group(0)
-        self.assertEqual(stats.count('class="stat-card home-stat-card"'), 4)
-        self.assertIn('<div class="num c-blue">1</div>', stats)
-        self.assertIn('<div class="num c-teal">0</div>', stats)
-        self.assertIn('<div class="num">1</div>\n    <div class="lbl">Active notices</div>', stats)
-        self.assertIn('<div class="num">2</div>\n    <div class="lbl">Sources monitored</div>', stats)
+        self.assertIn('<strong>1</strong>', scoreboard)
+        self.assertIn('class="score score-open"', scoreboard)
+        self.assertIn('class="score score-pipeline"', scoreboard)
+        self.assertIn("1 active and anticipated notices", scoreboard)
         self.assertIn("1 healthy", html)
-        self.assertIn("1 live", construction_lane)
-        self.assertIn("0 live", professional_lane)
-        self.assertIn('href="/bids/construction"', stats)
-        self.assertIn('href="/bids/professional-services"', stats)
-        self.assertIn('href="/notices"', stats)
-        self.assertIn('href="/sources"', stats)
+        self.assertIn("<strong>1</strong> construction", bid_brief)
+        self.assertIn("<strong>0</strong> professional", bid_brief)
+        self.assertIn('href="/bids/construction"', switchboard)
+        self.assertIn('href="/bids/professional-services"', switchboard)
+        self.assertIn('href="/sources"', switchboard)
+        self.assertIn('href="/notices?status=open"', html)
+        self.assertIn('href="/notices?status=upcoming"', html)
         self.assertIn('class="nav-toggle"', html)
         self.assertIn('id="primary-navigation"', html)
 
@@ -1133,7 +1133,7 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertNotIn("not resolved", detail.get_data(as_text=True).lower())
         self.assertIn("County not stated in notice", detail.get_data(as_text=True))
 
-    def test_homepage_uses_canonical_lanes_and_an_unclassified_fallback(self):
+    def test_homepage_uses_type_markers_without_guessing_unclassified_records(self):
         records = [
             self._scan_record(
                 "construction",
@@ -1174,26 +1174,22 @@ class PublicDashboardTests(unittest.TestCase):
             response = app_main.app.test_client().get("/")
 
         html = response.get_data(as_text=True)
-        construction_lane = re.search(
-            r'<section class="opportunity-lane lane-construction".*?</section>', html, re.S
-        ).group(0)
-        professional_lane = re.search(
-            r'<section class="opportunity-lane lane-professional".*?</section>', html, re.S
-        ).group(0)
-        unclassified_lane = re.search(
-            r'<section class="opportunity-lane lane-unclassified".*?</section>', html, re.S
+        bid_brief = re.search(
+            r'<section class="bid-brief".*?</section>\s*<aside', html, re.S
         ).group(0)
 
-        self.assertIn("Route resurfacing due tomorrow", construction_lane)
-        self.assertNotIn("Bridge design services", construction_lane)
-        self.assertIn("Bridge design services", professional_lane)
-        self.assertNotIn("NJTA opportunity awaiting type review", professional_lane)
-        self.assertIn("NJTA opportunity awaiting type review", unclassified_lane)
-        self.assertIn("Closes Saturday, Aug 22 - in 1 day", construction_lane)
-        self.assertIn("Closes Sunday, Aug 23 - in 2 days", professional_lane)
-        self.assertNotIn("time not published", professional_lane)
-        self.assertIn("BidNet Direct", professional_lane)
-        self.assertNotIn("Agency website", construction_lane)
+        self.assertIn("Route resurfacing due tomorrow", bid_brief)
+        self.assertIn("Bridge design services", bid_brief)
+        self.assertIn("NJTA opportunity awaiting type review", bid_brief)
+        self.assertIn('class="brief-row brief-row-construction"', bid_brief)
+        self.assertIn('class="brief-row brief-row-professional_services"', bid_brief)
+        self.assertIn('class="brief-row brief-row-uncategorized"', bid_brief)
+        self.assertIn('aria-label="Opportunity type">Other</div>', bid_brief)
+        self.assertIn("Closes Saturday, Aug 22 - in 1 day", bid_brief)
+        self.assertIn("Closes Sunday, Aug 23 - in 2 days", bid_brief)
+        self.assertNotIn("time not published", bid_brief)
+        self.assertIn("BidNet Direct", bid_brief)
+        self.assertNotIn("Agency website", bid_brief)
         self.assertNotIn("Expired construction work", html)
 
     def test_homepage_groups_shared_deadlines_and_orders_each_lane(self):
@@ -1232,17 +1228,52 @@ class PublicDashboardTests(unittest.TestCase):
             response = app_main.app.test_client().get("/")
 
         html = response.get_data(as_text=True)
-        professional_lane = re.search(
-            r'<section class="opportunity-lane lane-professional".*?</section>', html, re.S
+        bid_brief = re.search(
+            r'<section class="bid-brief".*?</section>\s*<aside', html, re.S
         ).group(0)
         self.assertEqual(html.count("Closes Tuesday, Aug 25 - in 3 days"), 1)
-        self.assertEqual(html.count('class="lane-row"'), 8)
+        self.assertEqual(html.count('class="brief-row brief-row-'), 8)
         self.assertNotIn('class="countdown', html)
         self.assertNotIn("time not published", html)
         self.assertLess(
-            professional_lane.index("Closes Monday, Aug 24 - in 2 days"),
-            professional_lane.index("Closes Thursday, Aug 27 - in 5 days"),
+            bid_brief.index("Closes Monday, Aug 24 - in 2 days"),
+            bid_brief.index("Closes Thursday, Aug 27 - in 5 days"),
         )
+
+    def test_homepage_separates_open_work_from_anticipated_pipeline(self):
+        records = [
+            self._scan_record("open", "Bridge deck repairs open now", "08/25/2026"),
+            self._scan_record(
+                "planned",
+                "NJDOT anticipated bridge inspection agreement",
+                "Spring 2027",
+                status="upcoming",
+                is_planned=True,
+                notice_type="professional_services",
+                notice_subtype="professional_services",
+            ),
+        ]
+
+        with (
+            patch.object(app_main, "load_public_opps", return_value=records),
+            patch.object(app_main, "load_public_sources", return_value=[]),
+            patch.object(app_main, "_homepage_today", return_value=date(2026, 8, 22)),
+            self._frozen_deadline_clock(datetime(2026, 8, 22, 16, 0, tzinfo=timezone.utc)),
+        ):
+            html = app_main.app.test_client().get("/").get_data(as_text=True)
+
+        bid_brief = re.search(
+            r'<section class="bid-brief".*?</section>\s*<aside', html, re.S
+        ).group(0)
+        pipeline = re.search(
+            r'<aside class="pipeline-panel".*?</aside>', html, re.S
+        ).group(0)
+        self.assertIn("Bridge deck repairs open now", bid_brief)
+        self.assertNotIn("anticipated bridge inspection", bid_brief)
+        self.assertIn("anticipated bridge inspection", pipeline)
+        self.assertIn("Spring 2027", pipeline)
+        self.assertNotIn("Closes", pipeline)
+        self.assertIn("1 planned opportunities", pipeline)
 
     def test_homepage_prioritizes_opportunities_and_resources_move_off_page(self):
         with (
@@ -1303,6 +1334,34 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertNotIn("Bridge engineering services", construction_response.get_data(as_text=True))
         self.assertIn("Bridge engineering services", professional_response.get_data(as_text=True))
         self.assertNotIn("County bridge reconstruction", professional_response.get_data(as_text=True))
+
+    def test_public_notice_status_filter_separates_open_and_pipeline(self):
+        open_notice = {
+            "id": "open-notice",
+            "title": "Bridge rehabilitation open for bid",
+            "status": "open",
+            "notice_type": "construction",
+            "source_name": "NJDOT",
+        }
+        pipeline_notice = {
+            "id": "pipeline-notice",
+            "title": "Anticipated bridge inspection agreement",
+            "status": "upcoming",
+            "notice_type": "professional_services",
+            "source_name": "NJDOT",
+        }
+        with (
+            patch.object(notice_app, "_load_notices", return_value=[open_notice, pipeline_notice]),
+            patch.object(notice_app, "_load_crawl_log", return_value=[]),
+        ):
+            client = app_main.app.test_client()
+            open_html = client.get("/notices?status=open").get_data(as_text=True)
+            pipeline_html = client.get("/notices?status=upcoming").get_data(as_text=True)
+
+        self.assertIn("Bridge rehabilitation open for bid", open_html)
+        self.assertNotIn("Anticipated bridge inspection agreement", open_html)
+        self.assertIn("Anticipated bridge inspection agreement", pipeline_html)
+        self.assertNotIn("Bridge rehabilitation open for bid", pipeline_html)
 
 
 class PublicSeoTests(unittest.TestCase):

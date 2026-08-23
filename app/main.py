@@ -1153,6 +1153,12 @@ def _homepage_deadline_time(record: dict) -> str:
     return rendered
 
 
+def _homepage_pipeline_window(record: dict) -> str:
+    """Use the agency's published planning window without turning it into a deadline."""
+    raw = str(record.get("due_date_raw") or "").strip()
+    return raw or "Timing not published"
+
+
 def _group_homepage_lane(records: list[dict], today: date) -> list[dict]:
     """Group a lane by its normalized Eastern closing date, soonest first."""
     groups: dict[str, dict] = {}
@@ -1196,6 +1202,11 @@ def index():
         opp["days_until_due"] = None if opp.get("deadline_conflict") else deadline_days_remaining(opp, today)
         opp["homepage_platform"] = _homepage_platform(opp)
 
+    open_now = [opp for opp in active if opp["status"] == "open"]
+    pipeline = [opp for opp in active if opp["status"] == "upcoming"]
+    for opp in pipeline:
+        opp["homepage_pipeline_window"] = _homepage_pipeline_window(opp)
+
     corridor_counts: dict[str, int] = {}
     for opp in active:
         for corridor in opp.get("corridors") or []:
@@ -1204,16 +1215,33 @@ def index():
 
     construction = [opp for opp in active if opp.get("record_type") == "construction"]
     professional = [opp for opp in active if opp.get("record_type") == "professional_services"]
-    unclassified = [
-        opp
-        for opp in active
-        if opp.get("record_type") not in ("construction", "professional_services")
-    ]
     public_sources = load_public_sources()
     stats = {
         "construction": len(construction),
         "professional_services": len(professional),
         "active": len(active),
+        "open": len(open_now),
+        "pipeline": len(pipeline),
+        "open_construction": len(
+            [opp for opp in open_now if opp.get("record_type") == "construction"]
+        ),
+        "open_professional": len(
+            [opp for opp in open_now if opp.get("record_type") == "professional_services"]
+        ),
+        "pipeline_construction": len(
+            [opp for opp in pipeline if opp.get("record_type") == "construction"]
+        ),
+        "pipeline_professional": len(
+            [opp for opp in pipeline if opp.get("record_type") == "professional_services"]
+        ),
+        "closing_week": len(
+            [
+                opp
+                for opp in open_now
+                if opp.get("days_until_due") is not None
+                and 0 <= opp["days_until_due"] <= 7
+            ]
+        ),
         "sources": len(public_sources),
         "healthy_sources": len([source for source in public_sources if source.get("severity") == "ok"]),
         "last_updated": _latest_homepage_update(opps),
@@ -1222,9 +1250,15 @@ def index():
         "index.html",
         stats=stats,
         top_corridors=top_corridors,
-        construction_lane=_group_homepage_lane(construction[:6], today),
-        professional_lane=_group_homepage_lane(professional[:6], today),
-        unclassified_lane=_group_homepage_lane(unclassified[:8], today),
+        open_lane=_group_homepage_lane(open_now[:10], today),
+        pipeline_preview=sort_opps(pipeline)[:6],
+        unclassified_open=len(
+            [
+                opp
+                for opp in open_now
+                if opp.get("record_type") not in ("construction", "professional_services")
+            ]
+        ),
     )
 
 

@@ -120,6 +120,8 @@
   </select>
   <select name="status" onchange="this.form.submit()">
     <option value="active"  {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
+    <option value="open"    {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
+    <option value="upcoming"{{ 'selected' if selected_status == 'upcoming' }}>Upcoming pipeline</option>
     <option value="urgent"  {{ 'selected' if selected_status == 'urgent' }}>Urgent only (≤7 days)</option>
     <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired</option>
   </select>

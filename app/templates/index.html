@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block title %}NJDOT and NJ Transportation Bids - Construction and Engineering{% endblock %}
 {% block meta_description %}Find open NJDOT, NJTA, county, and municipal construction bids, DP contracts, engineering RFPs, and professional services opportunities across New Jersey.{% endblock %}
+{% block body_class %}home-page{% endblock %}
+{% block head_extra %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20260823') }}">
+{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
 {
@@ -23,117 +30,165 @@
 {% endblock %}
 {% block content %}
 
-{% macro lane_row(o) %}
-  <article class="lane-row">
-    <div class="lane-row-main">
-      <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="lane-title">{{ o.title }}</a>
-      <div class="lane-meta">
+{% macro opportunity_type(o) -%}
+  {%- if o.record_type == 'construction' -%}Construction
+  {%- elif o.record_type == 'professional_services' -%}Professional
+  {%- else -%}Other
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro open_row(o) %}
+  <article class="brief-row brief-row-{{ o.record_type or 'other' }}">
+    <div class="brief-type" aria-label="Opportunity type">{{ opportunity_type(o) }}</div>
+    <div class="brief-body">
+      <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="brief-title">{{ o.title }}</a>
+      <div class="brief-meta">
         <span>{{ o.source_name }}</span>
         <span>{{ o.location_display or o.county_display }}</span>
-        {% if o.contract_number %}<span>{{ o.contract_number }}</span>{% endif %}
+        {% if o.contract_number %}<span class="brief-contract">{{ o.contract_number }}</span>{% endif %}
         {% if o.homepage_deadline_time %}<span>{{ o.homepage_deadline_time }}</span>{% endif %}
-        {% if o.homepage_platform %}<span class="lane-platform">{{ o.homepage_platform }}</span>{% endif %}
-        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="lane-map-link">Map ↗</a>{% endif %}
+        {% if o.homepage_platform %}<span class="brief-platform">{{ o.homepage_platform }}</span>{% endif %}
+        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="brief-map">Map</a>{% endif %}
       </div>
     </div>
+    <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="brief-arrow" aria-label="View {{ o.title }}">&rarr;</a>
   </article>
 {% endmacro %}
 
-{% macro lane_group(group) %}
-  <div class="lane-date-group">
-    <h3 class="lane-date-heading lane-date-{{ group.urgency }}">{{ group.heading }}</h3>
-    {% for o in group.opportunities %}{{ lane_row(o) }}{% endfor %}
-  </div>
-{% endmacro %}
-
-<div class="page-header home-page-header">
-  <h1>Live New Jersey Transportation Opportunities</h1>
-  <p>Open and upcoming construction bids, engineering solicitations, and professional services from official public agencies.</p>
-</div>
-
-<div class="stats-row home-stats" aria-label="Opportunity inventory summary">
-  <a class="stat-card home-stat-card" href="{{ url_for('bids_construction') }}">
-    <div class="num c-blue">{{ stats.construction }}</div>
-    <div class="lbl">Construction</div>
-  </a>
-  <a class="stat-card home-stat-card" href="{{ url_for('bids_profserv') }}">
-    <div class="num c-teal">{{ stats.professional_services }}</div>
-    <div class="lbl">Professional services</div>
-  </a>
-  <a class="stat-card home-stat-card" href="{{ url_for('notices2.notices_all') }}">
-    <div class="num">{{ stats.active }}</div>
-    <div class="lbl">Active notices</div>
-  </a>
-  <a class="stat-card home-stat-card" href="{{ url_for('sources') }}">
-    <div class="num">{{ stats.sources }}</div>
-    <div class="lbl">Sources monitored</div>
-    <span class="stat-detail">{{ stats.healthy_sources }} healthy</span>
-  </a>
-</div>
-
-{% if top_corridors %}
-<nav class="corridor-strip" aria-label="Browse live opportunities by corridor">
-  <span class="corridor-strip-label">By corridor</span>
-  {% for corridor, count in top_corridors %}
-    <a class="corridor-chip" href="{{ url_for('notices2.notices_all', corridor=corridor) }}"
-       title="{{ count }} live notice{{ 's' if count != 1 }} referencing {{ corridor }}">{{ corridor }}<span>{{ count }}</span></a>
-  {% endfor %}
-</nav>
-{% endif %}
-
-<div class="opportunity-lanes">
-  <section class="opportunity-lane lane-construction" aria-labelledby="construction-lane-title">
-    <div class="lane-head">
-      <div><h2 id="construction-lane-title">Construction</h2><span>{{ stats.construction }} live</span></div>
-      <a href="{{ url_for('bids_construction') }}">View all</a>
-    </div>
-    <div class="lane-list">
-      {% if construction_lane %}
-        {% for group in construction_lane %}{{ lane_group(group) }}{% endfor %}
-      {% else %}
-        <p class="lane-empty">No live construction opportunities are currently published.</p>
-      {% endif %}
-    </div>
-  </section>
-
-  <section class="opportunity-lane lane-professional" aria-labelledby="professional-lane-title">
-    <div class="lane-head">
-      <div><h2 id="professional-lane-title">Professional services</h2><span>{{ stats.professional_services }} live</span></div>
-      <a href="{{ url_for('bids_profserv') }}">View all</a>
-    </div>
-    <div class="lane-list">
-      {% if professional_lane %}
-        {% for group in professional_lane %}{{ lane_group(group) }}{% endfor %}
-      {% else %}
-        <p class="lane-empty">No live professional-services opportunities are currently published.</p>
-      {% endif %}
-    </div>
-  </section>
-</div>
-
-{% if unclassified_lane %}
-  <section class="opportunity-lane lane-unclassified" aria-labelledby="unclassified-lane-title">
-    <div class="lane-head">
-      <div>
-        <h2 id="unclassified-lane-title">Type not yet classified</h2>
-        <span>{{ unclassified_lane|length }} live {{ 'record' if unclassified_lane|length == 1 else 'records' }} awaiting review</span>
+<div class="home-shell">
+  <section class="market-hero" aria-labelledby="home-title">
+    <div class="hero-copy">
+      <div class="hero-kicker"><span class="live-pulse"></span> New Jersey public bid intelligence</div>
+      <h1 id="home-title">Find the work.<br><em>Plan the pipeline.</em></h1>
+      <p>One reliable view of transportation construction and professional-services opportunities across New Jersey's public agencies.</p>
+      <div class="hero-actions">
+        <a class="hero-button hero-button-primary" href="{{ url_for('notices2.notices_all', status='open') }}">Scan open bids</a>
+        <a class="hero-button hero-button-secondary" href="#pipeline">See the pipeline</a>
+      </div>
+      <div class="hero-freshness">
+        <span>{{ stats.sources }} public sources monitored</span>
+        <span>{{ stats.healthy_sources }} healthy</span>
+        {% if stats.last_updated %}<span>Updated {{ stats.last_updated }}</span>{% endif %}
       </div>
     </div>
-    <div class="lane-list lane-list-unclassified">
-      {% for group in unclassified_lane %}{{ lane_group(group) }}{% endfor %}
+
+    <div class="market-scoreboard" aria-label="Current opportunity market summary">
+      <a href="{{ url_for('notices2.notices_all', status='open') }}" class="score score-open">
+        <span class="score-label">Open for bid</span>
+        <strong>{{ stats.open }}</strong>
+        <span>{{ stats.closing_week }} closing within 7 days</span>
+      </a>
+      <a href="{{ url_for('notices2.notices_all', status='upcoming') }}" class="score score-pipeline">
+        <span class="score-label">Coming pipeline</span>
+        <strong>{{ stats.pipeline }}</strong>
+        <span>anticipated public work</span>
+      </a>
+      <div class="score-total">
+        <span>{{ stats.active }} active and anticipated notices</span>
+        <span>Official sources. Evidence-backed locations.</span>
+      </div>
     </div>
   </section>
-{% endif %}
 
-<div class="home-secondary">
-  <a href="{{ url_for('contractor_resources') }}" class="home-secondary-card">
-    <strong>Contractor resources</strong>
-    <span>Specifications, wage determinations, prequalification, compliance, insurance, and bonding.</span>
-  </a>
-  <a href="{{ url_for('network.board') }}" class="home-secondary-card">
-    <strong>Contractor network</strong>
-    <span>Community listings are being built for teaming, equipment, bid results, and industry activity.</span>
-  </a>
+  <nav class="market-switchboard" aria-label="Browse opportunities by market">
+    <a href="{{ url_for('bids_construction') }}" class="market-link market-link-construction">
+      <span class="market-index">01</span>
+      <span><strong>Construction</strong><small>{{ stats.construction }} open + planned</small></span>
+      <span class="market-arrow">&rarr;</span>
+    </a>
+    <a href="{{ url_for('bids_profserv') }}" class="market-link market-link-professional">
+      <span class="market-index">02</span>
+      <span><strong>Professional services</strong><small>{{ stats.professional_services }} open + planned</small></span>
+      <span class="market-arrow">&rarr;</span>
+    </a>
+    <a href="{{ url_for('sources') }}" class="market-link market-link-sources">
+      <span class="market-index">03</span>
+      <span><strong>Source ledger</strong><small>{{ stats.healthy_sources }} of {{ stats.sources }} healthy</small></span>
+      <span class="market-arrow">&rarr;</span>
+    </a>
+  </nav>
+
+  <div class="home-workspace">
+    <section class="bid-brief" aria-labelledby="open-board-title">
+      <header class="section-masthead">
+        <div>
+          <span class="section-number">01 / Actionable now</span>
+          <h2 id="open-board-title">Open for bid</h2>
+          <p>Published closing dates, ordered by urgency.</p>
+        </div>
+        <div class="masthead-stats">
+          <span><strong>{{ stats.open_construction }}</strong> construction</span>
+          <span><strong>{{ stats.open_professional }}</strong> professional</span>
+          {% if unclassified_open %}<span><strong>{{ unclassified_open }}</strong> other</span>{% endif %}
+        </div>
+        <a href="{{ url_for('notices2.notices_all', status='open') }}" class="section-link">View all {{ stats.open }} &rarr;</a>
+      </header>
+
+      <div class="brief-list">
+        {% if open_lane %}
+          {% for group in open_lane %}
+            <section class="brief-date-group">
+              <header class="brief-date-heading brief-date-{{ group.urgency }}">
+                <span>{{ group.heading }}</span>
+                <small>{{ group.opportunities|length }} {{ 'notice' if group.opportunities|length == 1 else 'notices' }}</small>
+              </header>
+              {% for o in group.opportunities %}{{ open_row(o) }}{% endfor %}
+            </section>
+          {% endfor %}
+        {% else %}
+          <p class="brief-empty">No currently open opportunities are published.</p>
+        {% endif %}
+      </div>
+    </section>
+
+    <aside class="pipeline-panel" id="pipeline" aria-labelledby="pipeline-title">
+      <header class="pipeline-head">
+        <span class="section-number">02 / Market outlook</span>
+        <h2 id="pipeline-title">Coming down<br>the pipeline</h2>
+        <p>Anticipated work is not yet bid-able. Use it to plan staffing, teaming, and backlog.</p>
+      </header>
+
+      <div class="pipeline-tally">
+        <strong>{{ stats.pipeline }}</strong>
+        <span>planned opportunities</span>
+        <small>{{ stats.pipeline_construction }} construction / {{ stats.pipeline_professional }} professional</small>
+      </div>
+
+      <div class="pipeline-list">
+        {% for o in pipeline_preview %}
+          <article class="pipeline-row">
+            <div class="pipeline-window">{{ o.homepage_pipeline_window }}</div>
+            <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}">{{ o.title }}</a>
+            <span>{{ o.source_name }}{% if o.location_display %} / {{ o.location_display }}{% endif %}</span>
+          </article>
+        {% endfor %}
+      </div>
+
+      <a class="pipeline-link" href="{{ url_for('notices2.notices_all', status='upcoming') }}">Explore all {{ stats.pipeline }} planned opportunities &rarr;</a>
+    </aside>
+  </div>
+
+  {% if top_corridors %}
+  <section class="corridor-board" aria-labelledby="corridor-title">
+    <div class="corridor-intro">
+      <span class="section-number">03 / Route finder</span>
+      <h2 id="corridor-title">Follow the work by corridor.</h2>
+      <p>Counts appear only where the official notice names the route.</p>
+    </div>
+    <nav class="corridor-grid" aria-label="Browse active opportunities by corridor">
+      {% for corridor, count in top_corridors %}
+        <a href="{{ url_for('notices2.notices_all', corridor=corridor) }}" title="{{ count }} active notice{{ 's' if count != 1 }} referencing {{ corridor }}">
+          <span>{{ corridor }}</span><strong>{{ count }}</strong>
+        </a>
+      {% endfor %}
+    </nav>
+  </section>
+  {% endif %}
+
+  <footer class="home-utility">
+    <a href="{{ url_for('contractor_resources') }}"><strong>Contractor resources</strong><span>Specs, wages, prequalification, compliance, and bonding.</span></a>
+    <a href="{{ url_for('network.board') }}"><strong>Contractor network</strong><span>Teaming, equipment, bid results, and industry activity.</span></a>
+  </footer>
 </div>
 
 {% endblock %}

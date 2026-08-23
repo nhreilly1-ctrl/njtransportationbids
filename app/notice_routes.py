@@ -71,6 +71,8 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
         # Status
         st = n.get("status","")
         if status_filter == "active"  and st not in ("open", "upcoming"): continue
+        if status_filter == "open"    and st != "open":                      continue
+        if status_filter == "upcoming" and st != "upcoming":                continue
         if status_filter == "expired" and st != "expired":                   continue
         if status_filter == "urgent"  and not n.get("urgent"):               continue
 

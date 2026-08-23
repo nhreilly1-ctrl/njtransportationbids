@@ -17,6 +17,7 @@
   <meta name="twitter:title" content="{{ self.title() | striptags | trim }}">
   <meta name="twitter:description" content="{{ self.meta_description() | striptags | trim }}">
   {% block structured_data %}{% endblock %}
+  {% block head_extra %}{% endblock %}
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { overflow-x: hidden; max-width: 100%; }
@@ -234,7 +235,7 @@
     }
   </style>
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 {% set _nav = request.endpoint %}
 <a href="#main-content" class="skip-link">Skip to opportunities</a>
 <nav class="topnav">

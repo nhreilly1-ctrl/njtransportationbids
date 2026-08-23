@@ -240,9 +240,10 @@ class PublicSurfaceTests(unittest.TestCase):
         ):
             html = app_main.app.test_client().get("/").get_data(as_text=True)
 
-        self.assertIn('class="corridor-chip"', html)
+        self.assertIn('class="corridor-grid"', html)
         self.assertIn("/notices?corridor=I-287", html)
         self.assertIn("I-287 · Borough of Somerville", html)
+        self.assertIn('class="brief-map"', html)
         self.assertIn("https://www.google.com/maps/search/?api=1&amp;query=Borough+of+Somerville", html)
         # A record with no evidenced location keeps the county language and no map link.
         self.assertIn("County not stated in notice", html)
