@@ -1,320 +1,160 @@
 {% extends "base.html" %}
 {% block title %}
-  {% if notice_subtype == 'construction' %}Public Notices — Construction
-  {% elif notice_subtype == 'professional_services' %}Public Notices — Professional Services
-  {% else %}Public Notices{% endif %} — NJ Transportation Bids
+  {% if notice_subtype == 'construction' %}Public Notices - Construction
+  {% elif notice_subtype == 'professional_services' %}Public Notices - Professional Services
+  {% else %}Public Notices{% endif %} - NJ Transportation Bids
 {% endblock %}
 {% block meta_description %}Browse current New Jersey transportation public notices for construction and professional services, aggregated from official agency sources.{% endblock %}
+{% block body_class %}listing-page listing-notices{% endblock %}
+{% block head_extra %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260823a') }}">
+{% endblock %}
 {% block content %}
 
-{# ── Sub-nav ── #}
-<div class="filter-pills" style="margin-bottom:1.25rem;">
-  <a class="pill {{ 'active' if active_nav == 'notices_all' }}"
-     href="{{ url_for('notices2.notices_all') }}">All notices</a>
-  <a class="pill {{ 'active' if active_nav == 'notices_construction' }}"
-     href="{{ url_for('notices2.notices_construction') }}">Construction</a>
-  <a class="pill {{ 'active' if active_nav == 'notices_profserv' }}"
-     href="{{ url_for('notices2.notices_profserv') }}">Professional services</a>
-  <span style="margin-left:auto;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px;">
-    <span style="width:7px;height:7px;border-radius:50%;background:#639922;display:inline-block;"></span>
-    Updated {{ last_crawl_ago }}
-  </span>
+{% set notice_heading = 'Construction notices' if notice_subtype == 'construction' else 'Professional notices' if notice_subtype == 'professional_services' else 'Official notices' %}
+{% set notice_description = 'Official construction bid notices from state agencies, counties, authorities, and municipalities.' if notice_subtype == 'construction' else 'Official engineering, design, inspection, and professional-services solicitations.' if notice_subtype == 'professional_services' else 'Official procurement notices and solicitations from monitored New Jersey public agencies.' %}
+
+<section class="listing-hero" aria-labelledby="listing-title">
+  <div class="listing-hero-copy">
+    <span class="listing-kicker">New Jersey public bid intelligence</span>
+    <h1 id="listing-title"><strong>{{ total }}</strong><span>{{ notice_heading }}</span></h1>
+    <p>{{ notice_description }}</p>
+    <span class="listing-verified">Source data updated {{ last_crawl_ago }}</span>
+  </div>
+  <div class="listing-metrics" aria-label="Current notice summary">
+    <div><strong>{{ open_count }}</strong><span>Open<br>notices</span></div>
+    <div><strong>{{ upcoming_count }}</strong><span>Upcoming<br>work</span></div>
+    <div><strong>{{ mapped_count }}</strong><span>Map-enabled<br>records</span></div>
+    <div><strong>{{ agency_count }}</strong><span>Issuing<br>agencies</span></div>
+  </div>
+</section>
+
+<nav class="listing-sisters" aria-label="Opportunity ledgers">
+  <a href="{{ url_for('bids_construction') }}"><span>01</span>Construction bids</a>
+  <a href="{{ url_for('bids_profserv') }}"><span>02</span>Professional services</a>
+  <a href="{{ url_for('notices2.notices_all') }}" class="active"><span>03</span>Official notices</a>
+</nav>
+
+<div class="listing-trust-note">
+  <strong>The official-publication layer.</strong>
+  These records preserve agency notice text and direct handoffs to issuing sources. Map links appear only when the notice itself supplies a usable route, road, or municipality.
 </div>
 
-{# ── Page header ── #}
-<div class="page-header">
-  <h1>
-    {% if notice_subtype == 'construction' %}Public Notices — Construction
-    {% elif notice_subtype == 'professional_services' %}Public Notices — Professional Services
-    {% else %}Public Notices{% endif %}
-    <span style="font-size:14px;font-weight:400;color:var(--text2);">({{ total }})</span>
-  </h1>
-  <p>
-    {% if notice_subtype == 'construction' %}
-      Official construction bid notices from state agencies, counties, authorities, and municipalities.
-    {% elif notice_subtype == 'professional_services' %}
-      Official engineering, design, inspection, and professional services solicitations.
-    {% else %}
-      Official procurement notices and solicitations aggregated from monitored New Jersey public agencies.
-    {% endif %}
-  </p>
-</div>
+<nav class="notice-subnav" aria-label="Public notice types">
+  <a class="{{ 'active' if active_nav == 'notices_all' }}" href="{{ url_for('notices2.notices_all') }}">All notices</a>
+  <a class="{{ 'active' if active_nav == 'notices_construction' }}" href="{{ url_for('notices2.notices_construction') }}">Construction</a>
+  <a class="{{ 'active' if active_nav == 'notices_profserv' }}" href="{{ url_for('notices2.notices_profserv') }}">Professional services</a>
+</nav>
 
-{# ── Stats row ── #}
-<div class="stats-row" style="margin-bottom:1.25rem;">
-  <div class="stat-card">
-    <div class="num c-green">{{ stats.active }}</div>
-    <div class="lbl">Active notices</div>
-  </div>
-  <div class="stat-card">
-    <div class="num c-red">{{ stats.due_week }}</div>
-    <div class="lbl">Due this week</div>
-  </div>
-  <div class="stat-card">
-    <div class="num c-amber">{{ stats.posted_today }}</div>
-    <div class="lbl">Posted today</div>
-  </div>
-  <div class="stat-card">
-    <div class="num">{{ stats.state + stats.county + stats.municipal }}</div>
-    <div class="lbl">Sources active</div>
-  </div>
-</div>
-
-{# ── Source coverage legend ── #}
-<div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);
-            padding:1rem 1.25rem;margin-bottom:1.25rem;">
-  <div style="font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;
-              letter-spacing:.06em;margin-bottom:.75rem;">New Jersey source coverage — monitored daily</div>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:.75rem;">
-    <div style="background:var(--green-bg);border-radius:var(--r);padding:.5rem .75rem;">
-      <div style="font-size:11px;font-weight:500;color:#27500a;display:block;margin-bottom:2px;">
-        State agencies</div>
-      <div style="font-size:11px;color:#3b6d11;">NJDOT · NJTA · NJ TRANSIT · DRJTBC · NJ DOS</div>
-    </div>
-    <div style="background:var(--blue-bg);border-radius:var(--r);padding:.5rem .75rem;">
-      <div style="font-size:11px;font-weight:500;color:#0c447c;display:block;margin-bottom:2px;">
-        County procurement portals</div>
-      <div style="font-size:11px;color:#185fa5;">Official county bid systems across New Jersey</div>
-    </div>
-    <div style="background:var(--amber-bg);border-radius:var(--r);padding:.5rem .75rem;">
-      <div style="font-size:11px;font-weight:500;color:#633806;display:block;margin-bottom:2px;">
-        Municipal sources</div>
-      <div style="font-size:11px;color:#854f0b;">High-value city and local infrastructure notices</div>
-    </div>
-    <div style="background:var(--gray-bg);border-radius:var(--r);padding:.5rem .75rem;">
-      <div style="font-size:11px;font-weight:500;color:#444441;display:block;margin-bottom:2px;">
-        Access varies</div>
-      <div style="font-size:11px;color:#5f5e5a;">Listings are public; some documents require registration</div>
-    </div>
-  </div>
-  <div style="display:flex;gap:1.5rem;font-size:11px;color:var(--text3);">
-    <span><span style="width:7px;height:7px;border-radius:50%;background:#639922;display:inline-block;margin-right:4px;"></span>State agency</span>
-    <span><span style="width:7px;height:7px;border-radius:50%;background:#378add;display:inline-block;margin-right:4px;"></span>County portal</span>
-    <span><span style="width:7px;height:7px;border-radius:50%;background:#ba7517;display:inline-block;margin-right:4px;"></span>Municipal website</span>
-    <span><span style="width:7px;height:7px;border-radius:50%;background:#888780;display:inline-block;margin-right:4px;"></span>Registration may be required</span>
-  </div>
-</div>
-
-{# ── Filters ── #}
-<form method="get" class="toolbar" style="margin-bottom:1.25rem;">
+<form method="get" class="listing-filter-desk">
   {% if selected_corridor %}<input type="hidden" name="corridor" value="{{ selected_corridor }}">{% endif %}
-  <input type="text" name="q" placeholder="Search title, agency, contract no..." value="{{ q }}">
-  <select name="county" onchange="this.form.submit()">
-    <option value="">All counties</option>
-    {% for c in counties %}
-      <option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>
-    {% endfor %}
-  </select>
-  <select name="agency" onchange="this.form.submit()">
-    <option value="">All agencies</option>
-    {% for a in agencies %}
-      <option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>
-    {% endfor %}
-  </select>
-  <select name="tier" onchange="this.form.submit()">
-    <option value="">All sources</option>
-    <option value="state"    {{ 'selected' if selected_tier == 'state' }}>State agencies</option>
-    <option value="county"   {{ 'selected' if selected_tier == 'county' }}>County portals</option>
-    <option value="municipal"{{ 'selected' if selected_tier == 'municipal' }}>Municipal websites</option>
-    <option value="paywalled"{{ 'selected' if selected_tier == 'paywalled' }}>Paywalled — notice only</option>
-  </select>
-  <select name="status" onchange="this.form.submit()">
-    <option value="active"  {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
-    <option value="open"    {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
-    <option value="upcoming"{{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
-    <option value="urgent"  {{ 'selected' if selected_status == 'urgent' }}>Urgent only (≤7 days)</option>
-    <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired</option>
-  </select>
-  <button type="submit" class="btn btn-primary">Search</button>
-  {% if q or selected_county or selected_agency or selected_tier or selected_corridor %}
-    <a href="{{ request.path }}" class="btn">Clear</a>
-  {% endif %}
-  {% if selected_corridor %}
-    <span class="badge badge-type-c" title="Showing notices whose text references this corridor">{{ selected_corridor }}</span>
-  {% endif %}
-  <a href="{{ url_for('notices2.export_notices_csv') }}" class="btn" style="margin-left:auto;">Export CSV</a>
+  <div class="filter-desk-head">
+    <div><span>Notice desk</span><strong>Search official publications</strong></div>
+    <a href="{{ url_for('notices2.export_notices_csv') }}">Export CSV <span>&nearr;</span></a>
+  </div>
+  <div class="filter-desk-controls notice-filter-controls">
+    <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Title, agency, contract number..." value="{{ q }}"></label>
+    <label><span>County</span><select name="county" onchange="this.form.submit()">
+      <option value="">All counties</option>
+      {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
+    </select></label>
+    <label><span>Agency</span><select name="agency" onchange="this.form.submit()">
+      <option value="">All agencies</option>
+      {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
+    </select></label>
+    <label><span>Source</span><select name="tier" onchange="this.form.submit()">
+      <option value="">All sources</option>
+      <option value="state" {{ 'selected' if selected_tier == 'state' }}>State agencies</option>
+      <option value="county" {{ 'selected' if selected_tier == 'county' }}>County portals</option>
+      <option value="municipal" {{ 'selected' if selected_tier == 'municipal' }}>Municipal websites</option>
+      <option value="paywalled" {{ 'selected' if selected_tier == 'paywalled' }}>Registration platforms</option>
+    </select></label>
+    <label><span>Status</span><select name="status" onchange="this.form.submit()">
+      <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
+      <option value="open" {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
+      <option value="upcoming" {{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
+      <option value="urgent" {{ 'selected' if selected_status == 'urgent' }}>Closing within 7 days</option>
+      <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired</option>
+    </select></label>
+    <button type="submit" class="filter-submit">Search</button>
+  </div>
+  <div class="filter-desk-foot">
+    {% if selected_corridor %}<span class="corridor-active">Corridor: {{ selected_corridor }}</span>{% endif %}
+    {% if q or selected_county or selected_agency or selected_tier or selected_corridor or selected_status != 'active' %}
+      <a href="{{ request.path }}" class="filter-clear">Clear filters</a>
+    {% endif %}
+  </div>
 </form>
 
-{# ── Macro: notice card ── #}
 {% macro notice_card(n) %}
-  {% set tier = n.source_tier %}
-  {% set dot_color = '#639922' if tier == 'state' else '#378add' if tier == 'county' else '#ba7517' if tier == 'municipal' else '#888780' %}
   {% set is_urgent = n.urgent and n.status == 'open' %}
-  {% set is_new = n.crawled_at and n.crawled_at[:10] == today_str %}
-
-  <div class="bid-card {{ 'soon' if is_urgent }}" style="margin-bottom:8px;">
-    <div class="bid-dot"
-         style="background:{{ dot_color }};width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:6px;"></div>
-    <div class="bid-main">
-      <a href="{{ url_for('notices2.notice_detail', notice_id=n.id) }}"
-         class="bid-title" title="{{ n.title }}">{{ n.title }}</a>
-
-      <div class="bid-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-        <span>{{ n.source_name }}</span>
-        <span style="color:var(--border2);">·</span><span>{{ n.county_display }}</span>
-        {% if n.corridors %}
-          <span style="color:var(--border2);">·</span><span>{{ n.corridors[:3] | join(', ') }}</span>
-        {% endif %}
-        {% if n.contract_number %}
-          <span style="color:var(--border2);">·</span>
-          <span style="font-family:monospace;font-size:11px;color:var(--text3);">{{ n.contract_number }}</span>
-        {% endif %}
-        {% if n.crawled_at %}
-          <span style="color:var(--border2);">·</span>
-          <span style="font-size:11px;color:var(--text3);">
-            Posted {{ n.crawled_at[:10] }}
-          </span>
-        {% endif %}
-      </div>
-
-      {# Notice text excerpt — the key differentiator #}
-      {% if n.notice_excerpt %}
-        <div style="background:var(--bg2);border-radius:var(--r);padding:.5rem .85rem;
-                    font-size:12px;color:var(--text2);line-height:1.55;
-                    margin-bottom:7px;font-family:'Courier New',monospace;
-                    border-left:2px solid var(--border2);
-                    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
-          {{ n.notice_excerpt }}
-        </div>
-      {% endif %}
-
-      <div class="bid-tags">
-        {# Status #}
-        {% if n.status == 'open' and n.urgent %}
-          <span class="badge" style="background:#fcebeb;color:#a32d2d;">Closing soon</span>
-        {% elif n.status == 'open' %}
-          <span class="badge badge-open">Open</span>
-        {% elif n.status == 'upcoming' %}
-          <span class="badge badge-type-p">Upcoming</span>
-        {% elif n.status == 'expired' %}
-          <span class="badge badge-expired">Expired</span>
-        {% elif n.status == 'unknown_date' %}
-          <span class="badge badge-nodate">No due date</span>
-        {% endif %}
-
-        {# Notice type #}
-        {% if n.notice_subtype == 'construction' or n.notice_type == 'construction' %}
-          <span class="badge badge-type-c">Construction notice</span>
-        {% elif n.notice_subtype == 'professional_services' or n.notice_type == 'professional_services' %}
-          <span class="badge badge-type-p">Prof. services notice</span>
-        {% else %}
-          <span class="badge badge-nodate">Public notice</span>
-        {% endif %}
-
-        {# Source tier #}
-        {% if tier == 'state' %}
-          <span class="badge" style="background:var(--green-bg);color:#27500a;font-weight:400;">State agency</span>
-        {% elif tier == 'county' %}
-          <span class="badge" style="background:var(--blue-bg);color:#0c447c;font-weight:400;">County portal</span>
-        {% elif tier == 'municipal' %}
-          <span class="badge" style="background:var(--amber-bg);color:#633806;font-weight:400;">Municipal website</span>
-        {% endif %}
-
-        {# Paywalled #}
-        {% if n.paywalled %}
-          <span class="badge" style="background:var(--gray-bg);color:#5f5e5a;">
-            {{ n.platform }} — notice only
-          </span>
-        {% elif n.access_type and n.access_type not in ('Unknown','') %}
-          <span class="badge badge-access">{{ n.access_type }}</span>
-        {% endif %}
-
-        {# New today #}
-        {% if is_new %}
-          <span class="badge" style="background:var(--green-bg);color:#27500a;">New today</span>
-        {% endif %}
-
-        {# Prequal codes #}
-        {% if n.prequal_codes %}
-          <span style="font-size:11px;color:var(--text3);">
-            Prequalification: {{ n.prequal_codes | join(' · ') }}
-          </span>
-        {% endif %}
-      </div>
-
-      {# Paywalled note #}
-      {% if n.paywalled %}
-        <div style="margin-top:6px;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px;">
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
-            <rect x="3" y="8" width="10" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M5 8V5a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          Notice retrieved — bid documents require {{ n.platform }} subscription.
-          {% if n.official_url %}
-            <a href="{{ n.official_url }}" target="_blank" rel="noopener"
-               style="color:var(--blue);">Open {{ n.platform }} ↗</a>
-          {% endif %}
-        </div>
-      {% endif %}
-    </div>
-
-    {# Due date and actions #}
-    <div class="bid-due {{ 'soon-due' if is_urgent }}">
-      {% if n.due_date_raw and n.due_date_raw not in ('Not listed','—','') %}
-        <span class="due-label">
-          {% if n.status == 'upcoming' %}Expected
-          {% elif 'bid opening' in (n.notice_excerpt or '').lower() %}Bid opening
-          {% elif 'proposals due' in (n.notice_excerpt or '').lower() %}Proposals due
-          {% else %}Due{% endif %}
+  {% set is_new = n.crawled_at and n.crawled_at[:10] == today_date %}
+  <article class="bid-card ledger-record notice-record {{ 'soon' if is_urgent }}">
+    <div class="ledger-signal" aria-hidden="true"></div>
+    <div class="bid-main ledger-main">
+      <div class="ledger-record-label">
+        <span>
+          {% if n.notice_subtype == 'construction' or n.notice_type == 'construction' %}Construction notice
+          {% elif n.notice_subtype == 'professional_services' or n.notice_type == 'professional_services' %}Professional-services notice
+          {% else %}Public notice{% endif %}
         </span>
-        <span class="due-date">{{ n.deadline_display }}</span>
-        {% if n.days_until_due is not none and n.status == 'open' %}
-          <span style="font-size:10px;color:{{ 'var(--red)' if n.urgent else 'var(--text3)' }};display:block;margin-top:2px;">
-            {{ n.days_until_due }} day{{ 's' if n.days_until_due != 1 }}
-          </span>
-        {% endif %}
-      {% else %}
-        <span class="due-date" style="color:var(--text3);font-weight:400;">—</span>
-      {% endif %}
-
-      <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;">
-        {% if n.official_url and not n.paywalled %}
-          <a href="{{ n.official_url }}" target="_blank" rel="noopener"
-             class="btn btn-primary btn-sm" style="font-size:11px;justify-content:center;">
-            Open notice ↗</a>
-        {% endif %}
-        <a href="{{ url_for('notices2.notice_detail', notice_id=n.id) }}"
-           class="btn btn-sm" style="font-size:11px;justify-content:center;">Detail</a>
+        {% if is_urgent %}<strong>Closing soon</strong>
+        {% elif n.status == 'open' %}<strong>Open</strong>
+        {% elif n.status == 'upcoming' %}<strong>Upcoming</strong>
+        {% elif n.status == 'expired' %}<strong>Expired</strong>
+        {% elif n.status == 'unknown_date' %}<strong>No due date</strong>{% endif %}
+        {% if is_new %}<em>New today</em>{% endif %}
+      </div>
+      <a href="{{ url_for('notices2.notice_detail', notice_id=n.id) }}" class="bid-title" title="{{ n.title }}">{{ n.title }}</a>
+      <div class="bid-meta ledger-meta">
+        <span>{{ n.source_name }}</span>
+        {% if n.contract_number %}<span>Contract {{ n.contract_number }}</span>{% endif %}
+        <span>{{ n.county_display or 'County not stated in notice' }}</span>
+        {% if n.corridors %}<span>{{ n.corridors[:3] | join(', ') }}</span>{% endif %}
+        {% if n.crawled_at %}<span>Verified {{ n.crawled_at[:10] }}</span>{% endif %}
+      </div>
+      {% if n.notice_excerpt %}<p class="notice-excerpt">{{ n.notice_excerpt }}</p>{% endif %}
+      <div class="bid-tags ledger-actions">
+        {% if n.source_tier %}<span class="access-note">{{ n.source_tier | replace('paywalled', 'registration') | title }} source</span>{% endif %}
+        {% if n.paywalled %}<span class="access-note">{{ n.platform }} registration required</span>
+        {% elif n.access_type and n.access_type not in ('Unknown','') %}<span class="access-note">{{ n.access_type }}</span>{% endif %}
+        {% if n.prequal_codes %}<span class="access-note">Prequalification: {{ n.prequal_codes | join(' / ') }}</span>{% endif %}
+        {% if n.map_url %}<a href="{{ n.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Map built from evidenced location text">Map location <span>&nearr;</span></a>{% endif %}
+        {% if n.official_url %}<a href="{{ n.official_url }}" target="_blank" rel="noopener" class="official-link">Open official notice <span>&nearr;</span></a>{% endif %}
       </div>
     </div>
-  </div>
+    <div class="bid-due ledger-deadline {{ 'soon-due' if is_urgent }}">
+      {% if n.due_date_raw and n.due_date_raw not in ('Not listed','-','') %}
+        <span class="due-label">{{ 'Expected' if n.status == 'upcoming' else 'Due' }}</span>
+        <span class="due-date">{{ n.deadline_display }}</span>
+        {% if n.days_until_due is defined and n.days_until_due is not none and n.status == 'open' %}<small>{{ n.days_until_due }} day{{ '' if n.days_until_due == 1 else 's' }}</small>{% endif %}
+      {% else %}
+        <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not published</span>
+      {% endif %}
+    </div>
+  </article>
 {% endmacro %}
 
-{# ── Feed sections ── #}
-{% set today_str = today_date %}
-
-{% if urgent %}
-  <div class="section-label" style="color:var(--red);">
-    Closing within 7 days — act now
-  </div>
-  {% for n in urgent %}{{ notice_card(n) }}{% endfor %}
+{% macro notice_group(index, title, items, tone='') %}
+{% if items %}
+<section class="ledger-group ledger-group-{{ tone }}">
+  <header class="ledger-group-head"><span>{{ index }}</span><h2>{{ title }}</h2><strong>{{ items | length }} notice{{ '' if items | length == 1 else 's' }}</strong></header>
+  <div class="ledger-feed">{% for n in items %}{{ notice_card(n) }}{% endfor %}</div>
+</section>
 {% endif %}
+{% endmacro %}
 
-{% if week %}
-  <div class="section-label">Due this week (8–30 days)</div>
-  {% for n in week %}{{ notice_card(n) }}{% endfor %}
-{% endif %}
+{{ notice_group('01', 'Closing within 7 days', urgent, 'urgent') }}
+{{ notice_group('02', 'Closing in 8 to 30 days', week, 'month') }}
+{{ notice_group('03', 'Open and upcoming', month, 'future') }}
+{{ notice_group('04', 'Deadline not published', nodate, 'undated') }}
+{% if selected_status == 'expired' %}{{ notice_group('05', 'Expired notices', expired, 'closed') }}{% endif %}
 
-{% if month %}
-  <div class="section-label">Open and upcoming</div>
-  {% for n in month %}{{ notice_card(n) }}{% endfor %}
-{% endif %}
-
-{% if nodate %}
-  <div class="section-label">No due date listed</div>
-  {% for n in nodate %}{{ notice_card(n) }}{% endfor %}
-{% endif %}
-
-{% if selected_status == 'expired' and expired %}
-  <div class="section-label">Expired notices</div>
-  {% for n in expired %}{{ notice_card(n) }}{% endfor %}
-{% endif %}
-
-{% if not urgent and not week and not month and not nodate %}
-  <div style="padding:3rem 0;text-align:center;color:var(--text2);font-size:14px;">
-    No notices found matching your filters.
-    <a href="{{ request.path }}" style="color:var(--blue);">Clear filters</a>
-  </div>
+{% if not urgent and not week and not month and not nodate and not expired %}
+  <div class="listing-empty">No notices found matching your filters. <a href="{{ request.path }}">Clear filters</a></div>
 {% endif %}
 
 {% endblock %}

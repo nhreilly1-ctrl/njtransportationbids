@@ -1329,6 +1329,13 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
         "show_closed": show_closed,
         "q": q,
         "total": len(filtered),
+        "open_count": len([opp for opp in filtered if opp.get("status") == "open"]),
+        "upcoming_count": len([opp for opp in filtered if opp.get("status") == "upcoming"]),
+        "mapped_count": len([opp for opp in filtered if opp.get("map_url")]),
+        "agency_count": len(
+            {opp.get("source_name") for opp in filtered if opp.get("source_name")}
+        ),
+        "last_verified": _latest_homepage_update(filtered),
         "record_type": record_type,
         "notice_subtype": notice_subtype,
         "today": today.isoformat(),

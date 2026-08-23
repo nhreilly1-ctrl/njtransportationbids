@@ -324,6 +324,28 @@ class PublicSurfaceTests(unittest.TestCase):
             html,
         )
 
+    def test_public_notice_list_links_evidenced_corridor_to_map(self):
+        notice = {
+            "id": "mapped-notice",
+            "title": "I-287 bridge deck repairs",
+            "status": "open",
+            "notice_type": "construction",
+            "notice_subtype": "construction",
+            "source_name": "NJDOT",
+            "source_tier": "state",
+            "official_url": "https://agency.example/notices/mapped-notice",
+            "due_date_parsed": "2099-12-31",
+        }
+        with (
+            patch.object(notice_app, "_load_notices", return_value=[notice]),
+            patch.object(notice_app, "_load_crawl_log", return_value=[]),
+        ):
+            html = app_main.app.test_client().get("/notices").get_data(as_text=True)
+
+        self.assertIn('class="bid-map-link"', html)
+        self.assertIn("query=I-287%2C+New+Jersey", html)
+        self.assertIn("Map location", html)
+
     def test_detail_page_shows_corridor_structure_and_map_rows(self):
         records = [self._opp("i287", "I-287 Bridge Deck Replacement, Borough of Somerville")]
         with patch.object(app_main, "load_public_opps", return_value=records):

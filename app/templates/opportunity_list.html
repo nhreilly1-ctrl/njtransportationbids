@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block title %}{{ seo_title or page_title ~ ' - NJ Transportation Bids' }}{% endblock %}
 {% block meta_description %}{{ seo_description or page_desc ~ ' Browse current deadlines, issuing agencies, counties, and direct links to official New Jersey transportation solicitations.' }}{% endblock %}
+{% block body_class %}listing-page {{ 'listing-construction' if record_type == 'construction' else 'listing-professional' }}{% endblock %}
+{% block head_extra %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260823a') }}">
+{% endblock %}
 {% block structured_data %}
 {% set listed_opps = (soon + this_month + upcoming + nodate + closed)[:50] %}
 <script type="application/ld+json">
@@ -22,108 +29,141 @@
 </script>
 {% endblock %}
 {% block content %}
-<div class="page-header">
-  <h1>{{ page_title }} <span style="font-size:14px; font-weight:400; color:var(--text2);">({{ total }})</span></h1>
-  <p>{{ page_desc }}</p>
+
+{% set is_construction = record_type == 'construction' %}
+<section class="listing-hero" aria-labelledby="listing-title">
+  <div class="listing-hero-copy">
+    <span class="listing-kicker">{{ 'New Jersey construction procurement' if is_construction else 'New Jersey technical procurement' }}</span>
+    <h1 id="listing-title"><strong>{{ total }}</strong><span>{{ 'construction' if is_construction else 'professional' }}<br>opportunities</span></h1>
+    <p>{{ page_desc }}</p>
+    {% if last_verified %}<span class="listing-verified">Opportunity data last verified {{ last_verified }}</span>{% endif %}
+  </div>
+  <div class="listing-metrics" aria-label="Current opportunity summary">
+    <div><strong>{{ open_count }}</strong><span>Open<br>for bid</span></div>
+    <div><strong>{{ upcoming_count }}</strong><span>Upcoming<br>or planned</span></div>
+    <div><strong>{{ mapped_count }}</strong><span>Map-enabled<br>records</span></div>
+    <div><strong>{{ agency_count }}</strong><span>Issuing<br>agencies</span></div>
+  </div>
+</section>
+
+<nav class="listing-sisters" aria-label="Opportunity ledgers">
+  <a href="{{ url_for('bids_construction') }}" class="{{ 'active' if is_construction }}"><span>01</span>Construction bids</a>
+  <a href="{{ url_for('bids_profserv') }}" class="{{ 'active' if not is_construction }}"><span>02</span>Professional services</a>
+  <a href="{{ url_for('notices2.notices_all') }}"><span>03</span>Official notices</a>
+</nav>
+
+<div class="listing-trust-note">
+  <strong>Evidence-led locations.</strong>
+  County and map information appears only when supported by the official notice or a structured official source field. Always confirm scope and submission requirements in the bid package.
 </div>
 
-{% if record_type == 'public_notice' %}
-<div class="filter-pills" style="margin-bottom:1rem;">
-  <a class="pill {{ 'active' if not notice_subtype }}" href="{{ url_for('notices2.notices_all') }}">All notices</a>
-  <a class="pill {{ 'active' if notice_subtype == 'construction' }}" href="{{ url_for('notices2.notices_construction') }}">Construction</a>
-  <a class="pill {{ 'active' if notice_subtype == 'professional_services' }}" href="{{ url_for('notices2.notices_profserv') }}">Professional services</a>
-</div>
-{% endif %}
-
-<form method="get" class="toolbar">
-  <input type="text" name="q" placeholder="Search title or agency..." value="{{ q }}">
-  <select name="county" onchange="this.form.submit()">
-    <option value="">All counties</option>
-    {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
-  </select>
-  <select name="agency" onchange="this.form.submit()">
-    <option value="">All agencies</option>
-    {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
-  </select>
-  <select name="status" onchange="this.form.submit()">
-    <option value="active"  {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
-    <option value="all"     {{ 'selected' if selected_status == 'all' }}>Active + review queues</option>
-    <option value="review"  {{ 'selected' if selected_status == 'review' }}>Review queues only</option>
-    <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired only</option>
-  </select>
-  <label class="closed-toggle">
-    <input type="checkbox" name="show_closed" value="1" {{ 'checked' if show_closed }} onchange="this.form.submit()">
-    Show closed and excluded
-  </label>
-  <button type="submit" class="btn btn-primary">Search</button>
-  {% if q or selected_county or selected_agency or selected_status != 'active' or show_closed %}
-    <a href="{{ request.path }}" class="btn">Clear</a>
-  {% endif %}
-  <a href="{{ url_for('export_csv') }}" class="btn" style="margin-left:auto;">Export CSV</a>
+<form method="get" class="listing-filter-desk">
+  <div class="filter-desk-head">
+    <div><span>Search desk</span><strong>Narrow the opportunity ledger</strong></div>
+    <a href="{{ url_for('export_csv') }}">Export CSV <span>&nearr;</span></a>
+  </div>
+  <div class="filter-desk-controls">
+    <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Project, agency, contract number..." value="{{ q }}"></label>
+    <label><span>County</span><select name="county" onchange="this.form.submit()">
+      <option value="">All counties</option>
+      {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
+    </select></label>
+    <label><span>Agency</span><select name="agency" onchange="this.form.submit()">
+      <option value="">All agencies</option>
+      {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
+    </select></label>
+    <label><span>Status</span><select name="status" onchange="this.form.submit()">
+      <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
+      <option value="all" {{ 'selected' if selected_status == 'all' }}>Active + review queues</option>
+      <option value="review" {{ 'selected' if selected_status == 'review' }}>Review queues only</option>
+      <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired only</option>
+    </select></label>
+    <button type="submit" class="filter-submit">Search</button>
+  </div>
+  <div class="filter-desk-foot">
+    <label class="closed-toggle">
+      <input type="checkbox" name="show_closed" value="1" {{ 'checked' if show_closed }} onchange="this.form.submit()">
+      Include closed and excluded records
+    </label>
+    {% if q or selected_county or selected_agency or selected_status != 'active' or show_closed %}
+      <a href="{{ request.path }}" class="filter-clear">Clear filters</a>
+    {% endif %}
+  </div>
 </form>
 
 {% macro bid_card(o) %}
   {% set is_soon = o.due_date_parsed and o.due_date_parsed <= soon_cutoff and o.status == 'open' %}
   {% set evidenced_county = o.counties and o.geography_provenance in ('NOTICE_TEXT', 'SOURCE_RECORD_FIELD') %}
-  <div class="bid-card {{ 'soon' if is_soon }} {{ 'noise' if o.status == 'noise' }}">
-    <div class="bid-dot {{ 'dot-green' if o.status == 'open' }} {{ 'dot-amber' if o.status in ('upcoming', 'review_required', 'ai_review') }} {{ 'dot-gray' if o.status == 'expired' }} {{ 'dot-red' if o.status == 'noise' }}"></div>
-    <div class="bid-main">
-      <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
-      <div class="bid-meta">
-        {{ o.source_name }}
-        {% if o.contract_number %}&middot; Contract {{ o.contract_number }}{% endif %}
-        &middot;
-        {% if evidenced_county %}
-          {{ o.counties | join(', ') }}
-        {% elif o.coverage_scope == 'STATEWIDE' and o.geography_provenance == 'NOTICE_TEXT' %}
-          Statewide
-        {% elif o.coverage_scope == 'BISTATE' and o.geography_provenance == 'NOTICE_TEXT' %}
-          Bi-state
-        {% else %}
-          County not stated in notice
-        {% endif %}
-        {% if o.notice_subtype %}
-          &middot;
-          {% if o.notice_subtype == 'construction' %}<span style="color:var(--blue);">Construction notice</span>
-          {% else %}<span style="color:var(--teal);">Prof. services notice</span>{% endif %}
-        {% endif %}
+  <article class="bid-card ledger-record {{ 'soon' if is_soon }} {{ 'noise' if o.status == 'noise' }}">
+    <div class="ledger-signal" aria-hidden="true"></div>
+    <div class="bid-main ledger-main">
+      <div class="ledger-record-label">
+        <span>{{ 'Construction' if is_construction else 'Professional services' }}</span>
+        {% if o.status == 'open' %}<strong>Open</strong>
+        {% elif o.status == 'upcoming' %}<strong>Upcoming</strong>
+        {% elif o.status in ('review_required', 'ai_review') %}<strong>Review</strong>
+        {% elif o.status == 'expired' %}<strong>Expired</strong>
+        {% elif o.status == 'noise' %}<strong>Excluded</strong>{% endif %}
       </div>
-      <div class="bid-tags">
-        {% if o.status == 'open' %}<span class="badge badge-open">Open</span>
-        {% elif o.status == 'upcoming' %}<span class="badge badge-type-p">Upcoming</span>
-        {% elif o.status == 'review_required' %}<span class="badge badge-nodate">Review required</span>
-        {% elif o.status == 'ai_review' %}<span class="badge badge-type-p">AI review</span>
-        {% elif o.status == 'expired' %}<span class="badge badge-expired">Expired</span>
-        {% elif o.status == 'noise' %}<span class="badge badge-noise">Excluded / noise</span>{% endif %}
-        {% if o.access_type and o.access_type not in ('Unknown','') %}<span class="badge badge-access">{{ o.access_type }}</span>{% endif %}
-        {% if o.platform and o.platform not in ('Unknown','') %}<span class="badge badge-access">{{ o.platform }}</span>{% endif %}
-        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="bid-map-link">Map location ↗</a>{% endif %}
-        {% if o.official_url %}<a href="{{ o.official_url }}" target="_blank" rel="noopener" class="official-link">View official notice ↗</a>{% endif %}
+      <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
+      <div class="bid-meta ledger-meta">
+        <span>{{ o.source_name }}</span>
+        {% if o.contract_number %}<span>Contract {{ o.contract_number }}</span>{% endif %}
+        <span>
+          {% if o.location_display %}
+            {{ o.location_display }}
+          {% elif evidenced_county %}
+            {{ o.counties | join(', ') }}
+          {% elif o.coverage_scope == 'STATEWIDE' and o.geography_provenance == 'NOTICE_TEXT' %}
+            Statewide
+          {% elif o.coverage_scope == 'BISTATE' and o.geography_provenance == 'NOTICE_TEXT' %}
+            Bi-state
+          {% else %}
+            County not stated in notice
+          {% endif %}
+        </span>
+      </div>
+      <div class="bid-tags ledger-actions">
+        {% if o.access_type and o.access_type not in ('Unknown','') %}<span class="access-note">{{ o.access_type }}</span>{% endif %}
+        {% if o.platform and o.platform not in ('Unknown','') %}<span class="access-note">{{ o.platform }}</span>{% endif %}
+        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Map built from evidenced location text">Map location <span>&nearr;</span></a>{% endif %}
+        {% if o.official_url %}<a href="{{ o.official_url }}" target="_blank" rel="noopener" class="official-link">View official notice <span>&nearr;</span></a>{% endif %}
       </div>
     </div>
-    <div class="bid-due {{ 'soon-due' if is_soon }}">
+    <div class="bid-due ledger-deadline {{ 'soon-due' if is_soon }}">
       {% if o.due_date_raw and o.due_date_raw not in ('Not listed','-', '') %}
         <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ o.deadline_display }}</span>
       {% else %}
-        <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not resolved</span>
+        <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not published</span>
       {% endif %}
     </div>
-  </div>
+  </article>
 {% endmacro %}
 
-{% if soon %}<div class="section-label">Closing within 7 days</div>{% for o in soon %}{{ bid_card(o) }}{% endfor %}{% endif %}
-{% if this_month %}<div class="section-label">Closing this month</div>{% for o in this_month %}{{ bid_card(o) }}{% endfor %}{% endif %}
-{% if upcoming %}<div class="section-label">Upcoming or planned</div>{% for o in upcoming %}{{ bid_card(o) }}{% endfor %}{% endif %}
-{% if nodate %}<div class="section-label">Deadline not resolved</div>{% for o in nodate %}{{ bid_card(o) }}{% endfor %}{% endif %}
+{% macro opportunity_group(index, title, items, tone='') %}
+{% if items %}
+<section class="ledger-group ledger-group-{{ tone }}">
+  <header class="ledger-group-head">
+    <span>{{ index }}</span><h2>{{ title }}</h2><strong>{{ items | length }} record{{ '' if items | length == 1 else 's' }}</strong>
+  </header>
+  <div class="ledger-feed">{% for o in items %}{{ bid_card(o) }}{% endfor %}</div>
+</section>
+{% endif %}
+{% endmacro %}
+
+{{ opportunity_group('01', 'Closing within 7 days', soon, 'urgent') }}
+{{ opportunity_group('02', 'Closing this month', this_month, 'month') }}
+{{ opportunity_group('03', 'Upcoming or planned', upcoming, 'future') }}
+{{ opportunity_group('04', 'Deadline not resolved', nodate, 'undated') }}
 {% if closed %}
-  <div class="section-label">Closed and excluded</div>
-  <p class="section-note">Shown for research only. Verify status with the issuing agency before relying on an older notice.</p>
-  {% for o in closed %}{{ bid_card(o) }}{% endfor %}
+  <section class="ledger-group ledger-group-closed">
+    <header class="ledger-group-head"><span>05</span><h2>Closed and excluded</h2><strong>{{ closed | length }} records</strong></header>
+    <p class="section-note">Shown for research only. Verify status with the issuing agency before relying on an older notice.</p>
+    <div class="ledger-feed">{% for o in closed %}{{ bid_card(o) }}{% endfor %}</div>
+  </section>
 {% endif %}
 
 {% if not soon and not this_month and not upcoming and not nodate and not closed %}
-  <div style="padding:3rem 0; text-align:center; color:var(--text2); font-size:14px;">
-    No {{ page_title | lower }} found matching your filters. <a href="{{ request.path }}" style="color:var(--blue);">Clear filters</a>
-  </div>
+  <div class="listing-empty">No {{ page_title | lower }} found matching your filters. <a href="{{ request.path }}">Clear filters</a></div>
 {% endif %}
 {% endblock %}

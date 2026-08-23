@@ -1020,6 +1020,9 @@ class PublicDashboardTests(unittest.TestCase):
             html,
         )
         self.assertIn("View official notice", html)
+        self.assertIn('class="listing-hero"', html)
+        self.assertIn('class="listing-sisters"', html)
+        self.assertIn("Narrow the opportunity ledger", html)
 
     def test_homepage_counts_canonical_crawler_sources(self):
         enriched = {
@@ -1360,6 +1363,8 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertNotIn("Bridge engineering services", construction_response.get_data(as_text=True))
         self.assertIn("Bridge engineering services", professional_response.get_data(as_text=True))
         self.assertNotIn("County bridge reconstruction", professional_response.get_data(as_text=True))
+        self.assertIn("listing-notices", all_response.get_data(as_text=True))
+        self.assertIn('class="listing-hero"', all_response.get_data(as_text=True))
 
     def test_public_notice_status_filter_separates_open_and_pipeline(self):
         open_notice = {

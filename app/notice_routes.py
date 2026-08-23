@@ -18,6 +18,7 @@ from io import StringIO
 from flask import (Blueprint, render_template, request,
                    redirect, url_for, Response, session)
 
+from app.core.corridors import enrich_location, map_url
 from app.core.deadlines import normalize_deadline
 from app.core.geography import NJ_COUNTIES as CANONICAL_NJ_COUNTIES, enrich_geography
 
@@ -34,7 +35,13 @@ NJ_COUNTIES = list(CANONICAL_NJ_COUNTIES)
 def _load_notices():
     if not os.path.exists(NOTICES_F): return []
     with open(NOTICES_F, encoding="utf-8") as f:
-        return [normalize_deadline(enrich_geography(record)) for record in json.load(f)]
+        notices = []
+        for raw_record in json.load(f):
+            record = normalize_deadline(enrich_geography(raw_record))
+            enrich_location(record)
+            record["map_url"] = map_url(record)
+            notices.append(record)
+        return notices
 
 def _load_crawl_log():
     if not os.path.exists(CRAWL_LOG_F): return []
@@ -189,7 +196,12 @@ def _build_stats(notices):
 # ── Routes ────────────────────────────────────────────────────────────────────
 
 def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices_all"):
-    notices     = _load_notices()
+    notices     = []
+    for raw_record in _load_notices():
+        record = dict(raw_record)
+        enrich_location(record)
+        record["map_url"] = map_url(record)
+        notices.append(record)
     crawl_log   = _load_crawl_log()
     health      = _source_health(crawl_log)
 
@@ -227,6 +239,8 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
     all_active = _filter_notices(notices, notice_type=notice_type,
                                  notice_subtype=notice_subtype, status_filter="active")
     agencies = sorted(set(n.get("source_name","") for n in all_active if n.get("source_name")))
+    open_count = len([n for n in filtered if n.get("status") == "open"])
+    upcoming_count = len([n for n in filtered if n.get("status") == "upcoming"])
 
     return render_template("notices/notice_list.html",
         urgent=urgent, week=week, month=month,
@@ -241,10 +255,15 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         selected_tier=source_tier,
         selected_status=status_filter,
         q=q,
+        open_count=open_count,
+        upcoming_count=upcoming_count,
+        mapped_count=len([n for n in filtered if n.get("map_url")]),
+        agency_count=len({n.get("source_name") for n in filtered if n.get("source_name")}),
         notice_type=notice_type,
         notice_subtype=notice_subtype,
         active_nav=active_nav,
         last_crawl_ago=last_crawl_ago,
+        today_date=date.today().isoformat(),
         user=session.get("user_id"),
         robots_meta="index, follow" if filtered else "noindex, follow",
     )
