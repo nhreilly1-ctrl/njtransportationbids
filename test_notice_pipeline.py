@@ -745,6 +745,109 @@ class SourceHealthTests(unittest.TestCase):
         self.assertEqual(summary["coverage"]["county_sources"], 21)
         self.assertEqual(summary["coverage"]["missing_counties"], [])
 
+    def test_allow_empty_zero_from_a_never_producing_source_is_disclosed(self):
+        source = dict(self.source, allow_empty=True)
+        entry = {
+            "last_crawl": self.now.isoformat(),
+            "last_count": 0,
+            "last_error": None,
+            "history": [
+                {"at": "2026-08-14T18:00:00+00:00", "count": 0, "error": None},
+                {"at": self.now.isoformat(), "count": 0, "error": None},
+            ],
+        }
+        health = source_health.evaluate_source(source, entry, self.now)
+        self.assertEqual(health["status"], "ok")
+        self.assertEqual(health["severity"], "ok")
+        self.assertFalse(health["ever_produced"])
+        self.assertIn("never produced a record", health["message"])
+
+    def test_allow_empty_zero_after_prior_records_reads_as_currently_empty(self):
+        source = dict(self.source, allow_empty=True)
+        entry = {
+            "last_crawl": self.now.isoformat(),
+            "last_count": 0,
+            "last_error": None,
+            "history": [
+                {"at": "2026-08-14T18:00:00+00:00", "count": 2, "error": None},
+                {"at": self.now.isoformat(), "count": 0, "error": None},
+            ],
+        }
+        health = source_health.evaluate_source(source, entry, self.now)
+        self.assertEqual(health["status"], "ok")
+        self.assertTrue(health["ever_produced"])
+        self.assertEqual(
+            health["message"],
+            "Crawl succeeded; no matching opportunities are currently listed.",
+        )
+
+    def test_county_record_coverage_distinguishes_produced_from_blind_zero(self):
+        producing = {
+            "id": "county-alpha",
+            "name": "Alpha County",
+            "url": "https://alpha.example/bids",
+            "crawl_tier": 2,
+            "source_tier": "county",
+            "county": "Bergen",
+            "crawl_freq": "daily",
+            "allow_empty": True,
+        }
+        silent = dict(
+            producing,
+            id="county-beta",
+            name="Beta County",
+            url="https://beta.example/bids",
+            county="Sussex",
+        )
+        crawl_log = [
+            {
+                "source_id": "county-alpha",
+                "last_crawl": self.now.isoformat(),
+                "last_count": 0,
+                "last_error": None,
+                "history": [
+                    {"at": "2026-08-14T18:00:00+00:00", "count": 1, "error": None},
+                    {"at": self.now.isoformat(), "count": 0, "error": None},
+                ],
+            },
+            {
+                "source_id": "county-beta",
+                "last_crawl": self.now.isoformat(),
+                "last_count": 0,
+                "last_error": None,
+                "history": [{"at": self.now.isoformat(), "count": 0, "error": None}],
+            },
+        ]
+        notices = [
+            {"source_id": "county-alpha", "source_inactive": False},
+            {"source_id": "county-alpha", "source_inactive": True},
+        ]
+        summary = source_health.build_health_summary(
+            [producing, silent], crawl_log, self.now, notices
+        )
+        coverage = summary["coverage"]
+        self.assertEqual(coverage["counties_never_produced"], ["Sussex"])
+        self.assertEqual(
+            coverage["county_active_records"], {"Bergen": 1, "Sussex": 0}
+        )
+        self.assertEqual(coverage["counties_without_active_records"], ["Sussex"])
+
+    def test_county_record_coverage_is_unclaimed_without_notices(self):
+        source = {
+            "id": "county-alpha",
+            "name": "Alpha County",
+            "url": "https://alpha.example/bids",
+            "crawl_tier": 2,
+            "source_tier": "county",
+            "county": "Bergen",
+            "crawl_freq": "daily",
+            "allow_empty": True,
+        }
+        summary = source_health.build_health_summary([source], [], self.now)
+        self.assertIsNone(summary["coverage"]["county_active_records"])
+        self.assertIsNone(summary["coverage"]["counties_without_active_records"])
+        self.assertEqual(summary["coverage"]["counties_never_produced"], ["Bergen"])
+
     def test_summary_surfaces_active_segmentation_review_records(self):
         notices = [
             {
@@ -776,6 +879,16 @@ class SourceHealthTests(unittest.TestCase):
 
 
 class PublicDashboardTests(unittest.TestCase):
+    @staticmethod
+    def _frozen_deadline_clock(now):
+        # enrich() expires records against the real clock; freeze it alongside
+        # _homepage_today so fixture deadlines don't rot as real time passes.
+        from app.core.deadlines import deadline_is_past
+
+        return patch.object(
+            app_main, "deadline_is_past", lambda record: deadline_is_past(record, now)
+        )
+
     @staticmethod
     def _scan_record(record_id, title, due_date_raw="", status="open", **overrides):
         record = {
@@ -994,6 +1107,7 @@ class PublicDashboardTests(unittest.TestCase):
             patch.object(app_main, "load_public_opps", return_value=records),
             patch.object(app_main, "load_public_sources", return_value=[]),
             patch.object(app_main, "_homepage_today", return_value=FixedDate(2026, 8, 21)),
+            self._frozen_deadline_clock(datetime(2026, 8, 21, 16, 0, tzinfo=timezone.utc)),
         ):
             client = app_main.app.test_client()
             response = client.get("/")
@@ -1052,6 +1166,7 @@ class PublicDashboardTests(unittest.TestCase):
             patch.object(app_main, "load_public_opps", return_value=records),
             patch.object(app_main, "load_public_sources", return_value=[]),
             patch.object(app_main, "_homepage_today", return_value=FixedDate(2026, 8, 21)),
+            self._frozen_deadline_clock(datetime(2026, 8, 21, 16, 0, tzinfo=timezone.utc)),
         ):
             response = app_main.app.test_client().get("/")
 
@@ -1109,6 +1224,7 @@ class PublicDashboardTests(unittest.TestCase):
             patch.object(app_main, "load_public_opps", return_value=records),
             patch.object(app_main, "load_public_sources", return_value=[]),
             patch.object(app_main, "_homepage_today", return_value=FixedDate(2026, 8, 22)),
+            self._frozen_deadline_clock(datetime(2026, 8, 22, 16, 0, tzinfo=timezone.utc)),
         ):
             response = app_main.app.test_client().get("/")
 
