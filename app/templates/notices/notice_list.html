@@ -97,6 +97,7 @@
 
 {# ── Filters ── #}
 <form method="get" class="toolbar" style="margin-bottom:1.25rem;">
+  {% if selected_corridor %}<input type="hidden" name="corridor" value="{{ selected_corridor }}">{% endif %}
   <input type="text" name="q" placeholder="Search title, agency, contract no..." value="{{ q }}">
   <select name="county" onchange="this.form.submit()">
     <option value="">All counties</option>
@@ -123,8 +124,11 @@
     <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired</option>
   </select>
   <button type="submit" class="btn btn-primary">Search</button>
-  {% if q or selected_county or selected_agency or selected_tier %}
+  {% if q or selected_county or selected_agency or selected_tier or selected_corridor %}
     <a href="{{ request.path }}" class="btn">Clear</a>
+  {% endif %}
+  {% if selected_corridor %}
+    <span class="badge badge-type-c" title="Showing notices whose text references this corridor">{{ selected_corridor }}</span>
   {% endif %}
   <a href="{{ url_for('notices2.export_notices_csv') }}" class="btn" style="margin-left:auto;">Export CSV</a>
 </form>
@@ -146,6 +150,9 @@
       <div class="bid-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
         <span>{{ n.source_name }}</span>
         <span style="color:var(--border2);">·</span><span>{{ n.county_display }}</span>
+        {% if n.corridors %}
+          <span style="color:var(--border2);">·</span><span>{{ n.corridors[:3] | join(', ') }}</span>
+        {% endif %}
         {% if n.contract_number %}
           <span style="color:var(--border2);">·</span>
           <span style="font-family:monospace;font-size:11px;color:var(--text3);">{{ n.contract_number }}</span>

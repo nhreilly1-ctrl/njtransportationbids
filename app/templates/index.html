@@ -29,10 +29,11 @@
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="lane-title">{{ o.title }}</a>
       <div class="lane-meta">
         <span>{{ o.source_name }}</span>
-        <span>{{ o.county_display }}</span>
+        <span>{{ o.location_display or o.county_display }}</span>
         {% if o.contract_number %}<span>{{ o.contract_number }}</span>{% endif %}
         {% if o.homepage_deadline_time %}<span>{{ o.homepage_deadline_time }}</span>{% endif %}
         {% if o.homepage_platform %}<span class="lane-platform">{{ o.homepage_platform }}</span>{% endif %}
+        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="lane-map-link">Map ↗</a>{% endif %}
       </div>
     </div>
   </article>
@@ -69,6 +70,16 @@
     <span class="stat-detail">{{ stats.healthy_sources }} healthy</span>
   </a>
 </div>
+
+{% if top_corridors %}
+<nav class="corridor-strip" aria-label="Browse live opportunities by corridor">
+  <span class="corridor-strip-label">By corridor</span>
+  {% for corridor, count in top_corridors %}
+    <a class="corridor-chip" href="{{ url_for('notices2.notices_all', corridor=corridor) }}"
+       title="{{ count }} live notice{{ 's' if count != 1 }} referencing {{ corridor }}">{{ corridor }}<span>{{ count }}</span></a>
+  {% endfor %}
+</nav>
+{% endif %}
 
 <div class="opportunity-lanes">
   <section class="opportunity-lane lane-construction" aria-labelledby="construction-lane-title">

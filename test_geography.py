@@ -17,6 +17,23 @@ def classify(title="", county="", source_id="state-njdot-construction", **extra)
 
 
 class GeographyClassifierTests(unittest.TestCase):
+    def test_corridor_extraction_never_populates_counties(self):
+        # A route crosses many counties; a corridor claim is never county
+        # evidence, even after location enrichment has run on the record.
+        from app.core.corridors import enrich_location
+
+        record = {
+            "title": "I-287 and Route 202 Bridge Deck Replacement",
+            "county": "",
+            "source_id": "state-njdot-construction",
+        }
+        enrich_location(record)
+        self.assertEqual(record["corridors"], ["I-287", "US-202"])
+        result = classify_geography(record)
+        self.assertEqual(result["counties"], [])
+        self.assertEqual(result["coverage_scope"], "UNRESOLVED")
+        self.assertEqual(result["county_display"], "County not stated in notice")
+
     def test_all_21_counties_are_canonicalized(self):
         emitted = set()
         for county in NJ_COUNTIES:

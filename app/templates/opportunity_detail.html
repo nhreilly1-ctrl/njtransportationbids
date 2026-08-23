@@ -94,6 +94,7 @@
     <div style="display:flex;gap:7px;flex-wrap:wrap;">
       {% if opp.official_url %}<a href="{{ opp.official_url }}" target="_blank" rel="noopener" class="btn btn-primary">Open official source ↗</a>{% endif %}
       {% if opp.due_date_parsed and opp.status in ('open','upcoming') %}<a href="{{ url_for('opportunity_calendar', opp_id=opp.id) }}" class="btn">Add deadline to calendar</a>{% endif %}
+      {% if opp.map_url %}<a href="{{ opp.map_url }}" target="_blank" rel="noopener" class="btn">View on map ↗</a>{% endif %}
       <button type="button" class="btn" onclick="navigator.clipboard.writeText(window.location.href).then(() => this.textContent = 'Link copied')">Copy link</button>
     </div>
   </div>
@@ -105,6 +106,9 @@
       {% if opp.contract_number %}<tr><td style="color:var(--text2); padding:4px 0;">Contract / reference</td><td style="padding:4px 0;">{{ opp.contract_number }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Source</td><td style="padding:4px 0;">{{ opp.source_name or '—' }}</td></tr>
       <tr><td style="color:var(--text2); padding:4px 0;">Location</td><td style="padding:4px 0;">{{ opp.county_display }}</td></tr>
+      {% if opp.corridors %}<tr><td style="color:var(--text2); padding:4px 0;">Corridor</td><td style="padding:4px 0;">{% for c in opp.corridors %}<a href="{{ url_for('notices2.notices_all', corridor=c) }}" style="color:var(--blue); text-decoration:none;">{{ c }}</a>{{ ', ' if not loop.last }}{% endfor %}</td></tr>{% endif %}
+      {% if opp.structure_types %}<tr><td style="color:var(--text2); padding:4px 0;">Structure</td><td style="padding:4px 0;">{{ opp.structure_types | join(', ') | title }}</td></tr>{% endif %}
+      {% if opp.municipalities %}<tr><td style="color:var(--text2); padding:4px 0;">Municipality</td><td style="padding:4px 0;">{{ opp.municipalities | join(', ') }}</td></tr>{% endif %}
       {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">{{ 'Expected' if opp.status == 'upcoming' else 'Normalized deadline' }}</td><td style="padding:4px 0;">{{ opp.deadline_display }}</td></tr>{% endif %}
       {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">Source deadline text</td><td style="padding:4px 0;">{{ opp.due_date_raw }}</td></tr>{% endif %}
       {% if opp.last_verified_date %}<tr><td style="color:var(--text2); padding:4px 0;">Last verified</td><td style="padding:4px 0;">{{ opp.last_verified_date }}</td></tr>{% endif %}

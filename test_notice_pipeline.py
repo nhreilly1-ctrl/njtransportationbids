@@ -1125,7 +1125,10 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertNotIn('class="countdown', html)
         self.assertNotIn("expired bridge work", html)
         self.assertNotIn("not resolved", html.lower())
-        self.assertIn("County not stated in notice", html)
+        # The Morris record's evidenced corridor replaces the county fallback
+        # on its card; the Ocean record shows its evidenced county alongside.
+        self.assertIn("CR-601", html)
+        self.assertIn("Ocean", html)
         self.assertIn("OpenGov", html)
         self.assertNotIn("not resolved", detail.get_data(as_text=True).lower())
         self.assertIn("County not stated in notice", detail.get_data(as_text=True))
