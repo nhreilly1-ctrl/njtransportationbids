@@ -50,7 +50,11 @@
     "status": "noise",
     "urgent": false,
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d47f43d02a44",
@@ -99,7 +103,11 @@
     "status": "noise",
     "urgent": false,
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-641a3acffbd7",
@@ -150,7 +158,13 @@
     "status": "noise",
     "urgent": false,
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "corridors": [
+      "CR-551"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "notice_excerpt:\"CR 551\""
   },
   {
     "id": "notice-f42ab9341e4f",
@@ -200,7 +214,13 @@
     "status": "noise",
     "urgent": false,
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-5f69af49e178",
@@ -260,7 +280,11 @@
     "status": "noise",
     "urgent": false,
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-cc4e4df6cfd4",
@@ -320,7 +344,11 @@
     "status": "noise",
     "urgent": false,
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-61f69805863f",
@@ -373,7 +401,11 @@
     "status": "noise",
     "urgent": false,
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-9eb4e1bd371c",
@@ -422,7 +454,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-926632aa45fb",
@@ -471,7 +507,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-4531d15e2e38",
@@ -520,7 +560,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [
+      "City of Paterson Combined Sewer"
+    ],
+    "location_evidence": "title:\"CITY of Paterson Combined Sewer\""
   },
   {
     "id": "notice-0e095bc9983d",
@@ -571,7 +617,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-9db6e6911640",
@@ -622,7 +672,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-52546cf61111",
@@ -675,7 +729,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-93af78594d02",
@@ -727,7 +785,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-426e0e17e1fb",
@@ -779,7 +841,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ff3fc4734370",
@@ -830,7 +896,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-25be67d23f9a",
@@ -883,7 +953,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-753bfbf95b81",
@@ -936,7 +1012,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-1c0ba7c8482c",
@@ -987,7 +1067,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"BRIDGE\""
   },
   {
     "id": "notice-6ebfc6cc572a",
@@ -1038,7 +1124,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "CR-601"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"C.R. 601\""
   },
   {
     "id": "notice-9caea0bae9d4",
@@ -1091,7 +1183,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [
+      "City of Elizabeth",
+      "Borough of Roselle"
+    ],
+    "location_evidence": "title:\"City of Elizabeth\" | title:\"Borough of Roselle\""
   },
   {
     "id": "notice-a6cca2a97783",
@@ -1142,7 +1241,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-9ae0dfd9d280",
@@ -1195,7 +1298,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-0002d7c371aa",
@@ -1248,7 +1355,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-7f78b6b60878",
@@ -1301,7 +1412,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-82fec72f21eb",
@@ -1354,7 +1469,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-35"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"ROUTE 35\" | title:\"BRIDGE\""
   },
   {
     "id": "notice-6db4eb12aa8e",
@@ -1405,7 +1528,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-50339f52c99c",
@@ -1456,7 +1583,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d408af6223f6",
@@ -1509,7 +1640,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ff683f4b90af",
@@ -1560,7 +1695,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-bd82877928a3",
@@ -1611,7 +1750,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge",
+      "anchorage"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\" | title:\"Anchorage\""
   },
   {
     "id": "notice-ac38e1e37a60",
@@ -1662,7 +1808,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-be604c75a3c9",
@@ -1713,7 +1863,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-306d6836846c",
@@ -1764,7 +1918,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-eda666719918",
@@ -1815,7 +1973,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-20b4f3dc3f48",
@@ -1866,7 +2028,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-8d8df12b3d55",
@@ -1917,7 +2083,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-26d80ad34746",
@@ -1968,7 +2138,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-0879acffe696",
@@ -2018,7 +2194,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-bb990e81f943",
@@ -2068,7 +2248,17 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-78",
+      "I-80"
+    ],
+    "structure_types": [
+      "toll plaza",
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Toll Plaza\" | notice_excerpt:\"I-78\" | notice_excerpt:\"I-80\" | notice_excerpt:\"Bridges\""
   },
   {
     "id": "notice-58e22dd4f9f8",
@@ -2118,7 +2308,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge",
+      "viaduct"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\" | title:\"Viaduct\""
   },
   {
     "id": "notice-21064d473da1",
@@ -2170,7 +2367,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-0ee280ad3f4d",
@@ -2222,7 +2423,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-e7015a784522",
@@ -2276,7 +2481,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [
+      "City of Plainfield"
+    ],
+    "location_evidence": "title:\"Bridge\" | notice_excerpt:\"City of Plainfield\""
   },
   {
     "id": "notice-f3c293f763e0",
@@ -2328,7 +2541,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-9b0f1a9e356c",
@@ -2380,7 +2597,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ff88c279bc5b",
@@ -2430,7 +2651,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-deba59a6e155",
@@ -2480,7 +2705,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-28409da74419",
@@ -2530,7 +2759,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-7d63ec3b8a20",
@@ -2592,7 +2825,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-dbe774a5494b",
@@ -2652,7 +2891,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-3fa3d4d76aa8",
@@ -2712,7 +2957,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ Turnpike",
+      "Garden State Parkway"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\" | title:\"Garden State Parkway\""
   },
   {
     "id": "notice-6dce40b9fd07",
@@ -2772,7 +3024,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ Turnpike"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\" | title:\"Bridge\""
   },
   {
     "id": "notice-d063f6a9df47",
@@ -2832,7 +3092,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-11a853e34ed0",
@@ -2892,7 +3156,16 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ Turnpike",
+      "Garden State Parkway"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\" | title:\"Garden State Parkway\" | title:\"Bridge\""
   },
   {
     "id": "notice-5be294b87b7a",
@@ -2952,7 +3225,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-f38b2286a515",
@@ -3012,7 +3289,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ Turnpike"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\""
   },
   {
     "id": "notice-9e3665589907",
@@ -3061,7 +3344,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-fd47a5ff3d62",
@@ -3114,7 +3401,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-668b437ee761",
@@ -3167,7 +3458,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-284e9e5b80e7",
@@ -3220,7 +3515,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-cbf504d9df1c",
@@ -3273,7 +3572,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-b4fe75feaec9",
@@ -3326,7 +3629,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-6d1f19ebfa18",
@@ -3379,7 +3686,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-b3a7c566b40f",
@@ -3432,7 +3743,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d74a07c6204a",
@@ -3485,7 +3800,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-a015da037476",
@@ -3538,7 +3857,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-1",
+      "NJ-18",
+      "NJ-33"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"US1\" | title:\"NJ 18\" | title:\"NJ 33\""
   },
   {
     "id": "notice-134a0ca62f16",
@@ -3591,7 +3918,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-440"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"NJ 440\""
   },
   {
     "id": "notice-4f4930da7aff",
@@ -3644,7 +3977,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-24",
+      "I-78"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"NJ 24\" | title:\"I-78\""
   },
   {
     "id": "notice-e2f0e5baa232",
@@ -3697,7 +4037,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-9bdb03a6982e",
@@ -3750,7 +4094,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-5efd53108e5a",
@@ -3803,7 +4151,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-dc205290ac36",
@@ -3856,7 +4208,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-2c261290eb5c",
@@ -3909,7 +4265,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-287"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route I-287\" | title:\"Bridge\""
   },
   {
     "id": "notice-5fa1f0187403",
@@ -3962,7 +4326,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-287"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route I-287\" | title:\"Bridge\""
   },
   {
     "id": "notice-aca250147055",
@@ -4015,7 +4387,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-08f0b5a0e253",
@@ -4068,7 +4444,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-a6e4cfb7cfb1",
@@ -4121,7 +4501,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ac7aaf769feb",
@@ -4174,7 +4558,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-7b894ba0cdac",
@@ -4227,7 +4615,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "drawbridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Drawbridge\""
   },
   {
     "id": "notice-29a56f4b72ef",
@@ -4280,7 +4674,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-f085cb05d43f",
@@ -4333,7 +4731,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-76c8069b8523",
@@ -4386,7 +4788,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-5752320c5fc5",
@@ -4439,7 +4847,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-24"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 24\" | title:\"Bridge\""
   },
   {
     "id": "notice-a0b45a0c5d2d",
@@ -4492,7 +4908,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-287"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route I-287\" | title:\"Bridge\""
   },
   {
     "id": "notice-098b5bb99a07",
@@ -4545,7 +4969,16 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-78",
+      "NJ-24"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route I-78\" | title:\"NJ 24\" | title:\"Bridge\""
   },
   {
     "id": "notice-d9fac8f77e58",
@@ -4598,7 +5031,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-195",
+      "I-295",
+      "US-9"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 195\" | title:\"Route 295\" | title:\"Route 9\""
   },
   {
     "id": "notice-10727275d81a",
@@ -4651,7 +5092,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-5c52520aff8c",
@@ -4704,7 +5149,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-280",
+      "I-80",
+      "I-95"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 280\" | title:\"Route 80\" | title:\"Route 95\""
   },
   {
     "id": "notice-ccd61231acda",
@@ -4757,7 +5210,17 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-30",
+      "US-40",
+      "NJ-47"
+    ],
+    "structure_types": [
+      "drawbridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 30\" | title:\"40\" | title:\"and 47\" | title:\"Drawbridges\""
   },
   {
     "id": "notice-502aeff1b100",
@@ -4810,7 +5273,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-78",
+      "US-22"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 78\" | title:\"Route 22\""
   },
   {
     "id": "notice-d1d49df36cfb",
@@ -4863,7 +5333,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridges\""
   },
   {
     "id": "notice-6157f225efec",
@@ -4916,7 +5392,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-4cc96828d05c",
@@ -4969,7 +5449,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-b44b15e61b6a",
@@ -5022,7 +5506,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridges\""
   },
   {
     "id": "notice-7367ae8a2b65",
@@ -5075,7 +5565,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridges\""
   },
   {
     "id": "notice-6106433f8dbe",
@@ -5128,7 +5624,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridges\""
   },
   {
     "id": "notice-268a9c218636",
@@ -5181,7 +5683,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridges\""
   },
   {
     "id": "notice-6f9ee789d8be",
@@ -5236,7 +5744,16 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-73",
+      "US-130"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt.73\" | title:\"Rt.130\" | title:\"Bridge\""
   },
   {
     "id": "notice-4aff805284a9",
@@ -5293,7 +5810,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-287",
+      "US-202"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 287\" | title:\"202\""
   },
   {
     "id": "notice-4688a4ad6831",
@@ -5348,7 +5872,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-32d0d884993f",
@@ -5403,7 +5931,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-38"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt.38\""
   },
   {
     "id": "notice-a2130ee14684",
@@ -5458,7 +5992,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-31"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 31\" | title:\"Bridge\""
   },
   {
     "id": "notice-af5376ec57d0",
@@ -5513,7 +6055,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-465ffabbce65",
@@ -5569,7 +6115,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-1",
+      "NJ-1B",
+      "CR-617"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 1\" | title:\"Rt 1B\" | title:\"CR 617\""
   },
   {
     "id": "notice-e1215f765d04",
@@ -5625,7 +6179,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-18",
+      "CR-3",
+      "CR-617"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 18\" | title:\"CR 3\" | title:\"CR 617\""
   },
   {
     "id": "notice-75297aa782eb",
@@ -5680,7 +6242,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-1"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 1\" | title:\"Bridge\""
   },
   {
     "id": "notice-661624ecaac1",
@@ -5735,7 +6305,17 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-295",
+      "NJ-42",
+      "I-76"
+    ],
+    "structure_types": [
+      "interchange"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt.295\" | title:\"42\" | title:\"I-76\" | notice_excerpt:\"Interchange\""
   },
   {
     "id": "notice-9b2716e33632",
@@ -5788,7 +6368,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-285645fce7f1",
@@ -5843,7 +6427,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-27",
+      "CR-680"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 27\" | title:\"CR 680\""
   },
   {
     "id": "notice-97ebd194bef2",
@@ -5898,7 +6489,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-9"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 9\""
   },
   {
     "id": "notice-b629402c1604",
@@ -5953,7 +6550,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-287"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 287\" | title:\"Bridge\""
   },
   {
     "id": "notice-da4885e9bfaf",
@@ -6008,7 +6613,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-292c68a10a98",
@@ -6063,7 +6674,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-33",
+      "NJ-71"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 33\" | title:\"Route 71\""
   },
   {
     "id": "notice-24a1ffc6b81e",
@@ -6118,7 +6736,16 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-78",
+      "I-287"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 78\" | title:\"Rt 287\" | title:\"Bridges\""
   },
   {
     "id": "notice-4982794d1b7c",
@@ -6171,7 +6798,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-c0f0cb0fca4a",
@@ -6226,7 +6857,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-130"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 130\""
   },
   {
     "id": "notice-06377bf07a00",
@@ -6279,7 +6916,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-a717c76e1e60",
@@ -6334,7 +6975,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-130",
+      "CR-634"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 130\" | title:\"C.R. 634\""
   },
   {
     "id": "notice-238623237a12",
@@ -6389,7 +7037,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-10",
+      "CR-508"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 10\" | title:\"CR 508\""
   },
   {
     "id": "notice-2bf0f0032a16",
@@ -6442,7 +7097,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-db0b51b29919",
@@ -6496,7 +7155,17 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-295",
+      "CR-649",
+      "CR-583"
+    ],
+    "structure_types": [],
+    "municipalities": [
+      "Lawrence Township"
+    ],
+    "location_evidence": "title:\"Route 295\" | title:\"CR 649\" | title:\"CR 583\" | notice_excerpt:\"Lawrence Township\""
   },
   {
     "id": "notice-c060a0a49637",
@@ -6546,7 +7215,19 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-9W",
+      "I-95",
+      "US-1",
+      "US-9",
+      "US-46"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 9W\" | title:\"Route 95\" | title:\"1\" | title:\"9\" | title:\"46\" | title:\"Bridge\""
   },
   {
     "id": "notice-db612243beaf",
@@ -6603,7 +7284,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "CR-514"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"County Route 514\" | title:\"Bridge\""
   },
   {
     "id": "notice-bfa8bd073c07",
@@ -6658,7 +7347,16 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "CR-621",
+      "I-80"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"CR621\" | title:\"Route 80\" | title:\"Bridge\""
   },
   {
     "id": "notice-3fe371604a5e",
@@ -6714,7 +7412,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-130"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 130\" | title:\"Bridge\""
   },
   {
     "id": "notice-f13e5fe449e6",
@@ -6774,7 +7480,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-206"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 206\""
   },
   {
     "id": "notice-1cba9bfc8500",
@@ -6830,7 +7542,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-122",
+      "US-22"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 122\" | title:\"Route 22\""
   },
   {
     "id": "notice-d496a334c6ed",
@@ -6884,7 +7603,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-62d38170ca00",
@@ -6939,7 +7662,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-74921b00b7b4",
@@ -6996,7 +7723,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-47"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"NJ-47\" | title:\"Bridge\""
   },
   {
     "id": "notice-4f19559518a0",
@@ -7053,7 +7788,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-40"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"US-40\" | title:\"Bridge\""
   },
   {
     "id": "notice-37218a556d49",
@@ -7109,7 +7852,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-c123befbf4ef",
@@ -7165,7 +7914,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-280",
+      "I-195"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"I-280\" | title:\"I-195\""
   },
   {
     "id": "notice-866ba63ff5c7",
@@ -7219,7 +7975,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-440",
+      "US-1",
+      "US-9"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 440\" | title:\"Rt. 1\" | title:\"9\""
   },
   {
     "id": "notice-493184fe970d",
@@ -7273,7 +8037,17 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-23",
+      "I-80",
+      "US-46"
+    ],
+    "structure_types": [
+      "interchange"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 23\" | title:\"Rt. 80\" | title:\"Rt. 46\" | title:\"Interchange\""
   },
   {
     "id": "notice-5e3427365768",
@@ -7327,7 +8101,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-18"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 18\" | title:\"Bridge\""
   },
   {
     "id": "notice-61612e0abc20",
@@ -7381,7 +8163,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-99774bee8b5c",
@@ -7436,7 +8224,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-23"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 23\""
   },
   {
     "id": "notice-e05188ef1bbf",
@@ -7493,7 +8287,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-295",
+      "CR-583"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 295\" | title:\"CR 583\""
   },
   {
     "id": "notice-243552870e3b",
@@ -7547,7 +8348,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-c74acc58c001",
@@ -7601,7 +8408,11 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-777083fb4c91",
@@ -7655,7 +8466,15 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-80",
+      "CR-631",
+      "CR-513"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 80\" | title:\"CR 631\" | title:\"CR513\""
   },
   {
     "id": "notice-25d99b1a0fc5",
@@ -7709,7 +8528,14 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-78",
+      "US-22"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt.78\" | title:\"Route 22\""
   },
   {
     "id": "notice-4f6e7fea619e",
@@ -7766,7 +8592,13 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-787751a992ad",
@@ -7824,7 +8656,19 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-47",
+      "NJ-47Z",
+      "NJ-48",
+      "NJ-50",
+      "NJ-72",
+      "NJ-109",
+      "US-322"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"NJ 47\" | title:\"NJ 47Z\" | title:\"NJ 48\" | title:\"NJ 50\" | title:\"NJ 72\" | title:\"NJ 109\" | title:\"US 322\""
   },
   {
     "id": "notice-09a31913dc62",
@@ -7876,7 +8720,18 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "US-1"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [
+      "Township of Edison",
+      "City of New Brunswick"
+    ],
+    "location_evidence": "title:\"Route 1\" | title:\"Bridge\" | title:\"Township of Edison\" | title:\"City of New Brunswick\""
   },
   {
     "id": "notice-d6cd3a5ad00c",
@@ -7933,7 +8788,16 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-138",
+      "NJ-72",
+      "US-130",
+      "US-202"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"NJ 138\" | title:\"NJ 72\" | title:\"US 130\" | title:\"US 202\""
   },
   {
     "id": "notice-e537cbbc611f",
@@ -7990,7 +8854,18 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "I-278",
+      "I-280",
+      "I-287",
+      "US-202",
+      "US-1",
+      "NJ-5"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"I-278\" | title:\"I-280\" | title:\"I-287\" | title:\"US 202\" | title:\"US 1\" | title:\"NJ 5\""
   },
   {
     "id": "notice-2c483f1e0d5c",
@@ -8042,7 +8917,20 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [
+      "Township of Phillipsburg",
+      "Township of Lopatcong",
+      "Township of Pohatcong",
+      "Township of Washington",
+      "Borough of Washington",
+      "Township of Mansfield",
+      "Township of Oxford",
+      "Township of White"
+    ],
+    "location_evidence": "title:\"Township of Phillipsburg\" | title:\"Township of Lopatcong\" | title:\"Township of Pohatcong\" | title:\"Township of Washington\" | title:\"Borough of Washington\" | title:\"Township of Mansfield\" | title:\"Township of Oxford\" | title:\"Township of White\""
   },
   {
     "id": "notice-9171b5272a89",
@@ -8095,7 +8983,18 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "corridors": [
+      "NJ-33",
+      "NJ-33B"
+    ],
+    "structure_types": [],
+    "municipalities": [
+      "Township of Monroe",
+      "Township of Millstone",
+      "Township of Manalapan"
+    ],
+    "location_evidence": "title:\"Route 33\" | title:\"Route 33B\" | title:\"Township of Monroe\" | title:\"Township of Millstone\" | title:\"Township of Manalapan\""
   },
   {
     "id": "notice-701d86bd99b9",
@@ -8143,7 +9042,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-4cf1cbd80498",
@@ -8191,7 +9094,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [
+      "City of Trenton Is Soliciting"
+    ],
+    "location_evidence": "notice_excerpt:\"City of Trenton Is Soliciting\""
   },
   {
     "id": "notice-da285d07cdc6",
@@ -8239,7 +9148,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-6be589667115",
@@ -8287,7 +9200,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "CR-601"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"C.R. 601\""
   },
   {
     "id": "notice-5661db9d794d",
@@ -8335,7 +9254,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "CR-620",
+      "CR-612"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"C.R. 620\" | title:\"CR 612\""
   },
   {
     "id": "notice-a3457480a03c",
@@ -8383,7 +9309,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "CR-626",
+      "CR-647",
+      "US-9"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"C.R. 626\" | title:\"CR 647\" | title:\"RTE 9\""
   },
   {
     "id": "notice-12be7292bdb4",
@@ -8432,7 +9366,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-54792c5ec8b5",
@@ -8480,7 +9418,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-47d0f5d56965",
@@ -8527,7 +9469,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [
+      "Minutes City"
+    ],
+    "location_evidence": "notice_excerpt:\"Minutes City\""
   },
   {
     "id": "notice-64c3a266afb4",
@@ -8574,7 +9522,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-b266cdbdbe2c",
@@ -8621,7 +9573,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-b11b1976aaf1",
@@ -8668,7 +9624,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [
+      "City of Paterson Combined Sewer"
+    ],
+    "location_evidence": "title:\"CITY of Paterson Combined Sewer\""
   },
   {
     "id": "notice-205847904d0d",
@@ -8715,7 +9677,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ddaae7865146",
@@ -8762,7 +9728,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-bb04fa33a15d",
@@ -8809,7 +9779,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike",
+      "Garden State Parkway"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "notice_excerpt:\"NJ Turnpike\" | notice_excerpt:\"Garden State Parkway\""
   },
   {
     "id": "notice-0a8e5a0582b7",
@@ -8859,7 +9836,11 @@
     "noise_flagged": false,
     "noise_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-0eb4140e98a2",
@@ -8909,7 +9890,11 @@
     "noise_flagged": false,
     "noise_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-3f78c123ed11",
@@ -8959,7 +9944,15 @@
     "noise_flagged": false,
     "noise_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\" | title:\"Bridge\""
   },
   {
     "id": "notice-244d851d92ae",
@@ -9011,7 +10004,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ac3eba078079",
@@ -9063,7 +10060,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-c73b092bb5a0",
@@ -9115,7 +10116,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-422fddeee10a",
@@ -9164,7 +10169,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-4e556bf86ab7",
@@ -9215,7 +10224,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "CR-551"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"CR 551\""
   },
   {
     "id": "notice-c2c7a55ff2b8",
@@ -9265,7 +10280,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-0bef22ed5cc6",
@@ -9315,7 +10336,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike",
+      "Garden State Parkway"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\" | title:\"Garden State Parkway\""
   },
   {
     "id": "notice-664c064ca856",
@@ -9367,7 +10395,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "US-130"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 130\" | title:\"Bridge\""
   },
   {
     "id": "notice-8a4888fe5a11",
@@ -9419,7 +10455,16 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "CR-621",
+      "I-80"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"CR621\" | title:\"Route 80\" | title:\"Bridge\""
   },
   {
     "id": "notice-84f48df70ca8",
@@ -9471,7 +10516,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "CR-514"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"County Route 514\" | title:\"Bridge\""
   },
   {
     "id": "notice-3b3d9aa337bb",
@@ -9523,7 +10576,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-a252e9c27b8c",
@@ -9575,7 +10634,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-78",
+      "US-22"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt.78\" | title:\"Route 22\""
   },
   {
     "id": "notice-e730a2faf45f",
@@ -9627,7 +10693,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-80",
+      "CR-631",
+      "CR-513"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 80\" | title:\"CR 631\" | title:\"CR513\""
   },
   {
     "id": "notice-c5eb6f61be70",
@@ -9679,7 +10753,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-63e00e6aa2bc",
@@ -9731,7 +10809,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-08dd485b34b5",
@@ -9783,7 +10867,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-295",
+      "CR-583"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 295\" | title:\"CR 583\""
   },
   {
     "id": "notice-a9140ab85c56",
@@ -9835,7 +10926,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-23"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 23\""
   },
   {
     "id": "notice-ebcdb2bc4820",
@@ -9887,7 +10984,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-3021debdac0a",
@@ -9939,7 +11042,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-18"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 18\" | title:\"Bridge\""
   },
   {
     "id": "notice-2fe5528fd64e",
@@ -9991,7 +11102,17 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-23",
+      "I-80",
+      "US-46"
+    ],
+    "structure_types": [
+      "interchange"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 23\" | title:\"Rt. 80\" | title:\"Rt. 46\" | title:\"Interchange\""
   },
   {
     "id": "notice-c68ab5a1ba77",
@@ -10043,7 +11164,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-440",
+      "US-1",
+      "US-9"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 440\" | title:\"Rt. 1\" | title:\"9\""
   },
   {
     "id": "notice-4b3a02c9bed8",
@@ -10095,7 +11224,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-280",
+      "I-195"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"I \u2014 280\" | title:\"I \u2014 195\""
   },
   {
     "id": "notice-4fc70637632d",
@@ -10147,7 +11283,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-c980fb972e01",
@@ -10199,7 +11341,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "US-40"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"US \u2014 40\" | title:\"Bridge\""
   },
   {
     "id": "notice-93a4e275759c",
@@ -10251,7 +11401,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-47"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"NJ \u2014 47\" | title:\"Bridge\""
   },
   {
     "id": "notice-4768037bfa40",
@@ -10301,7 +11459,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge",
+      "viaduct"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\" | title:\"Viaduct\""
   },
   {
     "id": "notice-e794b27f9c9f",
@@ -10355,7 +11520,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-280"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route I \u2014 280\""
   },
   {
     "id": "notice-701d7391c185",
@@ -10408,7 +11579,16 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-45",
+      "US-40",
+      "CR-672",
+      "US-322"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 45\" | title:\"Route 40\" | title:\"CR 672\" | title:\"Route 322\""
   },
   {
     "id": "notice-454dd861d5a9",
@@ -10461,7 +11641,16 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-23"
+    ],
+    "structure_types": [],
+    "municipalities": [
+      "West Milford Township",
+      "Kinnelon Borough"
+    ],
+    "location_evidence": "title:\"Route 23\" | title:\"West Milford Township\" | title:\"Kinnelon Borough\""
   },
   {
     "id": "notice-a06fb7d8e6a5",
@@ -10514,7 +11703,21 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-23",
+      "I-80",
+      "US-46",
+      "US-202"
+    ],
+    "structure_types": [
+      "interchange"
+    ],
+    "municipalities": [
+      "Township of Fairfield",
+      "Township of Wayne"
+    ],
+    "location_evidence": "title:\"Route 23\" | title:\"Route 80\" | title:\"Route 46\" | title:\"Route 202\" | title:\"Interchange\" | title:\"Township of Fairfield\" | title:\"Township of Wayne\""
   },
   {
     "id": "notice-8f18be78fbcb",
@@ -10563,7 +11766,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-b4c1737aab4f",
@@ -10612,7 +11819,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-05a95ece3506",
@@ -10661,7 +11872,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-947ef781a652",
@@ -10713,7 +11928,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-e41c792ebb64",
@@ -10763,7 +11982,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-e57a4d94bddd",
@@ -10817,7 +12040,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-a4a7000b6fc4",
@@ -10871,7 +12100,21 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "US-30",
+      "CR-640",
+      "US-130",
+      "CR-606",
+      "CR-630",
+      "US-206",
+      "CR-524"
+    ],
+    "structure_types": [],
+    "municipalities": [
+      "City of Absecon"
+    ],
+    "location_evidence": "title:\"Route 30\" | title:\"CR 640\" | title:\"Route 130\" | title:\"CR 606\" | title:\"CR 630\" | title:\"Route 206\" | title:\"CR 524\" | title:\"City of Absecon\""
   },
   {
     "id": "notice-8f2e1fdf37e6",
@@ -10924,7 +12167,20 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-18",
+      "CR-3",
+      "CR-617"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [
+      "Township of Marlboro",
+      "Township of Old"
+    ],
+    "location_evidence": "title:\"Route 18\" | title:\"CR 3\" | title:\"CR 617\" | title:\"Bridge\" | title:\"Township of Marlboro\" | title:\"Township of Old\""
   },
   {
     "id": "notice-211392edb2f6",
@@ -10978,7 +12234,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-195",
+      "NJ-138"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"I \u2014 195\" | title:\"NJ 138\""
   },
   {
     "id": "notice-d5a69030aef2",
@@ -11030,7 +12293,20 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-168"
+    ],
+    "structure_types": [],
+    "municipalities": [
+      "Audobon Borough",
+      "Audobon Park Borough",
+      "Haddon Township",
+      "Mount Eprhaim Borough",
+      "Camden City",
+      "Woodlynne Borough"
+    ],
+    "location_evidence": "title:\"Route 168\" | title:\"Audobon Borough\" | title:\"Audobon Park Borough\" | title:\"Haddon Township\" | title:\"Mount Eprhaim Borough\" | title:\"Camden City\" | title:\"Woodlynne Borough\""
   },
   {
     "id": "notice-49372b1bdc76",
@@ -11082,7 +12358,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-55"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 55\""
   },
   {
     "id": "notice-3931903dc413",
@@ -11134,7 +12416,18 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-440",
+      "US-1",
+      "US-9"
+    ],
+    "structure_types": [],
+    "municipalities": [
+      "City of Bayonne",
+      "City Of Jersey City"
+    ],
+    "location_evidence": "title:\"Route 440\" | title:\"Route 1\" | title:\"9\" | title:\"City of Bayonne\" | title:\"City Of Jersey City\""
   },
   {
     "id": "notice-e7feec016de4",
@@ -11183,7 +12476,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-8da1fbc5495f",
@@ -11232,7 +12529,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-3535135932fd",
@@ -11281,7 +12582,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-554194a0a2ef",
@@ -11330,7 +12635,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-5bef5da91170",
@@ -11379,7 +12688,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-47da1eba2895",
@@ -11428,7 +12741,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-5767ff5061ac",
@@ -11477,7 +12794,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ff2a7cd06c4b",
@@ -11526,7 +12847,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-f8069a2e2366",
@@ -11575,7 +12900,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-8c6e11bcbdd4",
@@ -11624,7 +12953,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-23b84de37ab8",
@@ -11673,7 +13006,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-25e42aa80787",
@@ -11722,7 +13059,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d0ec4e5eac00",
@@ -11771,7 +13112,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-a793b76e45d9",
@@ -11820,7 +13165,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-2bfebd904cf0",
@@ -11869,7 +13218,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-4088557e29a7",
@@ -11918,7 +13271,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-9b74e7680848",
@@ -11967,7 +13324,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"bridge\""
   },
   {
     "id": "notice-6c50dceead72",
@@ -12016,7 +13379,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-f68afd1251e5",
@@ -12065,7 +13432,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\""
   },
   {
     "id": "notice-aa134c3a58c7",
@@ -12114,7 +13487,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-28aa86c59ca7",
@@ -12163,7 +13540,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-af25fb18b2c2",
@@ -12212,7 +13593,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d2f17a8f624b",
@@ -12261,7 +13646,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-2a20e2585343",
@@ -12310,7 +13699,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-8807e68451e4",
@@ -12359,7 +13752,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-57f18ffec447",
@@ -12410,7 +13807,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-1ba7fa2b3c6f",
@@ -12459,7 +13860,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-91f6b1cfd5ec",
@@ -12508,7 +13913,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d0f5b22d5fae",
@@ -12557,7 +13966,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-c436bceaffb3",
@@ -12606,7 +14019,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-0ffe81034a16",
@@ -12655,7 +14072,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\""
   },
   {
     "id": "notice-80f8a7945e63",
@@ -12704,7 +14127,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-f8a0cac681ce",
@@ -12753,7 +14180,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-5304300999a7",
@@ -12802,7 +14233,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\""
   },
   {
     "id": "notice-8b4cc079e887",
@@ -12851,7 +14288,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d119bb0069fd",
@@ -12900,7 +14341,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\""
   },
   {
     "id": "notice-cdd79fd951bf",
@@ -12949,7 +14396,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-2673caf8f0f6",
@@ -12998,7 +14449,23 @@
     "geography_review_required": true,
     "geography_review_reason": "multiple DP identifiers in one record: 25417, 26108",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "US-30",
+      "CR-640",
+      "US-130",
+      "CR-606",
+      "CR-630",
+      "US-206",
+      "CR-524"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [
+      "City of Absecon"
+    ],
+    "location_evidence": "title:\"Route 30\" | title:\"CR 640\" | title:\"Route 130\" | title:\"CR 606\" | title:\"CR 630\" | title:\"Route 206\" | title:\"CR 524\" | title:\"Bridge\" | title:\"City of Absecon\""
   },
   {
     "id": "notice-76c9504e2fec",
@@ -13047,7 +14514,31 @@
     "geography_review_required": true,
     "geography_review_reason": "multiple DP identifiers in one record: 26111, 26414, 26101, 26105",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-18",
+      "CR-3",
+      "CR-617",
+      "I-195",
+      "NJ-138",
+      "NJ-23",
+      "I-80",
+      "US-46",
+      "US-202"
+    ],
+    "structure_types": [
+      "bridge",
+      "interchange"
+    ],
+    "municipalities": [
+      "Township of Marlboro",
+      "Township of Old",
+      "Township of Fairfield",
+      "Township of Wayne",
+      "West Milford Township",
+      "Kinnelon Borough"
+    ],
+    "location_evidence": "title:\"Route 18\" | title:\"CR 3\" | title:\"CR 617\" | title:\"I \u2014 195\" | title:\"NJ 138\" | title:\"Route 23\" | title:\"Route 80\" | title:\"Route 46\" | title:\"Route 202\" | title:\"Bridge\" | title:\"Interchange\" | title:\"Township of Marlboro\" | title:\"Township of Old\" | title:\"Township of Fairfield\" | title:\"Township of Wayne\" | title:\"West Milford Township\" | title:\"Kinnelon Borough\""
   },
   {
     "id": "notice-d4e9e5626cac",
@@ -13096,7 +14587,36 @@
     "geography_review_required": true,
     "geography_review_reason": "multiple DP identifiers in one record: 25132, 25465, 26101, 26105, 26110",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-168",
+      "NJ-55",
+      "NJ-23",
+      "I-80",
+      "US-46",
+      "US-202",
+      "NJ-440",
+      "US-1",
+      "US-9"
+    ],
+    "structure_types": [
+      "interchange"
+    ],
+    "municipalities": [
+      "Township of Fairfield",
+      "Township of Wayne",
+      "City of Bayonne",
+      "Audobon Borough",
+      "Audobon Park Borough",
+      "Haddon Township",
+      "Mount Eprhaim Borough",
+      "Camden City",
+      "Woodlynne Borough",
+      "West Milford Township",
+      "Kinnelon Borough",
+      "City Of Jersey City"
+    ],
+    "location_evidence": "title:\"Route 168\" | title:\"Route 55\" | title:\"Route 23\" | title:\"Route 80\" | title:\"Route 46\" | title:\"Route 202\" | title:\"Route 440\" | title:\"Route 1\" | title:\"9\" | title:\"Interchange\" | title:\"Township of Fairfield\" | title:\"Township of Wayne\" | title:\"City of Bayonne\" | title:\"Audobon Borough\" | title:\"Audobon Park Borough\" | title:\"Haddon Township\" | title:\"Mount Eprhaim Borough\" | title:\"Camden City\" | title:\"Woodlynne Borough\" | title:\"West Milford Township\" | title:\"Kinnelon Borough\" | title:\"City Of Jersey City\""
   },
   {
     "id": "notice-48ad038a7bb7",
@@ -13145,7 +14665,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d19f0847c7c0",
@@ -13194,7 +14718,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-460f237db082",
@@ -13243,7 +14773,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridges\""
   },
   {
     "id": "notice-1c11b169bb5a",
@@ -13292,7 +14828,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-78"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"I \u2014 78\""
   },
   {
     "id": "notice-148c9196c9dc",
@@ -13341,7 +14883,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-1b8256d491a1",
@@ -13390,7 +14938,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-7d6741063723",
@@ -13439,7 +14991,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d3255d2f1781",
@@ -13488,7 +15044,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-49c8d3fb38dc",
@@ -13537,7 +15097,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-23117ee3c87c",
@@ -13586,7 +15150,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "Garden State Parkway"
+    ],
+    "structure_types": [
+      "interchange"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Garden State Parkway\" | title:\"Interchange\""
   },
   {
     "id": "notice-e37011c729a1",
@@ -13635,7 +15207,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-cc256a9e6b17",
@@ -13684,7 +15260,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-3d32f8fccfac",
@@ -13733,7 +15313,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-1916bf81ad7a",
@@ -13782,7 +15366,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-329d3964b819",
@@ -13831,7 +15419,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ab34202c15b5",
@@ -13880,7 +15472,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike"
+    ],
+    "structure_types": [
+      "interchange"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\" | title:\"Interchange\""
   },
   {
     "id": "notice-94286c1c86ab",
@@ -13929,7 +15529,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-bb3df162c1aa",
@@ -13980,7 +15584,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-4a527682cf3f",
@@ -14029,7 +15639,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-19ad16719337",
@@ -14078,7 +15692,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-d9b2d3d5c8b4",
@@ -14127,7 +15745,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ba6ed97b54cf",
@@ -14176,7 +15798,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-457f28a885af",
@@ -14225,7 +15851,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-16519ad31762",
@@ -14275,7 +15905,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\""
   },
   {
     "id": "notice-8e5c06205bf9",
@@ -14325,7 +15961,16 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-129",
+      "NJ-29",
+      "US-1",
+      "I-295"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 129\" | title:\"Rt 29\" | title:\"Rt 1\" | title:\"Rt 295\""
   },
   {
     "id": "notice-02a995ef00c5",
@@ -14375,7 +16020,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-f265e6ef0d50",
@@ -14425,7 +16074,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-542b8b4e7fdb",
@@ -14475,7 +16128,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-338cff2bf4a9",
@@ -14525,7 +16182,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-0495cd66303c",
@@ -14577,7 +16238,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "US-206"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 206\""
   },
   {
     "id": "notice-ee7661874fd2",
@@ -14627,7 +16294,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-4c1ef6156c34",
@@ -14677,7 +16348,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-1"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\" | notice_excerpt:\"I \u2014 1\""
   },
   {
     "id": "notice-174243c2238b",
@@ -14727,7 +16406,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "I-3"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Bridge\" | notice_excerpt:\"I \u2014 3\""
   },
   {
     "id": "notice-befd4df59960",
@@ -14777,7 +16464,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-3cfa607ccc8b",
@@ -14827,7 +16518,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-36"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"Route 36\" | title:\"Bridge\""
   },
   {
     "id": "notice-7d3b7faf5dd4",
@@ -14877,7 +16576,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-34474d9c8a0c",
@@ -14927,7 +16630,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-122",
+      "US-22"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt 122\" | title:\"Rt 22\""
   },
   {
     "id": "notice-6d118946ae4c",
@@ -14977,7 +16687,15 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "CR-638"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"CR 638\" | title:\"Bridge\""
   },
   {
     "id": "notice-b4c73cac35db",
@@ -15027,7 +16745,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-55"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 55\""
   },
   {
     "id": "notice-238005760179",
@@ -15077,7 +16801,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-90f5091e6747",
@@ -15127,7 +16855,13 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-168"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 168\""
   },
   {
     "id": "notice-beccbfa0a875",
@@ -15177,7 +16911,14 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ-23",
+      "NJ-94"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": "title:\"Rt. 23\" | title:\"Rt. 94\""
   },
   {
     "id": "notice-0e67e1a2ccc2",
@@ -15227,7 +16968,11 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "location_evidence": ""
   },
   {
     "id": "notice-ec3b32132a08",
@@ -15276,6 +17021,16 @@
     "geography_review_required": false,
     "geography_review_reason": "",
     "deadline_conflict": false,
-    "published_deadline_display": null
+    "published_deadline_display": null,
+    "corridors": [
+      "NJ Turnpike",
+      "Garden State Parkway"
+    ],
+    "structure_types": [
+      "bridge",
+      "tunnel"
+    ],
+    "municipalities": [],
+    "location_evidence": "title:\"New Jersey Turnpike\" | title:\"Garden State Parkway\" | title:\"bridges\" | title:\"tunnels\""
   }
 ]

@@ -37,6 +37,7 @@ from app.core.deadlines import (
     normalize_deadline,
     reconcile_authoritative_open_deadline,
 )
+from app.core.corridors import enrich_location
 from app.core.geography import enrich_geography
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -159,6 +160,7 @@ def _dedupe(notices):
 def _enrich(n, now=None):
     """Compute status, days_until_due, preserve manual overrides."""
     enrich_geography(n)
+    enrich_location(n)
     today = now.date() if now is not None else None
     normalize_deadline(n, today=today)
     deadline_conflict = reconcile_authoritative_open_deadline(n, now)

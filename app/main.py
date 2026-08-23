@@ -22,6 +22,7 @@ from app.core.deadlines import (
     normalize_deadline,
     reconcile_authoritative_open_deadline,
 )
+from app.core.corridors import enrich_location, location_display, map_url
 from app.core.geography import NJ_COUNTIES, enrich_geography
 from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
@@ -752,6 +753,12 @@ def parse_due(raw: str | None) -> date | None:
 def enrich(opp: dict) -> dict:
     record = dict(opp)
     enrich_geography(record)
+    enrich_location(record)
+    evidenced = location_display(record)
+    if evidenced and record.get("counties"):
+        evidenced = f"{evidenced} · {record['county_display']}"
+    record["location_display"] = evidenced
+    record["map_url"] = map_url(record)
     normalize_deadline(record)
     deadline_conflict = reconcile_authoritative_open_deadline(record)
     due = deadline_date(record)
@@ -1189,6 +1196,12 @@ def index():
         opp["days_until_due"] = None if opp.get("deadline_conflict") else deadline_days_remaining(opp, today)
         opp["homepage_platform"] = _homepage_platform(opp)
 
+    corridor_counts: dict[str, int] = {}
+    for opp in active:
+        for corridor in opp.get("corridors") or []:
+            corridor_counts[corridor] = corridor_counts.get(corridor, 0) + 1
+    top_corridors = sorted(corridor_counts.items(), key=lambda item: (-item[1], item[0]))[:10]
+
     construction = [opp for opp in active if opp.get("record_type") == "construction"]
     professional = [opp for opp in active if opp.get("record_type") == "professional_services"]
     unclassified = [
@@ -1208,6 +1221,7 @@ def index():
     return render_template(
         "index.html",
         stats=stats,
+        top_corridors=top_corridors,
         construction_lane=_group_homepage_lane(construction[:6], today),
         professional_lane=_group_homepage_lane(professional[:6], today),
         unclassified_lane=_group_homepage_lane(unclassified[:8], today),

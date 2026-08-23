@@ -60,6 +60,11 @@ def evaluate_source(source, entry=None, now=None):
         else:
             break
 
+    ever_produced = (isinstance(last_count, int) and last_count > 0) or any(
+        not item.get("error") and isinstance(item.get("count"), int) and item["count"] > 0
+        for item in history
+    )
+
     result = {
         "source_id": source["id"],
         "source_name": source["name"],
@@ -76,6 +81,7 @@ def evaluate_source(source, entry=None, now=None):
         "last_count": last_count,
         "last_error": last_error,
         "consecutive_failures": consecutive_failures,
+        "ever_produced": ever_produced,
         "baseline_count": None,
         "status": "ok",
         "severity": "ok",
@@ -138,7 +144,17 @@ def evaluate_source(source, entry=None, now=None):
             return result
 
     if last_count == 0 and source.get("allow_empty"):
-        result["message"] = "Crawl succeeded; no matching opportunities are currently listed."
+        if ever_produced:
+            result["message"] = "Crawl succeeded; no matching opportunities are currently listed."
+        else:
+            # Zero is allowed by source policy, but a source that has never once
+            # produced a record gives no evidence its parser can see the page's
+            # listings. Keep the status honest without raising an alarm.
+            result["message"] = (
+                "Crawl succeeded with no matching opportunities; this source has "
+                "never produced a record, so an unnoticed parser mismatch cannot "
+                "be ruled out."
+            )
     return result
 
 
@@ -153,12 +169,40 @@ def build_health_summary(sources, crawl_log, now=None, notices=None):
     status_counts = Counter(item["status"] for item in evaluated)
     critical_failures = [item for item in evaluated if item["critical"] and item["severity"] == "error"]
 
-    configured_counties = {
-        source.get("county")
-        for source in sources
-        if source.get("source_tier") == "county" and source.get("county") in NJ_COUNTIES
-    }
+    county_source_ids = {}
+    for source in sources:
+        if source.get("source_tier") == "county" and source.get("county") in NJ_COUNTIES:
+            county_source_ids.setdefault(source["county"], []).append(source["id"])
+    configured_counties = set(county_source_ids)
     missing_counties = sorted(NJ_COUNTIES - configured_counties)
+
+    # Configured-source coverage says nothing about whether a county's crawler
+    # can actually read its page. Track record-level coverage separately:
+    # counties whose sources have never yielded a record, and (when the notice
+    # set is supplied) how many active records each county source contributes.
+    evaluated_by_id = {item["source_id"]: item for item in evaluated}
+    counties_never_produced = sorted(
+        county
+        for county, source_ids in county_source_ids.items()
+        if not any(
+            evaluated_by_id[source_id].get("ever_produced") for source_id in source_ids
+        )
+    )
+    county_active_records = None
+    counties_without_active_records = None
+    if notices is not None:
+        active_by_source = Counter(
+            notice.get("source_id")
+            for notice in notices
+            if not notice.get("source_inactive")
+        )
+        county_active_records = {
+            county: sum(active_by_source[source_id] for source_id in source_ids)
+            for county, source_ids in sorted(county_source_ids.items())
+        }
+        counties_without_active_records = sorted(
+            county for county, count in county_active_records.items() if count == 0
+        )
     tier_counts = Counter(str(source.get("crawl_tier", "unknown")) for source in sources)
     frequency_counts = Counter(source.get("crawl_freq", "unknown") for source in sources)
     active_review_records = [
@@ -190,6 +234,9 @@ def build_health_summary(sources, crawl_log, now=None, notices=None):
             "county_sources": len(configured_counties),
             "counties_expected": len(NJ_COUNTIES),
             "missing_counties": missing_counties,
+            "counties_never_produced": counties_never_produced,
+            "county_active_records": county_active_records,
+            "counties_without_active_records": counties_without_active_records,
             "by_tier": dict(tier_counts),
             "by_frequency": dict(frequency_counts),
         },

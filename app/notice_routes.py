@@ -61,7 +61,7 @@ def _source_health(crawl_log):
 
 def _filter_notices(notices, notice_type=None, notice_subtype=None,
                     county=None, agency=None, status_filter="active",
-                    source_tier=None, q=None, urgent_only=False):
+                    source_tier=None, q=None, urgent_only=False, corridor=None):
     today = date.today()
     out = []
     for n in notices:
@@ -88,6 +88,11 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
             if county not in n.get("counties", []):
                 continue
 
+        # Corridor — backed only by explicit route references in notice text
+        if corridor:
+            if corridor not in (n.get("corridors") or []):
+                continue
+
         # Agency / source
         if agency and (n.get("source_name","").lower() != agency.lower()): continue
 
@@ -103,6 +108,8 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
                 n.get("source_name",""),
                 n.get("contract_number",""),
                 n.get("county_display",""),
+                " ".join(n.get("corridors") or []),
+                " ".join(n.get("municipalities") or []),
             ]).lower()
             if ql not in searchable: continue
 
@@ -197,6 +204,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
     source_tier  = request.args.get("tier","")
     status_filter= request.args.get("status","active")
     q            = request.args.get("q","").strip()
+    corridor     = request.args.get("corridor","").strip()
 
     filtered = _filter_notices(
         notices,
@@ -207,6 +215,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         status_filter=status_filter,
         source_tier=source_tier or None,
         q=q or None,
+        corridor=corridor or None,
     )
     sorted_notices = _sort_notices(filtered)
     urgent, week, month, nodate, expired = _group_by_urgency(sorted_notices)
@@ -226,6 +235,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         agencies=agencies,
         selected_county=county,
         selected_agency=agency,
+        selected_corridor=corridor,
         selected_tier=source_tier,
         selected_status=status_filter,
         q=q,
