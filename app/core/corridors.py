@@ -108,6 +108,15 @@ _MUNI_TRIM_WORDS = {
 # Places that satisfy the grammar but are not New Jersey municipalities.
 _MUNI_EXCLUDED = {"new york", "new jersey", "philadelphia", "morrisville", "easton", "new castle"}
 
+# Anticipated-project titles commonly put a named road immediately after the
+# source prefix: "NJDOT upcoming: Bailey's Mill Road, Bridge over Rt. 287".
+# Keep this deliberately narrow so procurement prose is never promoted to a
+# place name merely because it contains the word "road".
+_UPCOMING_ROAD_RE = re.compile(
+    r"\bupcoming\s*:\s*(?P<road>[^,;:\n]{1,80}\b(?:Road|Street|Avenue|Boulevard|Lane|Drive|Highway))\b",
+    re.IGNORECASE,
+)
+
 
 def _normalize_muni_token(token: str) -> str:
     token = token.replace("ﬁ", "fi").replace("ﬂ", "fl")
@@ -154,6 +163,15 @@ def _extract_municipalities(text: str) -> list[tuple[str, str]]:
             continue
         muni_type = match.group("type").capitalize()
         found.append((f"{name} {muni_type}", f"{name} {match.group('type')}"))
+    return found
+
+
+def _extract_named_roads(text: str) -> list[tuple[str, str]]:
+    found: list[tuple[str, str]] = []
+    for match in _UPCOMING_ROAD_RE.finditer(text):
+        road = normalize_reference_text(match.group("road")).strip(" .")
+        if road:
+            found.append((road, match.group("road").strip()))
     return found
 
 
@@ -240,6 +258,7 @@ def classify_location(record: dict[str, Any]) -> dict[str, Any]:
     corridors: list[str] = []
     structures: list[str] = []
     municipalities: list[str] = []
+    road_names: list[str] = []
     evidence: list[str] = []
 
     for field, text in evidence_texts:
@@ -258,11 +277,16 @@ def classify_location(record: dict[str, Any]) -> dict[str, Any]:
             if canonical not in municipalities:
                 municipalities.append(canonical)
                 evidence.append(f'{field}:"{matched}"')
+        for canonical, matched in _extract_named_roads(text):
+            if canonical not in road_names:
+                road_names.append(canonical)
+                evidence.append(f'{field}:"{matched}"')
 
     return {
         "corridors": corridors,
         "structure_types": structures,
         "municipalities": municipalities,
+        "road_names": road_names,
         "location_evidence": " | ".join(dict.fromkeys(evidence)),
     }
 
@@ -290,6 +314,19 @@ def map_query(record: dict[str, Any]) -> str:
     A route reference gives a corridor, not a point — the query names the
     corridor or municipality and lets the map service draw it. No geocoding.
     """
+    road_names = record.get("road_names") or []
+    if road_names:
+        parts = [road_names[0]]
+        corridors = record.get("corridors") or []
+        if corridors:
+            parts.append(corridors[0])
+        if (
+            record.get("geography_provenance") in ("NOTICE_TEXT", "SOURCE_RECORD_FIELD")
+            and record.get("counties")
+        ):
+            parts.append(f"{record['counties'][0]} County")
+        parts.append("New Jersey")
+        return ", ".join(parts)
     municipalities = record.get("municipalities") or []
     if municipalities:
         return f"{municipalities[0]}, New Jersey"

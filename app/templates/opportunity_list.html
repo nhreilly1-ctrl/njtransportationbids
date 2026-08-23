@@ -97,6 +97,7 @@
         {% elif o.status == 'noise' %}<span class="badge badge-noise">Excluded / noise</span>{% endif %}
         {% if o.access_type and o.access_type not in ('Unknown','') %}<span class="badge badge-access">{{ o.access_type }}</span>{% endif %}
         {% if o.platform and o.platform not in ('Unknown','') %}<span class="badge badge-access">{{ o.platform }}</span>{% endif %}
+        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="bid-map-link">Map location ↗</a>{% endif %}
         {% if o.official_url %}<a href="{{ o.official_url }}" target="_blank" rel="noopener" class="official-link">View official notice ↗</a>{% endif %}
       </div>
     </div>

@@ -197,6 +197,23 @@ class DisplayAndMapTests(unittest.TestCase):
             "https://www.google.com/maps/search/?api=1&query=City+of+Trenton%2C+New+Jersey",
         )
 
+    def test_upcoming_named_road_builds_an_evidence_backed_map_query(self):
+        record = {
+            "title": "NJDOT upcoming: Bailey's Mill Road, Bridge over Rt. 287 (NB & SB)",
+            "county": "Morris",
+            "county_provenance": "SOURCE_RECORD_FIELD",
+        }
+        record.update(classify_geography(record))
+        enrich_location(record)
+
+        self.assertEqual(record["road_names"], ["Bailey's Mill Road"])
+        self.assertEqual(record["corridors"], ["I-287"])
+        self.assertIn('title:"Bailey\'s Mill Road"', record["location_evidence"])
+        self.assertEqual(
+            map_query(record),
+            "Bailey's Mill Road, I-287, Morris County, New Jersey",
+        )
+
     def test_normalize_reference_text_unifies_dashes_and_ligatures(self):
         self.assertEqual(normalize_reference_text("TP — 842"), "TP-842")
         self.assertEqual(normalize_reference_text("traﬃc"), "traﬃc")  # unknown ligatures untouched
@@ -280,6 +297,32 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertIn("I-287 culvert lining", filtered)
         self.assertNotIn("Route 33 resurfacing", filtered)
         self.assertIn("Route 33 resurfacing", unfiltered)
+
+    def test_professional_services_list_links_named_road_to_map(self):
+        records = [
+            self._opp(
+                "notice-b629402c1604",
+                "NJDOT upcoming: Bailey's Mill Road, Bridge over Rt. 287 (NB & SB)",
+                status="upcoming",
+                is_planned=True,
+                source_id="state-njdot-profserv-upcoming",
+                source_name="NJDOT Anticipated Professional Services",
+                county="Morris",
+                county_provenance="SOURCE_RECORD_FIELD",
+                notice_type="professional_services",
+                notice_subtype="professional_services",
+                due_date_raw="Fall 2026",
+            )
+        ]
+        with patch.object(app_main, "load_public_opps", return_value=records):
+            html = app_main.app.test_client().get("/bids/professional-services").get_data(as_text=True)
+
+        self.assertIn("Bailey&#39;s Mill Road", html)
+        self.assertIn('class="bid-map-link"', html)
+        self.assertIn(
+            "query=Bailey%27s+Mill+Road%2C+I-287%2C+Morris+County%2C+New+Jersey",
+            html,
+        )
 
     def test_detail_page_shows_corridor_structure_and_map_rows(self):
         records = [self._opp("i287", "I-287 Bridge Deck Replacement, Borough of Somerville")]

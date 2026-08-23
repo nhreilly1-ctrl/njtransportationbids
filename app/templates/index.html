@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20260823') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20260823b') }}">
 {% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
@@ -32,8 +32,8 @@
 
 {% macro opportunity_type(o) -%}
   {%- if o.record_type == 'construction' -%}Construction
-  {%- elif o.record_type == 'professional_services' -%}Professional
-  {%- else -%}Other
+  {%- elif o.record_type == 'professional_services' -%}Prof. services
+  {%- else -%}Type review
   {%- endif -%}
 {%- endmacro %}
 
@@ -59,11 +59,11 @@
   <section class="market-hero" aria-labelledby="home-title">
     <div class="hero-copy">
       <div class="hero-kicker"><span class="live-pulse"></span> New Jersey public bid intelligence</div>
-      <h1 id="home-title">Find the work.<br><em>Plan the pipeline.</em></h1>
-      <p>One reliable view of transportation construction and professional-services opportunities across New Jersey's public agencies.</p>
+      <h1 id="home-title">Live transportation bid board</h1>
+      <p>Open bids and anticipated transportation work from New Jersey's public agencies, organized for contractors and professional-services teams.</p>
       <div class="hero-actions">
         <a class="hero-button hero-button-primary" href="{{ url_for('notices2.notices_all', status='open') }}">Scan open bids</a>
-        <a class="hero-button hero-button-secondary" href="#pipeline">See the pipeline</a>
+        <a class="hero-button hero-button-secondary" href="#forecast">Review upcoming work</a>
       </div>
       <div class="hero-freshness">
         <span>{{ stats.sources }} public sources monitored</span>
@@ -79,9 +79,9 @@
         <span>{{ stats.closing_week }} closing within 7 days</span>
       </a>
       <a href="{{ url_for('notices2.notices_all', status='upcoming') }}" class="score score-pipeline">
-        <span class="score-label">Coming pipeline</span>
+        <span class="score-label">Upcoming work</span>
         <strong>{{ stats.pipeline }}</strong>
-        <span>anticipated public work</span>
+        <span>in the procurement forecast</span>
       </a>
       <div class="score-total">
         <span>{{ stats.active }} active and anticipated notices</span>
@@ -141,11 +141,11 @@
       </div>
     </section>
 
-    <aside class="pipeline-panel" id="pipeline" aria-labelledby="pipeline-title">
+    <aside class="pipeline-panel" id="forecast" aria-labelledby="forecast-title">
       <header class="pipeline-head">
         <span class="section-number">02 / Market outlook</span>
-        <h2 id="pipeline-title">Coming down<br>the pipeline</h2>
-        <p>Anticipated work is not yet bid-able. Use it to plan staffing, teaming, and backlog.</p>
+        <h2 id="forecast-title">Procurement<br>forecast</h2>
+        <p>Anticipated work is not yet open for bid. Use it to plan staffing, teaming, and backlog.</p>
       </header>
 
       <div class="pipeline-tally">
@@ -157,14 +157,17 @@
       <div class="pipeline-list">
         {% for o in pipeline_preview %}
           <article class="pipeline-row">
-            <div class="pipeline-window">{{ o.homepage_pipeline_window }}</div>
+            <div class="pipeline-row-top">
+              <span class="pipeline-window">{{ o.homepage_pipeline_window }}</span>
+              <span class="pipeline-type pipeline-type-{{ o.record_type or 'other' }}">{{ opportunity_type(o) }}</span>
+            </div>
             <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}">{{ o.title }}</a>
             <span>{{ o.source_name }}{% if o.location_display %} / {{ o.location_display }}{% endif %}</span>
           </article>
         {% endfor %}
       </div>
 
-      <a class="pipeline-link" href="{{ url_for('notices2.notices_all', status='upcoming') }}">Explore all {{ stats.pipeline }} planned opportunities &rarr;</a>
+      <a class="pipeline-link" href="{{ url_for('notices2.notices_all', status='upcoming') }}">Explore all {{ stats.pipeline }} upcoming opportunities &rarr;</a>
     </aside>
   </div>
 

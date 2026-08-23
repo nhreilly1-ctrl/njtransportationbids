@@ -1184,7 +1184,7 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertIn('class="brief-row brief-row-construction"', bid_brief)
         self.assertIn('class="brief-row brief-row-professional_services"', bid_brief)
         self.assertIn('class="brief-row brief-row-uncategorized"', bid_brief)
-        self.assertIn('aria-label="Opportunity type">Other</div>', bid_brief)
+        self.assertIn('aria-label="Opportunity type">Type review</div>', bid_brief)
         self.assertIn("Closes Saturday, Aug 22 - in 1 day", bid_brief)
         self.assertIn("Closes Sunday, Aug 23 - in 2 days", bid_brief)
         self.assertNotIn("time not published", bid_brief)
@@ -1273,7 +1273,22 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertIn("anticipated bridge inspection", pipeline)
         self.assertIn("Spring 2027", pipeline)
         self.assertNotIn("Closes", pipeline)
-        self.assertIn("1 planned opportunities", pipeline)
+        self.assertIn("planned opportunities", pipeline)
+        self.assertIn("Procurement", pipeline)
+        self.assertNotIn("Coming down", pipeline)
+
+    def test_homepage_uses_factual_heading_and_clear_market_language(self):
+        with (
+            patch.object(app_main, "load_public_opps", return_value=[]),
+            patch.object(app_main, "load_public_sources", return_value=[]),
+        ):
+            html = app_main.app.test_client().get("/").get_data(as_text=True)
+
+        self.assertIn("Live transportation bid board", html)
+        self.assertIn("Upcoming work", html)
+        self.assertNotIn("Find the work", html)
+        self.assertNotIn("Plan the pipeline", html)
+        self.assertNotIn("Coming pipeline", html)
 
     def test_homepage_prioritizes_opportunities_and_resources_move_off_page(self):
         with (
