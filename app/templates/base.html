@@ -257,9 +257,6 @@
         <a href="{{ url_for('notices2.notices_profserv') }}" class="sub {{ 'active' if _nav == 'notices2.notices_profserv' }}">Professional Services</a>
       </div>
     </div>
-    <div class="nav-item">
-      <a href="{{ url_for('network.board') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('network.') }}">Networking</a>
-    </div>
     <div class="nav-item"><a href="{{ url_for('contractor_resources') }}" class="{{ 'active' if _nav == 'contractor_resources' }}">Resources</a></div>
     <div class="nav-item"><a href="{{ url_for('sources') }}" class="{{ 'active' if _nav == 'sources' }}">Sources</a></div>
     <div class="nav-right">

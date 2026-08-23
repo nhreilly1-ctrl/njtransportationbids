@@ -40,7 +40,7 @@ app.register_blueprint(network_bp)
 
 @app.context_processor
 def inject_globals():
-    noindex_prefixes = ("/admin", "/network/login", "/network/register", "/export/")
+    noindex_prefixes = ("/admin", "/network", "/export/")
     return {
         "today_date": date.today().isoformat(),
         "site_url": SITE_URL,
@@ -483,7 +483,7 @@ def load_sources() -> list[dict]:
 
 
 def load_public_opps() -> list[dict]:
-    """Return the crawler's canonical feed for public pages.
+    """Return the canonical official-notice feed for public pages.
 
     The GitHub Actions crawler writes notices.json, while the older database
     importer writes opportunity_leads. Public pages must not silently show a
@@ -507,7 +507,7 @@ def load_public_opps() -> list[dict]:
 
 
 def load_source_health_summary() -> dict:
-    """Evaluate current health from the crawl log, with the snapshot as fallback."""
+    """Evaluate current source status from the activity log, with snapshot fallback."""
     try:
         with open(CRAWL_LOG_F, encoding="utf-8") as handle:
             return build_health_summary(NOTICE_SOURCES, json.load(handle))
@@ -520,7 +520,7 @@ def load_source_health_summary() -> dict:
 
 
 def load_public_sources() -> list[dict]:
-    """Return every configured crawler source, including sources with zero records."""
+    """Return every monitored public source, including sources with zero records."""
     summary = load_source_health_summary()
     health_by_id = {item.get("source_id"): item for item in summary.get("sources", [])}
     sources = []
@@ -545,7 +545,7 @@ def load_public_sources() -> list[dict]:
                 "status": health.get("status", "never_run"),
                 "severity": severity,
                 "health": "good" if severity == "ok" else "warn" if severity == "warning" else "bad",
-                "health_message": health.get("message", "No crawl health is available."),
+                "health_message": health.get("message", "No source status is available."),
             }
         )
     return sorted(sources, key=lambda item: (item["tier"], item["name"].lower()))
@@ -767,7 +767,7 @@ def enrich(opp: dict) -> dict:
 
     if record.get("_canonical_notice"):
         record["source_rule"] = "trusted" if record.get("source_tier") == "state" else "ai_review"
-        record["source_rule_label"] = "Crawler feed"
+        record["source_rule_label"] = "Official source monitor"
         record["crawlability_score"] = 5.0 if record.get("source_tier") == "state" else 3.5
         if record.get("status_override") == "deleted":
             record["status"] = "deleted"
@@ -1045,8 +1045,7 @@ def robots_txt():
             "Allow: /",
             "Disallow: /admin",
             "Disallow: /export/",
-            "Disallow: /network/login",
-            "Disallow: /network/register",
+            "Disallow: /network",
             "Disallow: /*?",
             f"Sitemap: {SITE_URL}/sitemap.xml",
             "",
@@ -1458,13 +1457,16 @@ def sources():
         source["upcoming"] = len([opp for opp in related if opp["status"] == "upcoming"])
         source["review_required"] = len([opp for opp in related if opp["status"] == "review_required"])
         source["ai_review"] = len([opp for opp in related if opp["status"] == "ai_review"])
-    severity_order = {"error": 0, "warning": 1, "ok": 2}
-    sources = sorted(sources, key=lambda s: (severity_order.get(s.get("severity"), 1), s.get("name", "").lower()))
+    sources = sorted(sources, key=lambda source: source.get("name", "").lower())
     source_summary = {
         "configured": len(sources),
         "healthy": len([source for source in sources if source.get("severity") == "ok"]),
         "warning": len([source for source in sources if source.get("severity") == "warning"]),
         "error": len([source for source in sources if source.get("severity") == "error"]),
+        "state": len([source for source in sources if source.get("tier") == "state"]),
+        "county": len([source for source in sources if source.get("tier") == "county"]),
+        "municipal": len([source for source in sources if source.get("tier") == "municipal"]),
+        "platform": len([source for source in sources if source.get("tier") == "paywalled"]),
     }
     return render_template("sources.html", sources=sources, source_summary=source_summary)
 

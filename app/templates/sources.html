@@ -1,79 +1,101 @@
 {% extends "base.html" %}
-{% block title %}Sources - NJ Transportation Bids{% endblock %}
-{% block meta_description %}See the official NJ transportation agencies, authorities, counties, and procurement platforms monitored by NJ Transportation Bids.{% endblock %}
+{% block title %}New Jersey Transportation Bid Sources{% endblock %}
+{% block meta_description %}Official New Jersey transportation procurement sources monitored across state agencies, authorities, MPOs, counties, municipalities, and public bidding platforms.{% endblock %}
+{% block body_class %}sources-page{% endblock %}
+{% block head_extra %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='sources.css', v='20260823a') }}">
+{% endblock %}
 {% block content %}
 
-<div class="page-header">
-  <h1>Sources</h1>
-  <p>{{ source_summary.configured }} official procurement sources monitored. Crawl health comes from the latest agency check, including configured sources that currently list no matching opportunities.</p>
-</div>
-
-<div class="stats-grid" style="margin-bottom:1.25rem;">
-  <div class="stat-card"><div class="num">{{ source_summary.configured }}</div><div class="lbl">Configured sources</div></div>
-  <div class="stat-card"><div class="num c-green">{{ source_summary.healthy }}</div><div class="lbl">Healthy</div></div>
-  <div class="stat-card"><div class="num c-amber">{{ source_summary.warning }}</div><div class="lbl">Warnings</div></div>
-  <div class="stat-card"><div class="num c-red">{{ source_summary.error }}</div><div class="lbl">Errors</div></div>
-</div>
-
-{% set state_sources   = sources | selectattr("tier", "equalto", "state")   | list %}
-{% set county_sources  = sources | selectattr("tier", "equalto", "county")  | list %}
-{% set munic_sources   = sources | selectattr("tier", "equalto", "municipal") | list %}
+{% set state_sources = sources | selectattr("tier", "equalto", "state") | list %}
+{% set county_sources = sources | selectattr("tier", "equalto", "county") | list %}
+{% set municipal_sources = sources | selectattr("tier", "equalto", "municipal") | list %}
 {% set platform_sources = sources | selectattr("tier", "equalto", "paywalled") | list %}
 
-{% macro source_block(src) %}
-<div class="source-card">
-  <div class="h-dot h-{{ src.health or 'warn' }}"></div>
-  <div style="flex:1; min-width:0;">
-    <div class="source-name">{{ src.name }}</div>
-    <div class="source-meta">
-      Last checked: {{ src.last_crawl_display or 'not yet recorded' }} &nbsp;&middot;&nbsp;
-      {{ src.frequency | title }} schedule
-    </div>
-    <div class="source-meta">
-      {{ src.open }} open &nbsp;&middot;&nbsp; {{ src.upcoming }} upcoming &nbsp;&middot;&nbsp;
-      {{ src.total }} retained record{{ '' if src.total == 1 else 's' }}
-      {% if src.last_count is not none %} &nbsp;&middot;&nbsp; latest crawl returned {{ src.last_count }}{% endif %}
-    </div>
-    <div class="source-meta" style="margin-top:3px;">{{ src.health_message }}</div>
+<section class="sources-hero" aria-labelledby="sources-title">
+  <div class="sources-hero-copy">
+    <span class="sources-kicker">New Jersey procurement coverage</span>
+    <h1 id="sources-title"><strong>{{ source_summary.configured }}</strong><span>sources<br>monitored</span></h1>
+    <p>Official transportation opportunities from New Jersey state agencies, authorities, metropolitan planning organizations, counties, and selected municipal procurement portals.</p>
   </div>
-  {% if src.status == 'inaccessible' %}
-    <span class="badge badge-nodate" style="font-size:11px;">Access limited</span>
-  {% elif src.health == 'bad' %}
-    <span class="badge badge-noise" style="font-size:11px;">Crawler error</span>
-  {% elif src.health == 'warn' %}
-    <span class="badge badge-nodate" style="font-size:11px;">Warning</span>
-  {% else %}
-    <span class="badge badge-open" style="font-size:11px;">Healthy</span>
-  {% endif %}
-  {% if src.url %}
-    <a href="{{ src.url }}" target="_blank" class="btn btn-sm">Visit -></a>
-  {% endif %}
+  <div class="coverage-grid" aria-label="Source coverage by organization type">
+    <div><strong>{{ source_summary.state }}</strong><span>State, regional<br>and MPO sources</span></div>
+    <div><strong>{{ source_summary.county }}</strong><span>County<br>portals</span></div>
+    <div><strong>{{ source_summary.municipal }}</strong><span>Municipal<br>sources</span></div>
+    <div><strong>{{ source_summary.platform }}</strong><span>Access<br>platforms</span></div>
+  </div>
+</section>
+
+<div class="coverage-note">
+  <strong>Statewide coverage:</strong> NJDOT, NJTA, NJ TRANSIT, regional bridge and port authorities, New Jersey MPOs, all 21 county procurement portals, and major municipal sources.
 </div>
+
+{% macro source_block(src) %}
+{% set active_count = src.open + src.upcoming %}
+<article class="source-entry">
+  <div class="source-signal source-signal-{{ src.health or 'warn' }}" aria-hidden="true"></div>
+  <div class="source-entry-main">
+    <div class="source-entry-head">
+      <h3>{{ src.name }}</h3>
+      {% if src.access_state == 'inaccessible' %}
+        <span class="source-status source-status-limited">Access limited</span>
+      {% elif src.health == 'bad' %}
+        <span class="source-status source-status-check">Verify directly</span>
+      {% elif src.health == 'warn' %}
+        <span class="source-status source-status-limited">Access varies</span>
+      {% else %}
+        <span class="source-status source-status-current">Monitored</span>
+      {% endif %}
+    </div>
+    <div class="source-opportunities">
+      {% if active_count %}
+        <strong>{{ active_count }} current opportunit{{ 'y' if active_count == 1 else 'ies' }}</strong>
+        <span>{{ src.open }} open for bid</span>
+        <span>{{ src.upcoming }} upcoming</span>
+      {% else %}
+        <strong>No current matching opportunities</strong>
+      {% endif %}
+    </div>
+    <div class="source-verification">
+      <span>Last verified {{ src.last_crawl_display or 'not yet recorded' }}</span>
+      <span>Checked {{ src.frequency }}</span>
+    </div>
+    {% if src.access_state == 'inaccessible' and src.access_reason %}
+      <p class="source-guidance">{{ src.access_reason }}</p>
+    {% elif src.health in ('warn', 'bad') %}
+      <p class="source-guidance">Use the official source link to confirm the latest listings.</p>
+    {% endif %}
+  </div>
+  {% if src.url %}
+    <a href="{{ src.url }}" target="_blank" rel="noopener" class="source-visit">Official source <span>&nearr;</span></a>
+  {% endif %}
+</article>
 {% endmacro %}
 
-{% if state_sources %}
-  <div class="section-label">State and regional agencies</div>
-  {% for s in state_sources %}{{ source_block(s) }}{% endfor %}
+{% macro source_group(title, description, entries) %}
+{% if entries %}
+<section class="source-group">
+  <header class="source-group-head">
+    <div><h2>{{ title }}</h2><p>{{ description }}</p></div>
+    <span>{{ entries | length }} sources</span>
+  </header>
+  <div class="source-list">
+    {% for source in entries %}{{ source_block(source) }}{% endfor %}
+  </div>
+</section>
 {% endif %}
+{% endmacro %}
 
-{% if county_sources %}
-  <div class="section-label">All 21 county portals</div>
-  {% for s in county_sources %}{{ source_block(s) }}{% endfor %}
-{% endif %}
-
-{% if munic_sources %}
-  <div class="section-label">Municipal notice portals</div>
-  {% for s in munic_sources %}{{ source_block(s) }}{% endfor %}
-{% endif %}
-
-{% if platform_sources %}
-  <div class="section-label">Procurement platforms</div>
-  {% for s in platform_sources %}{{ source_block(s) }}{% endfor %}
-{% endif %}
+{{ source_group('State agencies, authorities and MPOs', 'Statewide and regional transportation procurement, transit, toll-road, bridge, port, and planning organizations.', state_sources) }}
+{{ source_group('County procurement portals', 'Official procurement coverage for all 21 New Jersey counties.', county_sources) }}
+{{ source_group('Municipal procurement sources', 'Selected cities and local infrastructure agencies with transportation-related public work.', municipal_sources) }}
+{{ source_group('Registration-based platforms', 'Official listings may be visible while project search or documents require registration.', platform_sources) }}
 
 {% if not sources %}
-  <div style="padding:3rem 0; text-align:center; color:var(--text2);">No sources configured yet.</div>
+  <div class="sources-empty">No public sources are currently listed.</div>
 {% endif %}
 
 {% endblock %}
-

@@ -778,7 +778,7 @@ class SourceHealthTests(unittest.TestCase):
         self.assertTrue(health["ever_produced"])
         self.assertEqual(
             health["message"],
-            "Crawl succeeded; no matching opportunities are currently listed.",
+            "Source check found no matching opportunities currently listed.",
         )
 
     def test_county_record_coverage_distinguishes_produced_from_blind_zero(self):
@@ -1061,7 +1061,7 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertIn('class="score score-open"', scoreboard)
         self.assertIn('class="score score-pipeline"', scoreboard)
         self.assertIn("1 active and anticipated notices", scoreboard)
-        self.assertIn("1 healthy", html)
+        self.assertIn("Statewide coverage", html)
         self.assertIn("<strong>1</strong> construction", bid_brief)
         self.assertIn("<strong>0</strong> professional", bid_brief)
         self.assertIn('href="/bids/construction"', switchboard)
@@ -1305,7 +1305,8 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertNotIn("Bidding Platforms", home_html)
         self.assertNotIn("https://www.bidexpress.com", home_html)
         self.assertNotIn('class="board-grid"', home_html)
-        self.assertIn("Contractor network", home_html)
+        self.assertNotIn("Contractor network", home_html)
+        self.assertNotIn(">Networking<", home_html)
         self.assertIn("NJDOT Standard Specifications", resources_html)
         self.assertIn("Federal wage determinations", resources_html)
         self.assertIn("NJDOT Prequalification", resources_html)

@@ -144,7 +144,7 @@ class PublicSourceLedgerTests(unittest.TestCase):
                     "status": "ok",
                     "last_crawl": "2026-08-20T18:00:00-04:00",
                     "last_count": 3,
-                    "message": "Latest crawl completed normally.",
+                    "message": "Latest source check completed normally.",
                 },
                 {
                     "source_id": "county-zero",
@@ -152,7 +152,7 @@ class PublicSourceLedgerTests(unittest.TestCase):
                     "status": "ok",
                     "last_crawl": "2026-08-20T18:01:00-04:00",
                     "last_count": 0,
-                    "message": "Crawl succeeded; no matching opportunities are currently listed.",
+                    "message": "Source check found no matching opportunities currently listed.",
                 },
             ]
         }
@@ -165,10 +165,12 @@ class PublicSourceLedgerTests(unittest.TestCase):
 
         html = response.get_data(as_text=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("2 official procurement sources monitored", html)
+        self.assertIn("New Jersey procurement coverage", html)
+        self.assertIn("sources<br>monitored", html)
         self.assertIn("Zero County Procurement", html)
-        self.assertIn("no matching opportunities are currently listed", html)
-        self.assertIn("latest crawl returned 0", html)
+        self.assertIn("No current matching opportunities", html)
+        self.assertIn("Last verified", html)
+        self.assertNotIn("crawl", html.lower())
 
     def test_precise_calendar_uses_utc_instant(self):
         opportunity = {

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Crawler Health - Admin{% endblock %}
+{% block title %}Source Monitoring - Admin{% endblock %}
 {% block content %}
 
 <div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;">
   <div>
-    <h1 style="font-size:20px;font-weight:500;">Crawler health and coverage</h1>
+    <h1 style="font-size:20px;font-weight:500;">Source monitoring and coverage</h1>
     <p style="font-size:13px;color:var(--text2);margin-top:3px;">
       {{ summary.configured_sources }} configured sources across all {{ summary.coverage.counties_expected }} New Jersey counties.
     </p>
@@ -55,7 +55,7 @@
             {{ e.message }}
           </div>
           <div class="source-meta" style="margin-top:3px;color:var(--text3);">
-            Last crawl: {{ e.ago }}
+            Last check: {{ e.ago }}
             {% if e.last_count is not none %} &middot; {{ e.last_count }} records{% endif %}
             {% if e.baseline_count is not none %} &middot; baseline {{ e.baseline_count | round(1) }}{% endif %}
             &middot; {{ e.frequency }}

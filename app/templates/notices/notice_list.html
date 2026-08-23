@@ -64,7 +64,7 @@
 <div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);
             padding:1rem 1.25rem;margin-bottom:1.25rem;">
   <div style="font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;
-              letter-spacing:.06em;margin-bottom:.75rem;">Source coverage — daily automated crawl</div>
+              letter-spacing:.06em;margin-bottom:.75rem;">New Jersey source coverage — monitored daily</div>
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:.75rem;">
     <div style="background:var(--green-bg);border-radius:var(--r);padding:.5rem .75rem;">
       <div style="font-size:11px;font-weight:500;color:#27500a;display:block;margin-bottom:2px;">
@@ -121,7 +121,7 @@
   <select name="status" onchange="this.form.submit()">
     <option value="active"  {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
     <option value="open"    {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
-    <option value="upcoming"{{ 'selected' if selected_status == 'upcoming' }}>Upcoming pipeline</option>
+    <option value="upcoming"{{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
     <option value="urgent"  {{ 'selected' if selected_status == 'urgent' }}>Urgent only (≤7 days)</option>
     <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired</option>
   </select>

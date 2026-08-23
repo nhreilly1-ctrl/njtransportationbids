@@ -85,7 +85,7 @@ def evaluate_source(source, entry=None, now=None):
         "baseline_count": None,
         "status": "ok",
         "severity": "ok",
-        "message": "Latest crawl completed normally.",
+        "message": "Latest source check completed normally.",
     }
 
     if source.get("crawl_state") == "inaccessible":
@@ -94,7 +94,7 @@ def evaluate_source(source, entry=None, now=None):
             severity="warning",
             last_error=None,
             consecutive_failures=0,
-            message=source.get("access_reason", "This source cannot be crawled anonymously."),
+            message=source.get("access_reason", "This source cannot be checked anonymously."),
         )
         return result
 
@@ -109,7 +109,7 @@ def evaluate_source(source, entry=None, now=None):
         result.update(
             status="never_run",
             severity="error" if critical else "warning",
-            message="No crawl has been recorded for this configured source.",
+            message="No source check has been recorded for this configured source.",
         )
         return result
 
@@ -119,15 +119,15 @@ def evaluate_source(source, entry=None, now=None):
         result.update(
             status="stale",
             severity="error" if critical else "warning",
-            message=f"Last crawl is {int(age_hours)} hours old; expected every {frequency} cycle.",
+            message=f"Last source check is {int(age_hours)} hours old; expected every {frequency} cycle.",
         )
         return result
 
     if last_error:
         if last_error == "zero_records":
-            message = "Crawler returned no records where at least one was expected."
+            message = "Source check returned no records where at least one was expected."
         else:
-            message = f"Latest crawl failed: {last_error}"
+            message = f"Latest source check failed: {last_error}"
         result.update(status="error", severity="error", message=message)
         return result
 
@@ -145,13 +145,13 @@ def evaluate_source(source, entry=None, now=None):
 
     if last_count == 0 and source.get("allow_empty"):
         if ever_produced:
-            result["message"] = "Crawl succeeded; no matching opportunities are currently listed."
+            result["message"] = "Source check found no matching opportunities currently listed."
         else:
             # Zero is allowed by source policy, but a source that has never once
             # produced a record gives no evidence its parser can see the page's
             # listings. Keep the status honest without raising an alarm.
             result["message"] = (
-                "Crawl succeeded with no matching opportunities; this source has "
+                "Source check found no matching opportunities; this source has "
                 "never produced a record, so an unnoticed parser mismatch cannot "
                 "be ruled out."
             )

@@ -776,7 +776,7 @@
 
 .home-utility {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1px;
   margin-top: 16px;
   background: var(--home-line);

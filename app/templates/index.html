@@ -67,7 +67,7 @@
       </div>
       <div class="hero-freshness">
         <span>{{ stats.sources }} public sources monitored</span>
-        <span>{{ stats.healthy_sources }} healthy</span>
+        <span>Statewide coverage</span>
         {% if stats.last_updated %}<span>Updated {{ stats.last_updated }}</span>{% endif %}
       </div>
     </div>
@@ -103,7 +103,7 @@
     </a>
     <a href="{{ url_for('sources') }}" class="market-link market-link-sources">
       <span class="market-index">03</span>
-      <span><strong>Source ledger</strong><small>{{ stats.healthy_sources }} of {{ stats.sources }} healthy</small></span>
+      <span><strong>Source coverage</strong><small>{{ stats.sources }} official sources monitored</small></span>
       <span class="market-arrow">&rarr;</span>
     </a>
   </nav>
@@ -190,7 +190,6 @@
 
   <footer class="home-utility">
     <a href="{{ url_for('contractor_resources') }}"><strong>Contractor resources</strong><span>Specs, wages, prequalification, compliance, and bonding.</span></a>
-    <a href="{{ url_for('network.board') }}"><strong>Contractor network</strong><span>Teaming, equipment, bid results, and industry activity.</span></a>
   </footer>
 </div>
 

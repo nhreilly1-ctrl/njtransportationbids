@@ -775,11 +775,11 @@ NOTICE_SOURCES = [
         "parser":       "bidnet",
         "access_type":  "Registration-gated platform",
         "crawl_state":  "inaccessible",
-        "access_reason": "Anonymous statewide opportunity search is registration-gated; this source is disclosed but not crawled.",
+        "access_reason": "Anonymous statewide opportunity search is registration-gated; this source is monitored as access-limited.",
         "platform":     "BidNet",
         "notice_type":  "mixed",
         "crawl_freq":   "weekly",
-        "notes":        "No credentials are stored or used by the crawler.",
+        "notes":        "No credentials are stored or used by the site.",
     },
     {
         "id":           "platform-questcdn",
@@ -792,11 +792,11 @@ NOTICE_SOURCES = [
         "parser":       "questcdn",
         "access_type":  "Paid-membership-gated platform",
         "crawl_state":  "inaccessible",
-        "access_reason": "Project-list browse and search require a paid QuestCDN membership; this source is disclosed but not crawled.",
+        "access_reason": "Project-list browse and search require a paid QuestCDN membership; this source is monitored as access-limited.",
         "platform":     "QuestCDN",
         "notice_type":  "mixed",
         "crawl_freq":   "weekly",
-        "notes":        "No credentials are stored or used by the crawler.",
+        "notes":        "No credentials are stored or used by the site.",
     },
 ]
 
