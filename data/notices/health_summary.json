@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-23T10:18:25.079126+00:00",
+  "generated_at": "2026-08-23T11:32:08.689384+00:00",
   "overall": "warning",
   "configured_sources": 47,
   "healthy_sources": 45,
@@ -85,8 +85,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:59.027499+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:59.027499+00:00",
+      "last_crawl": "2026-08-23T11:31:09.230751+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:09.230751+00:00",
       "last_count": 5,
       "last_error": null,
       "consecutive_failures": 0,
@@ -95,7 +95,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-drjtbc-construction",
@@ -108,8 +108,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:57.390448+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:57.390448+00:00",
+      "last_crawl": "2026-08-23T11:31:07.137284+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:07.137284+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -118,7 +118,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-drpa-patco",
@@ -131,8 +131,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:05.735923+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:05.735923+00:00",
+      "last_crawl": "2026-08-23T11:31:15.054764+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:15.054764+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
@@ -141,7 +141,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-dos-legal",
@@ -154,8 +154,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:10.298418+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:10.298418+00:00",
+      "last_crawl": "2026-08-23T11:31:18.499652+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:18.499652+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -164,7 +164,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded; no matching opportunities are currently listed.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-sos-directory",
@@ -187,7 +187,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "state-njtransit",
@@ -200,8 +200,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:54.880277+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:54.880277+00:00",
+      "last_crawl": "2026-08-23T11:31:04.813739+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:04.813739+00:00",
       "last_count": 8,
       "last_error": null,
       "consecutive_failures": 0,
@@ -210,7 +210,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-treasury",
@@ -233,7 +233,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded; no matching opportunities are currently listed.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "state-njta",
@@ -246,8 +246,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:51.516676+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:51.516676+00:00",
+      "last_crawl": "2026-08-23T11:31:01.434477+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:01.434477+00:00",
       "last_count": 10,
       "last_error": null,
       "consecutive_failures": 0,
@@ -256,7 +256,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-profserv-upcoming",
@@ -269,8 +269,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:45.253802+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:45.253802+00:00",
+      "last_crawl": "2026-08-23T11:30:56.763603+00:00",
+      "last_successful_crawl": "2026-08-23T11:30:56.763603+00:00",
       "last_count": 64,
       "last_error": null,
       "consecutive_failures": 0,
@@ -279,7 +279,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-construction",
@@ -292,8 +292,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:37.382739+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:37.382739+00:00",
+      "last_crawl": "2026-08-23T11:30:49.975364+00:00",
+      "last_successful_crawl": "2026-08-23T11:30:49.975364+00:00",
       "last_count": 6,
       "last_error": null,
       "consecutive_failures": 0,
@@ -302,7 +302,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-design-build",
@@ -315,8 +315,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:41.708969+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:41.708969+00:00",
+      "last_crawl": "2026-08-23T11:30:53.827777+00:00",
+      "last_successful_crawl": "2026-08-23T11:30:53.827777+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
@@ -325,7 +325,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-notices",
@@ -338,8 +338,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:47.181705+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:47.181705+00:00",
+      "last_crawl": "2026-08-23T11:30:58.503863+00:00",
+      "last_successful_crawl": "2026-08-23T11:30:58.503863+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -348,7 +348,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-profserv",
@@ -361,8 +361,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:13:39.825456+00:00",
-      "last_successful_crawl": "2026-08-23T10:13:39.825456+00:00",
+      "last_crawl": "2026-08-23T11:30:52.104456+00:00",
+      "last_successful_crawl": "2026-08-23T11:30:52.104456+00:00",
       "last_count": 22,
       "last_error": null,
       "consecutive_failures": 0,
@@ -371,7 +371,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njtpa",
@@ -384,8 +384,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:08.246902+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:08.246902+00:00",
+      "last_crawl": "2026-08-23T11:31:16.668965+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:16.668965+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
@@ -394,7 +394,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-panynj-construction",
@@ -407,8 +407,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:00.691107+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:00.691107+00:00",
+      "last_crawl": "2026-08-23T11:31:10.895255+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:10.895255+00:00",
       "last_count": 3,
       "last_error": null,
       "consecutive_failures": 0,
@@ -417,7 +417,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-panynj-profserv",
@@ -430,8 +430,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:02.677221+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:02.677221+00:00",
+      "last_crawl": "2026-08-23T11:31:12.783153+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:12.783153+00:00",
       "last_count": 4,
       "last_error": null,
       "consecutive_failures": 0,
@@ -440,7 +440,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "state-sjta",
@@ -453,8 +453,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:13.573962+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:13.573962+00:00",
+      "last_crawl": "2026-08-23T11:31:21.799029+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:21.799029+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -463,7 +463,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-atlantic",
@@ -476,8 +476,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:55.645004+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:55.645004+00:00",
+      "last_crawl": "2026-08-23T11:31:56.797347+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:56.797347+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -486,7 +486,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-bergen",
@@ -499,8 +499,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:23.745676+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:23.745676+00:00",
+      "last_crawl": "2026-08-23T11:31:30.098093+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:30.098093+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -509,7 +509,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-burlington",
@@ -522,8 +522,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:33.718061+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:33.718061+00:00",
+      "last_crawl": "2026-08-23T11:31:39.687132+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:39.687132+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -532,7 +532,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded; no matching opportunities are currently listed.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-camden",
@@ -545,8 +545,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:18.060058+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:18.060058+00:00",
+      "last_crawl": "2026-08-23T11:31:25.527283+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:25.527283+00:00",
       "last_count": 3,
       "last_error": null,
       "consecutive_failures": 0,
@@ -555,7 +555,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-cape-may",
@@ -578,7 +578,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "county-cumberland",
@@ -601,7 +601,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "county-essex",
@@ -614,8 +614,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:15.618993+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:15.618993+00:00",
+      "last_crawl": "2026-08-23T11:31:23.650941+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:23.650941+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -624,7 +624,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded; no matching opportunities are currently listed.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-gloucester",
@@ -637,8 +637,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:32.006451+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:32.006451+00:00",
+      "last_crawl": "2026-08-23T11:31:37.983714+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:37.983714+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -647,7 +647,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-hudson",
@@ -660,8 +660,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:29.872192+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:29.872192+00:00",
+      "last_crawl": "2026-08-23T11:31:35.942605+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:35.942605+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -670,7 +670,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-hunterdon",
@@ -693,7 +693,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "county-mercer",
@@ -706,8 +706,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:48.470528+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:48.470528+00:00",
+      "last_crawl": "2026-08-23T11:31:49.628378+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:49.628378+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -716,7 +716,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-middlesex",
@@ -729,8 +729,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:39.583109+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:39.583109+00:00",
+      "last_crawl": "2026-08-23T11:31:41.504608+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:41.504608+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -739,7 +739,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-monmouth",
@@ -752,8 +752,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:21.390776+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:21.390776+00:00",
+      "last_crawl": "2026-08-23T11:31:27.874359+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:27.874359+00:00",
       "last_count": 4,
       "last_error": null,
       "consecutive_failures": 0,
@@ -762,7 +762,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-morris",
@@ -775,8 +775,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:44.320797+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:44.320797+00:00",
+      "last_crawl": "2026-08-23T11:31:45.799760+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:45.799760+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
@@ -785,7 +785,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-newark-water",
@@ -798,8 +798,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:15:03.431078+00:00",
-      "last_successful_crawl": "2026-08-23T10:15:03.431078+00:00",
+      "last_crawl": "2026-08-23T11:32:04.328109+00:00",
+      "last_successful_crawl": "2026-08-23T11:32:04.328109+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -808,7 +808,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-ocean",
@@ -821,8 +821,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:46.163549+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:46.163549+00:00",
+      "last_crawl": "2026-08-23T11:31:47.469606+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:47.469606+00:00",
       "last_count": 3,
       "last_error": null,
       "consecutive_failures": 0,
@@ -831,7 +831,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-passaic",
@@ -844,8 +844,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:50.705920+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:50.705920+00:00",
+      "last_crawl": "2026-08-23T11:31:51.542484+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:51.542484+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -854,7 +854,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded; no matching opportunities are currently listed.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-salem",
@@ -867,17 +867,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:59.658440+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:59.658440+00:00",
+      "last_crawl": "2026-08-23T11:32:00.804886+00:00",
+      "last_successful_crawl": "2026-08-23T11:32:00.804886+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": 1,
+      "baseline_count": 1.0,
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-somerset",
@@ -890,17 +890,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:52.766499+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:52.766499+00:00",
+      "last_crawl": "2026-08-23T11:31:53.539505+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:53.539505+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": 2.0,
+      "baseline_count": 2,
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-sussex",
@@ -923,7 +923,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "county-union",
@@ -936,8 +936,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:41.883123+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:41.883123+00:00",
+      "last_crawl": "2026-08-23T11:31:43.578566+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:43.578566+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -946,7 +946,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "county-warren",
@@ -959,8 +959,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:14:57.497380+00:00",
-      "last_successful_crawl": "2026-08-23T10:14:57.497380+00:00",
+      "last_crawl": "2026-08-23T11:31:59.003750+00:00",
+      "last_successful_crawl": "2026-08-23T11:31:59.003750+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -969,7 +969,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-camden-city",
@@ -992,7 +992,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "municipal-elizabeth",
@@ -1015,7 +1015,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "municipal-jersey-city",
@@ -1028,17 +1028,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:15:05.748339+00:00",
-      "last_successful_crawl": "2026-08-23T10:15:05.748339+00:00",
+      "last_crawl": "2026-08-23T11:32:06.481076+00:00",
+      "last_successful_crawl": "2026-08-23T11:32:06.481076+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": 1,
+      "baseline_count": 1.0,
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-newark",
@@ -1051,8 +1051,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:15:01.483689+00:00",
-      "last_successful_crawl": "2026-08-23T10:15:01.483689+00:00",
+      "last_crawl": "2026-08-23T11:32:02.456217+00:00",
+      "last_successful_crawl": "2026-08-23T11:32:02.456217+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -1061,7 +1061,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Crawl succeeded with no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-paterson",
@@ -1074,8 +1074,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-08-23T10:15:07.877417+00:00",
-      "last_successful_crawl": "2026-08-23T10:15:07.877417+00:00",
+      "last_crawl": "2026-08-23T11:32:08.485253+00:00",
+      "last_successful_crawl": "2026-08-23T11:32:08.485253+00:00",
       "last_count": 3,
       "last_error": null,
       "consecutive_failures": 0,
@@ -1084,7 +1084,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 0.1
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-trenton",
@@ -1107,7 +1107,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest crawl completed normally.",
-      "age_hours": 106.0
+      "age_hours": 107.2
     },
     {
       "source_id": "platform-bidnet",
