@@ -33,6 +33,7 @@ class CorridorExtractionTests(unittest.TestCase):
     def test_dotted_county_route_in_all_caps_title(self):
         result = _classify("MILLING & RESURFACING SPRING VALLEY ROAD (C.R. 601)")
         self.assertEqual(result["corridors"], ["CR-601"])
+        self.assertEqual(result["road_names"], ["Spring Valley Road"])
 
     def test_route_list_expands_with_shared_designation_and_structure(self):
         result = _classify("Rt. 30, 40 and 47 Drawbridges ITS improvements")
@@ -127,6 +128,24 @@ class CorridorExtractionTests(unittest.TestCase):
         self.assertEqual(result["corridors"], ["NJ-72"])
         self.assertIn('notice_excerpt:"Route 72"', result["location_evidence"])
 
+    def test_named_road_extraction_trims_project_and_route_vocabulary(self):
+        cases = (
+            ("REPLACEMENT OF BRIDGE ON LANDING ROAD", ["Landing Road"]),
+            ("Route 23 Between High Crest Drive and Macopin River", ["High Crest Drive"]),
+            ("NJDOT upcoming: Bridge over Roosevelt Avenue", ["Roosevelt Avenue"]),
+        )
+        for title, expected in cases:
+            self.assertEqual(_classify(title)["road_names"], expected, title)
+
+    def test_generic_or_non_geographic_road_words_are_not_mapped(self):
+        titles = (
+            "Construction Project Management for Various Road and Bridge Projects",
+            "Bid No. 26.24 2026 UEZ Road Resurfacing Program",
+            "Recessed Mounted Drive on Platform Lifts",
+        )
+        for title in titles:
+            self.assertEqual(_classify(title)["road_names"], [], title)
+
 
 class StructureExtractionTests(unittest.TestCase):
     def test_vocabulary_terms_extract_with_plurals(self):
@@ -177,13 +196,19 @@ class DisplayAndMapTests(unittest.TestCase):
         record = enrich_location({"title": "I-287 culvert repairs, Borough of Somerville"})
         self.assertEqual(location_display(record), "I-287 · Borough of Somerville")
 
+    def test_location_display_keeps_named_road_and_route(self):
+        record = enrich_location(
+            {"title": "MILLING & RESURFACING SPRING VALLEY ROAD (C.R. 601)"}
+        )
+        self.assertEqual(location_display(record), "Spring Valley Road · CR-601")
+
     def test_location_display_empty_without_evidence(self):
         record = enrich_location({"title": "Guiderail and attenuator maintenance"})
         self.assertEqual(location_display(record), "")
 
     def test_map_query_uses_municipality_before_corridor_and_never_invents(self):
         muni = enrich_location({"title": "Route 33 resurfacing, City of Trenton"})
-        self.assertEqual(map_query(muni), "City of Trenton, New Jersey")
+        self.assertEqual(map_query(muni), "NJ-33, City of Trenton, New Jersey")
         corridor = enrich_location({"title": "Route 33 resurfacing"})
         self.assertEqual(map_query(corridor), "NJ-33, New Jersey")
         none = enrich_location({"title": "Guiderail maintenance"})
@@ -194,7 +219,7 @@ class DisplayAndMapTests(unittest.TestCase):
         record = enrich_location({"title": "Route 33 resurfacing, City of Trenton"})
         self.assertEqual(
             map_url(record),
-            "https://www.google.com/maps/search/?api=1&query=City+of+Trenton%2C+New+Jersey",
+            "https://www.google.com/maps/search/?api=1&query=NJ-33%2C+City+of+Trenton%2C+New+Jersey",
         )
 
     def test_upcoming_named_road_builds_an_evidence_backed_map_query(self):
@@ -212,6 +237,24 @@ class DisplayAndMapTests(unittest.TestCase):
         self.assertEqual(
             map_query(record),
             "Bailey's Mill Road, I-287, Morris County, New Jersey",
+        )
+
+    def test_county_bid_named_road_uses_title_and_agency_context_for_map(self):
+        record = {
+            "title": "MILLING & RESURFACING SPRING VALLEY ROAD (C.R. 601)",
+            "source_id": "county-morris",
+            "source_tier": "county",
+            "county": "Morris",
+            "county_provenance": "AGENCY_JURISDICTION",
+        }
+        record.update(classify_geography(record))
+        enrich_location(record)
+
+        self.assertEqual(record["counties"], [])
+        self.assertEqual(record["road_names"], ["Spring Valley Road"])
+        self.assertEqual(
+            map_query(record),
+            "Spring Valley Road, CR-601, Morris County, New Jersey",
         )
 
     def test_normalize_reference_text_unifies_dashes_and_ligatures(self):
@@ -261,7 +304,10 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertIn("/notices?corridor=I-287", html)
         self.assertIn("I-287 · Borough of Somerville", html)
         self.assertIn('class="brief-map"', html)
-        self.assertIn("https://www.google.com/maps/search/?api=1&amp;query=Borough+of+Somerville", html)
+        self.assertIn(
+            "https://www.google.com/maps/search/?api=1&amp;query=I-287%2C+Borough+of+Somerville",
+            html,
+        )
         # A record with no evidenced location keeps the county language and no map link.
         self.assertIn("County not stated in notice", html)
 

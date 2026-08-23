@@ -108,14 +108,23 @@ _MUNI_TRIM_WORDS = {
 # Places that satisfy the grammar but are not New Jersey municipalities.
 _MUNI_EXCLUDED = {"new york", "new jersey", "philadelphia", "morrisville", "easton", "new castle"}
 
-# Anticipated-project titles commonly put a named road immediately after the
-# source prefix: "NJDOT upcoming: Bailey's Mill Road, Bridge over Rt. 287".
-# Keep this deliberately narrow so procurement prose is never promoted to a
-# place name merely because it contains the word "road".
-_UPCOMING_ROAD_RE = re.compile(
-    r"\bupcoming\s*:\s*(?P<road>[^,;:\n]{1,80}\b(?:Road|Street|Avenue|Boulevard|Lane|Drive|Highway))\b",
+# Construction titles usually identify the physical road without an
+# "upcoming:" prefix: "MILLING ... SPRING VALLEY ROAD (C.R. 601)". Capture a
+# short phrase ending in a roadway type, then trim project vocabulary from the
+# left. Keeping the phrase short avoids turning the full solicitation title
+# into a place name.
+_NAMED_ROAD_RE = re.compile(
+    r"\b(?P<road>(?:[A-Za-z0-9][\w.'’-]*\s+){1,4}"
+    r"(?:Road|Street|Avenue|Boulevard|Lane|Drive|Highway|Causeway|Trail))\b",
     re.IGNORECASE,
 )
+_ROAD_BOUNDARY_WORDS = {
+    "and", "at", "between", "bid", "bridge", "construction", "for", "from", "in",
+    "management", "milling", "no", "of", "on", "over", "paving",
+    "project", "projects", "rehabilitation", "replacement", "resurfacing",
+    "route", "rt", "services", "the", "to", "various", "mounted",
+}
+_ROAD_GENERIC_NAMES = {"county", "federal", "state", "uez", "various"}
 
 
 def _normalize_muni_token(token: str) -> str:
@@ -168,10 +177,28 @@ def _extract_municipalities(text: str) -> list[tuple[str, str]]:
 
 def _extract_named_roads(text: str) -> list[tuple[str, str]]:
     found: list[tuple[str, str]] = []
-    for match in _UPCOMING_ROAD_RE.finditer(text):
-        road = normalize_reference_text(match.group("road")).strip(" .")
-        if road:
-            found.append((road, match.group("road").strip()))
+    for match in _NAMED_ROAD_RE.finditer(text):
+        raw_road = normalize_reference_text(match.group("road")).strip(" .")
+        tokens = raw_road.split()
+        boundary = max(
+            (index for index, token in enumerate(tokens[:-1])
+             if token.lower().strip(".,'") in _ROAD_BOUNDARY_WORDS),
+            default=-1,
+        )
+        tokens = tokens[boundary + 1:]
+        if len(tokens) >= 3 and tokens[0].isdigit():
+            tokens = tokens[1:]
+        name_tokens = {token.lower().strip(".,'") for token in tokens[:-1]}
+        if (
+            len(tokens) < 2
+            or " ".join(tokens[:-1]).lower() in _ROAD_GENERIC_NAMES
+            or name_tokens & _ROAD_GENERIC_NAMES
+        ):
+            continue
+        road = " ".join(tokens)
+        if road.isupper() or road.islower():
+            road = " ".join(_normalize_muni_token(token) for token in tokens)
+        found.append((road, match.group("road").strip()))
     return found
 
 
@@ -299,6 +326,9 @@ def enrich_location(record: dict[str, Any]) -> dict[str, Any]:
 def location_display(record: dict[str, Any]) -> str:
     """Compact evidenced-location line for cards; empty when nothing extracted."""
     parts: list[str] = []
+    road_names = record.get("road_names") or []
+    if road_names:
+        parts.append(road_names[0])
     corridors = record.get("corridors") or []
     if corridors:
         parts.append(", ".join(corridors[:3]))
@@ -308,31 +338,69 @@ def location_display(record: dict[str, Any]) -> str:
     return " · ".join(parts)
 
 
+def _map_county_context(record: dict[str, Any]) -> str:
+    """Return a county qualifier suitable for search, not public geography.
+
+    Explicit notice geography remains preferred. A county agency's jurisdiction
+    may disambiguate a named road in a map search, but it never populates the
+    public ``counties`` field or changes the page's provenance language.
+    """
+    if (
+        record.get("geography_provenance") in ("NOTICE_TEXT", "SOURCE_RECORD_FIELD")
+        and record.get("counties")
+    ):
+        return f"{record['counties'][0]} County"
+
+    county_hint = str(record.get("agency_county_hint") or "").strip()
+    is_county_source = (
+        record.get("source_tier") == "county"
+        or record.get("entity_type") == "County"
+        or str(record.get("source_id") or "").startswith("county-")
+    )
+    if county_hint and is_county_source:
+        if county_hint.lower().endswith(" county"):
+            return county_hint
+        return f"{county_hint} County"
+    return ""
+
+
 def map_query(record: dict[str, Any]) -> str:
-    """Map search text built only from evidenced tokens; empty when none exist.
+    """Map search text built from notice tokens and labeled agency context.
 
     A route reference gives a corridor, not a point — the query names the
-    corridor or municipality and lets the map service draw it. No geocoding.
+    named road, corridor, or municipality and lets the map service draw it.
+    County-agency jurisdiction may disambiguate the search but is never stored
+    or displayed as notice-level geography. No geocoding occurs here.
     """
     road_names = record.get("road_names") or []
+    corridors = record.get("corridors") or []
+    municipalities = record.get("municipalities") or []
+    county_context = _map_county_context(record)
     if road_names:
         parts = [road_names[0]]
-        corridors = record.get("corridors") or []
         if corridors:
             parts.append(corridors[0])
-        if (
-            record.get("geography_provenance") in ("NOTICE_TEXT", "SOURCE_RECORD_FIELD")
-            and record.get("counties")
-        ):
-            parts.append(f"{record['counties'][0]} County")
+        if municipalities:
+            parts.append(municipalities[0])
+        if county_context:
+            parts.append(county_context)
         parts.append("New Jersey")
         return ", ".join(parts)
-    municipalities = record.get("municipalities") or []
     if municipalities:
-        return f"{municipalities[0]}, New Jersey"
-    corridors = record.get("corridors") or []
+        parts = []
+        if corridors:
+            parts.append(corridors[0])
+        parts.append(municipalities[0])
+        if county_context:
+            parts.append(county_context)
+        parts.append("New Jersey")
+        return ", ".join(parts)
     if corridors:
-        return f"{corridors[0]}, New Jersey"
+        parts = [corridors[0]]
+        if county_context:
+            parts.append(county_context)
+        parts.append("New Jersey")
+        return ", ".join(parts)
     return ""
 
 
