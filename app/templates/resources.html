@@ -1,72 +1,73 @@
 {% extends "base.html" %}
-{% block title %}NJ Transportation Contractor Resources{% endblock %}
-{% block meta_description %}Official New Jersey transportation specifications, wage determinations, prequalification, compliance, insurance, and bonding resources for contractors.{% endblock %}
+{% block title %}New Jersey Transportation Bidder Resources{% endblock %}
+{% block meta_description %}Official New Jersey transportation bidding resources for registration, prequalification, specifications, prevailing wage, compliance, bonding, and proposal submission.{% endblock %}
+{% block body_class %}resources-page{% endblock %}
+{% block head_extra %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='resources.css', v='20260823a') }}">
+{% endblock %}
 {% block content %}
 
-<div class="page-header">
-  <h1>Contractor Resources</h1>
-  <p>Official specifications, wage determinations, prequalification, and compliance references used in New Jersey transportation bidding.</p>
+<section class="resources-hero" aria-labelledby="resources-title">
+  <div class="resources-hero-copy">
+    <span class="resources-kicker">New Jersey bid readiness</span>
+    <h1 id="resources-title"><strong>{{ resource_count }}</strong><span>official bid<br>resources</span></h1>
+    <p>A practical desk for contractors, subcontractors, suppliers, and consultants preparing to pursue New Jersey transportation work.</p>
+  </div>
+  <div class="readiness-grid" aria-label="Bid preparation sequence">
+    <div><strong>01</strong><span>Register<br>and connect</span></div>
+    <div><strong>02</strong><span>Qualify<br>the firm</span></div>
+    <div><strong>03</strong><span>Scope and<br>price</span></div>
+    <div><strong>04</strong><span>Check and<br>submit</span></div>
+  </div>
+</section>
+
+<div class="controlling-note">
+  <strong>The solicitation controls.</strong>
+  Use this desk to prepare early, then verify every requirement, form, deadline, addendum, insurance limit, and submission instruction in the issuing agency's bid package.
 </div>
 
-<div class="resource-grid">
-  <section class="resource-panel">
-    <h2>Specifications and Standards</h2>
-    <a class="resource-link" href="https://www.nj.gov/transportation/eng/specs/" target="_blank" rel="noopener">
-      <strong>NJDOT Standard Specifications</strong><span>Statewide construction specification baseline.</span>
-    </a>
-    <a class="resource-link" href="https://www.nj.gov/transportation/eng/drawings/" target="_blank" rel="noopener">
-      <strong>Standard Construction Details</strong><span>NJDOT standard drawings and construction details.</span>
-    </a>
-    <a class="resource-link" href="https://www.njta.gov" target="_blank" rel="noopener">
-      <strong>NJTA Supplemental Specifications</strong><span>Turnpike and Garden State Parkway requirements.</span>
-    </a>
-    <a class="resource-link" href="https://www.drjtbc.org" target="_blank" rel="noopener">
-      <strong>DRJTBC Requirements</strong><span>Requirements for Delaware River bridge work.</span>
-    </a>
-    <a class="resource-link" href="https://www.transit.dot.gov/regulations-and-guidance" target="_blank" rel="noopener">
-      <strong>FTA Regulations and Guidance</strong><span>Federal transit and federal-aid guidance.</span>
-    </a>
-  </section>
+<nav class="readiness-nav" aria-label="Bidder resource sections">
+  {% for section in resource_sections %}
+    <a href="#{{ section.id }}"><span>{{ section.index }}</span>{{ section.title }}</a>
+  {% endfor %}
+</nav>
 
-  <section class="resource-panel">
-    <h2>Wage Determinations</h2>
-    <a class="resource-link" href="https://www.nj.gov/labor/wageandhour/index.shtml" target="_blank" rel="noopener">
-      <strong>NJ prevailing wage rates</strong><span>Confirm the county, trade, and project determination.</span>
-    </a>
-    <a class="resource-link" href="https://sam.gov/content/wage-determinations" target="_blank" rel="noopener">
-      <strong>Federal wage determinations</strong><span>Davis-Bacon rates for federal-aid work.</span>
-    </a>
-    <div style="padding:.75rem 1rem;color:var(--text2);font-size:11px;">Always verify the wage determination incorporated into the solicitation before bidding.</div>
-  </section>
+{% macro resource_card(resource) %}
+<article class="resource-entry">
+  <div class="resource-entry-top">
+    <span class="resource-agency">{{ resource.agency }}</span>
+    <span class="resource-audience">{{ resource.audience }}</span>
+  </div>
+  <h3>{{ resource.title }}</h3>
+  <p class="resource-what">{{ resource.what }}</p>
+  <dl>
+    <div><dt>Contains</dt><dd>{{ resource.contains }}</dd></div>
+    <div><dt>Use it when</dt><dd>{{ resource.use_when }}</dd></div>
+  </dl>
+  <a href="{{ resource.url }}" target="_blank" rel="noopener" class="resource-visit">Open official resource <span>&nearr;</span></a>
+</article>
+{% endmacro %}
 
-  <section class="resource-panel">
-    <h2>Prequalification and Compliance</h2>
-    <a class="resource-link" href="https://www.state.nj.us/transportation/business/procurement/contrprequal/" target="_blank" rel="noopener">
-      <strong>NJDOT Prequalification</strong><span>Contractor work-class and classification requirements.</span>
-    </a>
-    <a class="resource-link" href="https://www.njta.gov/business-hub/" target="_blank" rel="noopener">
-      <strong>NJTA Prequalification</strong><span>Turnpike Authority vendor and contractor requirements.</span>
-    </a>
-    <a class="resource-link" href="https://www.nj.gov/labor/wageandhour/index.shtml" target="_blank" rel="noopener">
-      <strong>NJ Prevailing Wage Act</strong><span>State public-works wage compliance.</span>
-    </a>
-    <a class="resource-link" href="https://sam.gov/content/wage-determinations" target="_blank" rel="noopener">
-      <strong>Davis-Bacon Wage Decisions</strong><span>Federal requirements for covered projects.</span>
-    </a>
-    <a class="resource-link" href="https://www.nj.gov/ethics/" target="_blank" rel="noopener">
-      <strong>NJ Ethics Commission</strong><span>State contractor disclosure and filing information.</span>
-    </a>
-  </section>
+{% for section in resource_sections %}
+<section class="resource-group" id="{{ section.id }}">
+  <header class="resource-group-head">
+    <div class="resource-group-index">{{ section.index }}</div>
+    <div><h2>{{ section.title }}</h2><p>{{ section.description }}</p></div>
+    <span>{{ section.resources | length }} references</span>
+  </header>
+  <div class="resource-list">
+    {% for resource in section.resources %}{{ resource_card(resource) }}{% endfor %}
+  </div>
+</section>
+{% endfor %}
 
-  <section class="resource-panel">
-    <h2>Insurance and Bonding Guides</h2>
-    <a class="resource-link" href="https://www.nj.gov/transportation/business/procurement/" target="_blank" rel="noopener">
-      <strong>Contract-Specific Insurance Requirements</strong><span>Confirm insurance and bonding terms in the official NJDOT solicitation.</span>
-    </a>
-    <a class="resource-link" href="https://www.sba.gov/funding-programs/surety-bonds" target="_blank" rel="noopener">
-      <strong>SBA Surety Bond Guarantee Program</strong><span>Federal support for eligible small businesses seeking bid and performance bonds.</span>
-    </a>
-  </section>
-</div>
+<aside class="bid-package-reminder">
+  <span>Final review</span>
+  <h2>Build the checklist from the bid package, not from memory.</h2>
+  <p>Confirm addenda, required signatures, bid guarantee, consent of surety, ownership and non-collusion forms, certifications, subcontractor schedules, proposal uploads, and the exact receipt time before submitting.</p>
+</aside>
 
 {% endblock %}

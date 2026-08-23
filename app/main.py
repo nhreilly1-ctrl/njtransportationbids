@@ -26,6 +26,7 @@ from app.core.corridors import enrich_location, location_display, map_url
 from app.core.geography import NJ_COUNTIES, enrich_geography
 from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
+from app.resource_catalog import RESOURCE_SECTIONS, resource_count
 
 
 app = Flask(__name__)
@@ -1263,7 +1264,11 @@ def index():
 
 @app.route("/resources")
 def contractor_resources():
-    return render_template("resources.html")
+    return render_template(
+        "resources.html",
+        resource_sections=RESOURCE_SECTIONS,
+        resource_count=resource_count(),
+    )
 
 
 def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
