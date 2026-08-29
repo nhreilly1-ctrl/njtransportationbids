@@ -944,6 +944,7 @@ class PublicDashboardTests(unittest.TestCase):
         with (
             patch.object(app_main, "load_public_opps", return_value=records),
             patch.object(app_main, "date", FixedDate),
+            self._frozen_deadline_clock(datetime(2026, 8, 21, 16, 0, tzinfo=timezone.utc)),
         ):
             response = app_main.app.test_client().get("/bids/construction")
 

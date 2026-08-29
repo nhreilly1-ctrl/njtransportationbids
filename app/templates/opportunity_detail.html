@@ -119,18 +119,57 @@
 </div>
 
 {% if related %}
-<div class="section-label">More from {{ opp.source_name }}</div>
+<div class="section-label">Related opportunities</div>
 {% for item in related %}
 <div class="bid-card">
   <div class="bid-dot {{ 'dot-green' if item.status == 'open' else 'dot-amber' }}"></div>
   <div class="bid-main">
     <a href="{{ url_for('opportunity_detail', opp_id=item.id) }}" class="bid-title" title="{{ item.title }}">{{ item.title }}</a>
-    <div class="bid-meta">{{ item.county_display }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}</div>
+    <div class="bid-meta">
+      {% if item.relation_reason %}<strong style="color:var(--text);">{{ item.relation_reason }}</strong> &middot; {% endif %}
+      {{ item.source_name }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}
+    </div>
   </div>
   <div class="bid-due"><span class="due-label">{{ 'Expected' if item.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ item.deadline_display }}</span></div>
 </div>
 {% endfor %}
 {% endif %}
+
+{% if readiness %}
+<div class="section-label">Bidding {{ readiness.label }} for the first time?</div>
+<div class="detail-card" style="margin-bottom:1rem;">
+  <p style="font-size:13px; color:var(--text2); margin-bottom:.9rem;">{{ readiness.note }}</p>
+  {% if readiness.caveat %}
+  <p style="font-size:12.5px; color:var(--text2); background:var(--amber-bg); border-radius:var(--r); padding:.6rem .8rem; margin-bottom:.9rem;">
+    <strong style="color:var(--text);">Different rulebook.</strong> {{ readiness.caveat }}
+  </p>
+  {% endif %}
+  <div style="display:grid; gap:.55rem;">
+    {% for item in readiness.resources %}
+    <div style="display:grid; grid-template-columns:auto 1fr; gap:.6rem; align-items:baseline;">
+      <span class="badge badge-type-p" style="font-size:10px; text-transform:capitalize;">{{ item.stage }}</span>
+      <div>
+        <a href="{{ item.url }}" target="_blank" rel="noopener" style="font-size:13px; font-weight:500;">{{ item.title }} &#8599;</a>
+        <div style="font-size:12px; color:var(--text2); line-height:1.45;">{{ item.use_when }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="margin-top:.9rem; padding-top:.75rem; border-top:0.5px solid var(--border); font-size:12px; color:var(--text2);">
+    Starting points from official sources &mdash; confirm requirements against this solicitation's own terms.
+    <a href="{{ url_for('contractor_resources') }}">All bidder resources</a>
+  </div>
+</div>
+{% endif %}
+
+<div class="detail-card" style="margin-bottom:1rem;">
+  <div style="font-size:13px; color:var(--text2);">
+    <strong style="color:var(--text);">NJ Transportation Bids</strong> tracks road, bridge, and transit solicitations
+    from {{ source_total }} official New Jersey agency sources every day &mdash; NJDOT, the Turnpike Authority,
+    NJ TRANSIT, the Port Authority, and all 21 counties &mdash; including work agencies expect to advertise months ahead.
+    Free, no account. <a href="{{ url_for('index') }}">See everything open now</a>.
+  </div>
+</div>
 
 {% if session.get('admin') %}
 <div style="background:var(--blue-bg); border:0.5px solid #b5d4f4; border-radius:var(--r); padding:.7rem 1rem; font-size:12px; color:var(--blue);">
