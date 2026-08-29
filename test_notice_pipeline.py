@@ -941,14 +941,10 @@ class PublicDashboardTests(unittest.TestCase):
             def today(cls):
                 return cls(2026, 8, 21)
 
-        def fixed_deadline_is_past(record):
-            due = app_main.deadline_date(record)
-            return bool(due and due < FixedDate.today())
-
         with (
             patch.object(app_main, "load_public_opps", return_value=records),
             patch.object(app_main, "date", FixedDate),
-            patch.object(app_main, "deadline_is_past", fixed_deadline_is_past),
+            self._frozen_deadline_clock(datetime(2026, 8, 21, 16, 0, tzinfo=timezone.utc)),
         ):
             response = app_main.app.test_client().get("/bids/construction")
 

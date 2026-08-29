@@ -26,6 +26,8 @@ from app.core.corridors import enrich_location, location_display, map_url
 from app.core.geography import NJ_COUNTIES, enrich_geography
 from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
+from app.core.bid_readiness import readiness_for
+from app.core.relatedness import rank_related
 from app.resource_catalog import RESOURCE_SECTIONS, resource_count
 
 
@@ -1380,19 +1382,14 @@ def opportunity_detail(opp_id: str):
     opp = next((item for item in opportunities if str(item.get("id")) == opp_id), None)
     if not opp or opp["status"] == "deleted":
         return "Not found", 404
-    related = [
-        item
-        for item in opportunities
-        if item.get("id") != opp.get("id")
-        and item.get("status") in ("open", "upcoming")
-        and item.get("record_type") == opp.get("record_type")
-        and item.get("source_id") == opp.get("source_id")
-    ]
+    related = rank_related(opp, opportunities, limit=4)
     seo = build_opportunity_seo(opp)
     return render_template(
         "opportunity_detail.html",
         opp=opp,
-        related=sort_opps(related)[:3],
+        related=related,
+        readiness=readiness_for(opp),
+        source_total=len(NOTICE_SOURCES),
         seo_title=seo["title"],
         seo_description=seo["description"],
     )
