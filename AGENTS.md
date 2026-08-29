@@ -39,6 +39,13 @@ At the time this guide was written, `NOTICE_SOURCES` contains 47 configured sour
 17 state/regional, all 21 counties, 7 municipal, and 2 procurement platforms. Treat
 those numbers as a snapshot and calculate current counts from configuration.
 
+## Product Concept
+
+Public-facing work follows `docs/TIME_AND_TOOLS.md`, the settled UX concept: cut
+the time a bidder needs to understand a project, then hand them the tools to act
+on it, and explain the agency's process without ever explaining their trade. It
+is binding on public pages and settles design questions that taste cannot.
+
 ## Non-Negotiable Data Rules
 
 - Preserve official source text and the official URL. Normalized fields supplement

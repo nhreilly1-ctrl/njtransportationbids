@@ -50,7 +50,7 @@
   <div class="opportunity-hero">
     <div style="flex:1; min-width:0;">
       <h1 style="font-size:17px; font-weight:500; margin-bottom:.5rem; line-height:1.45;">{{ opp.title }}</h1>
-      <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }} &middot; {{ opp.county_display }}</div>
+      <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }} &middot; {{ opp.location_display or opp.county_display }}</div>
       <div style="display:flex; gap:7px; flex-wrap:wrap;">
         {% if opp.status == 'open' %}<span class="badge badge-open">Open</span>
         {% elif opp.status == 'upcoming' %}<span class="badge badge-type-p">Upcoming</span>
