@@ -137,6 +137,11 @@ class CorridorExtractionTests(unittest.TestCase):
         for title, expected in cases:
             self.assertEqual(_classify(title)["road_names"], expected, title)
 
+        self.assertEqual(
+            _classify("Change Bridge Road (CR 621), Bridge over Route 80")["road_names"],
+            ["Change Bridge Road"],
+        )
+
     def test_generic_or_non_geographic_road_words_are_not_mapped(self):
         titles = (
             "Construction Project Management for Various Road and Bridge Projects",
@@ -145,6 +150,35 @@ class CorridorExtractionTests(unittest.TestCase):
         )
         for title in titles:
             self.assertEqual(_classify(title)["road_names"], [], title)
+
+    def test_directional_route_and_named_crossing_are_preserved(self):
+        result = _classify("NJDOT upcoming: Rt 1 NB, Bridge over Raritan River")
+        self.assertEqual(result["corridors"], ["US-1"])
+        self.assertEqual(result["directional_corridors"], ["US-1 NB"])
+        self.assertEqual(result["directional_route_labels"], ["Rt 1 NB"])
+        self.assertEqual(result["crossing_phrases"], ["Bridge over Raritan River"])
+        self.assertIn('title:"Rt 1 NB"', result["location_evidence"])
+        self.assertIn(
+            'title:"Bridge over Raritan River"', result["location_evidence"]
+        )
+
+        two_way = _classify("Bailey's Mill Road, Bridge over Rt. 287 (NB & SB)")
+        self.assertEqual(two_way["directional_corridors"], ["I-287 NB/SB"])
+
+        plural = _classify("Rt 78 WB, Bridges over Rt 287 NB & SB")
+        self.assertEqual(plural["directional_corridors"], ["I-78 WB", "I-287 NB/SB"])
+        self.assertEqual(plural["crossing_phrases"], ["Bridges over Rt 287 NB & SB"])
+
+    def test_crossing_stops_before_procurement_lifecycle_text(self):
+        result = _classify(
+            "County Route 514 (Amwell Road), Bridge Over D&R Canal "
+            "Pending Selection 1/6/2026"
+        )
+        self.assertEqual(result["crossing_phrases"], ["Bridge over D&R Canal"])
+
+    def test_structure_without_named_crossing_does_not_create_map_phrase(self):
+        result = _classify("Statewide bridge inspection and rehabilitation services")
+        self.assertEqual(result["crossing_phrases"], [])
 
 
 class StructureExtractionTests(unittest.TestCase):
@@ -236,7 +270,28 @@ class DisplayAndMapTests(unittest.TestCase):
         self.assertIn('title:"Bailey\'s Mill Road"', record["location_evidence"])
         self.assertEqual(
             map_query(record),
-            "Bailey's Mill Road, I-287, Morris County, New Jersey",
+            "Bailey's Mill Road, Bridge over Rt. 287 (NB & SB), Morris County, New Jersey",
+        )
+
+    def test_raritan_bridge_query_uses_crossing_and_direction_before_corridor(self):
+        record = {
+            "title": "NJDOT upcoming: Rt 1 NB, Bridge over Raritan River",
+            "source_id": "state-njdot-profserv-upcoming",
+            "source_tier": "state",
+            "county": "Middlesex",
+            "county_provenance": "SOURCE_RECORD_FIELD",
+        }
+        record.update(classify_geography(record))
+        enrich_location(record)
+
+        self.assertEqual(
+            map_query(record),
+            "Rt 1 NB, Bridge over Raritan River, Middlesex County, New Jersey",
+        )
+        self.assertEqual(
+            map_url(record),
+            "https://www.google.com/maps/search/?api=1&query="
+            "Rt+1+NB%2C+Bridge+over+Raritan+River%2C+Middlesex+County%2C+New+Jersey",
         )
 
     def test_county_bid_named_road_uses_title_and_agency_context_for_map(self):
@@ -366,7 +421,8 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertIn("Bailey&#39;s Mill Road", html)
         self.assertIn('class="bid-map-link"', html)
         self.assertIn(
-            "query=Bailey%27s+Mill+Road%2C+I-287%2C+Morris+County%2C+New+Jersey",
+            "query=Bailey%27s+Mill+Road%2C+Bridge+over+Rt.+287+%28NB+%26+SB%29%2C+"
+            "Morris+County%2C+New+Jersey",
             html,
         )
 
@@ -404,6 +460,33 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertIn(">Municipality</td>", html)
         self.assertIn("Borough of Somerville", html)
         self.assertIn("View on map", html)
+
+    def test_detail_page_shows_named_crossing_and_precise_map_query(self):
+        record = self._opp(
+            "notice-75297aa782eb",
+            "NJDOT upcoming: Rt 1 NB, Bridge over Raritan River",
+            status="upcoming",
+            is_planned=True,
+            source_id="state-njdot-profserv-upcoming",
+            source_name="NJDOT Anticipated Professional Services",
+            county="Middlesex",
+            county_provenance="SOURCE_RECORD_FIELD",
+            notice_type="professional_services",
+            notice_subtype="professional_services",
+            due_date_raw="Summer 2026",
+        )
+        with patch.object(app_main, "load_public_opps", return_value=[record]):
+            html = app_main.app.test_client().get(
+                "/opportunities/notice-75297aa782eb"
+            ).get_data(as_text=True)
+
+        self.assertIn(">Crossing</td>", html)
+        self.assertIn("Bridge over Raritan River", html)
+        self.assertIn(
+            "query=Rt+1+NB%2C+Bridge+over+Raritan+River%2C+"
+            "Middlesex+County%2C+New+Jersey",
+            html,
+        )
 
 
 if __name__ == "__main__":

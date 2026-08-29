@@ -126,6 +126,33 @@ _ROAD_BOUNDARY_WORDS = {
 }
 _ROAD_GENERIC_NAMES = {"county", "federal", "state", "uez", "various"}
 
+_ROUTE_DIRECTION_RE = re.compile(
+    r"\s*,?\s*\(?\s*(?P<direction>NB|SB|EB|WB|N/B|S/B|E/B|W/B|"
+    r"Northbound|Southbound|Eastbound|Westbound)\b"
+    r"(?:\s*(?:&|and)\s*(?P<direction2>NB|SB|EB|WB|N/B|S/B|E/B|W/B|"
+    r"Northbound|Southbound|Eastbound|Westbound)\b)?",
+    re.IGNORECASE,
+)
+_DIRECTION_CANONICAL = {
+    "NB": "NB", "N/B": "NB", "NORTHBOUND": "NB",
+    "SB": "SB", "S/B": "SB", "SOUTHBOUND": "SB",
+    "EB": "EB", "E/B": "EB", "EASTBOUND": "EB",
+    "WB": "WB", "W/B": "WB", "WESTBOUND": "WB",
+}
+
+# A named crossing is often the most precise mappable phrase in an NJDOT
+# title: "Rt 1 NB, Bridge over Raritan River". Stop before lifecycle or
+# contract prose so the map query carries the physical feature, not the rest
+# of the solicitation title.
+_CROSSING_RE = re.compile(
+    r"\b(?P<structure>Bridges?|Viaducts?|Culverts?|Tunnels?|Overpasses?|Underpasses?)\s+"
+    r"(?P<relation>over|under|across|at)\s+"
+    r"(?P<feature>[^,;:\n]{2,80}?)"
+    r"(?=\s+(?:Pending\s+Selection|Advertised|Expected\s+posting|"
+    r"Contract\s+(?:No\.?|#)|Reconstruction|Replacement)\b|[,;:]|$)",
+    re.IGNORECASE,
+)
+
 
 def _normalize_muni_token(token: str) -> str:
     token = token.replace("ﬁ", "fi").replace("ﬂ", "fl")
@@ -182,7 +209,11 @@ def _extract_named_roads(text: str) -> list[tuple[str, str]]:
         tokens = raw_road.split()
         boundary = max(
             (index for index, token in enumerate(tokens[:-1])
-             if token.lower().strip(".,'") in _ROAD_BOUNDARY_WORDS),
+             if token.lower().strip(".,'") in _ROAD_BOUNDARY_WORDS
+             and not (
+                 token.lower().strip(".,'") == "bridge"
+                 and index == len(tokens) - 2
+             )),
             default=-1,
         )
         tokens = tokens[boundary + 1:]
@@ -199,6 +230,54 @@ def _extract_named_roads(text: str) -> list[tuple[str, str]]:
         if road.isupper() or road.islower():
             road = " ".join(_normalize_muni_token(token) for token in tokens)
         found.append((road, match.group("road").strip()))
+    return found
+
+
+def _extract_directional_routes(text: str) -> list[tuple[str, str]]:
+    found: list[tuple[str, str]] = []
+    for match in _ROUTE_RE.finditer(text):
+        system = _route_system(match)
+        if system is None:
+            continue
+        groups = list(match.groups())
+        digit_index = next(
+            (i for i, value in enumerate(groups)
+             if value is not None and value.isdigit()),
+            None,
+        )
+        if digit_index is None:
+            continue
+        number = groups[digit_index]
+        suffix = groups[digit_index + 1] or "" if digit_index + 1 < len(groups) else ""
+        direction_match = _ROUTE_DIRECTION_RE.match(text, match.end())
+        if not direction_match:
+            continue
+        direction = _DIRECTION_CANONICAL[direction_match.group("direction").upper()]
+        second_direction = direction_match.group("direction2")
+        if second_direction:
+            direction = (
+                f"{direction}/"
+                f"{_DIRECTION_CANONICAL[second_direction.upper()]}"
+            )
+        canonical = f"{_canonical_route(system, number, suffix)} {direction}"
+        surface = text[match.start():direction_match.end()].strip(" ,")
+        found.append((canonical, surface))
+    return found
+
+
+def _extract_crossings(text: str) -> list[tuple[str, str]]:
+    found: list[tuple[str, str]] = []
+    for match in _CROSSING_RE.finditer(text):
+        structure = match.group("structure").capitalize()
+        relation = match.group("relation").lower()
+        feature = normalize_reference_text(match.group("feature")).strip(" .,-")
+        if not feature:
+            continue
+        if feature.isupper() or feature.islower():
+            feature = " ".join(_normalize_muni_token(token) for token in feature.split())
+        found.append(
+            (f"{structure} {relation} {feature}", match.group(0).strip())
+        )
     return found
 
 
@@ -286,6 +365,9 @@ def classify_location(record: dict[str, Any]) -> dict[str, Any]:
     structures: list[str] = []
     municipalities: list[str] = []
     road_names: list[str] = []
+    directional_corridors: list[str] = []
+    directional_route_labels: list[str] = []
+    crossing_phrases: list[str] = []
     evidence: list[str] = []
 
     for field, text in evidence_texts:
@@ -308,12 +390,27 @@ def classify_location(record: dict[str, Any]) -> dict[str, Any]:
             if canonical not in road_names:
                 road_names.append(canonical)
                 evidence.append(f'{field}:"{matched}"')
+        for canonical, matched in _extract_directional_routes(text):
+            if canonical not in directional_corridors:
+                directional_corridors.append(canonical)
+                evidence.append(f'{field}:"{matched}"')
+                route_label = re.sub(
+                    r"\s*,\s*", " ", normalize_reference_text(matched)
+                )
+                directional_route_labels.append(route_label)
+        for canonical, matched in _extract_crossings(text):
+            if canonical not in crossing_phrases:
+                crossing_phrases.append(canonical)
+                evidence.append(f'{field}:"{matched}"')
 
     return {
         "corridors": corridors,
         "structure_types": structures,
         "municipalities": municipalities,
         "road_names": road_names,
+        "directional_corridors": directional_corridors,
+        "directional_route_labels": directional_route_labels,
+        "crossing_phrases": crossing_phrases,
         "location_evidence": " | ".join(dict.fromkeys(evidence)),
     }
 
@@ -375,7 +472,27 @@ def map_query(record: dict[str, Any]) -> str:
     road_names = record.get("road_names") or []
     corridors = record.get("corridors") or []
     municipalities = record.get("municipalities") or []
+    directional_corridors = record.get("directional_corridors") or []
+    directional_route_labels = record.get("directional_route_labels") or []
+    crossing_phrases = record.get("crossing_phrases") or []
     county_context = _map_county_context(record)
+    if crossing_phrases:
+        parts = []
+        if road_names:
+            parts.append(road_names[0])
+        elif directional_route_labels:
+            parts.append(directional_route_labels[0])
+        elif directional_corridors:
+            parts.append(directional_corridors[0])
+        elif corridors:
+            parts.append(corridors[0])
+        parts.append(crossing_phrases[0])
+        if county_context:
+            parts.append(county_context)
+        elif municipalities:
+            parts.append(municipalities[0])
+        parts.append("New Jersey")
+        return ", ".join(parts)
     if road_names:
         parts = [road_names[0]]
         if corridors:

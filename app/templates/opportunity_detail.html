@@ -108,6 +108,7 @@
       <tr><td style="color:var(--text2); padding:4px 0;">Location</td><td style="padding:4px 0;">{{ opp.county_display }}</td></tr>
       {% if opp.corridors %}<tr><td style="color:var(--text2); padding:4px 0;">Corridor</td><td style="padding:4px 0;">{% for c in opp.corridors %}<a href="{{ url_for('notices2.notices_all', corridor=c) }}" style="color:var(--blue); text-decoration:none;">{{ c }}</a>{{ ', ' if not loop.last }}{% endfor %}</td></tr>{% endif %}
       {% if opp.structure_types %}<tr><td style="color:var(--text2); padding:4px 0;">Structure</td><td style="padding:4px 0;">{{ opp.structure_types | join(', ') | title }}</td></tr>{% endif %}
+      {% if opp.crossing_phrases %}<tr><td style="color:var(--text2); padding:4px 0;">Crossing</td><td style="padding:4px 0;">{{ opp.crossing_phrases | join(', ') }}</td></tr>{% endif %}
       {% if opp.municipalities %}<tr><td style="color:var(--text2); padding:4px 0;">Municipality</td><td style="padding:4px 0;">{{ opp.municipalities | join(', ') }}</td></tr>{% endif %}
       {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">{{ 'Expected' if opp.status == 'upcoming' else 'Normalized deadline' }}</td><td style="padding:4px 0;">{{ opp.deadline_display }}</td></tr>{% endif %}
       {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">Source deadline text</td><td style="padding:4px 0;">{{ opp.due_date_raw }}</td></tr>{% endif %}
