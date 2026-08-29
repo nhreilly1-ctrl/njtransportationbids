@@ -38,7 +38,7 @@ flask --app app.main run --debug --port 10000
 Run the focused regression suite from the repository root:
 
 ```bash
-python -m unittest -v test_deadlines test_geography test_notice_pipeline test_parsers
+python -m unittest -v test_deadlines test_geography test_notice_pipeline test_parsers test_corridors test_bid_readiness
 python -m compileall -q app crawlers
 ```
 

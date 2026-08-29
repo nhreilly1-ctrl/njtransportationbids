@@ -121,7 +121,7 @@ Use Python 3.11 and run commands from the repository root.
 
 ```bash
 pip install -r requirements.txt
-python -m unittest -v test_deadlines test_geography test_notice_pipeline test_parsers
+python -m unittest -v test_deadlines test_geography test_notice_pipeline test_parsers test_corridors test_bid_readiness
 python -m compileall -q app crawlers
 gunicorn app.main:app --bind 0.0.0.0:10000
 ```

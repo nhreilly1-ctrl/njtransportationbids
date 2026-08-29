@@ -105,8 +105,8 @@ Out of scope, permanently, unless this document changes:
 |---|---|---|
 | Is the anticipated pipeline a headline feature or a sidebar? | Headline. | 5 of 6 project-page search clicks were anticipated records; it is 58% of live inventory and effectively unpublished elsewhere in indexable form. |
 | What happens to a project page when the bid closes? | Keeps its URL and shows a closed state. It does not 404 or disappear. | Rule 4 and rule 1: an indexed page that vanishes spends the reader's time and forfeits earned traffic. |
-| What does "related" mean? | Evidenced overlap — shared corridor, county, or structure — not same-agency. | Rule 3: same-agency picks from a 70-record pool make the reader do the relevance work. |
-| Do we show New Jersey State requirements on Port Authority and DRPA/DRJTBC records? | No. Withhold them and say why. | Rule 4: a requirement that does not apply is worse than no requirement. |
+| What does "related" mean? | Evidenced overlap, ordered by exact crossing, named road, corridor, county, then structure. Same-agency is only a sparse-data fallback. | Rule 3: a broad agency or work-type match must not outrank project-level location evidence. |
+| Do we show generic New Jersey State resources on Port Authority and DRPA/DRJTBC records? | Lead with the authority's own procurement resources. Do not make a categorical legal-applicability claim from agency identity alone. | Rule 4: funding, work location, contract type, and the solicitation itself determine which requirements control. |
 | How long may the resource pack be? | Long enough to carry the agency block plus any federal-aid set; short enough to stay below the project facts. | Rule 5 and rule 6. |
 
 ## Known gaps this concept implies but the data cannot yet serve
