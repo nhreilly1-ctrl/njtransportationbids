@@ -757,9 +757,14 @@ def enrich(opp: dict) -> dict:
     record = dict(opp)
     enrich_geography(record)
     enrich_location(record)
+    # Rule 2 of docs/TIME_AND_TOOLS.md: the most specific location evidence
+    # leads. A notice naming the NJ Turnpike must not read "County not stated"
+    # just because no county was extracted; the scope label still follows when
+    # it carries meaning (a county list, Bi-state, Statewide, or a region).
     evidenced = location_display(record)
-    if evidenced and record.get("counties"):
-        evidenced = f"{evidenced} · {record['county_display']}"
+    county_label = record.get("county_display") or ""
+    if evidenced and county_label and county_label != "County not stated in notice":
+        evidenced = f"{evidenced} · {county_label}"
     record["location_display"] = evidenced
     record["map_url"] = map_url(record)
     normalize_deadline(record)

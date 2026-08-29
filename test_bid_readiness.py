@@ -152,6 +152,45 @@ class DetailPageTests(unittest.TestCase):
         self.assertIn("NJDOT Construction Prequalification", html)
         self.assertIn("official New Jersey agency sources", html)
 
+    def test_hero_leads_with_evidenced_location_not_a_county_disclaimer(self):
+        # docs/TIME_AND_TOOLS.md rule 2: the strongest location evidence answers
+        # "where" above the fold. A notice naming the NJ Turnpike must not read
+        # "County not stated in notice" just because no county was extracted.
+        subject = {
+            "id": "tpk", "_canonical_notice": True,
+            "title": "Contract No. A200.915-1 Traffic Signals on the New Jersey Turnpike",
+            "status": "open", "source_status": "open", "source_id": "state-njta",
+            "source_name": "NJ Turnpike Authority", "source_tier": "state",
+            "source_url": "https://agency.example/b", "official_url": "https://agency.example/b/1",
+            "county": "", "notice_type": "construction", "notice_subtype": "construction",
+            "due_date_raw": "12/31/68", "contract_number": "A200.915-1",
+            "access_type": "Public access", "platform": "Agency website",
+            "crawled_at": "2026-08-29T12:00:00+00:00",
+        }
+        with patch.object(app_main, "load_public_opps", return_value=[subject]):
+            html = app_main.app.test_client().get("/opportunities/tpk").get_data(as_text=True)
+        hero = html.split('class="opportunity-hero"', 1)[1].split("</h1>", 1)[1][:300]
+        self.assertIn("NJ Turnpike", hero)
+        self.assertNotIn("County not stated in notice", hero)
+
+    def test_hero_keeps_the_scope_label_alongside_the_corridor(self):
+        subject = {
+            "id": "bs", "_canonical_notice": True,
+            "title": "Professional engineering services, I-78 and I-80 corridors",
+            "status": "open", "source_status": "open", "source_id": "state-drjtbc-profserv",
+            "source_name": "DRJTBC", "source_tier": "state",
+            "source_url": "https://agency.example/b", "official_url": "https://agency.example/b/1",
+            "county": "", "notice_type": "professional_services",
+            "notice_subtype": "professional_services", "due_date_raw": "12/31/68",
+            "contract_number": "X-1", "access_type": "Public access",
+            "platform": "Agency website", "crawled_at": "2026-08-29T12:00:00+00:00",
+        }
+        with patch.object(app_main, "load_public_opps", return_value=[subject]):
+            html = app_main.app.test_client().get("/opportunities/bs").get_data(as_text=True)
+        hero = html.split('class="opportunity-hero"', 1)[1].split("</h1>", 1)[1][:300]
+        self.assertIn("I-78", hero)
+        self.assertIn("Bi-state", hero)
+
     def test_bistate_detail_page_shows_the_different_rulebook_warning(self):
         subject = {
             "id": "pa", "_canonical_notice": True, "title": "George Washington Bridge deck sections",
