@@ -126,7 +126,7 @@
     {% endif %}
     {% if notice.official_url %}
       <a href="{{ notice.official_url }}" target="_blank" rel="noopener"
-         class="btn btn-primary">Open official source ↗</a>
+         class="btn btn-primary" data-analytics-event="official_source_click" data-notice-id="{{ notice.id }}" data-agency="{{ notice.source_name }}" data-opportunity-type="{{ notice.notice_subtype or notice.notice_type or '' }}" data-corridor="{{ notice.corridors[0] if notice.corridors else '' }}" data-destination="{{ notice.platform or 'official source' }}">Open official source ↗</a>
     {% endif %}
   </div>
 

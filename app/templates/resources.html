@@ -47,7 +47,7 @@
     <div><dt>Contains</dt><dd>{{ resource.contains }}</dd></div>
     <div><dt>Use it when</dt><dd>{{ resource.use_when }}</dd></div>
   </dl>
-  <a href="{{ resource.url }}" target="_blank" rel="noopener" class="resource-visit">Open official resource <span>&nearr;</span></a>
+  <a href="{{ resource.url }}" target="_blank" rel="noopener" class="resource-visit" data-analytics-event="bid_resource_click" data-agency="{{ resource.agency }}" data-resource="{{ resource.title }}" data-surface="resource directory">Open official resource <span>&nearr;</span></a>
 </article>
 {% endmacro %}
 

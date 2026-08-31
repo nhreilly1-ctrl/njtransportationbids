@@ -1452,6 +1452,22 @@ class PublicSeoTests(unittest.TestCase):
         self.assertIn("<loc>https://www.njtransportationbids.com/notices</loc>", xml)
         self.assertIn("<loc>https://www.njtransportationbids.com/resources</loc>", xml)
 
+    def test_google_analytics_tracks_pages_and_bidder_intent(self):
+        client = app_main.app.test_client()
+        with patch.object(app_main, "load_public_opps", return_value=[self.active]):
+            detail_html = client.get("/opportunities/active-bid").get_data(as_text=True)
+            listing_html = client.get("/bids/construction").get_data(as_text=True)
+        resources_html = client.get("/resources").get_data(as_text=True)
+
+        self.assertIn("G-7TTMK92NV4", detail_html)
+        self.assertIn('data-analytics-event="official_source_click"', detail_html)
+        self.assertIn('data-analytics-event="calendar_add"', detail_html)
+        self.assertIn('data-analytics-event="bid_resource_click"', detail_html)
+        self.assertIn('data-analytics-event="filter_applied"', listing_html)
+        self.assertIn('data-analytics-event="bid_resource_click"', resources_html)
+        self.assertIn("params.has_keyword = Boolean(data.get('q'))", detail_html)
+        self.assertNotIn("params.filter_q", detail_html)
+
     def test_detail_pages_emit_unique_evidence_safe_search_metadata(self):
         route_one = dict(
             self.active,

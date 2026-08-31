@@ -48,7 +48,7 @@
         {% if o.contract_number %}<span class="brief-contract">{{ o.contract_number }}</span>{% endif %}
         {% if o.homepage_deadline_time %}<span>{{ o.homepage_deadline_time }}</span>{% endif %}
         {% if o.homepage_platform %}<span class="brief-platform">{{ o.homepage_platform }}</span>{% endif %}
-        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="brief-map">Map</a>{% endif %}
+        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="brief-map" data-analytics-event="map_click" data-notice-id="{{ o.id }}" data-agency="{{ o.source_name }}" data-corridor="{{ o.corridors[0] if o.corridors else '' }}" data-surface="homepage">Map</a>{% endif %}
       </div>
     </div>
     <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="brief-arrow" aria-label="View {{ o.title }}">&rarr;</a>

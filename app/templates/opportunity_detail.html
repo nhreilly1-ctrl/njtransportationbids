@@ -92,10 +92,10 @@
     <div class="section-label" style="margin-top:0;">Next step</div>
     <p style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.next_step or 'Open the official source and follow the solicitation instructions. Confirm due dates and submission method before committing estimating time.' }}</p>
     <div style="display:flex;gap:7px;flex-wrap:wrap;">
-      {% if opp.official_url %}<a href="{{ opp.official_url }}" target="_blank" rel="noopener" class="btn btn-primary">Open official source ↗</a>{% endif %}
-      {% if opp.due_date_parsed and opp.status in ('open','upcoming') %}<a href="{{ url_for('opportunity_calendar', opp_id=opp.id) }}" class="btn">Add deadline to calendar</a>{% endif %}
-      {% if opp.map_url %}<a href="{{ opp.map_url }}" target="_blank" rel="noopener" class="btn">View on map ↗</a>{% endif %}
-      <button type="button" class="btn" onclick="navigator.clipboard.writeText(window.location.href).then(() => this.textContent = 'Link copied')">Copy link</button>
+      {% if opp.official_url %}<a href="{{ opp.official_url }}" target="_blank" rel="noopener" class="btn btn-primary" data-analytics-event="official_source_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-opportunity-type="{{ opp.record_type or opp.notice_subtype or '' }}" data-corridor="{{ opp.corridors[0] if opp.corridors else '' }}" data-destination="{{ opp.platform or 'official source' }}">Open official source ↗</a>{% endif %}
+      {% if opp.due_date_parsed and opp.status in ('open','upcoming') %}<a href="{{ url_for('opportunity_calendar', opp_id=opp.id) }}" class="btn" data-analytics-event="calendar_add" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-opportunity-type="{{ opp.record_type or opp.notice_subtype or '' }}">Add deadline to calendar</a>{% endif %}
+      {% if opp.map_url %}<a href="{{ opp.map_url }}" target="_blank" rel="noopener" class="btn" data-analytics-event="map_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-corridor="{{ opp.corridors[0] if opp.corridors else '' }}">View on map ↗</a>{% endif %}
+      <button type="button" class="btn" data-analytics-event="copy_link" data-notice-id="{{ opp.id }}" onclick="navigator.clipboard.writeText(window.location.href).then(() => this.textContent = 'Link copied')">Copy link</button>
     </div>
   </div>
   <div class="detail-card">
@@ -125,7 +125,7 @@
 <div class="bid-card">
   <div class="bid-dot {{ 'dot-green' if item.status == 'open' else 'dot-amber' }}"></div>
   <div class="bid-main">
-    <a href="{{ url_for('opportunity_detail', opp_id=item.id) }}" class="bid-title" title="{{ item.title }}">{{ item.title }}</a>
+    <a href="{{ url_for('opportunity_detail', opp_id=item.id) }}" class="bid-title" title="{{ item.title }}" data-analytics-event="related_opportunity_click" data-notice-id="{{ item.id }}" data-agency="{{ item.source_name }}" data-relation="{{ item.relation_reason or '' }}">{{ item.title }}</a>
     <div class="bid-meta">
       {% if item.relation_reason %}<strong style="color:var(--text);">{{ item.relation_reason }}</strong> &middot; {% endif %}
       {{ item.source_name }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}
@@ -150,7 +150,7 @@
     <div style="display:grid; grid-template-columns:auto 1fr; gap:.6rem; align-items:baseline;">
       <span class="badge badge-type-p" style="font-size:10px; text-transform:capitalize;">{{ item.stage }}</span>
       <div>
-        <a href="{{ item.url }}" target="_blank" rel="noopener" style="font-size:13px; font-weight:500;">{{ item.title }} &#8599;</a>
+        <a href="{{ item.url }}" target="_blank" rel="noopener" style="font-size:13px; font-weight:500;" data-analytics-event="bid_resource_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-resource="{{ item.title }}" data-resource-stage="{{ item.stage }}">{{ item.title }} &#8599;</a>
         <div style="font-size:12px; color:var(--text2); line-height:1.45;">{{ item.use_when }}</div>
       </div>
     </div>

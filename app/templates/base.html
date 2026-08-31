@@ -16,6 +16,13 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{{ self.title() | striptags | trim }}">
   <meta name="twitter:description" content="{{ self.meta_description() | striptags | trim }}">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7TTMK92NV4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7TTMK92NV4');
+  </script>
   {% block structured_data %}{% endblock %}
   {% block head_extra %}{% endblock %}
   <style>
@@ -291,6 +298,43 @@
       navToggle.textContent = isOpen ? 'Close' : 'Menu';
     });
   }
+
+  function analyticsParams(element) {
+    const params = {};
+    const names = {
+      noticeId: 'notice_id',
+      agency: 'agency',
+      opportunityType: 'opportunity_type',
+      corridor: 'corridor',
+      resource: 'resource',
+      resourceStage: 'resource_stage',
+      relation: 'relation',
+      destination: 'destination',
+      surface: 'surface'
+    };
+    Object.entries(names).forEach(([datasetName, eventName]) => {
+      if (element.dataset[datasetName]) params[eventName] = element.dataset[datasetName];
+    });
+    return params;
+  }
+
+  document.addEventListener('click', (event) => {
+    const target = event.target.closest('[data-analytics-event]');
+    if (!target || typeof window.gtag !== 'function') return;
+    gtag('event', target.dataset.analyticsEvent, analyticsParams(target));
+  });
+
+  document.addEventListener('submit', (event) => {
+    const form = event.target.closest('form[data-analytics-event]');
+    if (!form || typeof window.gtag !== 'function') return;
+    const data = new FormData(form);
+    const params = analyticsParams(form);
+    params.has_keyword = Boolean(data.get('q'));
+    ['county', 'agency', 'status', 'tier', 'corridor'].forEach((name) => {
+      if (data.get(name)) params[`filter_${name}`] = data.get(name);
+    });
+    gtag('event', form.dataset.analyticsEvent, params);
+  });
 </script>
 </body>
 </html>
