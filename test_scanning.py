@@ -9,6 +9,49 @@ from crawlers import notice_runner
 
 
 class ScanTrustTests(unittest.TestCase):
+    def render_project(self, **changes):
+        record = dict(id="project-test", title="Route 1 bridge over Raritan River",
+                      record_type="professional_services", status="open",
+                      source_name="NJDOT", county_display="County not stated in notice",
+                      official_url="https://example.com/official", corridors=["US-1"],
+                      map_url="https://www.google.com/maps/search/?api=1&query=bridge",
+                      due_date_raw="09/10/2026", due_date_parsed="2026-09-10",
+                      deadline_display="Thu, Sep 10, 2026 (time not published)",
+                      days_until_due=5, notice_excerpt="Published project description")
+        record.update(changes)
+        with main.app.test_request_context("/opportunities/project-test"):
+            return main.render_template("opportunity_detail.html", opp=record,
+                                        related=[], readiness=None, source_total=47,
+                                        seo_title=record["title"], seo_description="Project notice")
+
+    def test_project_actions_precede_summary_without_duplicates(self):
+        html = self.render_project()
+        self.assertLess(html.index('class="project-actions"'), html.index("Opportunity summary"))
+        for event in ("official_source_click", "map_click", "calendar_add"):
+            self.assertEqual(html.count('data-analytics-event="' + event + '"'), 1)
+        self.assertIn("not verified project limits", html)
+        self.assertIn("time not published", html)
+        self.assertNotIn("12:00 AM", html)
+        self.assertIn("County not stated in notice", html)
+
+    def test_project_conflict_and_closed_states_disable_calendar(self):
+        html = self.render_project(deadline_conflict=True)
+        self.assertIn("Deadline needs confirmation", html)
+        self.assertNotIn('data-analytics-event="calendar_add"', html)
+        self.assertNotIn("5 days remaining", html)
+        html = self.render_project(status="expired")
+        self.assertIn("This opportunity is closed", html)
+        self.assertNotIn('data-analytics-event="calendar_add"', html)
+        record = dict(id="project-test", status="open", due_date_parsed="2026-09-10", deadline_conflict=True)
+        with patch.object(main, "load_public_opps", return_value=[record]), patch.object(main, "enrich", side_effect=lambda x: x):
+            self.assertEqual(main.app.test_client().get("/opportunities/project-test/calendar.ics").status_code, 404)
+
+    def test_project_without_deadline_or_map_states_absence(self):
+        html = self.render_project(due_date_raw=None, due_date_parsed=None, map_url=None)
+        self.assertIn("Deadline not published", html)
+        self.assertNotIn('data-analytics-event="map_click"', html)
+        self.assertNotIn('data-analytics-event="calendar_add"', html)
+
     def test_preview_and_admin_do_not_load_google_analytics(self):
         client = main.app.test_client()
         for path, base in (("/resources", "http://localhost"), ("/admin/login", "https://www.njtransportationbids.com")):

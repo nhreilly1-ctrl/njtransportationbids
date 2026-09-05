@@ -1407,7 +1407,7 @@ def opportunity_detail(opp_id: str):
 @app.route("/opportunities/<opp_id>/calendar.ics")
 def opportunity_calendar(opp_id: str):
     opp = next((enrich(item) for item in load_public_opps() if str(item.get("id")) == opp_id), None)
-    if not opp or not opp.get("due_date_parsed") or opp.get("status") not in ("open", "upcoming"):
+    if not opp or opp.get("deadline_conflict") or not opp.get("due_date_parsed") or opp.get("status") not in ("open", "upcoming"):
         return "Calendar event not available", 404
 
     def ics_text(value):

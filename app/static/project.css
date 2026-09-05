@@ -1,0 +1,44 @@
+.project-page .project-hero {
+  background: linear-gradient(120deg, #fff, #edf3ec);
+  border: 1px solid #cbd7ce;
+  border-top: 5px solid var(--ledger-green);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.project-kicker {
+  font: 600 11px "IBM Plex Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--ledger-green);
+  margin-bottom: 10px;
+}
+.project-page #project-title {
+  font: 700 clamp(25px, 2.6vw, 36px)/1.15 "Barlow Condensed", sans-serif;
+  color: var(--ledger-ink);
+  margin-bottom: 12px;
+  overflow-wrap: anywhere;
+}
+.project-page .opportunity-hero { align-items: start; gap: 24px; }
+.project-page .opportunity-deadline {
+  background: #e4ede3;
+  padding: 14px;
+  border-left: 3px solid var(--ledger-green);
+  max-width: 320px;
+}
+.project-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.project-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; }
+.project-actions .btn-primary { background: var(--ledger-green); color: #fff; }
+.project-map-note { font-size: 12px; color: var(--text2); margin-top: 8px; }
+.project-warning { margin-top: 14px; padding: 10px 14px; background: #faeeda; color: #75480b; border-left: 3px solid #a86b13; }
+.project-page .detail-card, .project-page .bid-card { border-radius: 3px; box-shadow: none; }
+.project-page .section-label { color: var(--ledger-green); font-family: "IBM Plex Mono", monospace; }
+.project-page .detail-card td { overflow-wrap: anywhere; }
+.project-page .detail-card table { table-layout: fixed; }
+.project-page .btn:focus-visible { outline: 3px solid #185fa5; outline-offset: 3px; }
+@media (max-width: 650px) {
+  .project-page .project-hero { padding: 16px; }
+  .project-page .opportunity-hero { flex-direction: column; gap: 12px; }
+  .project-page .opportunity-deadline { width: 100%; max-width: none; text-align: left; }
+  .project-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-actions .btn { white-space: normal; font-size: 12px; }
+}
