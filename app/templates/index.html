@@ -162,6 +162,7 @@
               <span class="pipeline-type pipeline-type-{{ o.record_type or 'other' }}">{{ opportunity_type(o) }}</span>
             </div>
             <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}">{{ o.title }}</a>
+            {% if o.forecast_timing_note %}<span>{{ o.forecast_timing_note }}</span>{% endif %}
             <span>{{ o.source_name }}{% if o.location_display %} / {{ o.location_display }}{% endif %}</span>
           </article>
         {% endfor %}

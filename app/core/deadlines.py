@@ -3,6 +3,7 @@
 import re
 from datetime import date, datetime, timezone
 from zoneinfo import ZoneInfo
+from app.core.forecast import forecast_timing_note
 
 
 EASTERN = ZoneInfo("America/New_York")
@@ -147,6 +148,7 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
         days_until_due=None,
         deadline_conflict=False,
         published_deadline_display=None,
+        forecast_timing_note=None,
     )
     if raw.lower() in UNKNOWN_VALUES:
         return record
@@ -184,6 +186,7 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
         record.update(
             deadline_precision="window",
             deadline_display=f"{raw} (anticipated)",
+            forecast_timing_note=forecast_timing_note(raw, today),
         )
     else:
         record["deadline_display"] = f"{raw} (unparsed - verify with agency)"

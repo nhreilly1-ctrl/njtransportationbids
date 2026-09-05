@@ -76,6 +76,7 @@
     <div class="opportunity-deadline">
       <div style="font-size:11px; color:var(--text3);">{{ 'Expected' if opp.status == 'upcoming' else 'Due date' }}</div>
       <div style="font-size:20px; font-weight:500; {{ 'color:var(--red)' if opp.status == 'expired' else '' }}">{{ opp.deadline_display }}</div>
+      {% if opp.forecast_timing_note %}<p style="font-size:12px;">{{ opp.forecast_timing_note }}</p>{% endif %}
       {% if opp.days_until_due is not none and opp.status == 'open' and not opp.deadline_conflict %}<div style="font-size:11px;color:var(--text2);">{{ opp.days_until_due }} day{{ 's' if opp.days_until_due != 1 }} remaining</div>{% endif %}
     </div>
     {% else %}
