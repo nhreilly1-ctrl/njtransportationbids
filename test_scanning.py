@@ -1,4 +1,5 @@
 import unittest
+from copy import deepcopy
 from datetime import datetime, timezone
 from unittest.mock import patch
 
@@ -9,6 +10,35 @@ from crawlers import notice_runner
 
 
 class ScanTrustTests(unittest.TestCase):
+    def test_date_only_calendar_is_all_day_through_real_route(self):
+        record = dict(id="date-only", title="Bridge repairs", notice_type="construction",
+                      _canonical_notice=True, source_tier="county",
+                      source_name="Test agency", due_date_raw="09/10/2099",
+                      official_url="https://example.com/bid")
+        with patch.object(main, "load_public_opps", return_value=[record]):
+            response = main.app.test_client().get("/opportunities/date-only/calendar.ics")
+        self.assertEqual(response.status_code, 200)
+        calendar = response.get_data(as_text=True)
+        self.assertIn("DTSTART;VALUE=DATE:20990910", calendar)
+        self.assertIn("DTEND;VALUE=DATE:20990911", calendar)
+        self.assertNotRegex(calendar, r"DT(?:START|END)[^\r\n]*T\d{6}")
+
+    def test_map_search_preserves_crossing_and_does_not_write_geography(self):
+        record = dict(corridors=["US-1"], directional_route_labels=["Route 1 NB"],
+                      crossing_phrases=["Bridge over Raritan River"],
+                      counties=["Middlesex"], geography_provenance="NOTICE_TEXT")
+        before = deepcopy(record)
+        query = map_query(record)
+        for text in ("Route 1 NB", "Bridge over Raritan River", "Middlesex County"):
+            self.assertIn(text, query)
+        self.assertEqual(record, before)
+        coastal = dict(municipalities=["Ocean City"], counties=[], corridors=["NJ-52"])
+        before = deepcopy(coastal)
+        query = map_query(coastal)
+        self.assertIn("Ocean City", query)
+        self.assertNotIn("Ocean County", query)
+        self.assertEqual(coastal, before)
+
     def render_project(self, **changes):
         record = dict(id="project-test", title="Route 1 bridge over Raritan River",
                       record_type="professional_services", status="open",
