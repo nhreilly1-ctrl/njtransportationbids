@@ -1,5 +1,8 @@
 import unittest
 from copy import deepcopy
+from datetime import date
+from app.core.forecast import forecast_timing_note
+from app.core.deadlines import normalize_deadline
 from datetime import datetime, timezone
 from unittest.mock import patch
 
@@ -10,6 +13,23 @@ from crawlers import notice_runner
 
 
 class ScanTrustTests(unittest.TestCase):
+    def test_forecast_timing_never_invents_dates_or_changes_status(self):
+        today = date(2026, 9, 5)
+        for raw in ('August', 'September/October'):
+            record = dict(due_date_raw=raw, status='upcoming', crawled_at='2026-09-05')
+            normalize_deadline(record, today)
+            self.assertIn('year not stated', record['forecast_timing_note'])
+            self.assertEqual(record['due_date_raw'], raw)
+            self.assertEqual(record['status'], 'upcoming')
+            self.assertIsNone(record['due_date_parsed'])
+        for raw in ('August 2026', 'Summer 2025'):
+            self.assertIn('has passed', forecast_timing_note(raw, today))
+        self.assertIn('abbreviated forecast year', forecast_timing_note('Winter 27', today))
+        for raw in ('Summer 2026', 'Winter 2026', 'September 2026', 'Fall 2026', 'December 2026/January 2027'):
+            self.assertNotIn('has passed', forecast_timing_note(raw, today))
+        record = normalize_deadline(dict(due_date_raw='09/10/2026'), today)
+        self.assertIsNone(record['forecast_timing_note'])
+
     def test_date_only_calendar_is_all_day_through_real_route(self):
         record = dict(id="date-only", title="Bridge repairs", notice_type="construction",
                       _canonical_notice=True, source_tier="county",

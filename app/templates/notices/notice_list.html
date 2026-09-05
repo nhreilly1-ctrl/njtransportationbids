@@ -130,6 +130,7 @@
       {% if n.due_date_raw and n.due_date_raw not in ('Not listed','-','') %}
         <span class="due-label">{{ 'Expected' if n.status == 'upcoming' else 'Due' }}</span>
         <span class="due-date">{{ n.deadline_display }}</span>
+        {% if n.forecast_timing_note %}<span class="due-label">{{ n.forecast_timing_note }}</span>{% endif %}
         {% if n.days_until_due is defined and n.days_until_due is not none and n.status == 'open' %}<small>{{ n.days_until_due }} day{{ '' if n.days_until_due == 1 else 's' }}</small>{% endif %}
       {% else %}
         <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not published</span>

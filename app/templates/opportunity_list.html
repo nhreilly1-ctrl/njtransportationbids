@@ -133,6 +133,7 @@
     <div class="bid-due ledger-deadline {{ 'soon-due' if is_soon }}">
       {% if o.due_date_raw and o.due_date_raw not in ('Not listed','-', '') %}
         <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ o.deadline_display }}</span>
+        {% if o.forecast_timing_note %}<span class="due-label">{{ o.forecast_timing_note }}</span>{% endif %}
       {% else %}
         <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not published</span>
       {% endif %}
