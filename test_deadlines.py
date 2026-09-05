@@ -169,7 +169,7 @@ class PublicSourceLedgerTests(unittest.TestCase):
         self.assertIn("sources<br>monitored", html)
         self.assertIn("Zero County Procurement", html)
         self.assertIn("No current matching opportunities", html)
-        self.assertIn("Last verified", html)
+        self.assertIn("Last checked", html)
         self.assertNotIn("crawl", html.lower())
 
     def test_precise_calendar_uses_utc_instant(self):

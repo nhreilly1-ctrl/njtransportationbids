@@ -57,22 +57,22 @@
   </div>
   <div class="filter-desk-controls notice-filter-controls">
     <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Title, agency, contract number..." value="{{ q }}"></label>
-    <label><span>County</span><select name="county" onchange="this.form.submit()">
+    <label><span>County</span><select name="county" onchange="this.form.requestSubmit()">
       <option value="">All counties</option>
       {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
     </select></label>
-    <label><span>Agency</span><select name="agency" onchange="this.form.submit()">
+    <label><span>Agency</span><select name="agency" onchange="this.form.requestSubmit()">
       <option value="">All agencies</option>
       {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
     </select></label>
-    <label><span>Source</span><select name="tier" onchange="this.form.submit()">
+    <label><span>Source</span><select name="tier" onchange="this.form.requestSubmit()">
       <option value="">All sources</option>
       <option value="state" {{ 'selected' if selected_tier == 'state' }}>State agencies</option>
       <option value="county" {{ 'selected' if selected_tier == 'county' }}>County portals</option>
       <option value="municipal" {{ 'selected' if selected_tier == 'municipal' }}>Municipal websites</option>
       <option value="paywalled" {{ 'selected' if selected_tier == 'paywalled' }}>Registration platforms</option>
     </select></label>
-    <label><span>Status</span><select name="status" onchange="this.form.submit()">
+    <label><span>Status</span><select name="status" onchange="this.form.requestSubmit()">
       <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
       <option value="open" {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
       <option value="upcoming" {{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
@@ -91,7 +91,7 @@
 
 {% macro notice_card(n) %}
   {% set is_urgent = n.urgent and n.status == 'open' %}
-  {% set is_new = n.crawled_at and n.crawled_at[:10] == today_date %}
+  {% set is_new = n.is_new_today %}
   <article class="bid-card ledger-record notice-record {{ 'soon' if is_urgent }}">
     <div class="ledger-signal" aria-hidden="true"></div>
     <div class="bid-main ledger-main">
@@ -122,7 +122,7 @@
         {% if n.paywalled %}<span class="access-note">{{ n.platform }} registration required</span>
         {% elif n.access_type and n.access_type not in ('Unknown','') %}<span class="access-note">{{ n.access_type }}</span>{% endif %}
         {% if n.prequal_codes %}<span class="access-note">Prequalification: {{ n.prequal_codes | join(' / ') }}</span>{% endif %}
-        {% if n.map_url %}<a href="{{ n.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Map built from evidenced location text" data-analytics-event="map_click" data-notice-id="{{ n.id }}" data-agency="{{ n.source_name }}" data-corridor="{{ n.corridors[0] if n.corridors else '' }}">Map location <span>&nearr;</span></a>{% endif %}
+        {% if n.map_url %}<a href="{{ n.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Search notice locations; project limits are not verified" data-analytics-event="map_click" data-notice-id="{{ n.id }}" data-agency="{{ n.source_name }}" data-corridor="{{ n.corridors[0] if n.corridors else '' }}">Search map <span>&nearr;</span></a>{% endif %}
         {% if n.official_url %}<a href="{{ n.official_url }}" target="_blank" rel="noopener" class="official-link" data-analytics-event="official_source_click" data-notice-id="{{ n.id }}" data-agency="{{ n.source_name }}" data-opportunity-type="{{ n.notice_subtype or n.notice_type or '' }}" data-corridor="{{ n.corridors[0] if n.corridors else '' }}" data-destination="{{ n.platform or 'official source' }}">Open official notice <span>&nearr;</span></a>{% endif %}
       </div>
     </div>
@@ -150,7 +150,7 @@
 {{ notice_group('01', 'Closing within 7 days', urgent, 'urgent') }}
 {{ notice_group('02', 'Closing in 8 to 30 days', week, 'month') }}
 {{ notice_group('03', 'Open and upcoming', month, 'future') }}
-{{ notice_group('04', 'Deadline not published', nodate, 'undated') }}
+{{ notice_group('04', 'Deadline needs confirmation', nodate, 'undated') }}
 {% if selected_status == 'expired' %}{{ notice_group('05', 'Expired notices', expired, 'closed') }}{% endif %}
 
 {% if not urgent and not week and not month and not nodate and not expired %}

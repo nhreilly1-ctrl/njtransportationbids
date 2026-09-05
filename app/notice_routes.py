@@ -20,6 +20,8 @@ from flask import (Blueprint, render_template, request,
 
 from app.core.corridors import enrich_location, map_url
 from app.core.deadlines import normalize_deadline
+from app.core.deadlines import EASTERN, deadline_is_past
+from app.core.scanning import closing_soon, matches_search, first_seen_today
 from app.core.geography import NJ_COUNTIES as CANONICAL_NJ_COUNTIES, enrich_geography
 
 notice_bp = Blueprint("notices2", __name__)
@@ -33,13 +35,12 @@ CRAWL_LOG_F = os.path.join(BASE, "data", "notices", "crawl_log.json")
 NJ_COUNTIES = list(CANONICAL_NJ_COUNTIES)
 
 def _load_notices():
+    from app.main import enrich
     if not os.path.exists(NOTICES_F): return []
     with open(NOTICES_F, encoding="utf-8") as f:
         notices = []
         for raw_record in json.load(f):
-            record = normalize_deadline(enrich_geography(raw_record))
-            enrich_location(record)
-            record["map_url"] = map_url(record)
+            record = enrich(dict(raw_record, _canonical_notice=True))
             notices.append(record)
         return notices
 
@@ -81,7 +82,7 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
         if status_filter == "open"    and st != "open":                      continue
         if status_filter == "upcoming" and st != "upcoming":                continue
         if status_filter == "expired" and st != "expired":                   continue
-        if status_filter == "urgent"  and not n.get("urgent"):               continue
+        if status_filter == "urgent" and not closing_soon(n): continue
 
         # Type
         if notice_type and n.get("notice_type") != notice_type:             continue
@@ -109,20 +110,9 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
         if source_tier and n.get("source_tier") != source_tier: continue
 
         # Search
-        if q:
-            ql = q.lower()
-            searchable = " ".join([
-                n.get("title",""),
-                n.get("notice_excerpt",""),
-                n.get("source_name",""),
-                n.get("contract_number",""),
-                n.get("county_display",""),
-                " ".join(n.get("corridors") or []),
-                " ".join(n.get("municipalities") or []),
-            ]).lower()
-            if ql not in searchable: continue
+        if q and not matches_search(n, q): continue
 
-        if urgent_only and not n.get("urgent"): continue
+        if urgent_only and not closing_soon(n): continue
 
         out.append(n)
     return out
@@ -143,7 +133,7 @@ def _sort_notices(notices):
 
 
 def _group_by_urgency(notices):
-    today = date.today()
+    today = datetime.now(EASTERN).date()
     urgent, week, month, nodate, expired = [], [], [], [], []
     for n in notices:
         st  = n.get("status","")
@@ -157,7 +147,7 @@ def _group_by_urgency(notices):
             month.append(n)
             continue
 
-        if not due:
+        if not due or n.get("deadline_conflict") or deadline_is_past(n):
             nodate.append(n)
             continue
 
@@ -173,10 +163,8 @@ def _build_stats(notices):
     active   = [n for n in notices if n.get("status") in ("open", "upcoming")
                 and not n.get("noise_flagged")]
     today    = date.today()
-    posted_today = [n for n in active
-                    if (n.get("crawled_at") or "")[:10] == today.isoformat()]
-    due_week = [n for n in active if n.get("due_date_parsed") and
-                (date.fromisoformat(n["due_date_parsed"]) - today).days <= 7]
+    posted_today = [n for n in active if first_seen_today(n)]
+    due_week = [n for n in active if closing_soon(n)]
 
     # Count by source tier
     state_ct  = len([n for n in active if n.get("source_tier") == "state"])
@@ -201,6 +189,8 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         record = dict(raw_record)
         enrich_location(record)
         record["map_url"] = map_url(record)
+        record["urgent"] = closing_soon(record)
+        record["is_new_today"] = first_seen_today(record)
         notices.append(record)
     crawl_log   = _load_crawl_log()
     health      = _source_health(crawl_log)

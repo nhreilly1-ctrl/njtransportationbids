@@ -476,6 +476,16 @@ def map_query(record: dict[str, Any]) -> str:
     directional_route_labels = record.get("directional_route_labels") or []
     crossing_phrases = record.get("crossing_phrases") or []
     county_context = _map_county_context(record)
+    # A multi-site notice does not establish a pairing between the first
+    # route and first county. Keep all named places in an explicitly broad search.
+    if not crossing_phrases and (len(road_names) > 1 or len(corridors) > 1):
+        parts = list(road_names) + list(corridors) + list(municipalities)
+        if record.get("geography_provenance") in ("NOTICE_TEXT", "SOURCE_RECORD_FIELD"):
+            parts.extend(f"{county} County" for county in record.get("counties") or [])
+        elif county_context:
+            parts.append(county_context)
+        parts.append("New Jersey")
+        return ", ".join(dict.fromkeys(parts))
     if crossing_phrases:
         parts = []
         if road_names:

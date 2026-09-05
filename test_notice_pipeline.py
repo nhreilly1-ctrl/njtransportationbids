@@ -1455,7 +1455,7 @@ class PublicSeoTests(unittest.TestCase):
     def test_google_analytics_tracks_pages_and_bidder_intent(self):
         client = app_main.app.test_client()
         with patch.object(app_main, "load_public_opps", return_value=[self.active]):
-            detail_html = client.get("/opportunities/active-bid").get_data(as_text=True)
+            detail_html = client.get("/opportunities/active-bid", base_url="https://www.njtransportationbids.com").get_data(as_text=True)
             listing_html = client.get("/bids/construction").get_data(as_text=True)
         resources_html = client.get("/resources").get_data(as_text=True)
 

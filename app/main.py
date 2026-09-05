@@ -15,6 +15,7 @@ from flask import Flask, Response, jsonify, redirect, render_template, request, 
 
 from app.core.deadlines import (
     EASTERN,
+    eastern_today,
     deadline_date,
     deadline_days_remaining,
     deadline_is_past,
@@ -28,6 +29,7 @@ from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
 from app.core.bid_readiness import readiness_for
 from app.core.relatedness import rank_related
+from app.core.scanning import matches_search
 from app.resource_catalog import RESOURCE_SECTIONS, resource_count
 
 
@@ -996,7 +998,7 @@ def sort_opps(opps: list[dict]) -> list[dict]:
 
 def group_opportunity_scan(opps: list[dict]) -> tuple[list[dict], list[dict], list[dict], list[dict], list[dict]]:
     """Group an already deadline-sorted public result set for market scanning."""
-    today = date.today()
+    today = eastern_today()
     cutoff = today + timedelta(days=7)
     soon, this_month, upcoming, nodate, closed = [], [], [], [], []
     for opp in opps:
@@ -1005,6 +1007,9 @@ def group_opportunity_scan(opps: list[dict]) -> tuple[list[dict], list[dict], li
             continue
         if opp.get("status") == "upcoming":
             upcoming.append(opp)
+            continue
+        if opp.get("deadline_conflict") or deadline_is_past(opp):
+            nodate.append(opp)
             continue
         if opp.get("due_date_parsed"):
             due = date.fromisoformat(opp["due_date_parsed"])
@@ -1310,8 +1315,7 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
             return False
         if agency and (opp.get("source_name") or "").lower() != agency.lower():
             return False
-        haystack = f"{opp.get('title', '')} {opp.get('source_name', '')} {opp.get('county_display', '')}".lower()
-        if q and q not in haystack:
+        if q and not matches_search(opp, q):
             return False
         return True
 
@@ -1403,7 +1407,7 @@ def opportunity_detail(opp_id: str):
 @app.route("/opportunities/<opp_id>/calendar.ics")
 def opportunity_calendar(opp_id: str):
     opp = next((enrich(item) for item in load_public_opps() if str(item.get("id")) == opp_id), None)
-    if not opp or not opp.get("due_date_parsed") or opp.get("status") not in ("open", "upcoming"):
+    if not opp or opp.get("deadline_conflict") or not opp.get("due_date_parsed") or opp.get("status") not in ("open", "upcoming"):
         return "Calendar event not available", 404
 
     def ics_text(value):

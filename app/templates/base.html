@@ -16,6 +16,7 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{{ self.title() | striptags | trim }}">
   <meta name="twitter:description" content="{{ self.meta_description() | striptags | trim }}">
+  {% if request.host.split(':')[0] in ('www.njtransportationbids.com', 'njtransportationbids.com') and not request.path.startswith('/admin') %}
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7TTMK92NV4"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -23,6 +24,7 @@
     gtag('js', new Date());
     gtag('config', 'G-7TTMK92NV4');
   </script>
+  {% endif %}
   {% block structured_data %}{% endblock %}
   {% block head_extra %}{% endblock %}
   <style>
@@ -320,7 +322,7 @@
 
   document.addEventListener('click', (event) => {
     const target = event.target.closest('[data-analytics-event]');
-    if (!target || typeof window.gtag !== 'function') return;
+    if (!target || target.tagName === 'FORM' || typeof window.gtag !== 'function') return;
     gtag('event', target.dataset.analyticsEvent, analyticsParams(target));
   });
 
