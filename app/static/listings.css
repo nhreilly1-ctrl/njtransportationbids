@@ -575,7 +575,16 @@
 }
 
 @media (max-width: 440px) {
-  .listing-hero h1 { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .listing-hero-copy { padding: 16px; }
+  .listing-hero-copy p { margin: 8px 0; font-size: 13px; }
+  .listing-hero h1 { align-items: center; flex-direction: row; gap: 10px; }
+  .listing-hero h1 strong { font-size: 42px; }
+  .listing-hero h1 span { font-size: 24px; }
+  .listing-metrics div { padding: 8px; }
+  .listing-sisters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .listing-sisters a { padding: 10px 6px; font-size: 12px; min-height: 44px; }
+  .listing-sisters a > span { display: none; }
+  .listing-trust-note { padding: 10px; font-size: 11px; }
   .listing-hero h1 strong { line-height: .9; }
   .filter-desk-foot { align-items: flex-start; flex-direction: column; }
   .ledger-group-head { align-items: start; }

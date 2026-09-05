@@ -200,6 +200,10 @@ def deadline_date(record: dict) -> date | None:
         return None
 
 
+def eastern_today():
+    return datetime.now(EASTERN).date()
+
+
 def deadline_days_remaining(record: dict, now: datetime | date | None = None) -> int | None:
     """Count Eastern calendar dates, not elapsed 24-hour periods."""
     due = deadline_date(record)

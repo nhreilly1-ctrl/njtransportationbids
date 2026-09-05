@@ -1,0 +1,24 @@
+name: Public site regression tests
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths: ['app/**', 'crawlers/**', 'test*.py', 'test*.cjs', 'test_fixtures/**', 'requirements.txt', '.github/workflows/tests.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m unittest test_deadlines test_geography test_notice_pipeline test_parsers test_corridors test_bid_readiness test_scanning
+      - run: python -m compileall -q app crawlers
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node test_analytics.cjs

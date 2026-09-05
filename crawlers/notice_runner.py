@@ -295,11 +295,18 @@ def _merge(existing, fresh, refreshed_source_ids=None):
                 if old.get(field):
                     n[field] = old[field]
             # Update freshness fields
+            # Legacy records have no known discovery date; never invent one.
+            n["first_seen_at"] = old.get("first_seen_at")
             n["crawled_at"] = _now()
             n["source_inactive"] = False
             n["inactive_reason"] = ""
             existing_by_id[nid] = n
         else:
+            previous = next((old for old in existing
+                             if n.get("contract_number")
+                             and old.get("source_id") == n.get("source_id")
+                             and old.get("contract_number") == n.get("contract_number")), None)
+            n["first_seen_at"] = previous.get("first_seen_at") if previous is not None else _now()
             n["source_inactive"] = False
             existing_by_id[nid] = n
 

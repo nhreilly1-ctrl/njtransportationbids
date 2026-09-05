@@ -446,7 +446,7 @@ class PublicSurfaceTests(unittest.TestCase):
 
         self.assertIn('class="bid-map-link"', html)
         self.assertIn("query=I-287%2C+New+Jersey", html)
-        self.assertIn("Map location", html)
+        self.assertIn("Search map", html)
 
     def test_detail_page_shows_corridor_structure_and_map_rows(self):
         records = [self._opp("i287", "I-287 Bridge Deck Replacement, Borough of Somerville")]
@@ -459,7 +459,7 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertIn("Bridge", html)
         self.assertIn(">Municipality</td>", html)
         self.assertIn("Borough of Somerville", html)
-        self.assertIn("View on map", html)
+        self.assertIn("Search map", html)
 
     def test_detail_page_shows_named_crossing_and_precise_map_query(self):
         record = self._opp(

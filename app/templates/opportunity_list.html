@@ -64,15 +64,15 @@
   </div>
   <div class="filter-desk-controls">
     <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Project, agency, contract number..." value="{{ q }}"></label>
-    <label><span>County</span><select name="county" onchange="this.form.submit()">
+    <label><span>County</span><select name="county" onchange="this.form.requestSubmit()">
       <option value="">All counties</option>
       {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
     </select></label>
-    <label><span>Agency</span><select name="agency" onchange="this.form.submit()">
+    <label><span>Agency</span><select name="agency" onchange="this.form.requestSubmit()">
       <option value="">All agencies</option>
       {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
     </select></label>
-    <label><span>Status</span><select name="status" onchange="this.form.submit()">
+    <label><span>Status</span><select name="status" onchange="this.form.requestSubmit()">
       <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
       <option value="all" {{ 'selected' if selected_status == 'all' }}>Active + review queues</option>
       <option value="review" {{ 'selected' if selected_status == 'review' }}>Review queues only</option>
@@ -82,7 +82,7 @@
   </div>
   <div class="filter-desk-foot">
     <label class="closed-toggle">
-      <input type="checkbox" name="show_closed" value="1" {{ 'checked' if show_closed }} onchange="this.form.submit()">
+      <input type="checkbox" name="show_closed" value="1" {{ 'checked' if show_closed }} onchange="this.form.requestSubmit()">
       Include closed and excluded records
     </label>
     {% if q or selected_county or selected_agency or selected_status != 'active' or show_closed %}
@@ -126,7 +126,7 @@
       <div class="bid-tags ledger-actions">
         {% if o.access_type and o.access_type not in ('Unknown','') %}<span class="access-note">{{ o.access_type }}</span>{% endif %}
         {% if o.platform and o.platform not in ('Unknown','') %}<span class="access-note">{{ o.platform }}</span>{% endif %}
-        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Map built from evidenced location text" data-analytics-event="map_click" data-notice-id="{{ o.id }}" data-agency="{{ o.source_name }}" data-corridor="{{ o.corridors[0] if o.corridors else '' }}">Map location <span>&nearr;</span></a>{% endif %}
+        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Search notice locations; project limits are not verified" data-analytics-event="map_click" data-notice-id="{{ o.id }}" data-agency="{{ o.source_name }}" data-corridor="{{ o.corridors[0] if o.corridors else '' }}">Search map <span>&nearr;</span></a>{% endif %}
         {% if o.official_url %}<a href="{{ o.official_url }}" target="_blank" rel="noopener" class="official-link" data-analytics-event="official_source_click" data-notice-id="{{ o.id }}" data-agency="{{ o.source_name }}" data-opportunity-type="{{ 'construction' if is_construction else 'professional_services' }}" data-corridor="{{ o.corridors[0] if o.corridors else '' }}" data-destination="{{ o.platform or 'official source' }}">View official notice <span>&nearr;</span></a>{% endif %}
       </div>
     </div>

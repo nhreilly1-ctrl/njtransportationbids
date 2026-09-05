@@ -56,11 +56,11 @@
         <span>{{ src.open }} open for bid</span>
         <span>{{ src.upcoming }} upcoming</span>
       {% else %}
-        <strong>No current matching opportunities</strong>
+        <strong>{{ 'Coverage unavailable; check official source' if src.access_state == 'inaccessible' or src.health in ('warn', 'bad') else 'No current matching opportunities' }}</strong>
       {% endif %}
     </div>
     <div class="source-verification">
-      <span>Last verified {{ src.last_crawl_display or 'not yet recorded' }}</span>
+      <span>Last checked {{ src.last_crawl_display or 'not yet recorded' }}</span>
       <span>Checked {{ src.frequency }}</span>
     </div>
     {% if src.access_state == 'inaccessible' and src.access_reason %}

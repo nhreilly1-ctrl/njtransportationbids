@@ -901,12 +901,26 @@
 }
 
 @media (max-width: 560px) {
+  .hero-copy { padding: 18px 18px 12px; }
+  .hero-kicker { font-size: 8px; }
+  .hero-copy h1 { margin-top: 8px; }
+  .hero-copy > p { margin-bottom: 8px; }
+  .hero-actions { flex-wrap: nowrap; gap: 6px; margin-top: 10px; }
+  .hero-button { padding: 0 10px; font-size: 12px; min-height: 44px; }
+  .hero-freshness { margin-top: 10px; font-size: 8px; gap: 4px; }
+  .hero-freshness span:nth-child(2) { display: none; }
+  .market-scoreboard { min-height: 0; margin: 0 12px 12px; }
+  .score-total { display: none; }
+  .market-switchboard { grid-template-columns: 1fr 1fr; }
+  .market-link { grid-template-columns: 1fr auto; padding: 10px; gap: 5px; min-height: 60px; }
+  .market-index, .market-link > .market-arrow { display: none; }
+  .market-link:last-child { grid-column: 1 / -1; min-height: 44px; }
   .home-page .nav-brand {
     font-size: 16px;
   }
 
   .hero-copy h1 {
-    font-size: 38px;
+    font-size: 30px;
   }
 
   .hero-copy > p {
@@ -922,11 +936,11 @@
   }
 
   .score {
-    padding: 20px 16px;
+    padding: 10px 12px;
   }
 
   .score strong {
-    font-size: 52px;
+    font-size: 36px;
   }
 
   .score-total {
