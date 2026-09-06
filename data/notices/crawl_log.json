@@ -3,11 +3,6 @@
     "source_id": "state-njdot-construction",
     "history": [
       {
-        "at": "2026-08-20T10:19:30.864893+00:00",
-        "count": 6,
-        "error": null
-      },
-      {
         "at": "2026-08-20T21:40:03.109715+00:00",
         "count": 6,
         "error": null
@@ -197,24 +192,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:06:42.035666+00:00",
+        "count": 7,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:07.220895+00:00",
+    "last_crawl": "2026-09-06T11:06:42.035666+00:00",
     "last_count": 7,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:07.220895+00:00",
+    "last_successful_crawl": "2026-09-06T11:06:42.035666+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-njdot-profserv",
     "history": [
-      {
-        "at": "2026-08-20T10:19:32.929873+00:00",
-        "count": 22,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:05.587272+00:00",
         "count": 22,
@@ -405,24 +402,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:06:43.896539+00:00",
+        "count": 22,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:09.642254+00:00",
+    "last_crawl": "2026-09-06T11:06:43.896539+00:00",
     "last_count": 22,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:09.642254+00:00",
+    "last_successful_crawl": "2026-09-06T11:06:43.896539+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-njdot-notices",
     "history": [
-      {
-        "at": "2026-08-20T10:19:38.758965+00:00",
-        "count": 1,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:13.878809+00:00",
         "count": 1,
@@ -613,24 +612,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:06:49.929392+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:17.582173+00:00",
+    "last_crawl": "2026-09-06T11:06:49.929392+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:17.582173+00:00",
+    "last_successful_crawl": "2026-09-06T11:06:49.929392+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-njta",
     "history": [
-      {
-        "at": "2026-08-20T10:19:40.399802+00:00",
-        "count": 8,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:15.663480+00:00",
         "count": 8,
@@ -821,24 +822,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:06:54.710854+00:00",
+        "count": 16,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:24.141492+00:00",
+    "last_crawl": "2026-09-06T11:06:54.710854+00:00",
     "last_count": 16,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:24.141492+00:00",
+    "last_successful_crawl": "2026-09-06T11:06:54.710854+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-njtransit",
     "history": [
-      {
-        "at": "2026-08-20T10:19:43.737468+00:00",
-        "count": 8,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:19.422569+00:00",
         "count": 8,
@@ -1029,24 +1032,26 @@
         "error": "zero_records",
         "state": "error",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:06:57.892869+00:00",
+        "count": 7,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:26.682493+00:00",
-    "last_count": 0,
-    "last_error": "zero_records",
-    "health": "error",
-    "last_successful_crawl": "2026-08-31T19:51:53.173914+00:00",
-    "last_state": "error",
+    "last_crawl": "2026-09-06T11:06:57.892869+00:00",
+    "last_count": 7,
+    "last_error": null,
+    "health": "ok",
+    "last_successful_crawl": "2026-09-06T11:06:57.892869+00:00",
+    "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-drjtbc-construction",
     "history": [
-      {
-        "at": "2026-08-20T10:19:46.348659+00:00",
-        "count": 1,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:22.104089+00:00",
         "count": 1,
@@ -1237,24 +1242,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:00.368095+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:28.598289+00:00",
+    "last_crawl": "2026-09-06T11:07:00.368095+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:28.598289+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:00.368095+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-drjtbc-profserv",
     "history": [
-      {
-        "at": "2026-08-20T10:19:47.953323+00:00",
-        "count": 5,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:24.424471+00:00",
         "count": 5,
@@ -1445,24 +1452,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:02.456910+00:00",
+        "count": 4,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:30.207705+00:00",
+    "last_crawl": "2026-09-06T11:07:02.456910+00:00",
     "last_count": 4,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:30.207705+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:02.456910+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-dos-legal",
     "history": [
-      {
-        "at": "2026-08-20T10:19:57.169970+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:35.154860+00:00",
         "count": 0,
@@ -1653,24 +1662,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:11.294636+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:39.724203+00:00",
+    "last_crawl": "2026-09-06T11:07:11.294636+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:39.724203+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:11.294636+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-sjta",
     "history": [
-      {
-        "at": "2026-08-20T10:19:59.856329+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:38.830433+00:00",
         "count": 0,
@@ -1861,13 +1872,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:14.235098+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:42.906608+00:00",
+    "last_crawl": "2026-09-06T11:07:14.235098+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:42.906608+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:14.235098+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -1930,11 +1948,6 @@
   {
     "source_id": "county-essex",
     "history": [
-      {
-        "at": "2026-08-20T10:20:01.638011+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:41.096793+00:00",
         "count": 0,
@@ -2125,24 +2138,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:16.009100+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:45.184006+00:00",
+    "last_crawl": "2026-09-06T11:07:16.009100+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:45.184006+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:16.009100+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-camden",
     "history": [
-      {
-        "at": "2026-08-20T10:20:03.582805+00:00",
-        "count": 2,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:43.502487+00:00",
         "count": 3,
@@ -2333,24 +2348,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:18.070574+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:47.632366+00:00",
+    "last_crawl": "2026-09-06T11:07:18.070574+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:47.632366+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:18.070574+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-monmouth",
     "history": [
-      {
-        "at": "2026-08-20T10:20:05.694695+00:00",
-        "count": 3,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:46.994050+00:00",
         "count": 3,
@@ -2541,24 +2558,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:20.236363+00:00",
+        "count": 6,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:50.688183+00:00",
+    "last_crawl": "2026-09-06T11:07:20.236363+00:00",
     "last_count": 6,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:50.688183+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:20.236363+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-bergen",
     "history": [
-      {
-        "at": "2026-08-20T10:20:08.034209+00:00",
-        "count": 1,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:49.440997+00:00",
         "count": 1,
@@ -2749,24 +2768,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:22.526434+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:53.078876+00:00",
+    "last_crawl": "2026-09-06T11:07:22.526434+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:53.078876+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:22.526434+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-hudson",
     "history": [
-      {
-        "at": "2026-08-20T10:20:14.024263+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:55.319652+00:00",
         "count": 0,
@@ -2957,24 +2978,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:28.427452+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:59.154659+00:00",
+    "last_crawl": "2026-09-06T11:07:28.427452+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:59.154659+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:28.427452+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-gloucester",
     "history": [
-      {
-        "at": "2026-08-20T10:20:16.569081+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:57.851987+00:00",
         "count": 0,
@@ -3165,24 +3188,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:30.522660+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:01.395280+00:00",
+    "last_crawl": "2026-09-06T11:07:30.522660+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:01.395280+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:30.522660+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-burlington",
     "history": [
-      {
-        "at": "2026-08-20T10:20:18.227322+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:59.645254+00:00",
         "count": 0,
@@ -3373,24 +3398,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:32.290530+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:03.397133+00:00",
+    "last_crawl": "2026-09-06T11:07:32.290530+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:03.397133+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:32.290530+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-middlesex",
     "history": [
-      {
-        "at": "2026-08-20T10:20:19.874879+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:01.559100+00:00",
         "count": 0,
@@ -3581,24 +3608,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:33.978811+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:05.373486+00:00",
+    "last_crawl": "2026-09-06T11:07:33.978811+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:05.373486+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:33.978811+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-union",
     "history": [
-      {
-        "at": "2026-08-20T10:20:21.954552+00:00",
-        "count": 1,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:03.947102+00:00",
         "count": 1,
@@ -3789,24 +3818,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:35.925823+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:07.778433+00:00",
+    "last_crawl": "2026-09-06T11:07:35.925823+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:07.778433+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:35.925823+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-morris",
     "history": [
-      {
-        "at": "2026-08-20T10:20:24.446893+00:00",
-        "count": 2,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:06.446625+00:00",
         "count": 2,
@@ -3997,24 +4028,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:38.197006+00:00",
+        "count": 3,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:10.101495+00:00",
+    "last_crawl": "2026-09-06T11:07:38.197006+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:10.101495+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:38.197006+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-ocean",
     "history": [
-      {
-        "at": "2026-08-20T10:20:26.095061+00:00",
-        "count": 3,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:08.252133+00:00",
         "count": 3,
@@ -4205,24 +4238,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:39.891573+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:11.812787+00:00",
+    "last_crawl": "2026-09-06T11:07:39.891573+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:11.812787+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:39.891573+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-mercer",
     "history": [
-      {
-        "at": "2026-08-20T10:20:28.202799+00:00",
-        "count": 1,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:10.613331+00:00",
         "count": 1,
@@ -4413,24 +4448,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:42.068873+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:14.068561+00:00",
+    "last_crawl": "2026-09-06T11:07:42.068873+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:14.068561+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:42.068873+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "municipal-newark",
     "history": [
-      {
-        "at": "2026-08-20T10:20:29.829958+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:17.663291+00:00",
         "count": 0,
@@ -4621,24 +4658,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:52.710672+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:26.582779+00:00",
+    "last_crawl": "2026-09-06T11:07:52.710672+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:26.582779+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:52.710672+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "municipal-jersey-city",
     "history": [
-      {
-        "at": "2026-08-20T10:20:33.529438+00:00",
-        "count": 0,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:21.847967+00:00",
         "count": 0,
@@ -4829,24 +4868,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:56.439385+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:30.875207+00:00",
+    "last_crawl": "2026-09-06T11:07:56.439385+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:30.875207+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:56.439385+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "municipal-paterson",
     "history": [
-      {
-        "at": "2026-08-20T10:20:35.403189+00:00",
-        "count": 3,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:24.035257+00:00",
         "count": 3,
@@ -5037,24 +5078,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:58.264934+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:32.980010+00:00",
+    "last_crawl": "2026-09-06T11:07:58.264934+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:32.980010+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:58.264934+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-njdot-profserv-upcoming",
     "history": [
-      {
-        "at": "2026-08-20T10:19:37.114840+00:00",
-        "count": 64,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:11.826265+00:00",
         "count": 64,
@@ -5245,24 +5288,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:06:48.245642+00:00",
+        "count": 76,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:15.768481+00:00",
-    "last_count": 64,
+    "last_crawl": "2026-09-06T11:06:48.245642+00:00",
+    "last_count": 76,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:15.768481+00:00",
+    "last_successful_crawl": "2026-09-06T11:06:48.245642+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-njdot-design-build",
     "history": [
-      {
-        "at": "2026-08-20T10:19:34.545805+00:00",
-        "count": 2,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:07.607799+00:00",
         "count": 2,
@@ -5453,24 +5498,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:06:45.550168+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:11.826512+00:00",
+    "last_crawl": "2026-09-06T11:06:45.550168+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:11.826512+00:00",
+    "last_successful_crawl": "2026-09-06T11:06:45.550168+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-panynj-construction",
     "history": [
-      {
-        "at": "2026-08-20T10:19:49.582102+00:00",
-        "count": 3,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:26.201537+00:00",
         "count": 3,
@@ -5661,24 +5708,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:04.120032+00:00",
+        "count": 3,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:31.953696+00:00",
+    "last_crawl": "2026-09-06T11:07:04.120032+00:00",
     "last_count": 3,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:31.953696+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:04.120032+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-panynj-profserv",
     "history": [
-      {
-        "at": "2026-08-20T10:19:51.461434+00:00",
-        "count": 4,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:28.301226+00:00",
         "count": 4,
@@ -5869,24 +5918,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:06.032087+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:33.921561+00:00",
+    "last_crawl": "2026-09-06T11:07:06.032087+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:33.921561+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:06.032087+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-drpa-patco",
     "history": [
-      {
-        "at": "2026-08-20T10:19:53.807799+00:00",
-        "count": 2,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:31.374028+00:00",
         "count": 2,
@@ -6077,24 +6128,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:07.815823+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:36.041579+00:00",
+    "last_crawl": "2026-09-06T11:07:07.815823+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:36.041579+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:07.815823+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "state-njtpa",
     "history": [
-      {
-        "at": "2026-08-20T10:19:55.519812+00:00",
-        "count": 2,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:40:33.191075+00:00",
         "count": 2,
@@ -6285,24 +6338,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:09.526222+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:37:37.793548+00:00",
-    "last_count": 1,
+    "last_crawl": "2026-09-06T11:07:09.526222+00:00",
+    "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:37:37.793548+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:09.526222+00:00",
     "last_state": "ok",
     "last_message": null
   },
   {
     "source_id": "county-passaic",
     "history": [
-      {
-        "at": "2026-08-19T00:18:23.296571+00:00",
-        "count": 0,
-        "error": "Passaic County Purchasing page could not be fetched"
-      },
       {
         "at": "2026-08-20T21:41:12.923605+00:00",
         "count": 1,
@@ -6493,13 +6548,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:43.940475+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:16.278417+00:00",
+    "last_crawl": "2026-09-06T11:07:43.940475+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:16.278417+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:43.940475+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -6676,24 +6738,26 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:45.921546+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:18.437489+00:00",
+    "last_crawl": "2026-09-06T11:07:45.921546+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
     "last_state": "ok",
     "last_message": null,
-    "last_successful_crawl": "2026-09-05T16:38:18.437489+00:00"
+    "last_successful_crawl": "2026-09-06T11:07:45.921546+00:00"
   },
   {
     "source_id": "county-atlantic",
     "history": [
-      {
-        "at": "2026-08-19T00:18:23.581505+00:00",
-        "count": 0,
-        "error": "Atlantic County Open Bids page could not be fetched"
-      },
       {
         "at": "2026-08-20T21:41:15.918384+00:00",
         "count": 0,
@@ -6884,13 +6948,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:48.655238+00:00",
+        "count": 0,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:22.213522+00:00",
+    "last_crawl": "2026-09-06T11:07:48.655238+00:00",
     "last_count": 0,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:22.213522+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:48.655238+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -7175,9 +7246,16 @@
         "error": "Warren County Purchasing procurement table schema changed",
         "state": "error",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:49.031945+00:00",
+        "count": 0,
+        "error": "Warren County Purchasing procurement table schema changed",
+        "state": "error",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:22.571789+00:00",
+    "last_crawl": "2026-09-06T11:07:49.031945+00:00",
     "last_count": 0,
     "last_error": "Warren County Purchasing procurement table schema changed",
     "health": "error",
@@ -7387,13 +7465,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:51.070303+00:00",
+        "count": 2,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:24.627829+00:00",
+    "last_crawl": "2026-09-06T11:07:51.070303+00:00",
     "last_count": 2,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:24.627829+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:51.070303+00:00",
     "last_state": "ok",
     "last_message": null
   },
@@ -7580,11 +7665,6 @@
   {
     "source_id": "municipal-newark-water",
     "history": [
-      {
-        "at": "2026-08-20T10:20:31.521194+00:00",
-        "count": 1,
-        "error": null
-      },
       {
         "at": "2026-08-20T21:41:19.636953+00:00",
         "count": 1,
@@ -7775,13 +7855,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-06T11:07:54.414584+00:00",
+        "count": 1,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-05T16:38:28.479204+00:00",
+    "last_crawl": "2026-09-06T11:07:54.414584+00:00",
     "last_count": 1,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-05T16:38:28.479204+00:00",
+    "last_successful_crawl": "2026-09-06T11:07:54.414584+00:00",
     "last_state": "ok",
     "last_message": null
   },
