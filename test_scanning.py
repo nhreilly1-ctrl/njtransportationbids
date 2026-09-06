@@ -10,9 +10,105 @@ from app import main, notice_routes
 from app.core.scanning import closing_soon, first_seen_today, matches_search
 from app.core.corridors import map_query, enrich_location
 from crawlers import notice_runner
+from crawlers import notice_crawlers
+from crawlers.notice_sources import NOTICE_SOURCES
+from openpyxl import Workbook
+from types import SimpleNamespace
+import io
+import json
 
 
 class ScanTrustTests(unittest.TestCase):
+    def test_transit_reads_only_calendar_hydration_body(self):
+        source = next(s for s in NOTICE_SOURCES if s['id'] == 'state-njtransit')
+        body = '<table><tr><td>09/28/26</td><td>11:00</td><td>Proposals Due: RFP 123 "Bridge rehabilitation"</td><td>123</td></tr></table>'
+        payload = [{'body': 1, 'slug': 2, 'title': 3}, body,
+                   '/procurement/calendar', 'Procurement Calendar']
+        with (patch.object(notice_crawlers, '_get', return_value=SimpleNamespace(
+                text='<script id="__NUXT_DATA__" type="application/json">'+json.dumps(payload)+'</script>')),
+              patch.object(notice_crawlers, 'date') as clock):
+            clock.today.return_value = date(2026, 9, 6)
+            self.assertEqual(len(notice_crawlers.parse_njtransit(source)), 1)
+        payload[2] = '/unrelated'
+        with patch.object(notice_crawlers, '_get', return_value=SimpleNamespace(
+                text='<script id="__NUXT_DATA__">'+json.dumps(payload)+'</script>')):
+            with self.assertRaises(RuntimeError):
+                notice_crawlers.parse_njtransit(source)
+
+    def test_transit_page_shell_is_not_a_successful_empty_refresh(self):
+        with patch.object(notice_crawlers, '_get', return_value=SimpleNamespace(text='<h1>Procurement Calendar</h1>Loading...')):
+            with self.assertRaisesRegex(RuntimeError, 'did not load'):
+                notice_crawlers.parse_njtransit({'url': 'https://example.com'})
+
+    def test_homepage_separates_elapsed_forecasts_without_dropping_them(self):
+        rows = [dict(id=str(i), title=title, _canonical_notice=True, source_id='state-njdot-profserv-upcoming',
+                     source_name='NJDOT', status='upcoming', is_planned=True,
+                     notice_type='professional_services', due_date_raw=raw)
+                for i, (title, raw) in enumerate([('Old forecast', 'Spring 2020'),
+                                                 ('Future forecast', 'Fall 2099')])]
+        with (patch.object(main, 'load_public_opps', return_value=rows),
+              patch.object(main, 'load_public_sources', return_value=[]),
+              patch.object(main, 'render_template', return_value='ok') as render):
+            main.app.test_client().get('/')
+        context = render.call_args.kwargs
+        self.assertEqual([r['title'] for r in context['pipeline_preview']], ['Future forecast'])
+        self.assertEqual([r['title'] for r in context['elapsed_forecasts']], ['Old forecast'])
+        self.assertEqual(context['stats']['pipeline'], 2)
+
+    def test_njdot_preserves_elapsed_visible_rows_not_hidden_history(self):
+        book = Workbook()
+        sheet = book.active
+        sheet.append(['', '', 'Design', 'Visible bridge', 'Morris', 'Federal', 'Spring 2026'])
+        sheet.append(['', '', 'Design', 'Hidden bridge', 'Morris', 'Federal', 'Summer 2024'])
+        sheet.row_dimensions[2].hidden = True
+        data = io.BytesIO()
+        book.save(data)
+        source = dict(next(s for s in NOTICE_SOURCES if s['id'] == 'state-njdot-profserv-upcoming'))
+        with patch.object(notice_crawlers, '_get', side_effect=[
+            SimpleNamespace(text='<a href="forecast.xlsx">Forecast</a>'),
+            SimpleNamespace(text='<table></table>'), SimpleNamespace(content=data.getvalue())]):
+            rows = notice_crawlers.parse_njdot_profserv_upcoming(source)
+        self.assertEqual([r['title'] for r in rows], ['NJDOT upcoming: Visible bridge'])
+
+    def test_transit_extracts_publication_date_without_inventing_deadline(self):
+        source = next(s for s in NOTICE_SOURCES if s['id'] == 'state-njtransit')
+        page = SimpleNamespace(extract_text=lambda: 'August 19, 2026\n\nExpected Advertisement: August\n\n'
+            'Invitations for Bid\n\n\u2022 Bridge Rehabilitation of Raritan Valley Line over Roosevelt Avenue\n'
+            'NJ TRANSIT is seeking bridge rehabilitation bids.')
+        with (patch.object(notice_crawlers, '_get', return_value=SimpleNamespace(content=b'pdf')),
+              patch.object(notice_crawlers, 'PdfReader', return_value=SimpleNamespace(pages=[page]))):
+            rows = notice_crawlers._parse_njtransit_upcoming_pdf(source, 'https://example.com/forecast.pdf')
+        self.assertEqual(rows[0]['forecast_publication_date'], '2026-08-19')
+        self.assertEqual(rows[0]['due_date_raw'], 'August')
+
+    def test_source_aware_forecast_aging_preserves_deadline_and_lifecycle(self):
+        for raw, today, elapsed in (
+            ('Summer 2026', date(2026, 9, 30), False),
+            ('Summer 2026', date(2026, 10, 1), True),
+            ('Summer 2026 (May/June)', date(2026, 9, 5), True),
+            ('Fall 26', date(2026, 9, 5), False),
+            ('Winter 26', date(2026, 9, 5), False),
+        ):
+            with self.subTest(raw=raw, today=today):
+                r = normalize_deadline(dict(source_id='state-njdot-profserv-upcoming',
+                    status='upcoming', due_date_raw=raw), today)
+                self.assertEqual(r['forecast_window_elapsed'], elapsed)
+                self.assertEqual(r['status'], 'upcoming')
+                self.assertIsNone(r['due_date_parsed'])
+                self.assertEqual(r['due_date_raw'], raw)
+
+    def test_transit_forecast_requires_publication_evidence_not_refresh_time(self):
+        record = dict(source_id='state-njtransit', status='upcoming',
+                      due_date_raw='August', crawled_at='2026-09-05')
+        self.assertFalse(normalize_deadline(dict(record), date(2026, 9, 5))['forecast_window_elapsed'])
+        record['forecast_publication_date'] = '2026-08-19'
+        r = normalize_deadline(dict(record), date(2026, 9, 5))
+        self.assertTrue(r['forecast_window_elapsed'])
+        self.assertIsNone(r['due_date_parsed'])
+        record['due_date_raw'] = 'September/October'
+        self.assertFalse(normalize_deadline(dict(record), date(2026, 10, 31))['forecast_window_elapsed'])
+        self.assertTrue(normalize_deadline(dict(record), date(2026, 11, 1))['forecast_window_elapsed'])
+
     def test_forecast_timing_never_invents_dates_or_changes_status(self):
         today = date(2026, 9, 5)
         for raw in ('August', 'September/October'):
