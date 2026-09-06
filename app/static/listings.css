@@ -530,6 +530,53 @@
 
 .listing-empty a { color: var(--ledger-green); font-weight: 700; }
 
+.listing-filter-desk > label { display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; }
+.listing-filter-desk > label select { font: inherit; min-height: 44px; padding: 6px; max-width: 100%; }
+.feed-help { display: inline-block; padding: 0 16px 10px; font-size: 12px; }
+.feed-help summary, .more-filters summary, details.listing-trust-note summary { cursor: pointer; min-height: 28px; }
+.feed-help small { display: block; max-width: 65ch; }
+.more-filters { grid-column: 1 / -1; grid-row: 2; }
+.more-filters summary { padding: 8px 0; font-weight: 600; }
+.advanced-filter-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.listing-filter-desk .filter-desk-controls { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; }
+.listing-filter-desk .filter-search { grid-column: auto; }
+.active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.active-filters:empty { display: none; }
+.active-filters a { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; min-height: 44px; border: 1px solid var(--lane-accent); color: var(--ledger-ink); background: #fff; overflow-wrap: anywhere; }
+.active-filters a span { font-size: 20px; }
+.listing-page :is(a, button, select, input, summary):focus-visible { outline: 3px solid var(--lane-accent); outline-offset: 3px; }
+
+@media (max-width: 720px) {
+  .listing-page .listing-hero-copy { padding: 12px 16px; }
+  .listing-page .listing-hero h1 { flex-direction: row; align-items: center; gap: 10px; }
+  .listing-page .listing-hero h1 strong { font-size: 38px; }
+  .listing-page .listing-hero h1 span { font-size: 24px; }
+  .listing-page .listing-hero-copy > p, .listing-kicker { display: none; }
+  .listing-page .listing-metrics { display: flex; flex-wrap: wrap; margin: 0 12px 10px; }
+  .listing-page .listing-metrics div { padding: 4px 8px; border: 0; flex: 1; gap: 5px; }
+  .listing-page .listing-metrics strong { font-size: 22px; }
+  .listing-page .listing-metrics div:nth-child(n+3) { display: none; }
+  .listing-metrics br { display: none; }
+  .listing-page .listing-sisters { display: flex; overflow-x: auto; }
+  .listing-page .listing-sisters a { flex: 1; min-width: 0; padding: 8px; font-size: 12px; }
+  .listing-sisters a > span { display: none; }
+  .listing-page .listing-filter-desk .filter-desk-controls { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .listing-page .listing-filter-desk .filter-search { grid-column: 1 / -1; }
+  .listing-page .more-filters { grid-row: 3; }
+  .advanced-filter-controls { grid-template-columns: 1fr; }
+  .listing-page .filter-desk-head { padding: 6px 12px; }
+  .filter-desk-head > div { display: none; }
+  .listing-page .filter-desk-controls input, .listing-page .filter-desk-controls select { font-size: 16px; min-height: 44px; }
+  .listing-page .filter-submit { min-height: 44px; }
+  .listing-page .ledger-title { overflow-wrap: anywhere; }
+  .listing-page .listing-filter-desk { margin-bottom: 8px; }
+  .listing-page .ledger-group { margin-top: 10px; }
+  .listing-page .listing-filter-desk > label { padding: 8px 12px; }
+  .listing-page .feed-help { padding-bottom: 0; }
+  .listing-page .more-filters summary { min-height: 44px; }
+  .listing-page .filter-desk-controls label > span { font-size: 10px; }
+}
+
 @media (max-width: 1050px) {
   .filter-desk-controls,
   .notice-filter-controls { grid-template-columns: repeat(4, minmax(0, 1fr)); }

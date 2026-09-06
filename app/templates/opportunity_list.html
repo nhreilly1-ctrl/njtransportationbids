@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260823a') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260906b') }}">
 {% endblock %}
 {% block structured_data %}
 {% set listed_opps = (soon + this_month + upcoming + nodate + closed)[:50] %}
@@ -52,11 +52,6 @@
   <a href="{{ url_for('notices2.notices_all') }}"><span>03</span>Official notices</a>
 </nav>
 
-<div class="listing-trust-note">
-  <strong>Evidence-led locations.</strong>
-  County and map information appears only when supported by the official notice or a structured official source field. Always confirm scope and submission requirements in the bid package.
-</div>
-
 <form method="get" class="listing-filter-desk" data-analytics-event="filter_applied" data-surface="{{ 'construction' if is_construction else 'professional services' }} listing">
   {% include '_feed_order.html' %}
   <div class="filter-desk-head">
@@ -65,6 +60,8 @@
   </div>
   <div class="filter-desk-controls">
     <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Project, agency, contract number..." value="{{ q }}"></label>
+    <details class="more-filters" {{ 'open' if selected_county or selected_agency }}>
+    <summary>County and agency filters</summary><div class="advanced-filter-controls">
     <label><span>County</span><select name="county" onchange="this.form.requestSubmit()">
       <option value="">All counties</option>
       {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
@@ -73,8 +70,11 @@
       <option value="">All agencies</option>
       {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
     </select></label>
-    <label><span>Status</span><select name="status" onchange="this.form.requestSubmit()">
+    </div></details>
+    <label class="filter-status"><span>Status</span><select name="status" onchange="this.form.requestSubmit()">
       <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
+      <option value="open" {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
+      <option value="upcoming" {{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
       <option value="all" {{ 'selected' if selected_status == 'all' }}>Active + review queues</option>
       <option value="review" {{ 'selected' if selected_status == 'review' }}>Review queues only</option>
       <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired only</option>
@@ -87,10 +87,11 @@
       Include closed and excluded records
     </label>
     {% if q or selected_county or selected_agency or selected_status != 'active' or show_closed %}
-      <a href="{{ request.path }}" class="filter-clear">Clear filters</a>
+      <a href="{{ request.path }}?sort={{ feed_order }}" class="filter-clear">Clear filters</a>
     {% endif %}
   </div>
 </form>
+{% include '_active_filters.html' %}
 
 {% macro bid_card(o) %}
   {% set is_soon = o.due_date_parsed and o.due_date_parsed <= soon_cutoff and o.status == 'open' %}
@@ -173,6 +174,10 @@
 {% endif %}
 
 {% if not soon and not this_month and not upcoming and not nodate and not closed %}
-  <div class="listing-empty">No {{ page_title | lower }} found matching your filters. <a href="{{ request.path }}">Clear filters</a></div>
+  <div class="listing-empty">No {{ page_title | lower }} found matching your filters. Try a shorter project name or remove a county or agency filter. <a href="{{ request.path }}?sort={{ feed_order }}">Clear filters</a></div>
 {% endif %}
+<details class="listing-trust-note"><summary>About locations and official documents</summary>
+  <strong>Evidence-led locations.</strong>
+  County and map information appears only when supported by the official notice or a structured official source field. Always confirm scope and submission requirements in the bid package.
+</details>
 {% endblock %}

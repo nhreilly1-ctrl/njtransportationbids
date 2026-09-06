@@ -1020,3 +1020,21 @@
   color: #123c2c;
 }
 .feed-order small { flex: 1 1 220px; }
+.feed-help { font-size: 12px; flex: 1 1 180px; }
+.feed-help summary { cursor: pointer; min-height: 28px; }
+.feed-help small { display: block; max-width: 65ch; }
+@media (max-width: 560px) {
+  .home-page .hero-copy { padding: 12px 14px 8px; }
+  .home-page .hero-copy h1 { font-size: 26px; }
+  .home-page .hero-actions { display: none; }
+  .home-page .market-link:last-child { display: none; }
+  .home-page .market-link { min-height: 48px; padding: 6px 10px; }
+  .home-page .section-masthead { padding: 10px 14px; }
+  .section-masthead p, .section-masthead .section-number { display: none; }
+  .home-page .section-masthead h2 { font-size: 28px; }
+  .feed-order { padding: 8px 12px; gap: 6px; }
+  .feed-order label { display: flex; flex: 1; align-items: center; gap: 8px; font-size: 14px; }
+  .feed-order select { font-size: 16px; min-height: 44px; min-width: 0; }
+  .feed-order button { min-height: 44px; order: 2; }
+  .feed-help { flex-basis: 100%; order: 3; }
+}

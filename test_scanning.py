@@ -19,6 +19,31 @@ import json
 
 
 class ScanTrustTests(unittest.TestCase):
+    def test_filter_removal_preserves_other_filters_and_feed_order(self):
+        from bs4 import BeautifulSoup
+        from urllib.parse import urlsplit, parse_qs
+        for path in ('/notices', '/bids/construction', '/bids/professional-services'):
+            response = main.app.test_client().get(path + '?q=bridge&county=Morris&sort=closing')
+            self.assertEqual(response.status_code, 200)
+            soup = BeautifulSoup(response.data, 'html.parser')
+            link = soup.find('a', attrs={'aria-label': 'Remove County filter: Morris'})
+            self.assertIsNotNone(link)
+            self.assertEqual(parse_qs(urlsplit(link['href']).query), {'q': ['bridge'], 'sort': ['closing']})
+            self.assertIsNotNone(soup.select_one('details.more-filters[open]'))
+            self.assertIn('?sort=closing', soup.select_one('.filter-clear')['href'])
+
+    def test_primary_status_controls_filter_typed_listings(self):
+        rows = [dict(id=status, title='Bridge '+status, _canonical_notice=True,
+                     source_name='Agency', notice_type='construction', status=status,
+                     due_date_raw='09/01/2099' if status == 'open' else 'Fall 2099',
+                     is_planned=status == 'upcoming') for status in ('open', 'upcoming')]
+        for status in ('open', 'upcoming'):
+            with (patch.object(main, 'load_public_opps', return_value=deepcopy(rows)),
+                  patch.object(main, 'render_template', return_value='ok') as render):
+                main.app.test_client().get('/bids/construction?status='+status)
+            records = [r for g in render.call_args.kwargs['feed_groups'] for r in g['opportunities']]
+            self.assertEqual([r['id'] for r in records], [status])
+
     def test_refresh_does_not_make_old_records_new(self):
         from app.core.freshness import stamp_refresh, newest_first
         old = dict(id='old', title='Bridge work', due_date_raw='09/20/2026',
