@@ -22,6 +22,7 @@ from app.core.corridors import enrich_location, map_url
 from app.core.deadlines import normalize_deadline
 from app.core.deadlines import EASTERN, deadline_is_past
 from app.core.scanning import closing_soon, matches_search, first_seen_today
+from app.core.freshness import feed_order, freshness_groups
 from app.core.geography import NJ_COUNTIES as CANONICAL_NJ_COUNTIES, enrich_geography
 
 notice_bp = Blueprint("notices2", __name__)
@@ -222,6 +223,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         corridor=corridor or None,
     )
     sorted_notices = _sort_notices(filtered)
+    order = feed_order(request.args.get('sort'))
     urgent, week, month, nodate, expired = _group_by_urgency(sorted_notices)
     stats = _build_stats(notices)
 
@@ -233,6 +235,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
     upcoming_count = len([n for n in filtered if n.get("status") == "upcoming"])
 
     return render_template("notices/notice_list.html",
+        feed_order=order, feed_groups=freshness_groups(filtered, order),
         urgent=urgent, week=week, month=month,
         nodate=nodate, expired=expired,
         total=len(filtered),

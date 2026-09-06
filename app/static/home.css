@@ -1004,3 +1004,19 @@
     gap: 3px;
   }
 }
+.feed-order {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #ccd4cc;
+}
+.feed-order select, .feed-order button {
+  font: inherit;
+  padding: 8px;
+  border: 1px solid #496a59;
+  background: #fafbf7;
+  color: #123c2c;
+}
+.feed-order small { flex: 1 1 220px; }

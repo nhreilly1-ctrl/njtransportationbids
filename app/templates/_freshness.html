@@ -1,0 +1,2 @@
+{% if item.first_seen_at %}<span>Listed {{ item.first_seen_at[:10] }}</span>{% endif %}
+{% if item.materially_changed_at %}<span>Updated {{ item.materially_changed_at[:10] }}: {{ item.change_labels | join(', ') }}</span>{% endif %}

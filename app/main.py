@@ -30,6 +30,7 @@ from crawlers.source_health import build_health_summary
 from app.core.bid_readiness import readiness_for
 from app.core.relatedness import rank_related
 from app.core.scanning import matches_search
+from app.core.freshness import feed_order, newest_first, freshness_groups
 from app.resource_catalog import RESOURCE_SECTIONS, resource_count
 
 
@@ -1206,6 +1207,7 @@ def _group_homepage_lane(records: list[dict], today: date) -> list[dict]:
 
 @app.route("/")
 def index():
+    order = feed_order(request.args.get('sort'))
     opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted", "disabled")]
     active = sort_opps([opp for opp in opps if opp["status"] in ("open", "upcoming")])
@@ -1262,8 +1264,11 @@ def index():
         "index.html",
         stats=stats,
         top_corridors=top_corridors,
-        open_lane=_group_homepage_lane(open_now[:10], today),
-        pipeline_preview=sort_opps([o for o in pipeline if not o.get('forecast_window_elapsed')])[:6],
+        feed_order=order,
+        open_lane=(_group_homepage_lane(open_now[:10], today) if order == 'closing' else
+                   freshness_groups(open_now, order, limit=10)),
+        pipeline_preview=(sort_opps([o for o in pipeline if not o.get('forecast_window_elapsed')]) if order == 'closing'
+                          else newest_first([o for o in pipeline if not o.get('forecast_window_elapsed')], order))[:6],
         elapsed_forecasts=sort_opps([o for o in pipeline if o.get('forecast_window_elapsed')]),
         unclassified_open=len(
             [
@@ -1321,6 +1326,7 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
         return True
 
     filtered = sort_opps([opp for opp in opps if keep(opp)])
+    order = feed_order(request.args.get('sort'))
     soon, this_month, upcoming, nodate, closed = group_opportunity_scan(filtered)
     available_counties = {county for opp in opps for county in opp.get("counties", [])}
     counties = [county for county in NJ_COUNTIES if county in available_counties]
@@ -1329,6 +1335,8 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
     soon_cutoff = today + timedelta(days=7)
     return {
         "soon": soon,
+        "feed_order": order,
+        "feed_groups": freshness_groups([o for o in filtered if o not in closed], order),
         "this_month": this_month,
         "upcoming": upcoming,
         "nodate": nodate,

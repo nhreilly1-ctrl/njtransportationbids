@@ -58,6 +58,7 @@
 </div>
 
 <form method="get" class="listing-filter-desk" data-analytics-event="filter_applied" data-surface="{{ 'construction' if is_construction else 'professional services' }} listing">
+  {% include '_feed_order.html' %}
   <div class="filter-desk-head">
     <div><span>Search desk</span><strong>Narrow the opportunity ledger</strong></div>
     <a href="{{ url_for('export_csv') }}">Export CSV <span>&nearr;</span></a>
@@ -107,6 +108,7 @@
       </div>
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
       <div class="bid-meta ledger-meta">
+        {% with item=o %}{% include '_freshness.html' %}{% endwith %}
         <span>{{ o.source_name }}</span>
         {% if o.contract_number %}<span>Contract {{ o.contract_number }}</span>{% endif %}
         <span>
@@ -152,10 +154,16 @@
 {% endif %}
 {% endmacro %}
 
+{% if feed_order != 'closing' %}
+{% for group in feed_groups %}
+{{ opportunity_group(loop.index, group.heading, group.opportunities) }}
+{% endfor %}
+{% else %}
 {{ opportunity_group('01', 'Closing within 7 days', soon, 'urgent') }}
 {{ opportunity_group('02', 'Closing this month', this_month, 'month') }}
 {{ opportunity_group('03', 'Upcoming or planned', upcoming, 'future') }}
 {{ opportunity_group('04', 'Deadline not resolved', nodate, 'undated') }}
+{% endif %}
 {% if closed %}
   <section class="ledger-group ledger-group-closed">
     <header class="ledger-group-head"><span>05</span><h2>Closed and excluded</h2><strong>{{ closed | length }} records</strong></header>

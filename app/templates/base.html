@@ -332,7 +332,7 @@
     const data = new FormData(form);
     const params = analyticsParams(form);
     params.has_keyword = Boolean(data.get('q'));
-    ['county', 'agency', 'status', 'tier', 'corridor'].forEach((name) => {
+    ['county', 'agency', 'status', 'tier', 'corridor', 'sort'].forEach((name) => {
       if (data.get(name)) params[`filter_${name}`] = data.get(name);
     });
     gtag('event', form.dataset.analyticsEvent, params);
