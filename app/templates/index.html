@@ -168,6 +168,17 @@
         {% endfor %}
       </div>
 
+      {% if elapsed_forecasts %}
+      <details class="pipeline-list">
+        <summary>Expected window passed: {{ elapsed_forecasts|length }} forecasts need confirmation</summary>
+        {% for o in elapsed_forecasts %}
+        <article class="pipeline-row">
+          <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}">{{ o.title }}</a>
+          <span>{{ o.homepage_pipeline_window }}. {{ o.forecast_timing_note }}</span>
+        </article>
+        {% endfor %}
+      </details>
+      {% endif %}
       <a class="pipeline-link" href="{{ url_for('notices2.notices_all', status='upcoming') }}">Explore all {{ stats.pipeline }} upcoming opportunities &rarr;</a>
     </aside>
   </div>

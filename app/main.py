@@ -1263,7 +1263,8 @@ def index():
         stats=stats,
         top_corridors=top_corridors,
         open_lane=_group_homepage_lane(open_now[:10], today),
-        pipeline_preview=sort_opps(pipeline)[:6],
+        pipeline_preview=sort_opps([o for o in pipeline if not o.get('forecast_window_elapsed')])[:6],
+        elapsed_forecasts=sort_opps([o for o in pipeline if o.get('forecast_window_elapsed')]),
         unclassified_open=len(
             [
                 opp

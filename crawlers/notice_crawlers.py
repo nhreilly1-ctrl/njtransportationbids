@@ -559,20 +559,24 @@ def parse_njdot_profserv_upcoming(source):
         if not response:
             continue
         try:
-            workbook = load_workbook(io.BytesIO(response.content), data_only=True, read_only=True)
+            workbook = load_workbook(io.BytesIO(response.content), data_only=True)
         except Exception as exc:
             log.warning(f"Unable to parse NJDOT anticipated workbook {workbook_url}: {exc}")
             continue
 
         for sheet in workbook.worksheets:
-            for row in sheet.iter_rows(values_only=True):
+            if sheet.sheet_state != 'visible':
+                continue
+            for row_number, row in enumerate(sheet.iter_rows(values_only=True), 1):
+                if sheet.row_dimensions[row_number].hidden:
+                    continue
                 values = [str(value).strip() if value is not None else "" for value in row]
                 if len(values) < 7:
                     continue
                 work_type, description = values[2], values[3]
                 county, funding, schedule = values[4], values[5], values[6]
                 period_end = _anticipated_period_end(schedule)
-                if not description or not period_end or period_end < date.today():
+                if not description or not period_end:
                     continue
                 if work_type.lower() in {"none", "none at this time", "tbd"}:
                     continue
@@ -1082,16 +1086,22 @@ def _parse_njtransit_upcoming_pdf(source, pdf_url):
     records = []
     response = _get(pdf_url, timeout=30)
     if not response:
-        return records
+        raise RuntimeError('NJ TRANSIT forecast document could not be fetched')
     try:
         pages = PdfReader(io.BytesIO(response.content)).pages
         text = "\n\n".join(page.extract_text() or "" for page in pages)
     except Exception as exc:
-        log.warning(f"Unable to parse NJ TRANSIT upcoming PDF {pdf_url}: {exc}")
-        return records
+        raise RuntimeError('NJ TRANSIT forecast document could not be parsed') from exc
 
     period = ""
     category = ""
+    publication_match = re.search(r'\b[A-Z][a-z]+\s+\d{1,2},\s+20\d{2}\b', text)
+    publication_date = None
+    if publication_match:
+        try:
+            publication_date = datetime.strptime(publication_match[0], '%B %d, %Y').date().isoformat()
+        except ValueError:
+            pass
     for block in re.split(r"\n\s*\n", text):
         block = _clean(block)
         if not block:
@@ -1132,6 +1142,7 @@ def _parse_njtransit_upcoming_pdf(source, pdf_url):
             "notice_subtype": notice_type,
             "due_date_raw": period,
             "anticipated_date_raw": period,
+            "forecast_publication_date": publication_date,
             "contract_number": "",
             "access_type": source["access_type"],
             "platform": source["platform"],
@@ -1148,8 +1159,26 @@ def parse_njtransit(source):
     records = []
     response = _get(source["url"], timeout=40)
     if not response:
-        return records
+        raise RuntimeError('NJ TRANSIT calendar could not be fetched')
     soup = _soup(response.text)
+    if not soup.find('tr'):
+        payload = soup.find('script', id='__NUXT_DATA__')
+        try:
+            values = json.loads(payload.string or '') if payload else []
+            if not isinstance(values, list):
+                raise ValueError('Invalid calendar payload')
+            def resolve(index):
+                return values[index] if type(index) is int and 0 <= index < len(values) else None
+            bodies = [resolve(item.get('body')) for item in values
+                      if isinstance(item, dict)
+                      and resolve(item.get('slug')) in ('/procurement/calendar', '/procurement/calendar/')
+                      and resolve(item.get('title')) == 'Procurement Calendar']
+            if len(bodies) == 1 and isinstance(bodies[0], str):
+                soup = _soup(bodies[0])
+        except (ValueError, TypeError):
+            pass
+    if not soup.find('tr'):
+        raise RuntimeError('NJ TRANSIT calendar data did not load; existing records must be retained')
 
     for row in soup.find_all("tr"):
         cells = row.find_all(["td", "th"])
