@@ -1,0 +1,10 @@
+<nav class="active-filters" aria-label="Active filters">
+  {% for key, label in [('q', 'Search'), ('county', 'County'), ('agency', 'Agency'), ('tier', 'Source'), ('corridor', 'Corridor'), ('status', 'Status'), ('show_closed', 'Include closed')] %}
+    {% set value = request.args.get(key) %}
+    {% if value and not (key == 'status' and value == 'active') %}
+      {% set remaining = request.args.to_dict() %}
+      {% set removed = remaining.pop(key, none) %}
+      <a href="{{ request.path }}?{{ remaining | urlencode }}" aria-label="Remove {{ label }} filter: {{ value }}">{{ label }}: {{ value | replace('_', ' ') }} <span aria-hidden="true">&times;</span></a>
+    {% endif %}
+  {% endfor %}
+</nav>

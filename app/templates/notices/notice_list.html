@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260823a') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260906b') }}">
 {% endblock %}
 {% block content %}
 
@@ -38,11 +38,6 @@
   <a href="{{ url_for('notices2.notices_all') }}" class="active"><span>03</span>Official notices</a>
 </nav>
 
-<div class="listing-trust-note">
-  <strong>The official-publication layer.</strong>
-  These records preserve agency notice text and direct handoffs to issuing sources. Map links appear only when the notice itself supplies a usable route, road, or municipality.
-</div>
-
 <nav class="notice-subnav" aria-label="Public notice types">
   <a class="{{ 'active' if active_nav == 'notices_all' }}" href="{{ url_for('notices2.notices_all') }}">All notices</a>
   <a class="{{ 'active' if active_nav == 'notices_construction' }}" href="{{ url_for('notices2.notices_construction') }}">Construction</a>
@@ -58,6 +53,8 @@
   </div>
   <div class="filter-desk-controls notice-filter-controls">
     <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Title, agency, contract number..." value="{{ q }}"></label>
+    <details class="more-filters" {{ 'open' if selected_county or selected_agency or selected_tier }}>
+    <summary>County, agency and source filters</summary><div class="advanced-filter-controls">
     <label><span>County</span><select name="county" onchange="this.form.requestSubmit()">
       <option value="">All counties</option>
       {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
@@ -73,7 +70,8 @@
       <option value="municipal" {{ 'selected' if selected_tier == 'municipal' }}>Municipal websites</option>
       <option value="paywalled" {{ 'selected' if selected_tier == 'paywalled' }}>Registration platforms</option>
     </select></label>
-    <label><span>Status</span><select name="status" onchange="this.form.requestSubmit()">
+    </div></details>
+    <label class="filter-status"><span>Status</span><select name="status" onchange="this.form.requestSubmit()">
       <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
       <option value="open" {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
       <option value="upcoming" {{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
@@ -82,13 +80,16 @@
     </select></label>
     <button type="submit" class="filter-submit">Search</button>
   </div>
+  {% if q or selected_county or selected_agency or selected_tier or selected_corridor or selected_status != 'active' %}
   <div class="filter-desk-foot">
     {% if selected_corridor %}<span class="corridor-active">Corridor: {{ selected_corridor }}</span>{% endif %}
     {% if q or selected_county or selected_agency or selected_tier or selected_corridor or selected_status != 'active' %}
-      <a href="{{ request.path }}" class="filter-clear">Clear filters</a>
+      <a href="{{ request.path }}?sort={{ feed_order }}" class="filter-clear">Clear filters</a>
     {% endif %}
   </div>
+  {% endif %}
 </form>
+{% include '_active_filters.html' %}
 
 {% macro notice_card(n) %}
   {% set is_urgent = n.urgent and n.status == 'open' %}
@@ -163,7 +164,10 @@
 {% endif %}
 
 {% if not urgent and not week and not month and not nodate and not expired %}
-  <div class="listing-empty">No notices found matching your filters. <a href="{{ request.path }}">Clear filters</a></div>
+  <div class="listing-empty">No notices found matching your filters. Try a shorter project name or remove a county or agency filter. <a href="{{ request.path }}?sort={{ feed_order }}">Clear filters</a></div>
 {% endif %}
-
+<details class="listing-trust-note"><summary>About locations and official documents</summary>
+  <strong>The official-publication layer.</strong>
+  These records preserve agency notice text and direct handoffs to issuing sources. Map links appear only when the notice itself supplies a usable route, road, or municipality.
+</details>
 {% endblock %}

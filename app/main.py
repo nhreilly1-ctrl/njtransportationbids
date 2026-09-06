@@ -1311,6 +1311,8 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
             return False
         if status == "expired" and current_status != "expired":
             return False
+        if status in ("open", "upcoming") and current_status != status:
+            return False
         if current_status == "noise" and not show_closed:
             return False
         if opp["record_type"] != record_type:
