@@ -925,7 +925,7 @@ class PublicDashboardTests(unittest.TestCase):
         with patch.object(app_main, "datetime", FixedDatetime):
             self.assertEqual(app_main._homepage_today(), date(2026, 8, 21))
 
-    def test_opportunity_scan_defaults_to_live_deadline_order(self):
+    def test_opportunity_scan_closing_mode_uses_live_deadline_order(self):
         records = [
             self._scan_record("later", "Bridge work closing later", "09/20/2026"),
             self._scan_record("soon", "Somerset CC-0043-26 closing soon", "08/24/2026"),
@@ -946,7 +946,7 @@ class PublicDashboardTests(unittest.TestCase):
             patch.object(app_main, "date", FixedDate),
             self._frozen_deadline_clock(datetime(2026, 8, 21, 16, 0, tzinfo=timezone.utc)),
         ):
-            response = app_main.app.test_client().get("/bids/construction")
+            response = app_main.app.test_client().get("/bids/construction?sort=closing")
 
         html = response.get_data(as_text=True)
         self.assertEqual(response.status_code, 200)
@@ -1114,7 +1114,7 @@ class PublicDashboardTests(unittest.TestCase):
             self._frozen_deadline_clock(datetime(2026, 8, 21, 16, 0, tzinfo=timezone.utc)),
         ):
             client = app_main.app.test_client()
-            response = client.get("/")
+            response = client.get("/?sort=closing")
             detail = client.get("/opportunities/notice-6ebfc6cc572a")
 
         html = response.get_data(as_text=True)
@@ -1175,7 +1175,7 @@ class PublicDashboardTests(unittest.TestCase):
             patch.object(app_main, "_homepage_today", return_value=FixedDate(2026, 8, 21)),
             self._frozen_deadline_clock(datetime(2026, 8, 21, 16, 0, tzinfo=timezone.utc)),
         ):
-            response = app_main.app.test_client().get("/")
+            response = app_main.app.test_client().get("/?sort=closing")
 
         html = response.get_data(as_text=True)
         bid_brief = re.search(
@@ -1229,7 +1229,7 @@ class PublicDashboardTests(unittest.TestCase):
             patch.object(app_main, "_homepage_today", return_value=FixedDate(2026, 8, 22)),
             self._frozen_deadline_clock(datetime(2026, 8, 22, 16, 0, tzinfo=timezone.utc)),
         ):
-            response = app_main.app.test_client().get("/")
+            response = app_main.app.test_client().get("/?sort=closing")
 
         html = response.get_data(as_text=True)
         bid_brief = re.search(

@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20260905') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20260906') }}">
 {% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
@@ -43,6 +43,8 @@
     <div class="brief-body">
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="brief-title">{{ o.title }}</a>
       <div class="brief-meta">
+        {% with item=o %}{% include '_freshness.html' %}{% endwith %}
+        {% if feed_order != 'closing' %}<span>{{ o.deadline_display }}</span>{% endif %}
         <span>{{ o.source_name }}</span>
         <span>{{ o.location_display or o.county_display }}</span>
         {% if o.contract_number %}<span class="brief-contract">{{ o.contract_number }}</span>{% endif %}
@@ -114,16 +116,20 @@
         <div>
           <span class="section-number">01 / Actionable now</span>
           <h2 id="open-board-title">Open for bid</h2>
-          <p>Published closing dates, ordered by urgency.</p>
+          <p>Discover new work, review changes, or check approaching deadlines.</p>
         </div>
         <div class="masthead-stats">
           <span><strong>{{ stats.open_construction }}</strong> construction</span>
           <span><strong>{{ stats.open_professional }}</strong> professional</span>
           {% if unclassified_open %}<span><strong>{{ unclassified_open }}</strong> other</span>{% endif %}
         </div>
-        <a href="{{ url_for('notices2.notices_all', status='open') }}" class="section-link">View all {{ stats.open }} &rarr;</a>
+        <a href="{{ url_for('notices2.notices_all', status='open', sort=feed_order) }}" class="section-link">View all {{ stats.open }} &rarr;</a>
       </header>
 
+      <form method="get" class="feed-order" data-analytics-event="filter_applied" data-surface="homepage">
+        {% include '_feed_order.html' %}
+        <button type="submit">Apply</button>
+      </form>
       <div class="brief-list">
         {% if open_lane %}
           {% for group in open_lane %}
@@ -164,6 +170,7 @@
             <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}">{{ o.title }}</a>
             {% if o.forecast_timing_note %}<span>{{ o.forecast_timing_note }}</span>{% endif %}
             <span>{{ o.source_name }}{% if o.location_display %} / {{ o.location_display }}{% endif %}</span>
+            {% with item=o %}{% include '_freshness.html' %}{% endwith %}
           </article>
         {% endfor %}
       </div>
@@ -179,7 +186,7 @@
         {% endfor %}
       </details>
       {% endif %}
-      <a class="pipeline-link" href="{{ url_for('notices2.notices_all', status='upcoming') }}">Explore all {{ stats.pipeline }} upcoming opportunities &rarr;</a>
+      <a class="pipeline-link" href="{{ url_for('notices2.notices_all', status='upcoming', sort=feed_order) }}">Explore all {{ stats.pipeline }} upcoming opportunities &rarr;</a>
     </aside>
   </div>
 

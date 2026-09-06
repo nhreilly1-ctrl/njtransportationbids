@@ -19,6 +19,75 @@ import json
 
 
 class ScanTrustTests(unittest.TestCase):
+    def test_refresh_does_not_make_old_records_new(self):
+        from app.core.freshness import stamp_refresh, newest_first
+        old = dict(id='old', title='Bridge work', due_date_raw='09/20/2026',
+                   first_seen_at='2026-08-01T12:00:00+00:00')
+        same = dict(old)
+        stamp_refresh(same, old, '2026-09-06T12:00:00+00:00')
+        self.assertEqual(same['first_seen_at'], old['first_seen_at'])
+        self.assertIsNone(same['materially_changed_at'])
+        changed = dict(old, due_date_raw='09/25/2026')
+        stamp_refresh(changed, old, '2026-09-06T12:00:00+00:00')
+        self.assertEqual(changed['change_labels'], ['Deadline changed'])
+        again = dict(changed)
+        stamp_refresh(again, changed, '2026-09-07T12:00:00+00:00')
+        self.assertEqual(again['materially_changed_at'], changed['materially_changed_at'])
+        legacy = dict(id='legacy', title='A')
+        refreshed_legacy = dict(legacy)
+        stamp_refresh(refreshed_legacy, legacy, '2026-09-06T12:00:00+00:00')
+        self.assertIsNone(refreshed_legacy['first_seen_at'])
+        new = dict(id='new', first_seen_at='2026-09-01T12:00:00+00:00')
+        self.assertEqual([r['id'] for r in newest_first([legacy, old, new])], ['new', 'old', 'legacy'])
+
+    def test_freshness_groups_do_not_call_unknown_dates_new(self):
+        from app.core.freshness import freshness_groups
+        rows = [dict(id='unknown'), dict(id='new', first_seen_at='2026-09-06T12:00:00Z'),
+                dict(id='old', first_seen_at='2026-08-01T12:00:00Z')]
+        groups = freshness_groups(rows)
+        self.assertEqual([r['id'] for r in groups[0]['opportunities']], ['new', 'old'])
+        self.assertEqual(groups[1]['heading'], 'Discovery date not recorded')
+        self.assertEqual(freshness_groups(rows, 'updated')[0]['heading'], 'No recorded changes')
+        self.assertEqual(len(freshness_groups(rows, limit=1)[0]['opportunities']), 1)
+
+    def test_merge_tracks_discovery_changes_and_amendments_separately(self):
+        checked = '2026-09-06T12:00:00+00:00'
+        row = dict(id='one', source_id='agency', contract_number='123', title='Bridge repair')
+        with patch.object(notice_runner, '_now', return_value=checked):
+            first = notice_runner._merge([], [dict(row)])[0]
+            same = notice_runner._merge([dict(first)], [dict(row)])[0]
+            amendment = dict(row, id='amended', title='Bridge repair revised')
+            merged = notice_runner._merge([dict(same)], [amendment], {'agency'})
+        self.assertEqual(first['first_seen_at'], checked)
+        self.assertEqual(same['last_checked_at'], checked)
+        self.assertIsNone(same['materially_changed_at'])
+        amended = next(r for r in merged if r['id'] == 'amended')
+        self.assertEqual(amended['first_seen_at'], checked)
+        self.assertEqual(amended['change_labels'], ['Title changed'])
+
+    def test_homepage_newest_is_not_deadline_order(self):
+        rows = [dict(id=identity, title=identity, _canonical_notice=True,
+                     source_id='test', source_name='Test agency', notice_type='construction',
+                     status='open', due_date_raw=due, first_seen_at=seen)
+                for identity, due, seen in (
+                    ('Older sooner', '09/01/2099', '2026-08-01T12:00:00Z'),
+                    ('New later', '10/01/2099', '2026-09-06T12:00:00Z'))]
+        with (patch.object(main, 'load_public_opps', return_value=rows),
+              patch.object(main, 'load_public_sources', return_value=[]),
+              patch.object(main, 'render_template', return_value='ok') as render):
+            main.app.test_client().get('/')
+        self.assertEqual([r['id'] for r in render.call_args.kwargs['open_lane'][0]['opportunities']],
+                         ['New later', 'Older sooner'])
+
+    def test_feed_options_render_on_all_public_feeds(self):
+        client = main.app.test_client()
+        for path in ('/', '/notices', '/bids/construction', '/bids/professional-services'):
+            for order in ('newest', 'updated', 'closing'):
+                with self.subTest(path=path, order=order):
+                    response = client.get(path + '?sort=' + order)
+                    self.assertEqual(response.status_code, 200)
+                    self.assertIn('name="sort"', response.get_data(as_text=True))
+
     def test_transit_reads_only_calendar_hydration_body(self):
         source = next(s for s in NOTICE_SOURCES if s['id'] == 'state-njtransit')
         body = '<table><tr><td>09/28/26</td><td>11:00</td><td>Proposals Due: RFP 123 "Bridge rehabilitation"</td><td>123</td></tr></table>'

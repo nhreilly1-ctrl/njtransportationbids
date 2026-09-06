@@ -18,8 +18,8 @@
       "@type": "WebPage",
       "name": {{ seo_title | tojson }},
       "description": {{ seo_description | tojson }},
-      "url": {{ canonical_url | tojson }}{% if opp.last_verified_date %},
-      "dateModified": {{ opp.last_verified_date | tojson }}{% endif %},
+      "url": {{ canonical_url | tojson }}{% if opp.materially_changed_at %},
+      "dateModified": {{ opp.materially_changed_at | tojson }}{% endif %},
       "isBasedOn": {{ (opp.official_url or opp.source_url or canonical_url) | tojson }}
     },
     {
@@ -91,6 +91,7 @@
 <div class="trust-strip">
   <strong>Official-source record</strong>
   {% if opp.last_verified_date %}<span>Last checked {{ opp.last_verified_date }}</span>{% endif %}
+  {% with item=opp %}{% include '_freshness.html' %}{% endwith %}
   {% if opp.contract_number %}<span>Reference {{ opp.contract_number }}</span>{% endif %}
   <span>Confirm addenda before submitting</span>
 </div>

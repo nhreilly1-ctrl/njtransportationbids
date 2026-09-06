@@ -275,14 +275,19 @@ def _merge(existing, fresh, refreshed_source_ids=None):
     - Add genuinely new records
     """
     refreshed_source_ids = set(refreshed_source_ids or [])
+    from app.core.freshness import stamp_refresh
     fresh_ids = {n["id"] for n in fresh}
     existing_by_id = {n["id"]: n for n in existing}
+    previous_records = [dict(n) for n in existing]
 
     # An authoritative current-listing crawl can safely retire records that
     # disappeared. Generic pages are excluded because a partial parse there
     # should not close valid opportunities.
     for old in existing_by_id.values():
         if old.get("source_id") in refreshed_source_ids and old.get("id") not in fresh_ids:
+            if not old.get('source_inactive'):
+                old['materially_changed_at'] = _now()
+                old['change_labels'] = ['Removed from agency listing']
             old["source_inactive"] = True
             old["inactive_reason"] = "removed from current agency listing"
 
@@ -296,17 +301,17 @@ def _merge(existing, fresh, refreshed_source_ids=None):
                     n[field] = old[field]
             # Update freshness fields
             # Legacy records have no known discovery date; never invent one.
-            n["first_seen_at"] = old.get("first_seen_at")
+            stamp_refresh(n, old, _now())
             n["crawled_at"] = _now()
             n["source_inactive"] = False
             n["inactive_reason"] = ""
             existing_by_id[nid] = n
         else:
-            previous = next((old for old in existing
+            previous = next((old for old in previous_records
                              if n.get("contract_number")
                              and old.get("source_id") == n.get("source_id")
                              and old.get("contract_number") == n.get("contract_number")), None)
-            n["first_seen_at"] = previous.get("first_seen_at") if previous is not None else _now()
+            stamp_refresh(n, previous, _now())
             n["source_inactive"] = False
             existing_by_id[nid] = n
 

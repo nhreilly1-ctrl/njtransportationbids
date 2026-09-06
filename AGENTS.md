@@ -79,6 +79,14 @@ is binding on public pages and settles design questions that taste cannot.
 
 ## Record Identity and Lifecycle
 
+- Public feeds default to `sort=newest` (index discovery), with `updated` and
+  `closing` alternatives. `app/core/freshness.py` shares sorting/grouping rules.
+- `first_seen_at` records discovery, `last_checked_at` records source refresh,
+  and `materially_changed_at` plus `change_labels` records changes to tracked
+  source fields. Routine refreshes must not reset discovery or change dates.
+- Legacy discovery dates remain unknown. Never backfill them from refresh time;
+  undated records have a separate group after dated records.
+
 - Parser-generated IDs are hashes of `source_id`, title, and the contract number or
   official URL. They are implementation identifiers, not agency-issued identity.
 - Merge updates exact ID matches and preserves manual overrides. A record missing from

@@ -50,6 +50,7 @@
 </nav>
 
 <form method="get" class="listing-filter-desk" data-analytics-event="filter_applied" data-surface="public notices">
+  {% include '_feed_order.html' %}
   {% if selected_corridor %}<input type="hidden" name="corridor" value="{{ selected_corridor }}">{% endif %}
   <div class="filter-desk-head">
     <div><span>Notice desk</span><strong>Search official publications</strong></div>
@@ -110,6 +111,7 @@
       </div>
       <a href="{{ url_for('notices2.notice_detail', notice_id=n.id) }}" class="bid-title" title="{{ n.title }}">{{ n.title }}</a>
       <div class="bid-meta ledger-meta">
+        {% with item=n %}{% include '_freshness.html' %}{% endwith %}
         <span>{{ n.source_name }}</span>
         {% if n.contract_number %}<span>Contract {{ n.contract_number }}</span>{% endif %}
         <span>{{ n.county_display or 'County not stated in notice' }}</span>
@@ -148,11 +150,17 @@
 {% endif %}
 {% endmacro %}
 
+{% if feed_order != 'closing' %}
+{% for group in feed_groups %}
+{{ notice_group(loop.index, group.heading, group.opportunities) }}
+{% endfor %}
+{% else %}
 {{ notice_group('01', 'Closing within 7 days', urgent, 'urgent') }}
 {{ notice_group('02', 'Closing in 8 to 30 days', week, 'month') }}
 {{ notice_group('03', 'Open and upcoming', month, 'future') }}
 {{ notice_group('04', 'Deadline needs confirmation', nodate, 'undated') }}
 {% if selected_status == 'expired' %}{{ notice_group('05', 'Expired notices', expired, 'closed') }}{% endif %}
+{% endif %}
 
 {% if not urgent and not week and not month and not nodate and not expired %}
   <div class="listing-empty">No notices found matching your filters. <a href="{{ request.path }}">Clear filters</a></div>

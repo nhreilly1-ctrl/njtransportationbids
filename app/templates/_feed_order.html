@@ -1,0 +1,8 @@
+<label>Feed order
+  <select name="sort" onchange="this.form.requestSubmit()">
+    <option value="newest" {{ 'selected' if feed_order == 'newest' }}>Newly listed</option>
+    <option value="updated" {{ 'selected' if feed_order == 'updated' }}>Recently updated</option>
+    <option value="closing" {{ 'selected' if feed_order == 'closing' }}>Closing soon</option>
+  </select>
+</label>
+<small>Newly listed means new to this index, not necessarily newly advertised. Unknown discovery dates appear last.</small>
