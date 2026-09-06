@@ -47,6 +47,7 @@
 <form method="get" class="listing-filter-desk" data-analytics-event="filter_applied" data-surface="public notices">
   {% include '_feed_order.html' %}
   {% if selected_corridor %}<input type="hidden" name="corridor" value="{{ selected_corridor }}">{% endif %}
+  {% if selected_source %}<input type="hidden" name="source" value="{{ selected_source }}">{% endif %}
   <div class="filter-desk-head">
     <div><span>Notice desk</span><strong>Search official publications</strong></div>
     <a href="{{ url_for('notices2.export_notices_csv') }}">Export CSV <span>&nearr;</span></a>
@@ -121,6 +122,7 @@
       </div>
       {% if n.notice_excerpt %}<p class="notice-excerpt">{{ n.notice_excerpt }}</p>{% endif %}
       <div class="bid-tags ledger-actions">
+        {% with item=n %}{% include '_save_button.html' %}{% endwith %}
         {% if n.source_tier %}<span class="access-note">{{ n.source_tier | replace('paywalled', 'registration') | title }} source</span>{% endif %}
         {% if n.paywalled %}<span class="access-note">{{ n.platform }} registration required</span>
         {% elif n.access_type and n.access_type not in ('Unknown','') %}<span class="access-note">{{ n.access_type }}</span>{% endif %}

@@ -268,6 +268,7 @@
     </div>
     <div class="nav-item"><a href="{{ url_for('contractor_resources') }}" class="{{ 'active' if _nav == 'contractor_resources' }}">Resources</a></div>
     <div class="nav-item"><a href="{{ url_for('sources') }}" class="{{ 'active' if _nav == 'sources' }}">Sources</a></div>
+    <div class="nav-item"><a href="{{ url_for('shortlist') }}">Shortlist</a></div>
     <div class="nav-right">
       {% if session.get('admin') %}
         <a href="{{ url_for('admin_dashboard') }}" class="nav-admin">Admin</a>
@@ -338,5 +339,15 @@
     gtag('event', form.dataset.analyticsEvent, params);
   });
 </script>
+<p id="shortlist-message" role="status" tabindex="-1" style="padding:0 1rem;"></p>
+<style>
+  .shortlist-save { min-height:44px; padding:8px 12px; border:1px solid #496a59; background:#fafbf7; color:#123c2c; font:inherit; cursor:pointer; }
+  .shortlist-save[aria-pressed="true"] { background:#e1eee4; }
+  .shortlist-card { margin:16px 0; padding:16px; background:white; border-left:4px solid #16734a; }
+  .shortlist-card h2 { font-size:18px; overflow-wrap:anywhere; }
+  .shortlist-card p { margin:10px 0; }
+  .shortlist-save:focus-visible { outline:3px solid #16734a; outline-offset:3px; }
+</style>
+<script src="{{ url_for('static', filename='shortlist.js', v='20260906') }}" defer></script>
 </body>
 </html>

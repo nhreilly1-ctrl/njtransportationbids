@@ -348,6 +348,17 @@ def _extract_routes(text: str) -> list[tuple[str, str]]:
     return found
 
 
+def normalize_search_routes(text: str) -> str:
+    """Canonicalize explicit route aliases for matching, never geography storage."""
+    text = normalize_reference_text(text)
+    for canonical, matched in sorted(_extract_routes(text.upper()), key=lambda pair: len(pair[1]), reverse=True):
+        if matched[0].isdigit():
+            continue
+        token = 'route' + re.sub(r'[^a-z0-9]', '', canonical.casefold())
+        text = re.sub(r'(?<!\w)' + re.escape(matched) + r'(?!\w)', token, text, flags=re.IGNORECASE)
+    return text
+
+
 def classify_location(record: dict[str, Any]) -> dict[str, Any]:
     """Extract corridors, structure types, and municipalities from notice text.
 

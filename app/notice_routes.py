@@ -70,10 +70,11 @@ def _source_health(crawl_log):
 
 def _filter_notices(notices, notice_type=None, notice_subtype=None,
                     county=None, agency=None, status_filter="active",
-                    source_tier=None, q=None, urgent_only=False, corridor=None):
+                    source_tier=None, q=None, urgent_only=False, corridor=None, source_id=None):
     today = date.today()
     out = []
     for n in notices:
+        if source_id and n.get('source_id') != source_id: continue
         if n.get("status") == "deleted": continue
         if n.get("noise_flagged") and n.get("status") != "approved": continue
 
@@ -210,6 +211,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
     status_filter= request.args.get("status","active")
     q            = request.args.get("q","").strip()
     corridor     = request.args.get("corridor","").strip()
+    source_id    = request.args.get('source', '').strip()
 
     filtered = _filter_notices(
         notices,
@@ -221,6 +223,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         source_tier=source_tier or None,
         q=q or None,
         corridor=corridor or None,
+        source_id=source_id or None,
     )
     sorted_notices = _sort_notices(filtered)
     order = feed_order(request.args.get('sort'))
@@ -246,6 +249,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         selected_agency=agency,
         selected_corridor=corridor,
         selected_tier=source_tier,
+        selected_source=source_id,
         selected_status=status_filter,
         q=q,
         open_count=open_count,

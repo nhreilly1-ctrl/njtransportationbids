@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from app.core.deadlines import EASTERN, deadline_days_remaining, deadline_is_past
+from app.core.corridors import normalize_search_routes
 
 
 def closing_soon(record, now=None):
@@ -19,7 +20,9 @@ def closing_soon(record, now=None):
 
 def matches_search(record, query):
     def tokens(value):
-        return re.findall(r"[a-z0-9]+", str(value or "").casefold())
+        text = normalize_search_routes(str(value or '').casefold())
+        text = re.sub(r'\bdp[\s.-]*(?:no\.?\s*)?(\d+)\b', r'dp \1', text)
+        return re.findall(r"[a-z0-9]+", text)
 
     values = [record.get(key) for key in (
         "title", "notice_excerpt", "source_name", "contract_number", "county_display"
@@ -27,6 +30,10 @@ def matches_search(record, query):
     for key in ("corridors", "municipalities", "road_names"):
         values.extend(record.get(key) or [])
     haystack = {token for value in values for token in tokens(value)}
+    haystack.update(token for value in values for token in re.findall(r'[a-z0-9]+', str(value or '').casefold()))
+    contract = re.sub(r'[^a-z0-9]', '', str(record.get('contract_number') or '').casefold())
+    if contract:
+        haystack.add(contract)
     return all(token in haystack for token in tokens(query))
 
 

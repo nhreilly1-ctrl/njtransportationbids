@@ -127,6 +127,7 @@
         </span>
       </div>
       <div class="bid-tags ledger-actions">
+        {% with item=o %}{% include '_save_button.html' %}{% endwith %}
         {% if o.access_type and o.access_type not in ('Unknown','') %}<span class="access-note">{{ o.access_type }}</span>{% endif %}
         {% if o.platform and o.platform not in ('Unknown','') %}<span class="access-note">{{ o.platform }}</span>{% endif %}
         {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Search notice locations; project limits are not verified" data-analytics-event="map_click" data-notice-id="{{ o.id }}" data-agency="{{ o.source_name }}" data-corridor="{{ o.corridors[0] if o.corridors else '' }}">Search map <span>&nearr;</span></a>{% endif %}

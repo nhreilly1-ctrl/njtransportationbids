@@ -52,7 +52,7 @@
     </div>
     <div class="source-opportunities">
       {% if active_count %}
-        <strong>{{ active_count }} current opportunit{{ 'y' if active_count == 1 else 'ies' }}</strong>
+        <a href="{{ url_for('notices2.notices_all', source=src.id, status='active') }}"><strong>{{ active_count }} current opportunit{{ 'y' if active_count == 1 else 'ies' }}</strong></a>
         <span>{{ src.open }} open for bid</span>
         <span>{{ src.upcoming }} upcoming</span>
       {% else %}

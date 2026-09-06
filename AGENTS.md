@@ -79,6 +79,14 @@ is binding on public pages and settles design questions that taste cannot.
 
 ## Record Identity and Lifecycle
 
+- Source-count links use the exact `source` ID filter on `/notices`, not agency
+  name matching. Preserve this filter when changing sort or other controls.
+- `/shortlist` is a no-account browser-local list: `shortlist.js` stores IDs only,
+  resolves them against current public data, retains closed records for reference,
+  and labels unavailable records. Do not imply alerts or cross-device syncing.
+- Search-only route aliases must never write geography or map evidence fields.
+  Run `node test_shortlist.cjs` alongside the analytics tests for shortlist edits.
+
 - Public feeds default to `sort=newest` (index discovery), with `updated` and
   `closing` alternatives. `app/core/freshness.py` shares sorting/grouping rules.
 - `first_seen_at` records discovery, `last_checked_at` records source refresh,

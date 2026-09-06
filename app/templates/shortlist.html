@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Your shortlist - NJ Transportation Bids{% endblock %}
+{% block body_class %}listing-page{% endblock %}
+{% block head_extra %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260906b') }}">
+{% endblock %}
+{% block content %}
+<section class="listing-hero"><div class="listing-hero-copy"><h1>Your shortlist</h1></div></section>
+<p>Saved in this browser only. No account, syncing, or deadline alerts. Clearing browser data removes your shortlist.</p>
+<p>Statuses and deadlines below reflect the current index. Always confirm the official notice before acting.</p>
+<p><a href="{{ url_for('notices2.notices_all') }}">Browse opportunities</a></p>
+<noscript>Enable JavaScript and browser storage to use the shortlist.</noscript>
+<div id="shortlist-results" aria-label="Saved opportunities"></div>
+<script type="application/json" id="shortlist-records">{{ shortlist_records | tojson }}</script>
+{% endblock %}

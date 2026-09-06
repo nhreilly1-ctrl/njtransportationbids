@@ -54,6 +54,7 @@
       </div>
     </div>
     <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="brief-arrow" aria-label="View {{ o.title }}">&rarr;</a>
+    {% with item=o %}{% include '_save_button.html' %}{% endwith %}
   </article>
 {% endmacro %}
 

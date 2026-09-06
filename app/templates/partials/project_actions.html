@@ -3,5 +3,6 @@
   {% if opp.map_url %}<a href="{{ opp.map_url }}" target="_blank" rel="noopener" class="btn" title="Search using the notice's location text; project limits are not verified" data-analytics-event="map_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-corridor="{{ opp.corridors[0] if opp.corridors else '' }}">Search map &#8599;</a>{% endif %}
   {% if opp.due_date_parsed and opp.status in ('open','upcoming') and not opp.deadline_conflict %}<a href="{{ url_for('opportunity_calendar', opp_id=opp.id) }}" class="btn" data-analytics-event="calendar_add" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-opportunity-type="{{ opp.record_type or opp.notice_subtype or '' }}">Add deadline to calendar</a>{% endif %}
   <button type="button" class="btn" data-analytics-event="copy_link" data-notice-id="{{ opp.id }}" onclick="if (navigator.clipboard) { navigator.clipboard.writeText(window.location.href).then(() => this.textContent = 'Link copied').catch(() => this.textContent = 'Copy the address bar link'); } else { this.textContent = 'Copy the address bar link'; }">Copy link</button>
+  {% with item=opp %}{% include '_save_button.html' %}{% endwith %}
 </div>
 {% if opp.map_url %}<p class="project-map-note">Map search uses the published location description, not verified project limits.</p>{% endif %}

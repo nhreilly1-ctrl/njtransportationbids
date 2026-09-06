@@ -19,6 +19,39 @@ import json
 
 
 class ScanTrustTests(unittest.TestCase):
+    def test_search_route_aliases_and_compact_contracts(self):
+        record = dict(title='Route 1 bridge over Raritan River', corridors=['US-1'],
+                      contract_number='DP-26420', counties=['Middlesex'])
+        original = deepcopy(record)
+        for query in ('Rt 1 Raritan', 'US-1 bridge', 'Route 1', 'DP26420', 'DP 26420'):
+            self.assertTrue(matches_search(record, query), query)
+        for query in ('Route 130', 'US-206', 'DP26421'):
+            self.assertFalse(matches_search(record, query), query)
+        self.assertTrue(matches_search(dict(title='I-287 bridge'), 'Interstate 287'))
+        self.assertTrue(matches_search(dict(title='New Jersey Turnpike repair'), 'turnpike'))
+        self.assertTrue(matches_search(dict(contract_number='A200.915 - 1'), 'A2009151'))
+        self.assertEqual(record, original)
+
+    def test_source_filter_is_exact_and_survives_form_submission(self):
+        rows = [dict(id=str(i), source_id=source, source_name='Shared agency', status='open',
+                     title='Bridge work', due_date_raw='09/01/2099')
+                for i, source in enumerate(('agency-one', 'agency-two'))]
+        self.assertEqual([r['id'] for r in notice_routes._filter_notices(rows, source_id='agency-one')], ['0'])
+        with patch.object(notice_routes, '_load_notices', return_value=rows):
+            response = main.app.test_client().get('/notices?source=agency-one&sort=closing')
+        self.assertIn('name="source" value="agency-one"', response.get_data(as_text=True))
+        self.assertIn('Remove Source filter: agency-one', response.get_data(as_text=True))
+
+    def test_shortlist_keeps_expired_but_not_deleted_records(self):
+        rows = [dict(id=status, title='Bridge '+status, status=status, _canonical_notice=True,
+                     notice_type='construction', due_date_raw='01/01/2020' if status == 'expired' else '09/01/2099')
+                for status in ('expired', 'open', 'deleted')]
+        with (patch.object(main, 'load_public_opps', return_value=rows),
+              patch.object(main, 'render_template', return_value='ok') as render):
+            self.assertEqual(main.app.test_client().get('/shortlist').status_code, 200)
+        self.assertEqual({r['id'] for r in render.call_args.kwargs['shortlist_records']}, {'expired', 'open'})
+        self.assertEqual(render.call_args.kwargs['robots_meta'], 'noindex, follow')
+
     def test_filter_removal_preserves_other_filters_and_feed_order(self):
         from bs4 import BeautifulSoup
         from urllib.parse import urlsplit, parse_qs
