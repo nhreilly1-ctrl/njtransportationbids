@@ -96,6 +96,19 @@
   <span>Confirm addenda before submitting</span>
 </div>
 
+{% if opp.milestones_checked %}
+<section id="agency-schedule" class="detail-card" aria-label="Agency schedule" style="margin-bottom:1rem;">
+  <h2 class="section-label" style="margin-top:0;">Agency schedule</h2>
+  {% for milestone in opp.milestones_display %}
+  <p><strong>{{ milestone.label }}</strong>: {{ milestone.display }}
+    {% if milestone.past %}<strong>Published date has passed.</strong>{% endif %}
+    <a href="{{ milestone.source_url }}" target="_blank" rel="noopener">Agency schedule</a>
+  </p>
+  {% else %}<p>No meeting or question deadline was listed in the agency schedule checked.</p>{% endfor %}
+  <p>Confirm amendments and attendance requirements in the official documents. These dates are separate from the proposal deadline.</p>
+</section>
+{% endif %}
+
 {% if opp.notice_excerpt %}
 <div class="detail-card" style="margin-bottom:1rem;">
   <div class="section-label" style="margin-top:0;">Opportunity summary</div>
