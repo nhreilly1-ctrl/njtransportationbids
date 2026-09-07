@@ -1447,6 +1447,13 @@ def _drjtbc_professional_entries(soup, source):
                 milestones.append(dict(kind=kind, raw=dates[label],
                     source_url=evidence_url, evidence=label + ': ' + dates[label]))
         link = block.select_one('.contract-files-list a[href]')
+        addenda = []
+        for document in block.select('.contract-files-list a[href]'):
+            label = _clean(document.get_text(' ', strip=True))
+            if re.search(r'\baddend(?:um|a)\b', label, re.I):
+                url = urljoin(source['url'], document['href'])
+                if url.startswith(('https://', 'http://')) and not any(a['url'] == url for a in addenda):
+                    addenda.append({'title': label, 'url': url})
         contract = re.search(r'Contract\s+No\.\s*([A-Z]+-\d+[A-Z]?)', block.get_text(' ', strip=True), re.I)
         records.append(dict(
             # Paragraph prefixes collide across different inspection contracts.
@@ -1460,6 +1467,7 @@ def _drjtbc_professional_entries(soup, source):
             due_date_raw=dates.get('solicitation deadline', ''),
             posting_date_raw=dates.get('solicitation posted', ''),
             procurement_milestones=milestones, milestones_checked=True,
+            published_addenda=addenda,
             source_status='open', contract_number=contract.group(1) if contract else '',
             access_type=source['access_type'], platform=source['platform'],
             paywalled=False, crawled_at=_now()))
