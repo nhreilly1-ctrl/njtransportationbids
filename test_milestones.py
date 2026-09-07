@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from app.core.milestones import milestone_display
+from app.core.milestones import milestone_display, schedule_indicator
 from app.core.freshness import stamp_refresh
 from crawlers.notice_crawlers import parse_drjtbc
 from crawlers.notice_sources import SOURCES_BY_ID
@@ -24,6 +24,37 @@ def entry(identity, question='August 25, 2026', meeting='August 18, 2026 10:00am
 
 
 class MilestoneTests(unittest.TestCase):
+    def test_schedule_indicator_prioritizes_next_and_preserves_uncertainty(self):
+        record = dict(status='open', milestones_display=[
+            dict(label='Question deadline', date='2099-09-03', display='Sep 3 (time not published)', past=False),
+            dict(label='Pre-proposal meeting', date='2099-09-01', display='Sep 1 at 2 PM ET (time zone assumed)', past=False)],
+            published_addenda=[{'url': 'https://example.com/addendum'}])
+        self.assertTrue(schedule_indicator(record).startswith('Pre-proposal meeting:'))
+        self.assertIn('time zone assumed', schedule_indicator(record))
+        self.assertIn('Review agency addenda', schedule_indicator(record))
+        for m in record['milestones_display']:
+            m['past'] = True
+        self.assertIn('dates have passed', schedule_indicator(record))
+        record['milestones_display'][0]['date'] = None
+        self.assertIn('needs confirmation', schedule_indicator(record))
+        record['status'] = 'expired'
+        self.assertEqual(schedule_indicator(record), '')
+        self.assertEqual(schedule_indicator(dict(status='open')), '')
+
+    def test_canonical_feed_and_shortlist_receive_indicator(self):
+        from app import main, notice_routes
+        raw = self.parse(entry('753'))[0]
+        raw.update(_canonical_notice=True, due_date_raw='September 17, 2099 2:00pm')
+        record = main.enrich(raw)
+        self.assertTrue(record['schedule_indicator'])
+        with patch.object(notice_routes, '_load_notices', return_value=[record]):
+            html = main.app.test_client().get('/notices').get_data(as_text=True)
+        self.assertIn('#agency-schedule', html)
+        with patch.object(main, 'load_public_opps', return_value=[raw]):
+            html = main.app.test_client().get('/shortlist').get_data(as_text=True)
+        self.assertIn('schedule_indicator', html)
+        self.assertIn('Published meeting/question dates have passed', html)
+
     def parse(self, html):
         with patch('crawlers.notice_crawlers._get', return_value=SimpleNamespace(text=html)):
             return parse_drjtbc(SOURCES_BY_ID['state-drjtbc-profserv'])

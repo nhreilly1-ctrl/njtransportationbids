@@ -53,6 +53,15 @@
         button.className = 'shortlist-save';
         button.dataset.shortlistId = id;
         card.append(heading, facts, button);
+        if (record && record.schedule_indicator) {
+          const schedule = document.createElement('p');
+          const link = document.createElement('a');
+          link.href = record.url + '#agency-schedule';
+          link.textContent = record.schedule_indicator;
+          schedule.className = 'schedule-indicator';
+          schedule.append(link);
+          card.insertBefore(schedule, button);
+        }
         results.append(card);
       }
     }

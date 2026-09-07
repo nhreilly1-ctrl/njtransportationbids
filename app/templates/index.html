@@ -44,6 +44,7 @@
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="brief-title">{{ o.title }}</a>
       <div class="brief-meta">
         {% with item=o %}{% include '_freshness.html' %}{% endwith %}
+        {% with item=o %}{% include '_schedule_indicator.html' %}{% endwith %}
         {% if feed_order != 'closing' %}<span>{{ o.deadline_display }}</span>{% endif %}
         <span>{{ o.source_name }}</span>
         <span>{{ o.location_display or o.county_display }}</span>

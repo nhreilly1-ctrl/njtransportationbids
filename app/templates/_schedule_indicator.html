@@ -1,0 +1,3 @@
+{% if item.schedule_indicator %}
+<span class="schedule-indicator"><a href="{{ url_for('opportunity_detail', opp_id=item.id) }}#agency-schedule">{{ item.schedule_indicator }}</a></span>
+{% endif %}
