@@ -110,6 +110,7 @@
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
       <div class="bid-meta ledger-meta">
         {% with item=o %}{% include '_freshness.html' %}{% endwith %}
+        {% with item=o %}{% include '_schedule_indicator.html' %}{% endwith %}
         <span>{{ o.source_name }}</span>
         {% if o.contract_number %}<span>Contract {{ o.contract_number }}</span>{% endif %}
         <span>

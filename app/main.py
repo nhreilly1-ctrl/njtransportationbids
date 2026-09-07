@@ -29,7 +29,7 @@ from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
 from app.core.bid_readiness import readiness_for
 from app.core.relatedness import rank_related
-from app.core.milestones import milestone_display
+from app.core.milestones import milestone_display, schedule_indicator
 from app.core.scanning import matches_search
 from app.core.freshness import feed_order, newest_first, freshness_groups
 from app.resource_catalog import RESOURCE_SECTIONS, resource_count
@@ -802,6 +802,7 @@ def enrich(opp: dict) -> dict:
             record["status"] = "unknown_date"
         record["record_type"] = record.get("notice_type") or "uncategorized"
         record["notice_subtype"] = record.get("notice_subtype")
+        record['schedule_indicator'] = schedule_indicator(record)
         return record
 
     rule = source_rule_for(record.get("source_id"))
@@ -844,6 +845,7 @@ def enrich(opp: dict) -> dict:
     record_type, notice_subtype = classify_record(record)
     record["record_type"] = record_type
     record["notice_subtype"] = notice_subtype
+    record['schedule_indicator'] = schedule_indicator(record)
     return record
 
 
@@ -1517,7 +1519,8 @@ def shortlist():
                             url=url_for('opportunity_detail', opp_id=opp['id']),
                             agency=opp.get('source_name', ''), status=opp['status'],
                             deadline=opp.get('deadline_display') or 'Deadline not published',
-                            timing_note=opp.get('forecast_timing_note') or ''))
+                            timing_note=opp.get('forecast_timing_note') or '',
+                            schedule_indicator=opp.get('schedule_indicator') or ''))
     return render_template('shortlist.html', shortlist_records=records, robots_meta='noindex, follow')
 
 
