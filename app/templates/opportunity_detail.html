@@ -100,8 +100,8 @@
 <section id="agency-schedule" class="detail-card" aria-label="Agency schedule" style="margin-bottom:1rem;">
   <h2 class="section-label" style="margin-top:0;">Agency schedule</h2>
   {% for milestone in opp.milestones_display %}
-  <p><strong>{{ milestone.label }}</strong>: {{ milestone.display }}
-    {% if milestone.past %}<strong>Published date has passed.</strong>{% endif %}
+  <p style="margin:0 0 1rem;"><strong>{{ milestone.label }}</strong>: {{ milestone.display }}<br>
+    {% if milestone.past %}<strong>Published date has passed.</strong>&nbsp;{% endif %}
     <a href="{{ milestone.source_url }}" target="_blank" rel="noopener">Agency schedule</a>
   </p>
   {% else %}<p>No meeting or question deadline was listed in the agency schedule checked.</p>{% endfor %}
