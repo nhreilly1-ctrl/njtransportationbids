@@ -417,6 +417,9 @@ def run_crawl(sources_to_crawl):
             continue
         try:
             records = crawl_source(source)
+            if source['id'] == 'state-drjtbc-profserv':
+                from crawlers.document_watch import inspect_documents
+                inspect_documents(records)
             crawl_error = "zero_records" if not records and not source.get("allow_empty") else None
             _log_crawl(source["id"], len(records), crawl_error)
             log.info(f"  → {len(records)} records")

@@ -23,6 +23,10 @@ def schedule_indicator(record):
     """A compact route to the published schedule, never an automatic alert."""
     if record.get('status') != 'open':
         return ''
+    if record.get('document_change_detected'):
+        return 'Document changed; review required'
+    if record.get('document_check_unavailable'):
+        return 'Document check unavailable; confirm agency documents'
     items = record.get('milestones_display') or []
     future = sorted((m for m in items if m.get('date') and not m['past']),
                     key=lambda m: m['date'])

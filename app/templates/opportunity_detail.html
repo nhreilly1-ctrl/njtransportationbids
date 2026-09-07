@@ -99,6 +99,20 @@
 {% if opp.milestones_checked %}
 <section id="agency-schedule" class="detail-card" aria-label="Agency schedule" style="margin-bottom:1rem;">
   <h2 class="section-label" style="margin-top:0;">Agency schedule</h2>
+  {% if opp.document_change_detected or opp.document_check_unavailable %}
+  <div class="project-warning">
+    {% if opp.document_change_detected %}<strong>Document changed; review required.</strong>
+    <p>A PDF's bytes changed since a previous successful check. This may include metadata-only changes; no deadline or requirement change has been inferred.</p>{% endif %}
+    {% if opp.document_check_unavailable %}<p>A document check was unavailable. Previous fingerprints are retained, not treated as current verification.</p>{% endif %}
+    <ul>{% for document in opp.document_checks %}
+      {% if document.changed_at or document.state != 'ok' %}
+      <li><a href="{{ document.url }}" target="_blank" rel="noopener">{{ document.title }}</a>
+        {% if document.changed_at %} - change detected {{ document.changed_at[:10] }}{% endif %}
+        {% if document.state != 'ok' %} - check unavailable{% endif %}</li>
+      {% endif %}
+    {% endfor %}</ul>
+  </div>
+  {% endif %}
   {% if opp.published_addenda %}
   <div class="project-warning">
     <strong>Agency addenda available. Review before submitting.</strong>

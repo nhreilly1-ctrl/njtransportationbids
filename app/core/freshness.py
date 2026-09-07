@@ -10,6 +10,8 @@ FIELDS = {'title': 'Title changed', 'due_date_raw': 'Deadline changed',
 
 
 def stamp_refresh(record, previous, checked_at):
+    from app.core.document_changes import reconcile_documents
+    document_changed = reconcile_documents(record, previous, checked_at)
     record['last_checked_at'] = checked_at
     record['first_seen_at'] = previous.get('first_seen_at') if previous is not None else checked_at
     record['materially_changed_at'] = previous.get('materially_changed_at') if previous else None
@@ -20,6 +22,8 @@ def stamp_refresh(record, previous, checked_at):
                   if normalize(previous.get(field)) != normalize(record.get(field))]
         if previous.get('source_inactive'):
             labels.append('Returned to agency listing')
+        if document_changed:
+            labels.append('Document changed; review required')
         if labels:
             record['materially_changed_at'] = checked_at
             record['change_labels'] = labels
