@@ -5,7 +5,8 @@ import re
 FIELDS = {'title': 'Title changed', 'due_date_raw': 'Deadline changed',
           'anticipated_date_raw': 'Forecast changed', 'source_status': 'Agency status changed',
           'official_url': 'Official link changed', 'notice_excerpt': 'Notice text changed',
-          'procurement_milestones': 'Meeting or question deadline changed'}
+          'procurement_milestones': 'Meeting or question deadline changed',
+          'published_addenda': 'Published addenda list changed'}
 
 
 def stamp_refresh(record, previous, checked_at):

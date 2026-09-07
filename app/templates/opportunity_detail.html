@@ -99,6 +99,15 @@
 {% if opp.milestones_checked %}
 <section id="agency-schedule" class="detail-card" aria-label="Agency schedule" style="margin-bottom:1rem;">
   <h2 class="section-label" style="margin-top:0;">Agency schedule</h2>
+  {% if opp.published_addenda %}
+  <div class="project-warning">
+    <strong>Agency addenda available. Review before submitting.</strong>
+    <p>Addenda may change submission requirements or dates. The schedule below comes from the agency listing; addendum contents are not automatically reconciled.</p>
+    <ul>{% for document in opp.published_addenda %}
+      <li><a href="{{ document.url }}" target="_blank" rel="noopener">{{ document.title }}</a></li>
+    {% endfor %}</ul>
+  </div>
+  {% endif %}
   {% for milestone in opp.milestones_display %}
   <p style="margin:0 0 1rem;"><strong>{{ milestone.label }}</strong>: {{ milestone.display }}<br>
     {% if milestone.past %}<strong>Published date has passed.</strong>&nbsp;{% endif %}

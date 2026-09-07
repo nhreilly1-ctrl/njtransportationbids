@@ -52,6 +52,17 @@ class MilestoneTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.parse('<p>Website unavailable</p>')
 
+    def test_addenda_are_project_scoped_and_change_tracked(self):
+        original = entry('753')
+        revised = original.replace('</a></div>', '</a><a href="/addendum.pdf">ADDENDUM NO. 1</a></div>')
+        first, second = self.parse(revised + entry('816'))
+        self.assertEqual(first['published_addenda'], [{'title': 'ADDENDUM NO. 1',
+            'url': 'https://www.drjtbc.org/addendum.pdf'}])
+        self.assertEqual(second['published_addenda'], [])
+        stamp_refresh(first, self.parse(original)[0], '2026-09-07T12:00:00Z')
+        self.assertIn('Published addenda list changed', first['change_labels'])
+        self.assertEqual(first['due_date_raw'], 'September 17, 2026 2:00pm')
+
     def test_refresh_is_not_a_schedule_change(self):
         previous = self.parse(entry('753'))[0]
         current = self.parse(entry('753'))[0]
@@ -69,6 +80,7 @@ class MilestoneTests(unittest.TestCase):
             record = main.enrich(self.parse(entry('753'))[0])
         self.assertTrue(all(x['past'] for x in record['milestones_display']))
         with main.app.test_request_context('/'):
+            record['published_addenda'] = [{'title': 'Addendum No. 1', 'url': 'https://www.drjtbc.org/addendum.pdf'}]
             html = main.render_template('opportunity_detail.html', opp=record,
                 seo_title=record['title'], seo_description='', canonical_url='https://example.com',
                 site_url='https://example.com', related=[], readiness=[])
@@ -76,6 +88,8 @@ class MilestoneTests(unittest.TestCase):
         self.assertIn('Question deadline', html)
         self.assertIn('time not published', html)
         self.assertIn('current/#753', html)
+        self.assertIn('addendum contents are not automatically reconciled', html)
+        self.assertIn('https://www.drjtbc.org/addendum.pdf', html)
 
 
 if __name__ == '__main__':
