@@ -1,5 +1,5 @@
 <nav class="active-filters" aria-label="Active filters">
-  {% for key, label in [('q', 'Search'), ('county', 'County'), ('agency', 'Agency'), ('tier', 'Source'), ('corridor', 'Corridor'), ('status', 'Status'), ('show_closed', 'Include closed')] %}
+  {% for key, label in [('q', 'Search'), ('county', 'County'), ('agency', 'Agency'), ('tier', 'Source type'), ('source', 'Source'), ('corridor', 'Corridor'), ('status', 'Status'), ('show_closed', 'Include closed')] %}
     {% set value = request.args.get(key) %}
     {% if value and not (key == 'status' and value == 'active') %}
       {% set remaining = request.args.to_dict() %}

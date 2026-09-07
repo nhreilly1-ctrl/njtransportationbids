@@ -1023,6 +1023,7 @@
 .feed-help { font-size: 12px; flex: 1 1 180px; }
 .feed-help summary { cursor: pointer; min-height: 28px; }
 .feed-help small { display: block; max-width: 65ch; }
+.brief-row > .shortlist-save { grid-column: 2; justify-self: start; }
 @media (max-width: 560px) {
   .home-page .hero-copy { padding: 12px 14px 8px; }
   .home-page .hero-copy h1 { font-size: 26px; }
@@ -1037,4 +1038,5 @@
   .feed-order select { font-size: 16px; min-height: 44px; min-width: 0; }
   .feed-order button { min-height: 44px; order: 2; }
   .feed-help { flex-basis: 100%; order: 3; }
+  .brief-row > .shortlist-save { grid-column: 1; }
 }

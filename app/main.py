@@ -1474,6 +1474,7 @@ def opportunity_calendar(opp_id: str):
 
 @app.route("/sources")
 def sources():
+    from app.notice_routes import _filter_notices
     sources = load_public_sources()
     opps = [enrich(opp) for opp in load_public_opps()]
     for source in sources:
@@ -1482,8 +1483,9 @@ def sources():
         source["total"] = len(related)
         source["noise"] = len([opp for opp in related if opp["status"] == "noise"])
         source["expired"] = len([opp for opp in related if opp["status"] == "expired"])
-        source["open"] = len([opp for opp in related if opp["status"] == "open"])
-        source["upcoming"] = len([opp for opp in related if opp["status"] == "upcoming"])
+        current = _filter_notices(related, status_filter='active')
+        source["open"] = len([opp for opp in current if opp["status"] == "open"])
+        source["upcoming"] = len([opp for opp in current if opp["status"] == "upcoming"])
         source["review_required"] = len([opp for opp in related if opp["status"] == "review_required"])
         source["ai_review"] = len([opp for opp in related if opp["status"] == "ai_review"])
     sources = sorted(sources, key=lambda source: source.get("name", "").lower())
@@ -1498,6 +1500,23 @@ def sources():
         "platform": len([source for source in sources if source.get("tier") == "paywalled"]),
     }
     return render_template("sources.html", sources=sources, source_summary=source_summary)
+
+
+@app.route('/shortlist')
+def shortlist():
+    records = []
+    for raw in load_public_opps():
+        if raw.get('status') in ('deleted', 'disabled'):
+            continue
+        opp = enrich(dict(raw))
+        if opp['status'] in ('deleted', 'disabled', 'noise'):
+            continue
+        records.append(dict(id=str(opp['id']), title=opp['title'],
+                            url=url_for('opportunity_detail', opp_id=opp['id']),
+                            agency=opp.get('source_name', ''), status=opp['status'],
+                            deadline=opp.get('deadline_display') or 'Deadline not published',
+                            timing_note=opp.get('forecast_timing_note') or ''))
+    return render_template('shortlist.html', shortlist_records=records, robots_meta='noindex, follow')
 
 
 @app.route("/export/opportunities.csv")

@@ -22,3 +22,4 @@ jobs:
         with:
           node-version: '22'
       - run: node test_analytics.cjs
+      - run: node test_shortlist.cjs
