@@ -29,6 +29,7 @@ from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
 from app.core.bid_readiness import readiness_for
 from app.core.relatedness import rank_related
+from app.core.milestones import milestone_display
 from app.core.scanning import matches_search
 from app.core.freshness import feed_order, newest_first, freshness_groups
 from app.resource_catalog import RESOURCE_SECTIONS, resource_count
@@ -771,6 +772,7 @@ def enrich(opp: dict) -> dict:
     record["location_display"] = evidenced
     record["map_url"] = map_url(record)
     normalize_deadline(record)
+    record['milestones_display'] = milestone_display(record)
     deadline_conflict = reconcile_authoritative_open_deadline(record)
     due = deadline_date(record)
     crawled_at = str(record.get("crawled_at") or record.get("created_at") or "")

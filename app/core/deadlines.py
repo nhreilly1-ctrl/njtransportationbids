@@ -117,7 +117,11 @@ def _parse_datetime(value: str) -> tuple[datetime | None, str | None, bool]:
                 continue
         if parsed_date:
             time_fmt = "%I:%M:%S %p" if time_text.count(":") == 2 else "%I:%M %p"
-            parsed_time = datetime.strptime(time_text.upper(), time_fmt).time()
+            time_text = re.sub(r'\s*(AM|PM)$', r' \1', time_text.upper())
+            try:
+                parsed_time = datetime.strptime(time_text, time_fmt).time()
+            except ValueError:
+                return None, None, False
             parsed = datetime.combine(parsed_date, parsed_time)
             if explicit_utc:
                 return parsed.replace(tzinfo=timezone.utc), "explicit_utc", False

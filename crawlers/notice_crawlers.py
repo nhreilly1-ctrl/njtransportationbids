@@ -1422,6 +1422,50 @@ def _extract_pdf_due_date(url):
 
 # ── DRJTBC ────────────────────────────────────────────────────────────────────
 
+def _drjtbc_professional_entries(soup, source):
+    records = []
+    for block in soup.select('div.entry.row'):
+        title_el = block.select_one('.meta_title')
+        description = block.select_one('.meta_description')
+        if not title_el or not description:
+            continue
+        title = _clean(title_el.get_text(' ', strip=True))
+        body = _clean(description.get_text())
+        if not _is_transport_relevant(title + ' ' + body):
+            continue
+        dates = {}
+        for field in block.select('.meta_date'):
+            label = field.find('strong')
+            if label:
+                key = _clean(label.get_text()).rstrip(':').lower()
+                dates[key] = _clean(field.get_text(' ', strip=True))[len(_clean(label.get_text())):].strip()
+        milestones = []
+        evidence_url = source['url'] + ('#' + block['id'] if block.get('id') else '')
+        for label, kind in [('pre-proposal meeting', 'preproposal_meeting'),
+                            ('deadline for inquiries', 'questions_due')]:
+            if dates.get(label):
+                milestones.append(dict(kind=kind, raw=dates[label],
+                    source_url=evidence_url, evidence=label + ': ' + dates[label]))
+        link = block.select_one('.contract-files-list a[href]')
+        contract = re.search(r'Contract\s+No\.\s*([A-Z]+-\d+[A-Z]?)', block.get_text(' ', strip=True), re.I)
+        records.append(dict(
+            # Paragraph prefixes collide across different inspection contracts.
+            # Use agency identity; retain old records as inactive through normal merge.
+            id=_make_id(source['id'], block.get('id') or (contract.group(1) if contract else title)), title=title,
+            notice_excerpt=_excerpt(body), source_id=source['id'],
+            source_name=source['name'], source_tier=source['source_tier'],
+            source_url=source['url'], official_url=urljoin(source['url'], link['href']) if link else evidence_url,
+            county=source['county'], entity_type=source['entity_type'],
+            notice_type='professional_services', notice_subtype='professional_services',
+            due_date_raw=dates.get('solicitation deadline', ''),
+            posting_date_raw=dates.get('solicitation posted', ''),
+            procurement_milestones=milestones, milestones_checked=True,
+            source_status='open', contract_number=contract.group(1) if contract else '',
+            access_type=source['access_type'], platform=source['platform'],
+            paywalled=False, crawled_at=_now()))
+    return records
+
+
 def parse_drjtbc(source):
     """
     DRJTBC construction notices and professional services current procurements.
@@ -1432,6 +1476,10 @@ def parse_drjtbc(source):
     if not r: return records
 
     soup = _soup(r.text)
+    if source['id'] == 'state-drjtbc-profserv':
+        if not soup.select('div.entry.row .meta_title'):
+            raise RuntimeError('DRJTBC project schedule layout unavailable')
+        return _drjtbc_professional_entries(soup, source)
     is_profserv = "profserv" in source["id"] or "professional" in source["url"]
 
     # Find project blocks — typically div or article elements with h3/h4 titles
