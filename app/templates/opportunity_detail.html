@@ -203,6 +203,12 @@
 {% endfor %}
 {% endif %}
 
+{% if agency_guide_slug %}
+<div class="detail-card" style="margin-bottom:1rem;">
+  <strong>New to this agency?</strong>
+  <a href="{{ url_for('agency_guides') }}#{{ agency_guide_slug }}">Explore its procurement tracks, reviewed guidance and questions to confirm</a>
+</div>
+{% endif %}
 {% if preparation %}
 <section class="detail-card" aria-labelledby="agency-preparation-heading" style="margin-bottom:1rem;">
   <div class="section-label">Agency preparation</div>
