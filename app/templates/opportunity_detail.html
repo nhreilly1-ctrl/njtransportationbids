@@ -96,6 +96,27 @@
   <span>Confirm addenda before submitting</span>
 </div>
 
+{% if submission_checklist %}
+<section id="submission-checklist" class="detail-card" aria-labelledby="submission-checklist-heading" style="margin-bottom:1rem;">
+  <h2 id="submission-checklist-heading" class="section-label">C-753A submission checks</h2>
+  {% if submission_checklist.needs_review %}
+  <div class="project-warning"><strong>Checklist needs re-review.</strong>
+    <p>Document versions or recent checks no longer support this checklist. Instructions are withheld until reviewed. Read the current RFP and all agency addenda.</p>
+  </div>
+  {% else %}
+  <p>Addendum No. 1 resolves the RFP's email-only wording: email and hardcopies are both required.</p>
+  <ol style="padding-left:1.4rem; line-height:1.6;">
+    {% for step in submission_checklist.steps %}
+    <li style="margin-bottom:.8rem;">{{ step.text }}
+      <a href="{{ submission_checklist.url }}" target="_blank" rel="noopener">Addendum 1, {{ step.page }} &#8599;</a></li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+  <p style="font-size:.85rem; color:var(--text2);">Reviewed {{ submission_checklist.reviewed_on }}. Selected submission requirements only, not a complete proposal checklist. Confirm the current deadline, delivery details, required contents and all addenda in the official documents.</p>
+  <a href="{{ url_for('opportunity_detail', opp_id=opp.id) }}#agency-schedule">Review agency schedule and document links</a>
+</section>
+{% endif %}
+
 {% if opp.milestones_checked %}
 <section id="agency-schedule" class="detail-card" aria-label="Agency schedule" style="margin-bottom:1rem;">
   <h2 class="section-label" style="margin-top:0;">Agency schedule</h2>
