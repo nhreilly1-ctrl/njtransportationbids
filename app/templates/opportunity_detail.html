@@ -182,6 +182,19 @@
 {% endfor %}
 {% endif %}
 
+{% if preparation %}
+<section class="detail-card" aria-labelledby="agency-preparation-heading" style="margin-bottom:1rem;">
+  <div class="section-label">Agency preparation</div>
+  <h2 id="agency-preparation-heading" style="font-size:1.1rem; margin-bottom:.6rem;">{{ preparation.title }}</h2>
+  <p style="line-height:1.55;">{{ preparation.text }}</p>
+  <p style="font-size:.85rem; color:var(--text2); margin-top:.75rem;">{{ preparation.scope }}. This project's solicitation and addenda control.</p>
+  <div style="display:flex; flex-wrap:wrap; gap:.5rem 1rem; margin-top:.75rem;">
+    <a href="{{ preparation.url }}" target="_blank" rel="noopener">Read official agency guidance &#8599;</a>
+    <span style="color:var(--text2);">Guidance reviewed <time datetime="{{ preparation.reviewed_on }}">{{ preparation.reviewed_on }}</time></span>
+  </div>
+</section>
+{% endif %}
+
 {% if readiness %}
 <div class="section-label">Bid resources for {{ readiness.label }}</div>
 <div class="detail-card" style="margin-bottom:1rem;">
