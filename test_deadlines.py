@@ -13,6 +13,14 @@ from app.core.deadlines import (
 
 
 class DeadlineNormalizationTests(unittest.TestCase):
+    def test_dotted_meridiem_preserves_raw_and_zone_uncertainty(self):
+        raw = 'September 17, 2026, at 2:30 P.M. prevailing time'
+        record = normalize_deadline({'due_date_raw': raw})
+        self.assertEqual(record['due_date_raw'], raw)
+        self.assertEqual(record['deadline_at'], '2026-09-17T18:30:00Z')
+        self.assertTrue(record['deadline_timezone_assumed'])
+        self.assertIn('2:30 PM', record['deadline_display'])
+
     def test_utc_timestamp_is_rendered_in_eastern_time(self):
         record = normalize_deadline(
             {"due_date_raw": "2026-08-25T20:00:47.395Z"},
