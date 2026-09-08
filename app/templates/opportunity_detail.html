@@ -206,7 +206,7 @@
 {% if agency_guide_slug %}
 <div class="detail-card" style="margin-bottom:1rem;">
   <strong>New to this agency?</strong>
-  <a href="{{ url_for('agency_guides') }}#{{ agency_guide_slug }}">Explore its procurement tracks, reviewed guidance and questions to confirm</a>
+  <a href="{{ url_for('agency_guides') }}#{{ agency_guide_slug }}" data-analytics-event="agency_guide_open" data-agency="{{ agency_guide_slug }}" data-notice-id="{{ opp.id }}" data-surface="opportunity_detail">Explore its procurement tracks, reviewed guidance and questions to confirm</a>
 </div>
 {% endif %}
 {% if preparation %}

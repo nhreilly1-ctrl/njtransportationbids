@@ -18,7 +18,15 @@
     storage.setItem(KEY, JSON.stringify(saved ? ids.filter(value => value !== id) : [...ids, id]));
     return !saved;
   }
-  if (typeof module !== 'undefined' && module.exports) module.exports = {read, toggle, KEY};
+  function toggleAndMeasure(storage, id, track) {
+    const saved = toggle(storage, id);
+    // Analytics must neither claim a failed save nor interrupt a successful one.
+    try {
+      if (typeof track === 'function') track('event', saved ? 'shortlist_saved' : 'shortlist_removed', {notice_id: id});
+    } catch (_) {}
+    return saved;
+  }
+  if (typeof module !== 'undefined' && module.exports) module.exports = {read, toggle, toggleAndMeasure, KEY};
   if (typeof document === 'undefined') return;
   const message = document.getElementById('shortlist-message');
   const results = document.getElementById('shortlist-results');
@@ -76,7 +84,7 @@
     const button = event.target.closest('[data-shortlist-id]');
     if (!button) return;
     try {
-      const saved = toggle(window.localStorage, button.dataset.shortlistId);
+      const saved = toggleAndMeasure(window.localStorage, button.dataset.shortlistId, window.gtag);
       refresh();
       say(saved ? 'Saved in this browser.' : 'Removed from shortlist.');
       if (results) message.focus();

@@ -1786,6 +1786,7 @@ def _parse_granicus_rfp_rows(source, html, listing_url):
     soup = _soup(html)
     page_text = _clean(soup.get_text(" ", strip=True))
     table = None
+    column_indexes = (0, 1, 2, 3)
     for candidate in soup.find_all("table"):
         headers = [
             _clean(cell.get_text(" ", strip=True)).lower()
@@ -1793,6 +1794,10 @@ def _parse_granicus_rfp_rows(source, html, listing_url):
         ]
         if headers[:4] == ["contract number", "title", "responses due", "status"]:
             table = candidate
+            break
+        if headers == ["rfp number", "title", "starting", "closing", "status"]:
+            table = candidate
+            column_indexes = (0, 1, 3, 4)
             break
 
     if table is None:
@@ -1803,13 +1808,14 @@ def _parse_granicus_rfp_rows(source, html, listing_url):
     records = []
     for row in table.find_all("tr"):
         cells = row.find_all("td", recursive=False)
-        if len(cells) < 4:
+        if len(cells) <= max(column_indexes):
             continue
-        contract_number = _clean(cells[0].get_text(" ", strip=True))
-        title_raw = _clean(cells[1].get_text(" ", strip=True))
+        contract_col, title_col, due_col, status_col = column_indexes
+        contract_number = _clean(cells[contract_col].get_text(" ", strip=True))
+        title_raw = _clean(cells[title_col].get_text(" ", strip=True))
         title = re.sub(r"\s*NEW!\s*$", "", title_raw, flags=re.I).strip()
-        due_date = _clean(cells[2].get_text(" ", strip=True))
-        source_status = _clean(cells[3].get_text(" ", strip=True))
+        due_date = _clean(cells[due_col].get_text(" ", strip=True))
+        source_status = _clean(cells[status_col].get_text(" ", strip=True))
         status_key = source_status.lower()
         if status_key not in {"open", "pending"}:
             continue
