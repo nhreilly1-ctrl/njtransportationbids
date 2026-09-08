@@ -345,5 +345,75 @@ class AgencyPreparationTests(unittest.TestCase):
         self.assertIn("not a complete submission checklist", html)
 
 
+class SubmissionChecklistTests(unittest.TestCase):
+    def record(self):
+        from app.core.submission_checklist import RFP, ADDENDUM, REVIEWED_HASHES
+        return dict(id="notice-e849321e5763", source_id="state-drjtbc-profserv",
+                    contract_number="C-753A", official_url=RFP, status="open",
+                    published_addenda=[dict(url=ADDENDUM)],
+                    document_checks=[dict(url=url, sha256=digest, state="ok",
+                                          last_successful_check="2026-09-08T10:00:00Z")
+                                     for url, digest in REVIEWED_HASHES.items()])
+
+    def test_reviewed_versions_and_no_mutation(self):
+        import copy
+        from datetime import datetime, timezone
+        from app.core.submission_checklist import checklist_for
+        record = self.record()
+        before = copy.deepcopy(record)
+        pack = checklist_for(record, datetime(2026, 9, 8, 12, tzinfo=timezone.utc))
+        self.assertFalse(pack["needs_review"])
+        self.assertEqual(len(pack["steps"]), 3)
+        self.assertEqual(record, before)
+
+    def test_withhold_changed_unavailable_stale_missing_and_new_addendum(self):
+        from datetime import datetime, timezone
+        from app.core.submission_checklist import checklist_for
+        now = datetime(2026, 9, 8, 12, tzinfo=timezone.utc)
+        for field, value in (("sha256", "new"), ("state", "unavailable"),
+                             ("last_successful_check", "2026-09-01T10:00:00Z"),
+                             ("last_successful_check", "2026-09-09T10:00:00Z"),
+                             ("last_successful_check", "invalid")):
+            record = self.record()
+            record["document_checks"][0][field] = value
+            pack = checklist_for(record, now)
+            self.assertTrue(pack["needs_review"])
+            self.assertEqual(pack["steps"], [])
+        for key, value in (("document_checks", []), ("published_addenda", []),
+                           ("published_addenda", [dict(url="new-addendum")])):
+            record = self.record()
+            record[key] = value
+            self.assertEqual(checklist_for(record, now)["steps"], [])
+
+    def test_project_identity_and_closed_guard(self):
+        from app.core.submission_checklist import checklist_for
+        for key, value in (("id", "another-cycle"), ("source_id", "state-drpa"),
+                           ("contract_number", "CM-552A"), ("status", "expired"),
+                           ("source_inactive", True), ("official_url", "other.pdf")):
+            record = self.record()
+            record[key] = value
+            self.assertIsNone(checklist_for(record))
+
+    def test_rendered_page_withholds_stale_instructions(self):
+        from datetime import datetime, timezone
+        from unittest.mock import patch
+        from app import main as app_main
+        record = self.record()
+        record.update(title="Hard All Electronic Tolling Final Design", notice_type="professional_services",
+                      due_date_raw="09/17/2068", source_name="DRJTBC", milestones_checked=True)
+        for check in record["document_checks"]:
+            check["last_successful_check"] = datetime.now(timezone.utc).isoformat()
+        client = app_main.app.test_client()
+        with patch.object(app_main, "load_public_opps", return_value=[record]):
+            html = client.get("/opportunities/notice-e849321e5763").get_data(as_text=True)
+        self.assertIn("Deliver six hardcopies", html)
+        self.assertIn("AD1-5", html)
+        record["document_checks"][0]["sha256"] = "changed"
+        with patch.object(app_main, "load_public_opps", return_value=[record]):
+            html = client.get("/opportunities/notice-e849321e5763").get_data(as_text=True)
+        self.assertIn("Checklist needs re-review", html)
+        self.assertNotIn("Deliver six hardcopies", html)
+
+
 if __name__ == "__main__":
     unittest.main()
