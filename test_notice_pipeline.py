@@ -1590,5 +1590,20 @@ class PublicSeoTests(unittest.TestCase):
         self.assertTrue(response.headers["Location"].endswith("/opportunities/active-bid"))
 
 
+class WarrenColumnTests(unittest.TestCase):
+    def test_starting_is_not_deadline(self):
+        from crawlers.notice_crawlers import _parse_granicus_rfp_rows
+        from crawlers.notice_sources import NOTICE_SOURCES
+        source = next(s for s in NOTICE_SOURCES if s["id"] == "county-warren")
+        html = '<table><tr><th>RFP Number</th><th>Title</th><th>Starting</th><th>Closing</th><th>Status</th></tr>'
+        html += '<tr><td>WC1</td><td>Road resurfacing</td><td>08/24/2026</td><td>09/22/2026 2:00 PM</td><td>Open</td></tr>'
+        html += '<tr><td>WC2</td><td>Auditing Services</td><td>08/24/2026</td><td>09/22/2026</td><td>Open</td></tr></table>'
+        records = _parse_granicus_rfp_rows(source, html, source["rfp_url"])
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["due_date_raw"], "09/22/2026 2:00 PM")
+        with self.assertRaises(RuntimeError):
+            _parse_granicus_rfp_rows(source, '<table><th>Unknown schema</th></table>', source["rfp_url"])
+
+
 if __name__ == "__main__":
     unittest.main()

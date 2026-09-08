@@ -29,7 +29,7 @@
       <h3>{{ item.title }}</h3>
       <p style="line-height:1.6;">{{ item.text }}</p>
       <p>Reviewed <time datetime="{{ item.reviewed_on }}">{{ item.reviewed_on }}</time></p>
-      <a href="{{ item.url }}" target="_blank" rel="noopener">Read official guidance &#8599;</a>
+      <a href="{{ item.url }}" target="_blank" rel="noopener" data-analytics-event="agency_guidance_click" data-agency="{{ guide.slug }}" data-surface="agency_guides">Read official guidance &#8599;</a>
     </article>
     {% endfor %}
     <article class="resource-entry">
