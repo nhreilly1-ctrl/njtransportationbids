@@ -1,0 +1,22 @@
+.agency-guides-page h1,
+.agency-guides-page h2 {
+  font-family: "Barlow Condensed", sans-serif;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+.agency-guides-page h1 { font-size: clamp(2rem, 5vw, 3.4rem); }
+.agency-guides-page .resources-kicker { color: var(--resource-green); }
+.agency-guides-page h2 { font-size: 1.7rem; }
+.agency-guides-page .controlling-note { line-height: 1.55; font-size: 1rem; }
+.agency-guides-page .controlling-note p { margin: .5rem 0; }
+.agency-guides-page .readiness-nav { display: flex; flex-wrap: wrap; }
+.agency-guides-page .readiness-nav a { padding: .75rem 1rem; font-size: .9rem; }
+.agency-guides-page .resource-entry { min-height: 0; gap: .75rem; font-size: 1rem; }
+.agency-guides-page .resource-entry:hover { transform: none; }
+.agency-guides-page .resource-agency { white-space: normal; font-size: .7rem; }
+.agency-guides-page a { text-underline-offset: .18em; }
+.agency-guides-page a:focus-visible { outline: 2px solid var(--resource-green); outline-offset: 3px; }
+@media (max-width: 680px) {
+  .agency-guides-page .controlling-note { padding: 1rem; }
+  .agency-guides-page .readiness-nav a { flex: 1 1 40%; }
+}

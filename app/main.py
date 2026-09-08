@@ -29,6 +29,7 @@ from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
 from app.core.bid_readiness import readiness_for
 from app.core.agency_preparation import preparation_for
+from app.core.agency_guides import guides, guide_slug_for
 from app.core.submission_checklist import checklist_for
 from app.core.relatedness import rank_related
 from app.core.milestones import milestone_display, schedule_indicator
@@ -1089,6 +1090,7 @@ def sitemap_xml():
         "/bids/construction",
         "/bids/professional-services",
         "/resources",
+        "/agencies",
         "/sources",
     ]
     entries = [(f"{SITE_URL}{path}", None) for path in paths]
@@ -1295,6 +1297,11 @@ def contractor_resources():
     )
 
 
+@app.route("/agencies")
+def agency_guides():
+    return render_template("agency_guides.html", guides=guides())
+
+
 def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
     opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] != "deleted"]
@@ -1416,6 +1423,7 @@ def opportunity_detail(opp_id: str):
         related=related,
         readiness=readiness_for(opp),
         preparation=preparation_for(opp),
+        agency_guide_slug=guide_slug_for(opp),
         submission_checklist=checklist_for(opp),
         source_total=len(NOTICE_SOURCES),
         seo_title=seo["title"],

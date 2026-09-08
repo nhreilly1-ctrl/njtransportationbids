@@ -1,0 +1,49 @@
+{% extends "resources.html" %}
+{% block title %}NJ Agency Guides for Transportation Bidders{% endblock %}
+{% block meta_description %}Get oriented before pursuing NJDOT, NJTA, DRJTBC, Ocean or Morris County work. Reviewed agency guidance, procurement tracks and questions to confirm in the bid package.{% endblock %}
+{% block body_class %}resources-page agency-guides-page{% endblock %}
+{% block head_extra %}{{ super() }}<link rel="stylesheet" href="{{ url_for('static', filename='agency-guides.css', v='20260908') }}">{% endblock %}
+{% block content %}
+<header class="controlling-note">
+  <span class="resources-kicker">Know the agency before you commit</span>
+  <h1>Agency guides</h1>
+  <p>Five agency profiles to help you assess an unfamiliar procurement process. Reviewed guidance is separate from project requirements. This is not a complete bid checklist.</p>
+  <a href="{{ url_for('contractor_resources') }}">All contractor resources</a>
+</header>
+<nav class="readiness-nav" aria-label="Agency profiles">
+  {% for guide in guides %}<a href="#{{ guide.slug }}">{{ guide.name }}</a>{% endfor %}
+</nav>
+{% for guide in guides %}
+<section id="{{ guide.slug }}" class="resource-group" aria-labelledby="{{ guide.slug }}-title" style="margin:2rem 0; scroll-margin-top:1rem;">
+  <header class="controlling-note">
+    <h2 id="{{ guide.slug }}-title">{{ guide.name }}</h2>
+    <p>{{ guide.orientation }}</p>
+    <div style="display:flex; flex-wrap:wrap; gap:.6rem 1.2rem;">
+    {% for source in guide.sources %}<a href="{{ url_for('notices2.notices_all', source=source.id) }}">{{ source.label }} &#8599;</a>{% endfor %}
+    </div>
+  </header>
+  <div class="resource-list">
+    {% for item in guide.guidance %}
+    <article class="resource-entry">
+      <span class="resource-agency">{{ item.audience }} / Reviewed agency guidance</span>
+      <h3>{{ item.title }}</h3>
+      <p style="line-height:1.6;">{{ item.text }}</p>
+      <p>Reviewed <time datetime="{{ item.reviewed_on }}">{{ item.reviewed_on }}</time></p>
+      <a href="{{ item.url }}" target="_blank" rel="noopener">Read official guidance &#8599;</a>
+    </article>
+    {% endfor %}
+    <article class="resource-entry">
+      <span class="resource-agency">Confirm in this bid package</span>
+      <h3>Questions before pursuing the work</h3>
+      <ul style="padding-left:1.2rem; line-height:1.6;">{% for question in guide.questions %}<li>{{ question }}</li>{% endfor %}</ul>
+      <p style="margin-top:1rem;"><strong>Coverage limit:</strong> {{ guide.gap }}</p>
+      {% if guide.slug == 'drjtbc' %}
+      <p style="margin-top:1rem;">Project example, not an agency rule: C-753A has a reviewed submission-check panel that is withheld when document checks no longer support it.</p>
+      <a href="{{ url_for('opportunity_detail', opp_id='notice-e849321e5763') }}#submission-checklist">Review the C-753A project and current documents</a>
+      {% endif %}
+    </article>
+  </div>
+</section>
+{% endfor %}
+<aside class="controlling-note"><strong>The current solicitation and addenda control.</strong> Typical agency opening hours never substitute for a missing project deadline. These profiles do not certify your eligibility or that a submission is complete.</aside>
+{% endblock %}

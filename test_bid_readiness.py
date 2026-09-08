@@ -415,5 +415,38 @@ class SubmissionChecklistTests(unittest.TestCase):
         self.assertNotIn("Deliver six hardcopies", html)
 
 
+class AgencyGuideTests(unittest.TestCase):
+    def test_profiles_reuse_reviewed_content_and_exact_sources(self):
+        from app.core.agency_guides import guides, guide_slug_for
+        from crawlers.notice_sources import NOTICE_SOURCES
+        configured = {source["id"] for source in NOTICE_SOURCES}
+        profiles = guides()
+        self.assertEqual(len(profiles), 5)
+        for profile in profiles:
+            self.assertTrue(profile["gap"])
+            for source in profile["sources"]:
+                self.assertIn(source["id"], configured)
+                self.assertEqual(guide_slug_for(dict(source_id=source["id"])), profile["slug"])
+            for item in profile["guidance"]:
+                self.assertTrue(item["reviewed_on"])
+                self.assertTrue(item["url"].startswith("https://"))
+        self.assertIsNone(guide_slug_for(dict(source_id="municipal-morris")))
+        self.assertIsNone(guide_slug_for(dict(source_id="state-drpa")))
+        self.assertIsNone(guide_slug_for({}))
+
+    def test_public_guide_and_resources_link(self):
+        from app import main as app_main
+        client = app_main.app.test_client()
+        response = client.get("/agencies")
+        self.assertEqual(response.status_code, 200)
+        html = response.get_data(as_text=True)
+        for slug in ("njdot", "njta", "drjtbc", "ocean", "morris"):
+            self.assertIn('id="' + slug + '"', html)
+        self.assertIn("source=county-morris", html)
+        self.assertIn("not an agency rule", html)
+        self.assertIn("Coverage limit:", html)
+        self.assertIn("/agencies", client.get("/resources").get_data(as_text=True))
+
+
 if __name__ == "__main__":
     unittest.main()
