@@ -75,6 +75,7 @@ def _parse_date(value: str) -> date | None:
 
 def _parse_datetime(value: str) -> tuple[datetime | None, str | None, bool]:
     """Return parsed datetime, timezone provenance, and assumption flag."""
+    value = re.sub(r"\b([ap])\.m\.(?!\w)", lambda m: m.group(1).upper() + "M", value, flags=re.I)
     iso_value = value.strip()
     if re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}", iso_value):
         try:

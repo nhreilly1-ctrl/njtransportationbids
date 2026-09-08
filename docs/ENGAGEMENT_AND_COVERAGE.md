@@ -39,3 +39,16 @@ After deployment use GA4 Events to compare shortlist saves, official-document
 clicks and guide use. Register agency/surface event-scoped custom dimensions if
 breakdowns are wanted. This code change does not configure the private GA4 account
 or prove receipt of events in its reports. Avoid drawing conclusions from tiny counts.
+# Cumberland recovery, September 8, 2026
+
+Official detail pages 9107 and 9105 embed the procurement public-notice PDFs.
+Independent PDF review confirms BID 26-40 closes September 23, 2026 at 2:30 p.m.
+and RFQ 26-39 closes September 17, 2026 at 2:30 p.m., both prevailing time.
+Gemini's date-only interpretation of RFQ 26-39 was incorrect.
+
+The dedicated feed parser follows only scoped solicitation entries and their
+embedded county-hosted PDFs. Missing/unreadable/mismatched documents fail the
+source check rather than silently publish a partial success. Unrecognized
+deadline wording remains unresolved; posting dates never substitute for it.
+Raw deadline text and PDF evidence URL are retained. Eastern remains explicitly
+assumed when only prevailing time is published. Cumberland now checks daily.

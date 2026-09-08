@@ -1590,6 +1590,47 @@ class PublicSeoTests(unittest.TestCase):
         self.assertTrue(response.headers["Location"].endswith("/opportunities/active-bid"))
 
 
+class CumberlandTests(unittest.TestCase):
+    def test_deadline_receipt_clause(self):
+        from crawlers.notice_crawlers import _cumberland_deadline
+        self.assertEqual(_cumberland_deadline('Posted August 18, 2026. Bids will be receive d by the Purchasing Agent on Wednesday, September 23, 2026, 2:30 p.m. prevailing time at the County.'),
+                         'September 23, 2026, 2:30 p.m. prevailing time')
+        self.assertEqual(_cumberland_deadline('Responses will be received by the Finance Department on Thursday, September 17, 2026, at 2:30 P.M. prevailing time in the office.'),
+                         'September 17, 2026, at 2:30 P.M. prevailing time')
+        self.assertEqual(_cumberland_deadline('Responses will be received on September 17, 2026.'), 'September 17, 2026')
+        self.assertEqual(_cumberland_deadline('Posted August 18, 2026. See documents for the deadline.'), '')
+
+    def test_feed_and_document_failure(self):
+        from unittest.mock import patch, Mock
+        from crawlers.notice_crawlers import parse_cumberland_county
+        from crawlers.notice_sources import NOTICE_SOURCES
+        source = next(s for s in NOTICE_SOURCES if s['id'] == 'county-cumberland')
+        listing = '<a class="NEWS_FEED_DISPLAY_LINK_TITLE" href="?FeedID=9107">BID # 26-40 FEDERAL ROAD PROGRAM</a>'
+        listing += '<a class="NEWS_FEED_DISPLAY_LINK_TITLE" href="?FeedID=9113">Professional Contracts Awarded</a>'
+        listing += '<a class="NEWS_FEED_DISPLAY_LINK_TITLE" href="?FeedID=9119">Bid 26-38 Truck Repair Services</a>'
+        detail = '<object data="https://www.cumberlandcountynj.gov/filestorage/notice.pdf"></object>'
+        page = Mock()
+        page.extract_text.return_value = 'BID 26-40. Bids will be received on September 23, 2026, 2:30 p.m. prevailing time.'
+        with patch('crawlers.notice_crawlers._get', side_effect=[Mock(text=listing), Mock(text=detail), Mock(content=b'pdf')]) as get, patch('crawlers.notice_crawlers.PdfReader', return_value=Mock(pages=[page])):
+            records = parse_cumberland_county(source)
+            self.assertEqual(len(records), 1)
+            self.assertEqual(records[0]['contract_number'], '26-40')
+            self.assertIn('2:30', records[0]['due_date_raw'])
+            self.assertEqual(get.call_count, 3)
+        for response in [None, Mock(text='<p>Missing document</p>')]:
+            with patch('crawlers.notice_crawlers._get', side_effect=[Mock(text=listing), response]):
+                with self.assertRaises(RuntimeError):
+                    parse_cumberland_county(source)
+        for body in ['', 'BID 99-99. Bids will be received on September 23, 2026.']:
+            page.extract_text.return_value = body
+            with patch('crawlers.notice_crawlers._get', side_effect=[Mock(text=listing), Mock(text=detail), Mock(content=b'pdf')]), patch('crawlers.notice_crawlers.PdfReader', return_value=Mock(pages=[page])):
+                with self.assertRaises(RuntimeError):
+                    parse_cumberland_county(source)
+        with patch('crawlers.notice_crawlers._get', return_value=Mock(text='<p>Changed schema</p>')):
+            with self.assertRaises(RuntimeError):
+                parse_cumberland_county(source)
+
+
 class WarrenColumnTests(unittest.TestCase):
     def test_starting_is_not_deadline(self):
         from crawlers.notice_crawlers import _parse_granicus_rfp_rows

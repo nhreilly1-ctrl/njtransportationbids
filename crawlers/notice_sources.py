@@ -575,11 +575,11 @@ NOTICE_SOURCES = [
         "crawl_tier":   2,
         "county":       "Cumberland",
         "url":          "https://www.cumberlandcountynj.gov/bids/",
-        "parser":       "generic_html_list",
+        "parser":       "cumberland_county",
         "access_type":  "Public access",
         "platform":     "County procurement portal",
         "notice_type":  "mixed",
-        "crawl_freq":   "weekly",
+        "crawl_freq":   "daily",
     },
     {
         "id":           "county-hunterdon",

@@ -1399,6 +1399,67 @@ def parse_salem_county(source):
     return _parse_county_purchasing_portal(source)
 
 
+def _cumberland_deadline(text):
+    text = _clean(text)
+    month_date = r"(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}"
+    # Only the receipt clause is deadline evidence, not the feed's posting date.
+    match = re.search(
+        rf"will be receive\s*d\b.{{0,240}}?({month_date}(?:,?\s+(?:at\s+)?\d{{1,2}}:\d{{2}}\s*[ap]\.?m\.?(?:\s+prevailing time)?)?)",
+        text, re.I,
+    )
+    return match.group(1) if match else ""
+
+
+def parse_cumberland_county(source):
+    response = _get(source["url"])
+    if response is None:
+        raise RuntimeError("Cumberland listing unavailable")
+    links = _soup(response.text).select('a.NEWS_FEED_DISPLAY_LINK_TITLE')
+    if not links:
+        raise RuntimeError("Cumberland procurement feed missing")
+    records, seen = [], set()
+    for link in links:
+        title = _clean(link.get_text(" ", strip=True))
+        reference = re.match(r"(?:BID|RFP|RFQ)\s*#?\s*(\d{2}-\d+)\b", title, re.I)
+        if not reference or re.search(r"\b(?:awarded|cancelled|canceled)\b", title, re.I):
+            continue
+        notice_type = _classify_transport_scope(title)
+        if re.search(r"\bfederal road program\b", title, re.I):
+            notice_type = "construction"
+        elif re.search(r"\bsurvey services\b", title, re.I) and "engineering department" in title.lower():
+            notice_type = "professional_services"
+        if not notice_type:
+            continue
+        detail_url = urljoin(source["url"], link.get("href", ""))
+        if not detail_url.startswith(source["url"] + "?FeedID="):
+            raise RuntimeError("Unexpected Cumberland detail link")
+        if detail_url in seen:
+            continue
+        seen.add(detail_url)
+        detail = _get(detail_url)
+        if detail is None:
+            raise RuntimeError("Cumberland notice unavailable: " + detail_url)
+        embedded = _soup(detail.text).select_one('object[data]')
+        pdf_url = urljoin(detail_url, embedded["data"]) if embedded else ""
+        if not pdf_url.startswith("https://www.cumberlandcountynj.gov/filestorage/") or not pdf_url.lower().endswith(".pdf"):
+            raise RuntimeError("Cumberland public-notice PDF missing: " + detail_url)
+        pdf = _get(pdf_url, timeout=30)
+        if pdf is None:
+            raise RuntimeError("Cumberland PDF unavailable: " + pdf_url)
+        try:
+            text = _clean(" ".join(page.extract_text() or "" for page in PdfReader(io.BytesIO(pdf.content)).pages))
+        except Exception as exc:
+            raise RuntimeError("Cumberland PDF unreadable: " + pdf_url) from exc
+        if not text or reference.group(1) not in text:
+            raise RuntimeError("Cumberland PDF identity not confirmed: " + pdf_url)
+        record = _base_record(source, title, detail_url, notice_type,
+                              due_date=_cumberland_deadline(text),
+                              contract_number=reference.group(1), excerpt=text)
+        record["deadline_evidence_url"] = pdf_url
+        records.append(record)
+    return records
+
+
 def _extract_pdf_due_date(url):
     response = _get(url, timeout=30)
     if not response:
@@ -2449,6 +2510,7 @@ PARSER_MAP = {
     "newark_water":         parse_newark_water,
     "somerset_county":      parse_somerset_county,
     "warren_county":        parse_warren_county,
+    "cumberland_county":    parse_cumberland_county,
     "generic_html_list":    parse_generic_html_list,
     "bidnet":               parse_generic_html_list,
     "questcdn":             parse_generic_html_list,
