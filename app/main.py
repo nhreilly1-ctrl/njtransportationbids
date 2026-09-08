@@ -28,6 +28,7 @@ from app.core.geography import NJ_COUNTIES, enrich_geography
 from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
 from app.core.bid_readiness import readiness_for
+from app.core.agency_preparation import preparation_for
 from app.core.relatedness import rank_related
 from app.core.milestones import milestone_display, schedule_indicator
 from app.core.scanning import matches_search
@@ -1413,6 +1414,7 @@ def opportunity_detail(opp_id: str):
         opp=opp,
         related=related,
         readiness=readiness_for(opp),
+        preparation=preparation_for(opp),
         source_total=len(NOTICE_SOURCES),
         seo_title=seo["title"],
         seo_description=seo["description"],

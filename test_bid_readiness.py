@@ -295,5 +295,55 @@ class DetailPageTests(unittest.TestCase):
         self.assertNotIn("busregcert.shtml", html)
 
 
+class AgencyPreparationTests(unittest.TestCase):
+    def test_reviewed_tracks_and_no_record_mutation(self):
+        from app.core.agency_preparation import preparation_for
+        for source, kind in (("state-njdot-construction", "construction"),
+                             ("state-njdot-profserv", "professional_services"),
+                             ("state-njdot-profserv-upcoming", "professional_services"),
+                             ("state-njta", "construction"),
+                             ("state-njta", "professional_services"),
+                             ("county-ocean", "construction"),
+                             ("county-morris", "professional_services")):
+            record = dict(source_id=source, notice_type=kind, deadline_at=None)
+            before = record.copy()
+            panel = preparation_for(record)
+            self.assertEqual(record, before)
+            self.assertEqual(panel["reviewed_on"], "2026-09-07")
+            self.assertTrue(panel["url"].startswith("https://"))
+            self.assertIn("not a complete", panel["scope"])
+
+    def test_unsupported_tracks_do_not_inherit_guidance(self):
+        from app.core.agency_preparation import preparation_for
+        for source in ("state-njdot-design-build", "state-drpa", "state-drjtbc-profserv",
+                       "county-ocean-other", "municipal-morris", "", None):
+            self.assertIsNone(preparation_for(dict(source_id=source, notice_type="construction")))
+        self.assertIsNone(preparation_for(dict(source_id="state-njta", notice_type="unknown")))
+
+    def test_track_specific_qualification_periods(self):
+        from app.core.agency_preparation import preparation_for
+        construction = preparation_for(dict(source_id="state-njta", notice_type="construction"))
+        professional = preparation_for(dict(source_id="state-njta", notice_type="professional_services"))
+        self.assertIn("one-year", construction["text"])
+        self.assertNotIn("24 months", construction["text"])
+        self.assertIn("24 months", professional["text"])
+        self.assertIn("12 months", professional["text"])
+
+    def test_public_page_panel(self):
+        from unittest.mock import patch
+        from app import main as app_main
+        subject = dict(id="preparation-test", title="Bridge design", source_id="state-njdot-profserv",
+                       source_name="NJDOT", notice_type="professional_services", status="upcoming",
+                       official_url="https://www.nj.gov/", due_date_raw="Fall 2026")
+        with patch.object(app_main, "load_public_opps", return_value=[subject]):
+            response = app_main.app.test_client().get("/opportunities/preparation-test")
+        self.assertEqual(response.status_code, 200)
+        html = response.get_data(as_text=True)
+        self.assertIn('id="agency-preparation-heading"', html)
+        self.assertIn("five business days", html)
+        self.assertIn("Guidance reviewed", html)
+        self.assertIn("not a complete submission checklist", html)
+
+
 if __name__ == "__main__":
     unittest.main()
