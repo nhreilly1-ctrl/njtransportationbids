@@ -1,13 +1,14 @@
 {
-  "generated_at": "2026-09-09T20:29:58.994587+00:00",
+  "generated_at": "2026-09-09T20:34:56.785345+00:00",
   "overall": "warning",
   "configured_sources": 47,
-  "healthy_sources": 45,
+  "healthy_sources": 44,
   "warning_sources": 2,
-  "error_sources": 0,
+  "error_sources": 1,
   "critical_failures": 0,
   "status_counts": {
-    "ok": 45,
+    "ok": 44,
+    "error": 1,
     "inaccessible": 2
   },
   "data_quality": {
@@ -31,14 +32,14 @@
       "Atlantic": 1,
       "Bergen": 2,
       "Burlington": 0,
-      "Camden": 2,
+      "Camden": 1,
       "Cape May": 3,
       "Cumberland": 3,
       "Essex": 0,
       "Gloucester": 0,
       "Hudson": 1,
       "Hunterdon": 0,
-      "Mercer": 1,
+      "Mercer": 0,
       "Middlesex": 1,
       "Monmouth": 6,
       "Morris": 3,
@@ -55,6 +56,7 @@
       "Essex",
       "Gloucester",
       "Hunterdon",
+      "Mercer",
       "Passaic",
       "Somerset",
       "Sussex",
@@ -84,8 +86,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:06.665331+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:06.665331+00:00",
+      "last_crawl": "2026-09-09T20:33:50.798651+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:50.798651+00:00",
       "last_count": 3,
       "last_error": null,
       "consecutive_failures": 0,
@@ -94,7 +96,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-drjtbc-construction",
@@ -107,8 +109,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:03.158137+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:03.158137+00:00",
+      "last_crawl": "2026-09-09T20:33:46.574366+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:46.574366+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -117,7 +119,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-drpa-patco",
@@ -130,17 +132,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:12.013223+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:12.013223+00:00",
+      "last_crawl": "2026-09-09T20:33:56.402343+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:56.402343+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": 2.0,
+      "baseline_count": 2,
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-dos-legal",
@@ -153,8 +155,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:15.432966+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:15.432966+00:00",
+      "last_crawl": "2026-09-09T20:33:59.946754+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:59.946754+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -163,7 +165,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-sos-directory",
@@ -186,7 +188,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 49.9
+      "age_hours": 50.0
     },
     {
       "source_id": "state-njtransit",
@@ -199,8 +201,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:00.498212+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:00.498212+00:00",
+      "last_crawl": "2026-09-09T20:33:43.894591+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:43.894591+00:00",
       "last_count": 7,
       "last_error": null,
       "consecutive_failures": 0,
@@ -209,7 +211,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-treasury",
@@ -245,9 +247,9 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:01:57.021055+00:00",
-      "last_successful_crawl": "2026-09-09T14:01:57.021055+00:00",
-      "last_count": 17,
+      "last_crawl": "2026-09-09T20:33:40.501672+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:40.501672+00:00",
+      "last_count": 18,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
@@ -255,7 +257,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-profserv-upcoming",
@@ -268,8 +270,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:01:47.323031+00:00",
-      "last_successful_crawl": "2026-09-09T14:01:47.323031+00:00",
+      "last_crawl": "2026-09-09T20:33:31.301866+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:31.301866+00:00",
       "last_count": 76,
       "last_error": null,
       "consecutive_failures": 0,
@@ -278,7 +280,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-construction",
@@ -291,8 +293,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T20:29:58.421136+00:00",
-      "last_successful_crawl": "2026-09-09T20:29:58.421136+00:00",
+      "last_crawl": "2026-09-09T20:33:23.673926+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:23.673926+00:00",
       "last_count": 7,
       "last_error": null,
       "consecutive_failures": 0,
@@ -314,8 +316,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:01:43.963473+00:00",
-      "last_successful_crawl": "2026-09-09T14:01:43.963473+00:00",
+      "last_crawl": "2026-09-09T20:33:27.698763+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:27.698763+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
@@ -324,7 +326,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-notices",
@@ -337,8 +339,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:01:49.035551+00:00",
-      "last_successful_crawl": "2026-09-09T14:01:49.035551+00:00",
+      "last_crawl": "2026-09-09T20:33:33.085487+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:33.085487+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -347,7 +349,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njdot-profserv",
@@ -360,8 +362,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:01:42.113073+00:00",
-      "last_successful_crawl": "2026-09-09T14:01:42.113073+00:00",
+      "last_crawl": "2026-09-09T20:33:25.756503+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:25.756503+00:00",
       "last_count": 22,
       "last_error": null,
       "consecutive_failures": 0,
@@ -370,7 +372,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-njtpa",
@@ -383,8 +385,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:13.642953+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:13.642953+00:00",
+      "last_crawl": "2026-09-09T20:33:58.169582+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:58.169582+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
@@ -393,7 +395,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-panynj-construction",
@@ -406,8 +408,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:08.370189+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:08.370189+00:00",
+      "last_crawl": "2026-09-09T20:33:52.530439+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:52.530439+00:00",
       "last_count": 3,
       "last_error": null,
       "consecutive_failures": 0,
@@ -416,7 +418,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-panynj-profserv",
@@ -429,17 +431,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:10.284461+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:10.284461+00:00",
+      "last_crawl": "2026-09-09T20:33:54.501010+00:00",
+      "last_successful_crawl": "2026-09-09T20:33:54.501010+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": 3.5,
+      "baseline_count": 3,
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "state-sjta",
@@ -452,8 +454,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:17.863557+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:17.863557+00:00",
+      "last_crawl": "2026-09-09T20:34:03.509508+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:03.509508+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -462,7 +464,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-atlantic",
@@ -475,17 +477,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:55.174093+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:55.174093+00:00",
+      "last_crawl": "2026-09-09T20:34:39.945525+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:39.945525+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": 1,
+      "baseline_count": 1.0,
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-bergen",
@@ -498,8 +500,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:26.679062+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:26.679062+00:00",
+      "last_crawl": "2026-09-09T20:34:11.038003+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:11.038003+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
@@ -508,7 +510,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-burlington",
@@ -521,8 +523,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:36.332266+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:36.332266+00:00",
+      "last_crawl": "2026-09-09T20:34:20.883802+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:20.883802+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -531,7 +533,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-camden",
@@ -544,9 +546,9 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:21.899202+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:21.899202+00:00",
-      "last_count": 2,
+      "last_crawl": "2026-09-09T20:34:07.672573+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:07.672573+00:00",
+      "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
@@ -554,7 +556,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-cape-may",
@@ -590,17 +592,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:57.359793+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:57.359793+00:00",
+      "last_crawl": "2026-09-09T20:34:42.828943+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:42.828943+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": null,
+      "baseline_count": 2,
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-essex",
@@ -613,8 +615,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:19.817287+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:19.817287+00:00",
+      "last_crawl": "2026-09-09T20:34:05.509657+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:05.509657+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -623,7 +625,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-gloucester",
@@ -636,8 +638,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:34.536962+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:34.536962+00:00",
+      "last_crawl": "2026-09-09T20:34:19.098695+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:19.098695+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -646,7 +648,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-hudson",
@@ -659,17 +661,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:32.515389+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:32.515389+00:00",
+      "last_crawl": "2026-09-09T20:34:17.054610+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:17.054610+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": 1,
+      "baseline_count": 1.0,
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-hunterdon",
@@ -692,7 +694,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 49.8
+      "age_hours": 49.9
     },
     {
       "source_id": "county-mercer",
@@ -705,17 +707,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:47.533068+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:47.533068+00:00",
-      "last_count": 1,
+      "last_crawl": "2026-09-09T20:34:31.739162+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:31.739162+00:00",
+      "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
       "baseline_count": 1.0,
       "status": "ok",
       "severity": "ok",
-      "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "message": "Source check found no matching opportunities currently listed.",
+      "age_hours": 0.0
     },
     {
       "source_id": "county-middlesex",
@@ -728,8 +730,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:38.134449+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:38.134449+00:00",
+      "last_crawl": "2026-09-09T20:34:22.645501+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:22.645501+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -738,7 +740,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-monmouth",
@@ -751,17 +753,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:24.078941+00:00",
+      "last_crawl": "2026-09-09T20:34:08.620990+00:00",
       "last_successful_crawl": "2026-09-09T14:02:24.078941+00:00",
-      "last_count": 6,
-      "last_error": null,
-      "consecutive_failures": 0,
+      "last_count": 0,
+      "last_error": "Monmouth listing schema changed: https://pol.co.monmouth.nj.us/UpcomingRFP",
+      "consecutive_failures": 1,
       "ever_produced": true,
-      "baseline_count": 6.0,
-      "status": "ok",
-      "severity": "ok",
-      "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "baseline_count": null,
+      "status": "error",
+      "severity": "error",
+      "message": "Latest source check failed: Monmouth listing schema changed: https://pol.co.monmouth.nj.us/UpcomingRFP",
+      "age_hours": 0.0
     },
     {
       "source_id": "county-morris",
@@ -774,8 +776,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:43.532958+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:43.532958+00:00",
+      "last_crawl": "2026-09-09T20:34:27.235031+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:27.235031+00:00",
       "last_count": 3,
       "last_error": null,
       "consecutive_failures": 0,
@@ -784,7 +786,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-newark-water",
@@ -797,8 +799,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:03:05.218266+00:00",
-      "last_successful_crawl": "2026-09-09T14:03:05.218266+00:00",
+      "last_crawl": "2026-09-09T20:34:52.238318+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:52.238318+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -807,7 +809,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.4
+      "age_hours": 0.0
     },
     {
       "source_id": "county-ocean",
@@ -820,8 +822,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:45.270138+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:45.270138+00:00",
+      "last_crawl": "2026-09-09T20:34:29.133551+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:29.133551+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -830,7 +832,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-passaic",
@@ -843,8 +845,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:49.408379+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:49.408379+00:00",
+      "last_crawl": "2026-09-09T20:34:33.911083+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:33.911083+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -853,7 +855,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-salem",
@@ -866,8 +868,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:03:01.814533+00:00",
-      "last_successful_crawl": "2026-09-09T14:03:01.814533+00:00",
+      "last_crawl": "2026-09-09T20:34:48.723869+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:48.723869+00:00",
       "last_count": 2,
       "last_error": null,
       "consecutive_failures": 0,
@@ -876,7 +878,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.4
+      "age_hours": 0.0
     },
     {
       "source_id": "county-somerset",
@@ -889,8 +891,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:52.339048+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:52.339048+00:00",
+      "last_crawl": "2026-09-09T20:34:36.975171+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:36.975171+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -899,7 +901,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-sussex",
@@ -922,7 +924,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 49.8
+      "age_hours": 49.9
     },
     {
       "source_id": "county-union",
@@ -935,17 +937,17 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:41.199902+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:41.199902+00:00",
+      "last_crawl": "2026-09-09T20:34:24.885626+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:24.885626+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
       "ever_produced": true,
-      "baseline_count": 1.0,
+      "baseline_count": 1,
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 6.5
+      "age_hours": 0.0
     },
     {
       "source_id": "county-warren",
@@ -958,8 +960,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:02:59.939696+00:00",
-      "last_successful_crawl": "2026-09-09T14:02:59.939696+00:00",
+      "last_crawl": "2026-09-09T20:34:46.505286+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:46.505286+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -968,7 +970,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 6.4
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-camden-city",
@@ -991,7 +993,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 49.8
+      "age_hours": 49.9
     },
     {
       "source_id": "municipal-elizabeth",
@@ -1014,7 +1016,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 49.8
+      "age_hours": 49.9
     },
     {
       "source_id": "municipal-jersey-city",
@@ -1027,8 +1029,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:03:07.378970+00:00",
-      "last_successful_crawl": "2026-09-09T14:03:07.378970+00:00",
+      "last_crawl": "2026-09-09T20:34:54.426655+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:54.426655+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -1037,7 +1039,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.4
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-newark",
@@ -1050,8 +1052,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:03:03.455479+00:00",
-      "last_successful_crawl": "2026-09-09T14:03:03.455479+00:00",
+      "last_crawl": "2026-09-09T20:34:50.430280+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:50.430280+00:00",
       "last_count": 0,
       "last_error": null,
       "consecutive_failures": 0,
@@ -1060,7 +1062,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 6.4
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-paterson",
@@ -1073,8 +1075,8 @@
       "critical": false,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:03:09.366680+00:00",
-      "last_successful_crawl": "2026-09-09T14:03:09.366680+00:00",
+      "last_crawl": "2026-09-09T20:34:56.536080+00:00",
+      "last_successful_crawl": "2026-09-09T20:34:56.536080+00:00",
       "last_count": 1,
       "last_error": null,
       "consecutive_failures": 0,
@@ -1083,7 +1085,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 6.4
+      "age_hours": 0.0
     },
     {
       "source_id": "municipal-trenton",
@@ -1106,7 +1108,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 49.8
+      "age_hours": 49.9
     },
     {
       "source_id": "platform-bidnet",
