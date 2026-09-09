@@ -23,6 +23,7 @@ from app.core.project_maps import project_map_links
 from app.core.deadlines import normalize_deadline
 from app.core.deadlines import EASTERN, deadline_is_past
 from app.core.scanning import closing_soon, matches_search, first_seen_today
+from app.core.work_focus import matches_work_focus, WORK_FOCUS
 from app.core.freshness import feed_order, freshness_groups
 from app.core.geography import NJ_COUNTIES as CANONICAL_NJ_COUNTIES, enrich_geography
 
@@ -71,7 +72,7 @@ def _source_health(crawl_log):
 
 def _filter_notices(notices, notice_type=None, notice_subtype=None,
                     county=None, agency=None, status_filter="active",
-                    source_tier=None, q=None, urgent_only=False, corridor=None, source_id=None):
+                    source_tier=None, q=None, urgent_only=False, corridor=None, source_id=None, work=None):
     today = date.today()
     out = []
     for n in notices:
@@ -114,6 +115,7 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
 
         # Search
         if q and not matches_search(n, q): continue
+        if not matches_work_focus(n, work): continue
 
         if urgent_only and not closing_soon(n): continue
 
@@ -227,6 +229,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         q=q or None,
         corridor=corridor or None,
         source_id=source_id or None,
+        work=request.args.get('work', ''),
     )
     sorted_notices = _sort_notices(filtered)
     order = feed_order(request.args.get('sort'))
@@ -254,6 +257,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         selected_tier=source_tier,
         selected_source=source_id,
         selected_status=status_filter,
+        selected_work=request.args.get('work', ''), work_options=WORK_FOCUS,
         q=q,
         open_count=open_count,
         upcoming_count=upcoming_count,

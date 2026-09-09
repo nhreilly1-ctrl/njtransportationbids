@@ -54,8 +54,9 @@
   </div>
   <div class="filter-desk-controls notice-filter-controls">
     <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Title, agency, contract number..." value="{{ q }}"></label>
-    <details class="more-filters" {{ 'open' if selected_county or selected_agency or selected_tier }}>
-    <summary>County, agency and source filters</summary><div class="advanced-filter-controls">
+    <details class="more-filters" {{ 'open' if selected_county or selected_agency or selected_tier or selected_work }}>
+    <summary>Work focus, county, agency and source filters</summary><div class="advanced-filter-controls">
+    {% include '_work_filter.html' %}
     <label><span>County</span><select name="county" onchange="this.form.requestSubmit()">
       <option value="">All counties</option>
       {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
@@ -113,6 +114,7 @@
       </div>
       <a href="{{ url_for('notices2.notice_detail', notice_id=n.id) }}" class="bid-title" title="{{ n.title }}">{{ n.title }}</a>
       <div class="bid-meta ledger-meta">
+        {% with item=n %}{% include '_work_label.html' %}{% endwith %}
         {% with item=n %}{% include '_freshness.html' %}{% endwith %}
         {% with item=n %}{% include '_schedule_indicator.html' %}{% endwith %}
         <span>{{ n.source_name }}</span>

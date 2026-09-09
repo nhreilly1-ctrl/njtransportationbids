@@ -79,6 +79,12 @@ is binding on public pages and settles design questions that taste cannot.
 
 ## Record Identity and Lifecycle
 
+- `app/core/work_focus.py` supplies conservative title-based browsing hints via
+  `work` filters on opportunity and notice lists. These are not source types,
+  scope exclusions, or eligibility decisions. Default is all work; mixed scopes
+  and unmatched titles remain Other / unclear. Do not promote professional-service
+  forecasts to construction projects based on the work they describe.
+
 - Source-count links use the exact `source` ID filter on `/notices`, not agency
   name matching. Preserve this filter when changing sort or other controls.
 - `/shortlist` is a no-account browser-local list: `shortlist.js` stores IDs only,
