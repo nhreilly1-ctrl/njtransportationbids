@@ -1,0 +1,4 @@
+<label><span>Work focus (title-based)</span><select name="work" onchange="this.form.requestSubmit()">
+  <option value="">All work</option>
+  {% for key, label in work_options.items() %}<option value="{{ key }}" {{ 'selected' if selected_work == key }}>{{ label }}</option>{% endfor %}
+</select></label>

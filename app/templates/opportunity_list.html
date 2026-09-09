@@ -60,8 +60,9 @@
   </div>
   <div class="filter-desk-controls">
     <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Project, agency, contract number..." value="{{ q }}"></label>
-    <details class="more-filters" {{ 'open' if selected_county or selected_agency }}>
-    <summary>County and agency filters</summary><div class="advanced-filter-controls">
+    <details class="more-filters" {{ 'open' if selected_county or selected_agency or selected_work }}>
+    <summary>Work focus, county and agency filters</summary><div class="advanced-filter-controls">
+    {% include '_work_filter.html' %}
     <label><span>County</span><select name="county" onchange="this.form.requestSubmit()">
       <option value="">All counties</option>
       {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
@@ -86,7 +87,7 @@
       <input type="checkbox" name="show_closed" value="1" {{ 'checked' if show_closed }} onchange="this.form.requestSubmit()">
       Include closed and excluded records
     </label>
-    {% if q or selected_county or selected_agency or selected_status != 'active' or show_closed %}
+    {% if q or selected_county or selected_agency or selected_work or selected_status != 'active' or show_closed %}
       <a href="{{ request.path }}?sort={{ feed_order }}" class="filter-clear">Clear filters</a>
     {% endif %}
   </div>
@@ -109,6 +110,7 @@
       </div>
       <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}" class="bid-title" title="{{ o.title }}">{{ o.title }}</a>
       <div class="bid-meta ledger-meta">
+        {% with item=o %}{% include '_work_label.html' %}{% endwith %}
         {% with item=o %}{% include '_freshness.html' %}{% endwith %}
         {% with item=o %}{% include '_schedule_indicator.html' %}{% endwith %}
         <span>{{ o.source_name }}</span>

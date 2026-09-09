@@ -35,6 +35,7 @@ from app.core.submission_checklist import checklist_for
 from app.core.relatedness import rank_related
 from app.core.milestones import milestone_display, schedule_indicator
 from app.core.scanning import matches_search
+from app.core.work_focus import work_focus, matches_work_focus, WORK_FOCUS
 from app.core.freshness import feed_order, newest_first, freshness_groups
 from app.resource_catalog import RESOURCE_SECTIONS, resource_count
 
@@ -763,6 +764,7 @@ def parse_due(raw: str | None) -> date | None:
 
 def enrich(opp: dict) -> dict:
     record = dict(opp)
+    record["work_focus"] = work_focus(record)
     enrich_geography(record)
     enrich_location(record)
     # Rule 2 of docs/TIME_AND_TOOLS.md: the most specific location evidence
@@ -1313,6 +1315,7 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
     status = request.args.get("status", "active")
     show_closed = request.args.get("show_closed") == "1"
     q = request.args.get("q", "").lower()
+    focus = request.args.get("work", "")
 
     def keep(opp: dict) -> bool:
         current_status = opp["status"]
@@ -1341,6 +1344,8 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
             return False
         if q and not matches_search(opp, q):
             return False
+        if not matches_work_focus(opp, focus):
+            return False
         return True
 
     filtered = sort_opps([opp for opp in opps if keep(opp)])
@@ -1364,6 +1369,8 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
         "selected_county": county,
         "selected_agency": agency,
         "selected_status": status,
+        "selected_work": focus,
+        "work_options": WORK_FOCUS,
         "show_closed": show_closed,
         "q": q,
         "total": len(filtered),

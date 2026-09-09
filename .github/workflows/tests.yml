@@ -16,7 +16,7 @@ jobs:
           python-version: '3.11'
           cache: pip
       - run: pip install -r requirements.txt
-      - run: python -m unittest test_deadlines test_geography test_notice_pipeline test_parsers test_corridors test_bid_readiness test_scanning test_milestones test_document_changes test_project_maps test_trade_search
+      - run: python -m unittest test_deadlines test_geography test_notice_pipeline test_parsers test_corridors test_bid_readiness test_scanning test_milestones test_document_changes test_project_maps test_trade_search test_work_focus
       - run: python -m compileall -q app crawlers
       - uses: actions/setup-node@v4
         with:
