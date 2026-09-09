@@ -128,7 +128,7 @@
         {% if n.paywalled %}<span class="access-note">{{ n.platform }} registration required</span>
         {% elif n.access_type and n.access_type not in ('Unknown','') %}<span class="access-note">{{ n.access_type }}</span>{% endif %}
         {% if n.prequal_codes %}<span class="access-note">Prequalification: {{ n.prequal_codes | join(' / ') }}</span>{% endif %}
-        {% if n.map_url %}<a href="{{ n.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Search notice locations; project limits are not verified" data-analytics-event="map_click" data-notice-id="{{ n.id }}" data-agency="{{ n.source_name }}" data-corridor="{{ n.corridors[0] if n.corridors else '' }}">Search map <span>&nearr;</span></a>{% endif %}
+        {% with item=n %}{% include '_project_map_link.html' %}{% endwith %}
         {% if n.official_url %}<a href="{{ n.official_url }}" target="_blank" rel="noopener" class="official-link" data-analytics-event="official_source_click" data-notice-id="{{ n.id }}" data-agency="{{ n.source_name }}" data-opportunity-type="{{ n.notice_subtype or n.notice_type or '' }}" data-corridor="{{ n.corridors[0] if n.corridors else '' }}" data-destination="{{ n.platform or 'official source' }}">Open official notice <span>&nearr;</span></a>{% endif %}
       </div>
     </div>

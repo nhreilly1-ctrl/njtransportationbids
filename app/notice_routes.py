@@ -18,7 +18,8 @@ from io import StringIO
 from flask import (Blueprint, render_template, request,
                    redirect, url_for, Response, session)
 
-from app.core.corridors import enrich_location, map_url
+from app.core.corridors import enrich_location
+from app.core.project_maps import project_map_links
 from app.core.deadlines import normalize_deadline
 from app.core.deadlines import EASTERN, deadline_is_past
 from app.core.scanning import closing_soon, matches_search, first_seen_today
@@ -190,7 +191,9 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
     for raw_record in _load_notices():
         record = dict(raw_record)
         enrich_location(record)
-        record["map_url"] = map_url(record)
+        record["map_links"] = project_map_links(record)
+        record["map_url"] = record["map_links"][0]["url"] if len(record["map_links"]) == 1 else ""
+        record["map_label"] = record["map_links"][0]["label"] if record["map_url"] else ""
         record["urgent"] = closing_soon(record)
         record["is_new_today"] = first_seen_today(record)
         notices.append(record)
@@ -254,7 +257,7 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
         q=q,
         open_count=open_count,
         upcoming_count=upcoming_count,
-        mapped_count=len([n for n in filtered if n.get("map_url")]),
+        mapped_count=len([n for n in filtered if n.get("map_links")]),
         agency_count=len({n.get("source_name") for n in filtered if n.get("source_name")}),
         notice_type=notice_type,
         notice_subtype=notice_subtype,

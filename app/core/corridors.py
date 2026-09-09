@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import re
 from typing import Any
-from urllib.parse import quote_plus
 
 # Em/en/figure dashes and minus signs that appear in source titles
 # (e.g. "TP — 842", "I — 280"). Shared normalization for search work.
@@ -473,77 +472,13 @@ def _map_county_context(record: dict[str, Any]) -> str:
 
 
 def map_query(record: dict[str, Any]) -> str:
-    """Map search text built from notice tokens and labeled agency context.
-
-    A route reference gives a corridor, not a point — the query names the
-    named road, corridor, or municipality and lets the map service draw it.
-    County-agency jurisdiction may disambiguate the search but is never stored
-    or displayed as notice-level geography. No geocoding occurs here.
-    """
-    road_names = record.get("road_names") or []
-    corridors = record.get("corridors") or []
-    municipalities = record.get("municipalities") or []
-    directional_corridors = record.get("directional_corridors") or []
-    directional_route_labels = record.get("directional_route_labels") or []
-    crossing_phrases = record.get("crossing_phrases") or []
-    county_context = _map_county_context(record)
-    # A multi-site notice does not establish a pairing between the first
-    # route and first county. Keep all named places in an explicitly broad search.
-    if not crossing_phrases and (len(road_names) > 1 or len(corridors) > 1):
-        parts = list(road_names) + list(corridors) + list(municipalities)
-        if record.get("geography_provenance") in ("NOTICE_TEXT", "SOURCE_RECORD_FIELD"):
-            parts.extend(f"{county} County" for county in record.get("counties") or [])
-        elif county_context:
-            parts.append(county_context)
-        parts.append("New Jersey")
-        return ", ".join(dict.fromkeys(parts))
-    if crossing_phrases:
-        parts = []
-        if road_names:
-            parts.append(road_names[0])
-        elif directional_route_labels:
-            parts.append(directional_route_labels[0])
-        elif directional_corridors:
-            parts.append(directional_corridors[0])
-        elif corridors:
-            parts.append(corridors[0])
-        parts.append(crossing_phrases[0])
-        if county_context:
-            parts.append(county_context)
-        elif municipalities:
-            parts.append(municipalities[0])
-        parts.append("New Jersey")
-        return ", ".join(parts)
-    if road_names:
-        parts = [road_names[0]]
-        if corridors:
-            parts.append(corridors[0])
-        if municipalities:
-            parts.append(municipalities[0])
-        if county_context:
-            parts.append(county_context)
-        parts.append("New Jersey")
-        return ", ".join(parts)
-    if municipalities:
-        parts = []
-        if corridors:
-            parts.append(corridors[0])
-        parts.append(municipalities[0])
-        if county_context:
-            parts.append(county_context)
-        parts.append("New Jersey")
-        return ", ".join(parts)
-    if corridors:
-        parts = [corridors[0]]
-        if county_context:
-            parts.append(county_context)
-        parts.append("New Jersey")
-        return ", ".join(parts)
-    return ""
+    """Compatibility accessor; multiple sites must not collapse into one query."""
+    from app.core.project_maps import project_map_links
+    links = project_map_links(record)
+    return links[0]["query"] if len(links) == 1 else ""
 
 
 def map_url(record: dict[str, Any]) -> str:
-    query = map_query(record)
-    if not query:
-        return ""
-    return f"https://www.google.com/maps/search/?api=1&query={quote_plus(query)}"
+    from app.core.project_maps import project_map_links
+    links = project_map_links(record)
+    return links[0]["url"] if len(links) == 1 else ""

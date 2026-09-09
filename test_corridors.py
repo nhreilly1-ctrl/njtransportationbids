@@ -270,7 +270,7 @@ class DisplayAndMapTests(unittest.TestCase):
         self.assertIn('title:"Bailey\'s Mill Road"', record["location_evidence"])
         self.assertEqual(
             map_query(record),
-            "Bailey's Mill Road, Bridge over Rt. 287 (NB & SB), Morris County, New Jersey",
+            "Bailey's Mill Road, Morris County, New Jersey",
         )
 
     def test_raritan_bridge_query_uses_crossing_and_direction_before_corridor(self):
@@ -286,13 +286,9 @@ class DisplayAndMapTests(unittest.TestCase):
 
         self.assertEqual(
             map_query(record),
-            "Rt 1 NB, Bridge over Raritan River, Middlesex County, New Jersey",
+            "Morris Goodkind Bridge, New Jersey",
         )
-        self.assertEqual(
-            map_url(record),
-            "https://www.google.com/maps/search/?api=1&query="
-            "Rt+1+NB%2C+Bridge+over+Raritan+River%2C+Middlesex+County%2C+New+Jersey",
-        )
+        self.assertIn("/maps/place/Morris+Goodkind+Bridge/", map_url(record))
 
     def test_county_bid_named_road_uses_title_and_agency_context_for_map(self):
         record = {
@@ -309,7 +305,7 @@ class DisplayAndMapTests(unittest.TestCase):
         self.assertEqual(record["road_names"], ["Spring Valley Road"])
         self.assertEqual(
             map_query(record),
-            "Spring Valley Road, CR-601, Morris County, New Jersey",
+            "Spring Valley Road, Morris County, New Jersey",
         )
 
     def test_normalize_reference_text_unifies_dashes_and_ligatures(self):
@@ -421,7 +417,7 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertIn("Bailey&#39;s Mill Road", html)
         self.assertIn('class="bid-map-link"', html)
         self.assertIn(
-            "query=Bailey%27s+Mill+Road%2C+Bridge+over+Rt.+287+%28NB+%26+SB%29%2C+"
+            "query=Bailey%27s+Mill+Road%2C+"
             "Morris+County%2C+New+Jersey",
             html,
         )
@@ -446,7 +442,7 @@ class PublicSurfaceTests(unittest.TestCase):
 
         self.assertIn('class="bid-map-link"', html)
         self.assertIn("query=I-287%2C+New+Jersey", html)
-        self.assertIn("Search map", html)
+        self.assertIn("View corridor", html)
 
     def test_detail_page_shows_corridor_structure_and_map_rows(self):
         records = [self._opp("i287", "I-287 Bridge Deck Replacement, Borough of Somerville")]
@@ -459,7 +455,7 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertIn("Bridge", html)
         self.assertIn(">Municipality</td>", html)
         self.assertIn("Borough of Somerville", html)
-        self.assertIn("Search map", html)
+        self.assertIn("View corridor", html)
 
     def test_detail_page_shows_named_crossing_and_precise_map_query(self):
         record = self._opp(
@@ -483,8 +479,7 @@ class PublicSurfaceTests(unittest.TestCase):
         self.assertIn(">Crossing</td>", html)
         self.assertIn("Bridge over Raritan River", html)
         self.assertIn(
-            "query=Rt+1+NB%2C+Bridge+over+Raritan+River%2C+"
-            "Middlesex+County%2C+New+Jersey",
+            "/maps/place/Morris+Goodkind+Bridge/",
             html,
         )
 

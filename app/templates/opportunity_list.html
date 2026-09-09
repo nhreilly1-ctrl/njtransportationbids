@@ -131,7 +131,7 @@
         {% with item=o %}{% include '_save_button.html' %}{% endwith %}
         {% if o.access_type and o.access_type not in ('Unknown','') %}<span class="access-note">{{ o.access_type }}</span>{% endif %}
         {% if o.platform and o.platform not in ('Unknown','') %}<span class="access-note">{{ o.platform }}</span>{% endif %}
-        {% if o.map_url %}<a href="{{ o.map_url }}" target="_blank" rel="noopener" class="bid-map-link" title="Search notice locations; project limits are not verified" data-analytics-event="map_click" data-notice-id="{{ o.id }}" data-agency="{{ o.source_name }}" data-corridor="{{ o.corridors[0] if o.corridors else '' }}">Search map <span>&nearr;</span></a>{% endif %}
+        {% with item=o %}{% include '_project_map_link.html' %}{% endwith %}
         {% if o.official_url %}<a href="{{ o.official_url }}" target="_blank" rel="noopener" class="official-link" data-analytics-event="official_source_click" data-notice-id="{{ o.id }}" data-agency="{{ o.source_name }}" data-opportunity-type="{{ 'construction' if is_construction else 'professional_services' }}" data-corridor="{{ o.corridors[0] if o.corridors else '' }}" data-destination="{{ o.platform or 'official source' }}">View official notice <span>&nearr;</span></a>{% endif %}
       </div>
     </div>

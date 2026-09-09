@@ -313,7 +313,8 @@
       resourceStage: 'resource_stage',
       relation: 'relation',
       destination: 'destination',
-      surface: 'surface'
+      surface: 'surface',
+      mapKind: 'map_kind'
     };
     Object.entries(names).forEach(([datasetName, eventName]) => {
       if (element.dataset[datasetName]) params[eventName] = element.dataset[datasetName];
