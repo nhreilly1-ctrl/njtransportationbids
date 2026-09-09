@@ -23,7 +23,8 @@ from app.core.deadlines import (
     normalize_deadline,
     reconcile_authoritative_open_deadline,
 )
-from app.core.corridors import enrich_location, location_display, map_url
+from app.core.corridors import classify_location, enrich_location, location_display
+from app.core.project_maps import project_map_links
 from app.core.geography import NJ_COUNTIES, enrich_geography
 from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
@@ -768,12 +769,14 @@ def enrich(opp: dict) -> dict:
     # leads. A notice naming the NJ Turnpike must not read "County not stated"
     # just because no county was extracted; the scope label still follows when
     # it carries meaning (a county list, Bi-state, Statewide, or a region).
-    evidenced = location_display(record)
+    evidenced = location_display(classify_location({"title": record.get("title", "")}))
     county_label = record.get("county_display") or ""
     if evidenced and county_label and county_label != "County not stated in notice":
         evidenced = f"{evidenced} · {county_label}"
     record["location_display"] = evidenced
-    record["map_url"] = map_url(record)
+    record["map_links"] = project_map_links(record)
+    record["map_url"] = record["map_links"][0]["url"] if len(record["map_links"]) == 1 else ""
+    record["map_label"] = record["map_links"][0]["label"] if record["map_url"] else ""
     normalize_deadline(record)
     record['milestones_display'] = milestone_display(record)
     deadline_conflict = reconcile_authoritative_open_deadline(record)
@@ -1366,7 +1369,7 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
         "total": len(filtered),
         "open_count": len([opp for opp in filtered if opp.get("status") == "open"]),
         "upcoming_count": len([opp for opp in filtered if opp.get("status") == "upcoming"]),
-        "mapped_count": len([opp for opp in filtered if opp.get("map_url")]),
+        "mapped_count": len([opp for opp in filtered if opp.get("map_links")]),
         "agency_count": len(
             {opp.get("source_name") for opp in filtered if opp.get("source_name")}
         ),

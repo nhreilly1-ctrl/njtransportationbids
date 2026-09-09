@@ -1,0 +1,5 @@
+{% if item.map_url %}
+<a href="{{ item.map_url }}" target="_blank" rel="noopener" class="{{ map_class|default('bid-map-link') }}" title="{{ item.map_links[0].note }}" data-analytics-event="map_click" data-notice-id="{{ item.id }}" data-map-kind="{{ item.map_links[0].kind }}" data-agency="{{ item.source_name }}" data-corridor="{{ item.corridors[0] if item.corridors else '' }}" data-surface="{{ map_surface|default('listing') }}">{{ item.map_label }} &nearr;</a>
+{% elif item.map_links %}
+<a href="/opportunities/{{ item.id }}#project-maps" class="bid-map-link">{{ item.map_links|length }} location searches &rarr;</a>
+{% endif %}

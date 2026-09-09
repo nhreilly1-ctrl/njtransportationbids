@@ -267,7 +267,7 @@ class ScanTrustTests(unittest.TestCase):
         self.assertNotRegex(calendar, r"DT(?:START|END)[^\r\n]*T\d{6}")
 
     def test_map_search_preserves_crossing_and_does_not_write_geography(self):
-        record = dict(corridors=["US-1"], directional_route_labels=["Route 1 NB"],
+        record = dict(title="Route 1 NB, Bridge over Raritan River", corridors=["US-1"], directional_route_labels=["Route 1 NB"],
                       crossing_phrases=["Bridge over Raritan River"],
                       counties=["Middlesex"], geography_provenance="NOTICE_TEXT")
         before = deepcopy(record)
@@ -275,7 +275,7 @@ class ScanTrustTests(unittest.TestCase):
         for text in ("Route 1 NB", "Bridge over Raritan River", "Middlesex County"):
             self.assertIn(text, query)
         self.assertEqual(record, before)
-        coastal = dict(municipalities=["Ocean City"], counties=[], corridors=["NJ-52"])
+        coastal = dict(title="Route 52 repairs, City of Ocean City", municipalities=["Ocean City"], counties=[], corridors=["NJ-52"])
         before = deepcopy(coastal)
         query = map_query(coastal)
         self.assertIn("Ocean City", query)
@@ -292,6 +292,8 @@ class ScanTrustTests(unittest.TestCase):
                       deadline_display="Thu, Sep 10, 2026 (time not published)",
                       days_until_due=5, notice_excerpt="Published project description")
         record.update(changes)
+        from app.core.project_maps import project_map_links
+        record['map_links'] = project_map_links(record) if record.get('map_url') else []
         with main.app.test_request_context("/opportunities/project-test"):
             return main.render_template("opportunity_detail.html", opp=record,
                                         related=[], readiness=None, source_total=47,
@@ -302,7 +304,7 @@ class ScanTrustTests(unittest.TestCase):
         self.assertLess(html.index('class="project-actions"'), html.index("Opportunity summary"))
         for event in ("official_source_click", "map_click", "calendar_add"):
             self.assertEqual(html.count('data-analytics-event="' + event + '"'), 1)
-        self.assertIn("not verified project limits", html)
+        self.assertIn("not a verified project pin or work limits", html)
         self.assertIn("time not published", html)
         self.assertNotIn("12:00 AM", html)
         self.assertIn("County not stated in notice", html)
@@ -372,14 +374,15 @@ class ScanTrustTests(unittest.TestCase):
 
     def test_intersection_preserves_all_roads(self):
         record = enrich_location(dict(title="Intersection improvements at County Route 3 (Tennent Road) and Spring Valley Road / Harbor Road in the Township of Marlboro"))
-        query = map_query(record)
+        from app.core.project_maps import project_map_links
+        query = " | ".join(link['query'] for link in project_map_links(record))
         for road in ("Tennent Road", "Spring Valley Road", "Harbor Road", "Marlboro"):
             self.assertIn(road, query)
 
     def test_multisite_search_does_not_pair_first_route_and_county(self):
-        query = map_query(dict(corridors=["I-278", "I-287"], counties=["Bergen", "Union"], geography_provenance="NOTICE_TEXT"))
-        for value in ("I-278", "I-287", "Bergen", "Union"):
-            self.assertIn(value, query)
+        from app.core.project_maps import project_map_links
+        links = project_map_links(dict(title="I-278 and I-287 drainage", counties=["Bergen", "Union"], geography_provenance="NOTICE_TEXT"))
+        self.assertEqual([link['query'] for link in links], ['I-278, New Jersey', 'I-287, New Jersey'])
 
 
 if __name__ == "__main__":
