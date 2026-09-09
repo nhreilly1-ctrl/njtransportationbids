@@ -79,6 +79,12 @@ is binding on public pages and settles design questions that taste cannot.
 
 ## Record Identity and Lifecycle
 
+- NJDOT construction project-facts pilot reads the first page of official notice
+  PDFs. `project_facts` stores exact extracted fields, evidence, URL, PDF hash and
+  check time. Public display withholds values after 48 hours, retrieval failure or
+  an identity mismatch. Missing extraction does not mean the agency omitted it.
+  Estimates and eligible work types are not a bidder eligibility determination.
+
 - `app/core/work_focus.py` supplies conservative title-based browsing hints via
   `work` filters on opportunity and notice lists. These are not source types,
   scope exclusions, or eligibility decisions. Default is all work; mixed scopes
