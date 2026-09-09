@@ -21,6 +21,7 @@ NOTICE_SOURCES = [
 
     {
         "id":           "state-njdot-construction",
+        "project_facts_pilot": True,
         "name":         "NJDOT Construction Services",
         "entity_type":  "State Agency",
         "source_tier":  "state",

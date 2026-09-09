@@ -96,6 +96,20 @@
   <span>Confirm addenda before submitting</span>
 </div>
 
+{% if opp.project_facts_display %}
+<section class="detail-card" aria-label="Published project facts" style="margin-bottom:1rem;">
+  <h2 class="section-label">Published project facts</h2>
+  {% if opp.project_facts_display.needs_review %}
+  <p>Current notice facts could not be verified. Check the official notice for the estimate, completion date and work types.</p>
+  {% else %}
+  <dl>{% for fact in opp.project_facts_display['items'] %}
+    <dt><strong>{{ fact.label }}</strong></dt><dd>{{ fact.value }} <a href="{{ opp.project_facts_display.url }}#page={{ fact.page }}" target="_blank" rel="noopener">Notice, page {{ fact.page }}</a></dd>
+  {% else %}<p>These facts were not extracted from the notice. Check the official document.</p>{% endfor %}</dl>
+  <p>Estimate is informational, not an award value. Work types alone do not establish your firm's eligibility. Confirm current requirements and addenda in the official bid package.</p>
+  {% endif %}
+  <small>PDF checked {{ opp.project_facts_display.checked_at }}. NJDOT notice pilot.</small>
+</section>
+{% endif %}
 {% if submission_checklist %}
 <section id="submission-checklist" class="detail-card" aria-labelledby="submission-checklist-heading" style="margin-bottom:1rem;">
   <h2 id="submission-checklist-heading" class="section-label">C-753A submission checks</h2>

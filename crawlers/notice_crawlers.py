@@ -387,6 +387,11 @@ def parse_njdot_construction(source):
             unique_records[key] = record
     records = list(unique_records.values())
 
+    if source.get('project_facts_pilot') and source['id'] == 'state-njdot-construction':
+        from crawlers.project_facts import collect_njdot_facts
+        for record in records:
+            record['project_facts'] = collect_njdot_facts(record, _get, _now())
+
     # Also crawl planned ads page
     if source.get("planned_url"):
         records += _parse_njdot_planned(source)

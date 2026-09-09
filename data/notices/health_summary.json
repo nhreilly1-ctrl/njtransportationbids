@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09T14:03:09.649794+00:00",
+  "generated_at": "2026-09-09T20:29:58.994587+00:00",
   "overall": "warning",
   "configured_sources": 47,
   "healthy_sources": 45,
@@ -94,7 +94,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-drjtbc-construction",
@@ -117,7 +117,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-drpa-patco",
@@ -140,7 +140,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-dos-legal",
@@ -163,7 +163,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-sos-directory",
@@ -186,7 +186,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 43.4
+      "age_hours": 49.9
     },
     {
       "source_id": "state-njtransit",
@@ -209,7 +209,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-treasury",
@@ -232,7 +232,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 43.4
+      "age_hours": 49.9
     },
     {
       "source_id": "state-njta",
@@ -255,7 +255,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-njdot-profserv-upcoming",
@@ -278,7 +278,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-njdot-construction",
@@ -291,8 +291,8 @@
       "critical": true,
       "access_state": "accessible",
       "access_reason": null,
-      "last_crawl": "2026-09-09T14:01:39.909337+00:00",
-      "last_successful_crawl": "2026-09-09T14:01:39.909337+00:00",
+      "last_crawl": "2026-09-09T20:29:58.421136+00:00",
+      "last_successful_crawl": "2026-09-09T20:29:58.421136+00:00",
       "last_count": 7,
       "last_error": null,
       "consecutive_failures": 0,
@@ -324,7 +324,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-njdot-notices",
@@ -347,7 +347,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-njdot-profserv",
@@ -370,7 +370,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-njtpa",
@@ -393,7 +393,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-panynj-construction",
@@ -416,7 +416,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-panynj-profserv",
@@ -439,7 +439,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "state-sjta",
@@ -462,7 +462,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-atlantic",
@@ -485,7 +485,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-bergen",
@@ -508,7 +508,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-burlington",
@@ -531,7 +531,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-camden",
@@ -554,7 +554,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-cape-may",
@@ -577,7 +577,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 43.4
+      "age_hours": 49.9
     },
     {
       "source_id": "county-cumberland",
@@ -600,7 +600,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-essex",
@@ -623,7 +623,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-gloucester",
@@ -646,7 +646,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-hudson",
@@ -669,7 +669,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-hunterdon",
@@ -692,7 +692,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 43.4
+      "age_hours": 49.8
     },
     {
       "source_id": "county-mercer",
@@ -715,7 +715,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-middlesex",
@@ -738,7 +738,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-monmouth",
@@ -761,7 +761,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-morris",
@@ -784,7 +784,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "municipal-newark-water",
@@ -807,7 +807,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.4
     },
     {
       "source_id": "county-ocean",
@@ -830,7 +830,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-passaic",
@@ -853,7 +853,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-salem",
@@ -876,7 +876,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.4
     },
     {
       "source_id": "county-somerset",
@@ -899,7 +899,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-sussex",
@@ -922,7 +922,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 43.4
+      "age_hours": 49.8
     },
     {
       "source_id": "county-union",
@@ -945,7 +945,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 0.0
+      "age_hours": 6.5
     },
     {
       "source_id": "county-warren",
@@ -968,7 +968,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.0
+      "age_hours": 6.4
     },
     {
       "source_id": "municipal-camden-city",
@@ -991,7 +991,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 43.4
+      "age_hours": 49.8
     },
     {
       "source_id": "municipal-elizabeth",
@@ -1014,7 +1014,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 43.4
+      "age_hours": 49.8
     },
     {
       "source_id": "municipal-jersey-city",
@@ -1037,7 +1037,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.4
     },
     {
       "source_id": "municipal-newark",
@@ -1060,7 +1060,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities; this source has never produced a record, so an unnoticed parser mismatch cannot be ruled out.",
-      "age_hours": 0.0
+      "age_hours": 6.4
     },
     {
       "source_id": "municipal-paterson",
@@ -1083,7 +1083,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Latest source check completed normally.",
-      "age_hours": 0.0
+      "age_hours": 6.4
     },
     {
       "source_id": "municipal-trenton",
@@ -1106,7 +1106,7 @@
       "status": "ok",
       "severity": "ok",
       "message": "Source check found no matching opportunities currently listed.",
-      "age_hours": 43.4
+      "age_hours": 49.8
     },
     {
       "source_id": "platform-bidnet",

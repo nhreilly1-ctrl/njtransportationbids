@@ -35,6 +35,7 @@ from app.core.submission_checklist import checklist_for
 from app.core.relatedness import rank_related
 from app.core.milestones import milestone_display, schedule_indicator
 from app.core.scanning import matches_search
+from app.core.project_facts import project_facts_display
 from app.core.work_focus import work_focus, matches_work_focus, WORK_FOCUS
 from app.core.freshness import feed_order, newest_first, freshness_groups
 from app.resource_catalog import RESOURCE_SECTIONS, resource_count
@@ -764,6 +765,7 @@ def parse_due(raw: str | None) -> date | None:
 
 def enrich(opp: dict) -> dict:
     record = dict(opp)
+    record['project_facts_display'] = project_facts_display(record)
     record["work_focus"] = work_focus(record)
     enrich_geography(record)
     enrich_location(record)
