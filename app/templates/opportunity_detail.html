@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260905') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='project.css', v='20260905') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='project.css', v='20260917') }}">
 {% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
@@ -174,11 +174,19 @@
 </div>
 {% endif %}
 
+{% if research %}
+{% include 'partials/agency_preparation.html' %}
+{% include 'partials/project_research.html' %}
+<details class="project-record-details">
+  <summary>Record details and source deadline text</summary>
+{% endif %}
 <div class="detail-grid">
+  {% if not research %}
   <div class="detail-card">
     <div class="section-label" style="margin-top:0;">Next step</div>
     <p style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.next_step or 'Open the official source and follow the solicitation instructions. Confirm due dates and submission method before committing estimating time.' }}</p>
   </div>
+  {% endif %}
   <div class="detail-card">
     <div class="section-label" style="margin-top:0;">Record details</div>
     <table style="width:100%; font-size:13px; border-collapse:collapse;">
@@ -199,6 +207,7 @@
     </table>
   </div>
 </div>
+{% if research %}</details>{% endif %}
 
 {% if related %}
 <div class="section-label">Related opportunities</div>
@@ -217,23 +226,14 @@
 {% endfor %}
 {% endif %}
 
-{% if agency_guide_slug %}
+{% if agency_guide_slug and not research %}
 <div class="detail-card" style="margin-bottom:1rem;">
   <strong>New to this agency?</strong>
   <a href="{{ url_for('agency_guides') }}#{{ agency_guide_slug }}" data-analytics-event="agency_guide_open" data-agency="{{ agency_guide_slug }}" data-notice-id="{{ opp.id }}" data-surface="opportunity_detail">Explore its procurement tracks, reviewed guidance and questions to confirm</a>
 </div>
 {% endif %}
-{% if preparation %}
-<section class="detail-card" aria-labelledby="agency-preparation-heading" style="margin-bottom:1rem;">
-  <div class="section-label">Agency preparation</div>
-  <h2 id="agency-preparation-heading" style="font-size:1.1rem; margin-bottom:.6rem;">{{ preparation.title }}</h2>
-  <p style="line-height:1.55;">{{ preparation.text }}</p>
-  <p style="font-size:.85rem; color:var(--text2); margin-top:.75rem;">{{ preparation.scope }}. This project's solicitation and addenda control.</p>
-  <div style="display:flex; flex-wrap:wrap; gap:.5rem 1rem; margin-top:.75rem;">
-    <a href="{{ preparation.url }}" target="_blank" rel="noopener">Read official agency guidance &#8599;</a>
-    <span style="color:var(--text2);">Guidance reviewed <time datetime="{{ preparation.reviewed_on }}">{{ preparation.reviewed_on }}</time></span>
-  </div>
-</section>
+{% if not research %}
+{% include 'partials/agency_preparation.html' %}
 {% endif %}
 
 {% if readiness %}
