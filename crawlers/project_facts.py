@@ -3,7 +3,7 @@ import hashlib
 import io
 from urllib.parse import urlparse
 from pypdf import PdfReader
-from app.core.project_facts import parse_njdot_facts
+from app.core.project_facts import parse_njdot_facts, parse_njdot_bid_date
 
 
 def collect_njdot_facts(record, get, checked_at):
@@ -21,7 +21,8 @@ def collect_njdot_facts(record, get, checked_at):
         reader = PdfReader(io.BytesIO(response.content))
         text = reader.pages[0].extract_text()
         items = parse_njdot_facts(text or '', pack['contract'])
-        pack.update(state='ok', items=items, sha256=hashlib.sha256(response.content).hexdigest())
+        pack.update(state='ok', items=items, sha256=hashlib.sha256(response.content).hexdigest(),
+                    bid_date=parse_njdot_bid_date(text or '', pack['contract']))
     except Exception:
         return pack
     return pack

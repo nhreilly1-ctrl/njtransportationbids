@@ -766,7 +766,6 @@ def parse_due(raw: str | None) -> date | None:
 
 def enrich(opp: dict) -> dict:
     record = dict(opp)
-    record['project_facts_display'] = project_facts_display(record)
     record["work_focus"] = work_focus(record)
     enrich_geography(record)
     enrich_location(record)
@@ -783,6 +782,7 @@ def enrich(opp: dict) -> dict:
     record["map_url"] = record["map_links"][0]["url"] if len(record["map_links"]) == 1 else ""
     record["map_label"] = record["map_links"][0]["label"] if record["map_url"] else ""
     normalize_deadline(record)
+    record['project_facts_display'] = project_facts_display(record)
     record['milestones_display'] = milestone_display(record)
     deadline_conflict = reconcile_authoritative_open_deadline(record)
     due = deadline_date(record)
