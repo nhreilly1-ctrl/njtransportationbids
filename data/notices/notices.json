@@ -1,5 +1,1102 @@
 [
   {
+    "id": "notice-34343d20ceaa",
+    "title": "Maintenance Beam Guide Rail and Attenuator Repair Contract, South - 2027, Various Locations, Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623102, DP No: 27447.",
+    "notice_excerpt": "NJDOT construction contract. Maintenance Beam Guide Rail and Attenuator Repair Contract, South - 2027, Various Locations, Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623102, DP No: 27447.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27447.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "10/20/26",
+    "contract_number": "DP-27447",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.428294+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27447.pdf",
+      "checked_at": "2026-09-19T18:02:09.132637+00:00",
+      "contract": "DP-27447",
+      "items": [],
+      "sha256": "54930ad132cd736334b47ddb79cc2ab23a1f2237bc05dfb0040d7eaf23f09493",
+      "bid_date": null
+    },
+    "counties": [
+      "Atlantic",
+      "Burlington",
+      "Camden",
+      "Cape May",
+      "Cumberland",
+      "Gloucester",
+      "Salem"
+    ],
+    "coverage_scope": "MULTI_COUNTY",
+    "region_raw": "South",
+    "geography_confidence": "MEDIUM",
+    "geography_provenance": "NOTICE_TEXT",
+    "geography_evidence": "title:\"Salem Counties\" | title:\"Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
+    "county_display": "Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester, Salem",
+    "geography_conflict": true,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Tue, Oct 20, 2026 (time not published)",
+    "due_date_parsed": "2026-10-20",
+    "days_until_due": 31,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.428294+00:00",
+    "first_seen_at": "2026-09-17T14:33:40.994553+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-5467a0fde543",
+    "title": "Maintenance Beam Guide Rail and Attenuator Repair Contract, Central - 2027, Various Locations, Hunterdon, Mercer, Middlesex, Monmouth, Ocean, Somerset and Warren (South of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623101, DP No: 27446.",
+    "notice_excerpt": "NJDOT construction contract. Maintenance Beam Guide Rail and Attenuator Repair Contract, Central - 2027, Various Locations, Hunterdon, Mercer, Middlesex, Monmouth, Ocean, Somerset and Warren (South of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623101, DP No: 27446.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27446.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "10/15/26",
+    "contract_number": "DP-27446",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.428294+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27446.pdf",
+      "checked_at": "2026-09-19T18:02:00.059475+00:00",
+      "contract": "DP-27446",
+      "items": [],
+      "sha256": "8343dbc9bd2d4c17dfa56ad65ebe265e5b8ad4f6d269166a9eb8efabc1fad993",
+      "bid_date": null
+    },
+    "counties": [],
+    "coverage_scope": "REGIONAL",
+    "region_raw": "Central",
+    "geography_confidence": "LOW",
+    "geography_provenance": "NONE",
+    "geography_evidence": "region_raw=\"Central\" retained without county expansion (R-04)",
+    "county_display": "Central",
+    "geography_conflict": false,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [
+      "NJ-57"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "title:\"Route 57\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Oct 15, 2026 (time not published)",
+    "due_date_parsed": "2026-10-15",
+    "days_until_due": 26,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.427310+00:00",
+    "first_seen_at": "2026-09-17T14:33:40.994510+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-08d000c149a3",
+    "title": "Route 78, Route 22 to Drift Road/Dale Road, ITS, Contract No. 004186010, Townships of Pohatcong, Greenwich, and Franklin, Warren County; Townships of Bethlehem, Union, Clinton, Readington, and Tewksbury, Boroughs of Bloomsbury, and Lebanon, Town of Clinton, Hunterdon County; Townships of Bedminster, Bridgewater, Bernards, and Warren, Borough of Watchung, Somerset County; Federal Project No: 0078345, UPC No: 186010, PE No: N/A, CE No: 2208236, DP No: 26600.",
+    "notice_excerpt": "NJDOT construction contract. Route 78, Route 22 to Drift Road/Dale Road, ITS, Contract No. 004186010, Townships of Pohatcong, Greenwich, and Franklin, Warren County; Townships of Bethlehem, Union, Clinton, Readington, and Tewksbury, Boroughs of Bloomsbury, and Lebanon, Town of Clinton, Hunterdon County; Townships of Bedminster, Bridgewater, Bernards, and Warren, Borough of Watchung, Somerset County; Federal Project No: 0078345, UPC No: 186010, PE No: N/A, CE No: 2208236, DP No: 26600.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26600.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "10/15/26",
+    "contract_number": "004186010",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.427310+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26600.pdf",
+      "checked_at": "2026-09-19T18:01:53.758340+00:00",
+      "contract": "004186010",
+      "items": [
+        {
+          "kind": "estimate",
+          "value": "Range between $20,000,001 to $35,000,000",
+          "evidence": "Estimated Range (for Information Purpose Only): Range between $20,000,001 to $35,000,000",
+          "page": 1
+        },
+        {
+          "kind": "completion",
+          "value": "01/11/2030",
+          "evidence": "Estimated Completion Date: 01/11/2030",
+          "page": 1
+        },
+        {
+          "kind": "work_types",
+          "value": "33 or 7",
+          "evidence": "Contractors Prequalified in one of these Work Types are eligible to bid this project: 33 or 7 ",
+          "page": 1
+        }
+      ],
+      "sha256": "3d421ced1b7ffa139d3f750dcce3332f9e5ba81922536f4417aa068a49c3de05",
+      "bid_date": {
+        "date": "2026-10-15",
+        "raw": "10/15/2026",
+        "evidence": "Project Bid Date: 10/15/2026",
+        "page": 1
+      }
+    },
+    "counties": [
+      "Hunterdon",
+      "Somerset",
+      "Warren"
+    ],
+    "coverage_scope": "MULTI_COUNTY",
+    "region_raw": null,
+    "geography_confidence": "MEDIUM",
+    "geography_provenance": "NOTICE_TEXT",
+    "geography_evidence": "title:\"Warren County\" | title:\"Hunterdon County\" | title:\"Somerset County\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
+    "county_display": "Hunterdon, Somerset, Warren",
+    "geography_conflict": true,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [
+      "I-78",
+      "US-22"
+    ],
+    "structure_types": [],
+    "municipalities": [
+      "Township of Pohatcong",
+      "Township of Bethlehem",
+      "Borough of Bloomsbury",
+      "Town of Clinton",
+      "Township of Bedminster",
+      "Borough of Watchung"
+    ],
+    "road_names": [
+      "Drift Road",
+      "Dale Road"
+    ],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "title:\"Route 78\" | title:\"Route 22\" | title:\"Township of Pohatcong\" | title:\"Township of Bethlehem\" | title:\"Borough of Bloomsbury\" | title:\"Town of Clinton\" | title:\"Township of Bedminster\" | title:\"Borough of Watchung\" | title:\"Route 22 to Drift Road\" | title:\"Dale Road\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Oct 15, 2026 (time not published)",
+    "due_date_parsed": "2026-10-15",
+    "days_until_due": 26,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.426287+00:00",
+    "first_seen_at": "2026-09-17T14:33:40.994468+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-31707a79f5ec",
+    "title": "Maintenance Beam Guide Rail and Attenuator Repair Contract, North - 2027, Various Locations, Bergen, Essex, Hudson, Morris, Passaic, Sussex, Union and Warren (Including and North of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623100, DP No: 27445.",
+    "notice_excerpt": "NJDOT construction contract. Maintenance Beam Guide Rail and Attenuator Repair Contract, North - 2027, Various Locations, Bergen, Essex, Hudson, Morris, Passaic, Sussex, Union and Warren (Including and North of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623100, DP No: 27445.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27445.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "10/08/26",
+    "contract_number": "DP-27445",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.426287+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27445.pdf",
+      "checked_at": "2026-09-19T18:01:46.080172+00:00",
+      "contract": "DP-27445",
+      "items": [],
+      "sha256": "9afc2e1da131538c2727e66c34228e7b2d57a66b19056e7088bc8c42d0a00114",
+      "bid_date": null
+    },
+    "counties": [],
+    "coverage_scope": "REGIONAL",
+    "region_raw": "North",
+    "geography_confidence": "LOW",
+    "geography_provenance": "NONE",
+    "geography_evidence": "region_raw=\"North\" retained without county expansion (R-04)",
+    "county_display": "North",
+    "geography_conflict": false,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [
+      "NJ-57"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "title:\"Route 57\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Oct 8, 2026 (time not published)",
+    "due_date_parsed": "2026-10-08",
+    "days_until_due": 19,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.425301+00:00",
+    "first_seen_at": "2026-09-17T14:33:40.994424+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-8450c7548f2b",
+    "title": "Maintenance Concrete Structural Repair Contract, South- 2027, Various Locations, Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623082, DP No: 27427.",
+    "notice_excerpt": "NJDOT construction contract. Maintenance Concrete Structural Repair Contract, South- 2027, Various Locations, Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623082, DP No: 27427.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27427.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "10/08/26",
+    "contract_number": "DP-27427",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.425301+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27427.pdf",
+      "checked_at": "2026-09-19T18:01:39.333726+00:00",
+      "contract": "DP-27427",
+      "items": [],
+      "sha256": "79ab332947f102f63ead96870a98e6a8b0f05aa941028c9528a491deac38bc76",
+      "bid_date": null
+    },
+    "counties": [
+      "Atlantic",
+      "Burlington",
+      "Camden",
+      "Cape May",
+      "Cumberland",
+      "Gloucester",
+      "Salem"
+    ],
+    "coverage_scope": "MULTI_COUNTY",
+    "region_raw": "South",
+    "geography_confidence": "MEDIUM",
+    "geography_provenance": "NOTICE_TEXT",
+    "geography_evidence": "title:\"Salem Counties\" | title:\"Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
+    "county_display": "Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester, Salem",
+    "geography_conflict": true,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Oct 8, 2026 (time not published)",
+    "due_date_parsed": "2026-10-08",
+    "days_until_due": 19,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.423299+00:00",
+    "first_seen_at": "2026-09-10T13:58:23.230153+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-4ecb39f0ea77",
+    "title": "Maintenance Concrete Structural Repair Contract, Central- 2027, Various Locations, Hunterdon, Mercer, Middlesex, Monmouth, Ocean, Somerset and Warren (South of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623081, DP No: 27426.",
+    "notice_excerpt": "NJDOT construction contract. Maintenance Concrete Structural Repair Contract, Central- 2027, Various Locations, Hunterdon, Mercer, Middlesex, Monmouth, Ocean, Somerset and Warren (South of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623081, DP No: 27426.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27426.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "10/06/26",
+    "contract_number": "DP-27426",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.423299+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27426.pdf",
+      "checked_at": "2026-09-19T18:01:31.834481+00:00",
+      "contract": "DP-27426",
+      "items": [],
+      "sha256": "f339b76e306e6361a40058b6a05cd8f2a6d95d6dc460a239ea5cd5fbf8ce143d",
+      "bid_date": null
+    },
+    "counties": [],
+    "coverage_scope": "REGIONAL",
+    "region_raw": "Central",
+    "geography_confidence": "LOW",
+    "geography_provenance": "NONE",
+    "geography_evidence": "region_raw=\"Central\" retained without county expansion (R-04)",
+    "county_display": "Central",
+    "geography_conflict": false,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [
+      "NJ-57"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "title:\"Route 57\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Tue, Oct 6, 2026 (time not published)",
+    "due_date_parsed": "2026-10-06",
+    "days_until_due": 17,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.422276+00:00",
+    "first_seen_at": "2026-09-10T13:58:23.230117+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-0bcd95a25561",
+    "title": "Maintenance Concrete Structural Repair Contract, North - 2027, Various Locations, Bergen, Essex, Hudson, Morris, Passaic, Sussex, Union and Warren (Including and North of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623080, DP No: 27425.",
+    "notice_excerpt": "NJDOT construction contract. Maintenance Concrete Structural Repair Contract, North - 2027, Various Locations, Bergen, Essex, Hudson, Morris, Passaic, Sussex, Union and Warren (Including and North of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623080, DP No: 27425.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27425.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "10/01/26",
+    "contract_number": "DP-27425",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.422276+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27425.pdf",
+      "checked_at": "2026-09-19T18:01:24.610210+00:00",
+      "contract": "DP-27425",
+      "items": [],
+      "sha256": "dbae34871fd3b9125a3d3f7482f1b983fe677a69f3ed3d40f621a27c53c065c9",
+      "bid_date": null
+    },
+    "counties": [],
+    "coverage_scope": "REGIONAL",
+    "region_raw": "North",
+    "geography_confidence": "LOW",
+    "geography_provenance": "NONE",
+    "geography_evidence": "region_raw=\"North\" retained without county expansion (R-04)",
+    "county_display": "North",
+    "geography_conflict": false,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [
+      "NJ-57"
+    ],
+    "structure_types": [],
+    "municipalities": [],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "title:\"Route 57\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Oct 1, 2026 (time not published)",
+    "due_date_parsed": "2026-10-01",
+    "days_until_due": 12,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.420316+00:00",
+    "first_seen_at": "2026-09-10T13:58:23.230080+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-d2215516084d",
+    "title": "Maintenance JOC Basin Restoration Contract, Statewide - 2026, Various Locations, Bergen, Burlington, Camden, Cape May, Essex, Gloucester, Hudson, Hunterdon, Mercer, Middlesex, Monmouth, Passaic, and Union Counties; Federal Project No: F00S(123), UPC No: N/A, PE No: 2622776, CE No: 2208181, DP No: 26423.",
+    "notice_excerpt": "NJDOT construction contract. Maintenance JOC Basin Restoration Contract, Statewide - 2026, Various Locations, Bergen, Burlington, Camden, Cape May, Essex, Gloucester, Hudson, Hunterdon, Mercer, Middlesex, Monmouth, Passaic, and Union Counties; Federal Project No: F00S(123), UPC No: N/A, PE No: 2622776, CE No: 2208181, DP No: 26423.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_26423.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "10/01/26",
+    "contract_number": "DP-26423",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.420316+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_26423.pdf",
+      "checked_at": "2026-09-19T18:01:16.855442+00:00",
+      "contract": "DP-26423",
+      "items": [],
+      "sha256": "603473d300772c8580007d56408fcb2890d1dbc892bde18c48015dcfdd1cbb7a",
+      "bid_date": null
+    },
+    "counties": [
+      "Bergen",
+      "Burlington",
+      "Camden",
+      "Cape May",
+      "Essex",
+      "Gloucester",
+      "Hudson",
+      "Hunterdon",
+      "Mercer",
+      "Middlesex",
+      "Monmouth",
+      "Passaic",
+      "Union"
+    ],
+    "coverage_scope": "MULTI_COUNTY",
+    "region_raw": null,
+    "geography_confidence": "MEDIUM",
+    "geography_provenance": "NOTICE_TEXT",
+    "geography_evidence": "title:\"Union Counties\" | title:\"Bergen, Burlington, Camden, Cape May, Essex, Gloucester, Hudson, Hunterdon, Mercer, Middlesex, Monmouth, Passaic, and Union Counties\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
+    "county_display": "Bergen, Burlington, Camden, Cape May, Essex, Gloucester, Hudson, Hunterdon, Mercer, Middlesex, Monmouth, Passaic, Union",
+    "geography_conflict": true,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Oct 1, 2026 (time not published)",
+    "due_date_parsed": "2026-10-01",
+    "days_until_due": 12,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.419296+00:00",
+    "first_seen_at": "2026-09-10T13:58:23.230043+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-994a36d077a7",
+    "title": "Maintenance Dredging and Channel Improvements for the Pews Creek Channel, Channel No. 007 and Monmouth Cove Marina, Contract No. 007202604, Township of Middletown, County of Monmouth, New Jersey; 100% State Funded, UPC No: N/A, PE No: 6110108, CE No: 6700367, DP No: 26704.",
+    "notice_excerpt": "NJDOT construction contract. Maintenance Dredging and Channel Improvements for the Pews Creek Channel, Channel No. 007 and Monmouth Cove Marina, Contract No. 007202604, Township of Middletown, County of Monmouth, New Jersey; 100% State Funded, UPC No: N/A, PE No: 6110108, CE No: 6700367, DP No: 26704.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26704.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "09/29/26",
+    "contract_number": "007202604",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.419296+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26704.pdf",
+      "checked_at": "2026-09-19T18:01:08.452555+00:00",
+      "contract": "007202604",
+      "items": [
+        {
+          "kind": "work_types",
+          "value": "43",
+          "evidence": "Contractors Prequalified in one of these Work Types are eligible to bid this project: 43 ",
+          "page": 1
+        }
+      ],
+      "sha256": "5ee0dd718ceee1defb6ef84e9c0b5c96a4e9f150690737bd491ebdff1cf0bbab",
+      "bid_date": null
+    },
+    "counties": [
+      "Monmouth"
+    ],
+    "coverage_scope": "SINGLE_COUNTY",
+    "region_raw": null,
+    "geography_confidence": "MEDIUM",
+    "geography_provenance": "NOTICE_TEXT",
+    "geography_evidence": "title:\"County of Monmouth\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
+    "county_display": "Monmouth",
+    "geography_conflict": true,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [],
+    "structure_types": [],
+    "municipalities": [
+      "Township of Middletown"
+    ],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "title:\"Township of Middletown\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Tue, Sep 29, 2026 (time not published)",
+    "due_date_parsed": "2026-09-29",
+    "days_until_due": 10,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.418312+00:00",
+    "first_seen_at": "2026-09-10T13:58:23.229999+00:00",
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-09a31913dc62",
+    "title": "Route 1, NB Bridge over Raritan River, Contract # 027153030, Reconstruction, Bridge Widening and Bridge Superstructure Replacement, Township of Edison, City of New Brunswick, County of Middlesex; Federal Project No: 0001367, UPC No: 153030, PE No: 1203516, CE No: 1203519, DP No: 26107.",
+    "notice_excerpt": "NJDOT construction contract. Route 1, NB Bridge over Raritan River, Contract # 027153030, Reconstruction, Bridge Widening and Bridge Superstructure Replacement, Township of Edison, City of New Brunswick, County of Middlesex; Federal Project No: 0001367, UPC No: 153030, PE No: 1203516, CE No: 1203519, DP No: 26107.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26107.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "09/24/26",
+    "contract_number": "027153030",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.418312+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26107.pdf",
+      "checked_at": "2026-09-19T18:01:01.366193+00:00",
+      "contract": "027153030",
+      "items": [
+        {
+          "kind": "estimate",
+          "value": "Range between $150,000,001 to $200,000,000",
+          "evidence": "Estimated Range (for Information Purpose Only): Range between $150,000,001 to $200,000,000",
+          "page": 1
+        },
+        {
+          "kind": "completion",
+          "value": "6/28/2030",
+          "evidence": "Estimated Completion Date: 6/28/2030",
+          "page": 1
+        }
+      ],
+      "sha256": "136d6bb60727dc57a59a8af92257f0be8a1d98b2f4029bbeb261e974f3cd19dc",
+      "bid_date": {
+        "date": "2026-08-25",
+        "raw": "8/25/26",
+        "evidence": "Project Bid Date: 8/25/26",
+        "page": 1
+      }
+    },
+    "counties": [
+      "Middlesex"
+    ],
+    "coverage_scope": "SINGLE_COUNTY",
+    "region_raw": null,
+    "geography_confidence": "MEDIUM",
+    "geography_provenance": "NOTICE_TEXT",
+    "geography_evidence": "title:\"County of Middlesex\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
+    "county_display": "Middlesex",
+    "geography_conflict": true,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [
+      "US-1"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [
+      "Township of Edison",
+      "City of New Brunswick"
+    ],
+    "road_names": [],
+    "directional_corridors": [
+      "US-1 NB"
+    ],
+    "directional_route_labels": [
+      "Route 1 NB"
+    ],
+    "crossing_phrases": [
+      "Bridge over Raritan River"
+    ],
+    "location_evidence": "title:\"Route 1\" | title:\"Bridge\" | title:\"Township of Edison\" | title:\"City of New Brunswick\" | title:\"Route 1, NB\" | title:\"Bridge over Raritan River\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Sep 24, 2026 (time not published) - linked PDF date differs; confirm with agency",
+    "due_date_parsed": "2026-09-24",
+    "days_until_due": null,
+    "deadline_conflict": true,
+    "document_deadline_warning": {
+      "listing_date": "2026-09-24",
+      "pdf_date": "2026-08-25",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26107.pdf",
+      "checked_at": "2026-09-19"
+    },
+    "published_deadline_display": "Thu, Sep 24, 2026 (time not published)",
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": false,
+    "last_checked_at": "2026-09-19T18:02:21.416288+00:00",
+    "first_seen_at": null,
+    "materially_changed_at": "2026-09-11T13:57:59.301209+00:00",
+    "change_labels": [
+      "Deadline changed"
+    ],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-52f61899ea44",
+    "title": "Route 94, Pleasant Valley Drive to Maple Grange Road, Contract No. 038153910, Roadway and Guiderail Improvements, Vernon Township, Sussex County; Federal Project No: 0094308, UPC No: 153910, PE No: 1910518, CE No: 1910521, DP No: 26121.",
+    "notice_excerpt": "NJDOT construction contract. Route 94, Pleasant Valley Drive to Maple Grange Road, Contract No. 038153910, Roadway and Guiderail Improvements, Vernon Township, Sussex County; Federal Project No: 0094308, UPC No: 153910, PE No: 1910518, CE No: 1910521, DP No: 26121.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26121.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "09/24/26",
+    "contract_number": "038153910",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.416288+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26121.pdf",
+      "checked_at": "2026-09-19T18:00:55.729367+00:00",
+      "contract": "038153910",
+      "items": [
+        {
+          "kind": "estimate",
+          "value": "Range between $10,000,001 to $20,000,000",
+          "evidence": "Estimated Range (for Information Purpose Only): Range between $10,000,001 to $20,000,000",
+          "page": 1
+        },
+        {
+          "kind": "completion",
+          "value": "12/22/2028",
+          "evidence": "Estimated Completion Date: 12/22/2028",
+          "page": 1
+        },
+        {
+          "kind": "work_types",
+          "value": "4 or 5",
+          "evidence": "Contractors Prequalified in one of these Work Types are eligible to bid this project: 4 or 5 ",
+          "page": 1
+        }
+      ],
+      "sha256": "058645b0bd8158850236ff04471f7130d4bf9c7fa5dccd5d8042c519015e7edf",
+      "bid_date": {
+        "date": "2026-09-24",
+        "raw": "9/24/2026",
+        "evidence": "Project Bid Date: 9/24/2026",
+        "page": 1
+      }
+    },
+    "counties": [
+      "Sussex"
+    ],
+    "coverage_scope": "SINGLE_COUNTY",
+    "region_raw": null,
+    "geography_confidence": "MEDIUM",
+    "geography_provenance": "NOTICE_TEXT",
+    "geography_evidence": "title:\"Sussex County\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
+    "county_display": "Sussex",
+    "geography_conflict": true,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [
+      "NJ-94"
+    ],
+    "structure_types": [],
+    "municipalities": [
+      "Vernon Township"
+    ],
+    "road_names": [
+      "Pleasant Valley Drive",
+      "Maple Grange Road"
+    ],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [],
+    "location_evidence": "title:\"Route 94\" | title:\"Vernon Township\" | title:\"Pleasant Valley Drive\" | title:\"to Maple Grange Road\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Sep 24, 2026 (time not published)",
+    "due_date_parsed": "2026-09-24",
+    "days_until_due": 5,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": true,
+    "last_checked_at": "2026-09-19T18:02:21.414279+00:00",
+    "first_seen_at": null,
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
+    "id": "notice-f8687984e3dc",
+    "title": "Route 28 Bridge Over Cuckles Brook, Super Structure Replacement, Contract No. 005183590, Township of Bridgewater, County of Somerset; Federal Project No: 0028312, UPC No: 183590, PE No: 1806511, CE No: 1806518, DP No: 26117.",
+    "notice_excerpt": "NJDOT construction contract. Route 28 Bridge Over Cuckles Brook, Super Structure Replacement, Contract No. 005183590, Township of Bridgewater, County of Somerset; Federal Project No: 0028312, UPC No: 183590, PE No: 1806511, CE No: 1806518, DP No: 26117.",
+    "source_id": "state-njdot-construction",
+    "source_name": "NJDOT Construction Services",
+    "source_tier": "state",
+    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
+    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26117.pdf",
+    "county": "Statewide",
+    "entity_type": "State Agency",
+    "notice_type": "construction",
+    "notice_subtype": "construction",
+    "due_date_raw": "09/24/26",
+    "contract_number": "005183590",
+    "access_type": "Public access",
+    "platform": "NJDOT website",
+    "paywalled": false,
+    "source_status": "open",
+    "crawled_at": "2026-09-19T18:02:21.414279+00:00",
+    "project_facts": {
+      "state": "ok",
+      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26117.pdf",
+      "checked_at": "2026-09-19T18:00:49.290390+00:00",
+      "contract": "005183590",
+      "items": [
+        {
+          "kind": "estimate",
+          "value": "Range between $2,500,001 to $5,000,000",
+          "evidence": "Estimated Range (for Information Purpose Only): Range between $2,500,001 to $5,000,000",
+          "page": 1
+        },
+        {
+          "kind": "completion",
+          "value": "03/28/2029",
+          "evidence": "Estimated Completion Date: 03/28/2029",
+          "page": 1
+        },
+        {
+          "kind": "work_types",
+          "value": "4 or 5",
+          "evidence": "Contractors Prequalified in one of these Work Types are eligible to bid this project: 4 or 5 ",
+          "page": 1
+        }
+      ],
+      "sha256": "440f0c8d583f0139165da97dc35baf7556b4caeaa4daf75719b776a28947dd20",
+      "bid_date": {
+        "date": "2026-09-24",
+        "raw": "9/24/2026",
+        "evidence": "Project Bid Date: 9/24/2026",
+        "page": 1
+      }
+    },
+    "counties": [
+      "Somerset"
+    ],
+    "coverage_scope": "SINGLE_COUNTY",
+    "region_raw": null,
+    "geography_confidence": "MEDIUM",
+    "geography_provenance": "NOTICE_TEXT",
+    "geography_evidence": "title:\"County of Somerset\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
+    "county_display": "Somerset",
+    "geography_conflict": true,
+    "agency_county_hint": "",
+    "geography_review_required": false,
+    "geography_review_reason": "",
+    "corridors": [
+      "NJ-28"
+    ],
+    "structure_types": [
+      "bridge"
+    ],
+    "municipalities": [
+      "Township of Bridgewater"
+    ],
+    "road_names": [],
+    "directional_corridors": [],
+    "directional_route_labels": [],
+    "crossing_phrases": [
+      "Bridge over Cuckles Brook"
+    ],
+    "location_evidence": "title:\"Route 28\" | title:\"Bridge\" | title:\"Township of Bridgewater\" | title:\"Bridge Over Cuckles Brook\"",
+    "deadline_at": null,
+    "deadline_local": null,
+    "deadline_timezone": null,
+    "deadline_timezone_source": null,
+    "deadline_timezone_assumed": false,
+    "deadline_has_time": false,
+    "deadline_precision": "date",
+    "deadline_display": "Thu, Sep 24, 2026 (time not published)",
+    "due_date_parsed": "2026-09-24",
+    "days_until_due": 5,
+    "deadline_conflict": false,
+    "document_deadline_warning": null,
+    "published_deadline_display": null,
+    "forecast_timing_note": null,
+    "forecast_window_end": null,
+    "forecast_window_elapsed": false,
+    "status": "open",
+    "urgent": true,
+    "last_checked_at": "2026-09-19T18:02:21.403288+00:00",
+    "first_seen_at": null,
+    "materially_changed_at": null,
+    "change_labels": [],
+    "source_inactive": false,
+    "inactive_reason": "",
+    "noise_flagged": false,
+    "noise_reason": ""
+  },
+  {
     "id": "notice-852aaef911cc",
     "title": "Heating and Cooling Plant",
     "notice_excerpt": "Posted 09/08/2026. Commodities: Construction or Related Services Engineering Services",
@@ -63,7 +1160,8 @@
     "materially_changed_at": null,
     "change_labels": [],
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-641a3acffbd7",
@@ -131,7 +1229,8 @@
     "materially_changed_at": null,
     "change_labels": [],
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-df2c4b19b2a2",
@@ -206,7 +1305,8 @@
     "materially_changed_at": null,
     "change_labels": [],
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2397a642df6c",
@@ -281,7 +1381,8 @@
     "materially_changed_at": null,
     "change_labels": [],
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-511113138a04",
@@ -356,7 +1457,8 @@
     "materially_changed_at": null,
     "change_labels": [],
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-61f69805863f",
@@ -424,7 +1526,8 @@
     "materially_changed_at": null,
     "change_labels": [],
     "source_inactive": false,
-    "inactive_reason": ""
+    "inactive_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c6bedb709909",
@@ -493,7 +1596,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0e095bc9983d",
@@ -562,7 +1666,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-aa220283cedc",
@@ -630,7 +1735,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-55d0d243440b",
@@ -701,7 +1807,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e605710dde9f",
@@ -771,7 +1878,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7ee355afd078",
@@ -842,7 +1950,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-753bfbf95b81",
@@ -910,7 +2019,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0d05b294e6f9",
@@ -978,7 +2088,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-1c0ba7c8482c",
@@ -1051,7 +2162,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f275bcbdb1b7",
@@ -1121,7 +2233,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-778186cf55ee",
@@ -1193,7 +2306,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a6cca2a97783",
@@ -1259,7 +2373,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c72298f74512",
@@ -1331,7 +2446,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0f0a7f03130b",
@@ -1399,7 +2515,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-50339f52c99c",
@@ -1465,7 +2582,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9947e0b6027d",
@@ -1531,7 +2649,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-20b4f3dc3f48",
@@ -1597,7 +2716,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8d8df12b3d55",
@@ -1663,7 +2783,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d889b58d19ee",
@@ -1729,7 +2850,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ea89eb4bc83d",
@@ -1845,7 +2967,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d53c405ad649",
@@ -1958,7 +3081,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e849321e5763",
@@ -2073,7 +3197,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c452b5345164",
@@ -2169,7 +3294,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d253c3814df1",
@@ -2238,7 +3364,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-21064d473da1",
@@ -2306,7 +3433,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0ee280ad3f4d",
@@ -2374,7 +3502,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e7015a784522",
@@ -2451,7 +3580,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f3c293f763e0",
@@ -2519,7 +3649,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9b0f1a9e356c",
@@ -2587,7 +3718,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-deba59a6e155",
@@ -2654,7 +3786,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-28409da74419",
@@ -2721,7 +3854,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7d63ec3b8a20",
@@ -2800,7 +3934,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-dbe774a5494b",
@@ -2877,7 +4012,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3fa3d4d76aa8",
@@ -2955,7 +4091,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d063f6a9df47",
@@ -3030,7 +4167,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6dce40b9fd07",
@@ -3109,7 +4247,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-11a853e34ed0",
@@ -3189,7 +4328,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5be294b87b7a",
@@ -3264,7 +4404,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f38b2286a515",
@@ -3341,7 +4482,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-88195c875834",
@@ -3416,7 +4558,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0524cc330a42",
@@ -3493,7 +4636,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e69ed719b0c7",
@@ -3568,7 +4712,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2f8ecdba650e",
@@ -3645,7 +4790,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-87279fc5a8db",
@@ -3724,7 +4870,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-707ba63b0972",
@@ -3803,7 +4950,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6fee0e14b9af",
@@ -3878,7 +5026,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-35b753820c92",
@@ -3953,7 +5102,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9e3665589907",
@@ -4017,7 +5167,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-fd47a5ff3d62",
@@ -4085,7 +5236,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-668b437ee761",
@@ -4153,7 +5305,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-284e9e5b80e7",
@@ -4221,7 +5374,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-cbf504d9df1c",
@@ -4289,7 +5443,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b4fe75feaec9",
@@ -4357,7 +5512,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6d1f19ebfa18",
@@ -4425,7 +5581,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b3a7c566b40f",
@@ -4493,7 +5650,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d74a07c6204a",
@@ -4561,7 +5719,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a015da037476",
@@ -4633,7 +5792,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-134a0ca62f16",
@@ -4703,7 +5863,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4f4930da7aff",
@@ -4774,7 +5935,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e2f0e5baa232",
@@ -4842,7 +6004,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9bdb03a6982e",
@@ -4910,7 +6073,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5efd53108e5a",
@@ -4978,7 +6142,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-dc205290ac36",
@@ -5046,7 +6211,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2c261290eb5c",
@@ -5118,7 +6284,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5fa1f0187403",
@@ -5190,7 +6357,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-aca250147055",
@@ -5258,7 +6426,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-08f0b5a0e253",
@@ -5326,7 +6495,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a6e4cfb7cfb1",
@@ -5394,7 +6564,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ac7aaf769feb",
@@ -5462,7 +6633,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7b894ba0cdac",
@@ -5532,7 +6704,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-29a56f4b72ef",
@@ -5600,7 +6773,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f085cb05d43f",
@@ -5668,7 +6842,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-76c8069b8523",
@@ -5738,7 +6913,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5752320c5fc5",
@@ -5810,7 +6986,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a0b45a0c5d2d",
@@ -5882,7 +7059,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-098b5bb99a07",
@@ -5955,7 +7133,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d9fac8f77e58",
@@ -6027,7 +7206,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-10727275d81a",
@@ -6095,7 +7275,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5c52520aff8c",
@@ -6167,7 +7348,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ccd61231acda",
@@ -6241,7 +7423,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-502aeff1b100",
@@ -6314,7 +7497,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d1d49df36cfb",
@@ -6384,7 +7568,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6157f225efec",
@@ -6452,7 +7637,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4cc96828d05c",
@@ -6520,7 +7706,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b44b15e61b6a",
@@ -6590,7 +7777,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7367ae8a2b65",
@@ -6660,7 +7848,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6106433f8dbe",
@@ -6730,7 +7919,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-268a9c218636",
@@ -6800,7 +7990,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0402fc2a2fa4",
@@ -6873,7 +8064,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6f9ee789d8be",
@@ -6950,7 +8142,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4aff805284a9",
@@ -7025,7 +8218,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4688a4ad6831",
@@ -7097,7 +8291,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-32d0d884993f",
@@ -7169,7 +8364,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a2130ee14684",
@@ -7245,7 +8441,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-af5376ec57d0",
@@ -7315,7 +8512,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-465ffabbce65",
@@ -7390,7 +8588,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e1215f765d04",
@@ -7465,7 +8664,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-75297aa782eb",
@@ -7545,7 +8745,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a855bd34205c",
@@ -7621,7 +8822,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-43a4ff081eb5",
@@ -7695,7 +8897,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-acccbedffa5e",
@@ -7771,7 +8974,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-1a3c5480f43c",
@@ -7851,7 +9055,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-acafbd8eafa8",
@@ -7919,7 +9124,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8cdbf7670ffd",
@@ -7992,7 +9198,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-661624ecaac1",
@@ -8068,7 +9275,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-297efffbd057",
@@ -8142,7 +9350,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ab097be877db",
@@ -8216,7 +9425,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-27eb8ae0efde",
@@ -8288,7 +9498,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9b2716e33632",
@@ -8356,7 +9567,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-285645fce7f1",
@@ -8432,7 +9644,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-97ebd194bef2",
@@ -8506,7 +9719,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b629402c1604",
@@ -8588,7 +9802,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-da4885e9bfaf",
@@ -8664,7 +9879,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-292c68a10a98",
@@ -8739,7 +9955,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-24a1ffc6b81e",
@@ -8822,7 +10039,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4982794d1b7c",
@@ -8890,7 +10108,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c0f0cb0fca4a",
@@ -8965,7 +10184,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-06377bf07a00",
@@ -9033,7 +10253,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a717c76e1e60",
@@ -9108,7 +10329,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-238623237a12",
@@ -9181,7 +10403,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2bf0f0032a16",
@@ -9249,7 +10472,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ff7d3c762eb6",
@@ -9324,7 +10548,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7622d9db2377",
@@ -9400,7 +10625,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-db0b51b29919",
@@ -9477,7 +10703,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c060a0a49637",
@@ -9552,7 +10779,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-db612243beaf",
@@ -9632,7 +10860,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-bfa8bd073c07",
@@ -9711,7 +10940,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3fe371604a5e",
@@ -9792,7 +11022,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f13e5fe449e6",
@@ -9871,7 +11102,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-1cba9bfc8500",
@@ -9945,7 +11177,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d496a334c6ed",
@@ -10014,7 +11247,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-62d38170ca00",
@@ -10084,7 +11318,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-74921b00b7b4",
@@ -10160,7 +11395,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4f19559518a0",
@@ -10236,7 +11472,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-37218a556d49",
@@ -10309,7 +11546,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c123befbf4ef",
@@ -10383,7 +11621,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-866ba63ff5c7",
@@ -10456,7 +11695,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-493184fe970d",
@@ -10531,7 +11771,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5e3427365768",
@@ -10610,7 +11851,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-61612e0abc20",
@@ -10681,7 +11923,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-99774bee8b5c",
@@ -10755,7 +11998,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e05188ef1bbf",
@@ -10832,7 +12076,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-243552870e3b",
@@ -10903,7 +12148,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c74acc58c001",
@@ -10972,7 +12218,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-777083fb4c91",
@@ -11047,7 +12294,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-25d99b1a0fc5",
@@ -11122,7 +12370,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4f6e7fea619e",
@@ -11200,1042 +12449,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-34343d20ceaa",
-    "title": "Maintenance Beam Guide Rail and Attenuator Repair Contract, South - 2027, Various Locations, Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623102, DP No: 27447.",
-    "notice_excerpt": "NJDOT construction contract. Maintenance Beam Guide Rail and Attenuator Repair Contract, South - 2027, Various Locations, Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623102, DP No: 27447.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27447.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "10/20/26",
-    "contract_number": "DP-27447",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.283346+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27447.pdf",
-      "checked_at": "2026-09-19T13:34:38.317846+00:00",
-      "contract": "DP-27447",
-      "items": [],
-      "sha256": "54930ad132cd736334b47ddb79cc2ab23a1f2237bc05dfb0040d7eaf23f09493"
-    },
-    "counties": [
-      "Atlantic",
-      "Burlington",
-      "Camden",
-      "Cape May",
-      "Cumberland",
-      "Gloucester",
-      "Salem"
-    ],
-    "coverage_scope": "MULTI_COUNTY",
-    "region_raw": "South",
-    "geography_confidence": "MEDIUM",
-    "geography_provenance": "NOTICE_TEXT",
-    "geography_evidence": "title:\"Salem Counties\" | title:\"Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
-    "county_display": "Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester, Salem",
-    "geography_conflict": true,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [],
-    "structure_types": [],
-    "municipalities": [],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Tue, Oct 20, 2026 (time not published)",
-    "due_date_parsed": "2026-10-20",
-    "days_until_due": 31,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.283299+00:00",
-    "first_seen_at": "2026-09-17T14:33:40.994553+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-5467a0fde543",
-    "title": "Maintenance Beam Guide Rail and Attenuator Repair Contract, Central - 2027, Various Locations, Hunterdon, Mercer, Middlesex, Monmouth, Ocean, Somerset and Warren (South of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623101, DP No: 27446.",
-    "notice_excerpt": "NJDOT construction contract. Maintenance Beam Guide Rail and Attenuator Repair Contract, Central - 2027, Various Locations, Hunterdon, Mercer, Middlesex, Monmouth, Ocean, Somerset and Warren (South of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623101, DP No: 27446.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27446.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "10/15/26",
-    "contract_number": "DP-27446",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.283297+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27446.pdf",
-      "checked_at": "2026-09-19T13:34:37.883803+00:00",
-      "contract": "DP-27446",
-      "items": [],
-      "sha256": "8343dbc9bd2d4c17dfa56ad65ebe265e5b8ad4f6d269166a9eb8efabc1fad993"
-    },
-    "counties": [],
-    "coverage_scope": "REGIONAL",
-    "region_raw": "Central",
-    "geography_confidence": "LOW",
-    "geography_provenance": "NONE",
-    "geography_evidence": "region_raw=\"Central\" retained without county expansion (R-04)",
-    "county_display": "Central",
-    "geography_conflict": false,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [
-      "NJ-57"
-    ],
-    "structure_types": [],
-    "municipalities": [],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "title:\"Route 57\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Oct 15, 2026 (time not published)",
-    "due_date_parsed": "2026-10-15",
-    "days_until_due": 26,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.283247+00:00",
-    "first_seen_at": "2026-09-17T14:33:40.994510+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-08d000c149a3",
-    "title": "Route 78, Route 22 to Drift Road/Dale Road, ITS, Contract No. 004186010, Townships of Pohatcong, Greenwich, and Franklin, Warren County; Townships of Bethlehem, Union, Clinton, Readington, and Tewksbury, Boroughs of Bloomsbury, and Lebanon, Town of Clinton, Hunterdon County; Townships of Bedminster, Bridgewater, Bernards, and Warren, Borough of Watchung, Somerset County; Federal Project No: 0078345, UPC No: 186010, PE No: N/A, CE No: 2208236, DP No: 26600.",
-    "notice_excerpt": "NJDOT construction contract. Route 78, Route 22 to Drift Road/Dale Road, ITS, Contract No. 004186010, Townships of Pohatcong, Greenwich, and Franklin, Warren County; Townships of Bethlehem, Union, Clinton, Readington, and Tewksbury, Boroughs of Bloomsbury, and Lebanon, Town of Clinton, Hunterdon County; Townships of Bedminster, Bridgewater, Bernards, and Warren, Borough of Watchung, Somerset County; Federal Project No: 0078345, UPC No: 186010, PE No: N/A, CE No: 2208236, DP No: 26600.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26600.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "10/15/26",
-    "contract_number": "004186010",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.283243+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26600.pdf",
-      "checked_at": "2026-09-19T13:34:37.468769+00:00",
-      "contract": "004186010",
-      "items": [
-        {
-          "kind": "estimate",
-          "value": "Range between $20,000,001 to $35,000,000",
-          "evidence": "Estimated Range (for Information Purpose Only): Range between $20,000,001 to $35,000,000",
-          "page": 1
-        },
-        {
-          "kind": "completion",
-          "value": "01/11/2030",
-          "evidence": "Estimated Completion Date: 01/11/2030",
-          "page": 1
-        },
-        {
-          "kind": "work_types",
-          "value": "33 or 7",
-          "evidence": "Contractors Prequalified in one of these Work Types are eligible to bid this project: 33 or 7",
-          "page": 1
-        }
-      ],
-      "sha256": "3d421ced1b7ffa139d3f750dcce3332f9e5ba81922536f4417aa068a49c3de05"
-    },
-    "counties": [
-      "Hunterdon",
-      "Somerset",
-      "Warren"
-    ],
-    "coverage_scope": "MULTI_COUNTY",
-    "region_raw": null,
-    "geography_confidence": "MEDIUM",
-    "geography_provenance": "NOTICE_TEXT",
-    "geography_evidence": "title:\"Warren County\" | title:\"Hunterdon County\" | title:\"Somerset County\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
-    "county_display": "Hunterdon, Somerset, Warren",
-    "geography_conflict": true,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [
-      "I-78",
-      "US-22"
-    ],
-    "structure_types": [],
-    "municipalities": [
-      "Township of Pohatcong",
-      "Township of Bethlehem",
-      "Borough of Bloomsbury",
-      "Town of Clinton",
-      "Township of Bedminster",
-      "Borough of Watchung"
-    ],
-    "road_names": [
-      "Drift Road",
-      "Dale Road"
-    ],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "title:\"Route 78\" | title:\"Route 22\" | title:\"Township of Pohatcong\" | title:\"Township of Bethlehem\" | title:\"Borough of Bloomsbury\" | title:\"Town of Clinton\" | title:\"Township of Bedminster\" | title:\"Borough of Watchung\" | title:\"Route 22 to Drift Road\" | title:\"Dale Road\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Oct 15, 2026 (time not published)",
-    "due_date_parsed": "2026-10-15",
-    "days_until_due": 26,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.283149+00:00",
-    "first_seen_at": "2026-09-17T14:33:40.994468+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-31707a79f5ec",
-    "title": "Maintenance Beam Guide Rail and Attenuator Repair Contract, North - 2027, Various Locations, Bergen, Essex, Hudson, Morris, Passaic, Sussex, Union and Warren (Including and North of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623100, DP No: 27445.",
-    "notice_excerpt": "NJDOT construction contract. Maintenance Beam Guide Rail and Attenuator Repair Contract, North - 2027, Various Locations, Bergen, Essex, Hudson, Morris, Passaic, Sussex, Union and Warren (Including and North of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622619, CE No: 2623100, DP No: 27445.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27445.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "10/08/26",
-    "contract_number": "DP-27445",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.283146+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NoticetoContractors_DP27445.pdf",
-      "checked_at": "2026-09-19T13:34:37.071300+00:00",
-      "contract": "DP-27445",
-      "items": [],
-      "sha256": "9afc2e1da131538c2727e66c34228e7b2d57a66b19056e7088bc8c42d0a00114"
-    },
-    "counties": [],
-    "coverage_scope": "REGIONAL",
-    "region_raw": "North",
-    "geography_confidence": "LOW",
-    "geography_provenance": "NONE",
-    "geography_evidence": "region_raw=\"North\" retained without county expansion (R-04)",
-    "county_display": "North",
-    "geography_conflict": false,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [
-      "NJ-57"
-    ],
-    "structure_types": [],
-    "municipalities": [],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "title:\"Route 57\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Oct 8, 2026 (time not published)",
-    "due_date_parsed": "2026-10-08",
-    "days_until_due": 19,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.283093+00:00",
-    "first_seen_at": "2026-09-17T14:33:40.994424+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-8450c7548f2b",
-    "title": "Maintenance Concrete Structural Repair Contract, South- 2027, Various Locations, Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623082, DP No: 27427.",
-    "notice_excerpt": "NJDOT construction contract. Maintenance Concrete Structural Repair Contract, South- 2027, Various Locations, Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623082, DP No: 27427.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27427.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "10/08/26",
-    "contract_number": "DP-27427",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.283090+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27427.pdf",
-      "checked_at": "2026-09-19T13:34:36.716813+00:00",
-      "contract": "DP-27427",
-      "items": [],
-      "sha256": "79ab332947f102f63ead96870a98e6a8b0f05aa941028c9528a491deac38bc76"
-    },
-    "counties": [
-      "Atlantic",
-      "Burlington",
-      "Camden",
-      "Cape May",
-      "Cumberland",
-      "Gloucester",
-      "Salem"
-    ],
-    "coverage_scope": "MULTI_COUNTY",
-    "region_raw": "South",
-    "geography_confidence": "MEDIUM",
-    "geography_provenance": "NOTICE_TEXT",
-    "geography_evidence": "title:\"Salem Counties\" | title:\"Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester and Salem Counties\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
-    "county_display": "Atlantic, Burlington, Camden, Cape May, Cumberland, Gloucester, Salem",
-    "geography_conflict": true,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [],
-    "structure_types": [],
-    "municipalities": [],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Oct 8, 2026 (time not published)",
-    "due_date_parsed": "2026-10-08",
-    "days_until_due": 19,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.283039+00:00",
-    "first_seen_at": "2026-09-10T13:58:23.230153+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-4ecb39f0ea77",
-    "title": "Maintenance Concrete Structural Repair Contract, Central- 2027, Various Locations, Hunterdon, Mercer, Middlesex, Monmouth, Ocean, Somerset and Warren (South of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623081, DP No: 27426.",
-    "notice_excerpt": "NJDOT construction contract. Maintenance Concrete Structural Repair Contract, Central- 2027, Various Locations, Hunterdon, Mercer, Middlesex, Monmouth, Ocean, Somerset and Warren (South of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623081, DP No: 27426.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27426.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "10/06/26",
-    "contract_number": "DP-27426",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.283036+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27426.pdf",
-      "checked_at": "2026-09-19T13:34:36.392769+00:00",
-      "contract": "DP-27426",
-      "items": [],
-      "sha256": "f339b76e306e6361a40058b6a05cd8f2a6d95d6dc460a239ea5cd5fbf8ce143d"
-    },
-    "counties": [],
-    "coverage_scope": "REGIONAL",
-    "region_raw": "Central",
-    "geography_confidence": "LOW",
-    "geography_provenance": "NONE",
-    "geography_evidence": "region_raw=\"Central\" retained without county expansion (R-04)",
-    "county_display": "Central",
-    "geography_conflict": false,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [
-      "NJ-57"
-    ],
-    "structure_types": [],
-    "municipalities": [],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "title:\"Route 57\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Tue, Oct 6, 2026 (time not published)",
-    "due_date_parsed": "2026-10-06",
-    "days_until_due": 17,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.282988+00:00",
-    "first_seen_at": "2026-09-10T13:58:23.230117+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-0bcd95a25561",
-    "title": "Maintenance Concrete Structural Repair Contract, North - 2027, Various Locations, Bergen, Essex, Hudson, Morris, Passaic, Sussex, Union and Warren (Including and North of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623080, DP No: 27425.",
-    "notice_excerpt": "NJDOT construction contract. Maintenance Concrete Structural Repair Contract, North - 2027, Various Locations, Bergen, Essex, Hudson, Morris, Passaic, Sussex, Union and Warren (Including and North of Route 57) Counties; 100% State Funded, UPC No: N/A, PE No: 2622612, CE No: 2623080, DP No: 27425.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27425.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "10/01/26",
-    "contract_number": "DP-27425",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.282986+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRCTORS_DP27425.pdf",
-      "checked_at": "2026-09-19T13:34:36.033000+00:00",
-      "contract": "DP-27425",
-      "items": [],
-      "sha256": "dbae34871fd3b9125a3d3f7482f1b983fe677a69f3ed3d40f621a27c53c065c9"
-    },
-    "counties": [],
-    "coverage_scope": "REGIONAL",
-    "region_raw": "North",
-    "geography_confidence": "LOW",
-    "geography_provenance": "NONE",
-    "geography_evidence": "region_raw=\"North\" retained without county expansion (R-04)",
-    "county_display": "North",
-    "geography_conflict": false,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [
-      "NJ-57"
-    ],
-    "structure_types": [],
-    "municipalities": [],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "title:\"Route 57\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Oct 1, 2026 (time not published)",
-    "due_date_parsed": "2026-10-01",
-    "days_until_due": 12,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.282936+00:00",
-    "first_seen_at": "2026-09-10T13:58:23.230080+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-d2215516084d",
-    "title": "Maintenance JOC Basin Restoration Contract, Statewide - 2026, Various Locations, Bergen, Burlington, Camden, Cape May, Essex, Gloucester, Hudson, Hunterdon, Mercer, Middlesex, Monmouth, Passaic, and Union Counties; Federal Project No: F00S(123), UPC No: N/A, PE No: 2622776, CE No: 2208181, DP No: 26423.",
-    "notice_excerpt": "NJDOT construction contract. Maintenance JOC Basin Restoration Contract, Statewide - 2026, Various Locations, Bergen, Burlington, Camden, Cape May, Essex, Gloucester, Hudson, Hunterdon, Mercer, Middlesex, Monmouth, Passaic, and Union Counties; Federal Project No: F00S(123), UPC No: N/A, PE No: 2622776, CE No: 2208181, DP No: 26423.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_26423.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "10/01/26",
-    "contract_number": "DP-26423",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.282933+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_26423.pdf",
-      "checked_at": "2026-09-19T13:34:35.620146+00:00",
-      "contract": "DP-26423",
-      "items": [],
-      "sha256": "603473d300772c8580007d56408fcb2890d1dbc892bde18c48015dcfdd1cbb7a"
-    },
-    "counties": [
-      "Bergen",
-      "Burlington",
-      "Camden",
-      "Cape May",
-      "Essex",
-      "Gloucester",
-      "Hudson",
-      "Hunterdon",
-      "Mercer",
-      "Middlesex",
-      "Monmouth",
-      "Passaic",
-      "Union"
-    ],
-    "coverage_scope": "MULTI_COUNTY",
-    "region_raw": null,
-    "geography_confidence": "MEDIUM",
-    "geography_provenance": "NOTICE_TEXT",
-    "geography_evidence": "title:\"Union Counties\" | title:\"Bergen, Burlington, Camden, Cape May, Essex, Gloucester, Hudson, Hunterdon, Mercer, Middlesex, Monmouth, Passaic, and Union Counties\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
-    "county_display": "Bergen, Burlington, Camden, Cape May, Essex, Gloucester, Hudson, Hunterdon, Mercer, Middlesex, Monmouth, Passaic, Union",
-    "geography_conflict": true,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [],
-    "structure_types": [],
-    "municipalities": [],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Oct 1, 2026 (time not published)",
-    "due_date_parsed": "2026-10-01",
-    "days_until_due": 12,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.282880+00:00",
-    "first_seen_at": "2026-09-10T13:58:23.230043+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-994a36d077a7",
-    "title": "Maintenance Dredging and Channel Improvements for the Pews Creek Channel, Channel No. 007 and Monmouth Cove Marina, Contract No. 007202604, Township of Middletown, County of Monmouth, New Jersey; 100% State Funded, UPC No: N/A, PE No: 6110108, CE No: 6700367, DP No: 26704.",
-    "notice_excerpt": "NJDOT construction contract. Maintenance Dredging and Channel Improvements for the Pews Creek Channel, Channel No. 007 and Monmouth Cove Marina, Contract No. 007202604, Township of Middletown, County of Monmouth, New Jersey; 100% State Funded, UPC No: N/A, PE No: 6110108, CE No: 6700367, DP No: 26704.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26704.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "09/29/26",
-    "contract_number": "007202604",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.282877+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26704.pdf",
-      "checked_at": "2026-09-19T13:34:35.210333+00:00",
-      "contract": "007202604",
-      "items": [
-        {
-          "kind": "work_types",
-          "value": "43",
-          "evidence": "Contractors Prequalified in one of these Work Types are eligible to bid this project: 43",
-          "page": 1
-        }
-      ],
-      "sha256": "5ee0dd718ceee1defb6ef84e9c0b5c96a4e9f150690737bd491ebdff1cf0bbab"
-    },
-    "counties": [
-      "Monmouth"
-    ],
-    "coverage_scope": "SINGLE_COUNTY",
-    "region_raw": null,
-    "geography_confidence": "MEDIUM",
-    "geography_provenance": "NOTICE_TEXT",
-    "geography_evidence": "title:\"County of Monmouth\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
-    "county_display": "Monmouth",
-    "geography_conflict": true,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [],
-    "structure_types": [],
-    "municipalities": [
-      "Township of Middletown"
-    ],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "title:\"Township of Middletown\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Tue, Sep 29, 2026 (time not published)",
-    "due_date_parsed": "2026-09-29",
-    "days_until_due": 10,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": false,
-    "last_checked_at": "2026-09-19T13:36:11.282825+00:00",
-    "first_seen_at": "2026-09-10T13:58:23.229999+00:00",
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-09a31913dc62",
-    "title": "Route 1, NB Bridge over Raritan River, Contract # 027153030, Reconstruction, Bridge Widening and Bridge Superstructure Replacement, Township of Edison, City of New Brunswick, County of Middlesex; Federal Project No: 0001367, UPC No: 153030, PE No: 1203516, CE No: 1203519, DP No: 26107.",
-    "notice_excerpt": "NJDOT construction contract. Route 1, NB Bridge over Raritan River, Contract # 027153030, Reconstruction, Bridge Widening and Bridge Superstructure Replacement, Township of Edison, City of New Brunswick, County of Middlesex; Federal Project No: 0001367, UPC No: 153030, PE No: 1203516, CE No: 1203519, DP No: 26107.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26107.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "09/24/26",
-    "contract_number": "027153030",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.282822+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26107.pdf",
-      "checked_at": "2026-09-19T13:34:34.868400+00:00",
-      "contract": "027153030",
-      "items": [],
-      "sha256": "136d6bb60727dc57a59a8af92257f0be8a1d98b2f4029bbeb261e974f3cd19dc"
-    },
-    "counties": [
-      "Middlesex"
-    ],
-    "coverage_scope": "SINGLE_COUNTY",
-    "region_raw": null,
-    "geography_confidence": "MEDIUM",
-    "geography_provenance": "NOTICE_TEXT",
-    "geography_evidence": "title:\"County of Middlesex\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
-    "county_display": "Middlesex",
-    "geography_conflict": true,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [
-      "US-1"
-    ],
-    "structure_types": [
-      "bridge"
-    ],
-    "municipalities": [
-      "Township of Edison",
-      "City of New Brunswick"
-    ],
-    "road_names": [],
-    "directional_corridors": [
-      "US-1 NB"
-    ],
-    "directional_route_labels": [
-      "Route 1 NB"
-    ],
-    "crossing_phrases": [
-      "Bridge over Raritan River"
-    ],
-    "location_evidence": "title:\"Route 1\" | title:\"Bridge\" | title:\"Township of Edison\" | title:\"City of New Brunswick\" | title:\"Route 1, NB\" | title:\"Bridge over Raritan River\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Sep 24, 2026 (time not published)",
-    "due_date_parsed": "2026-09-24",
-    "days_until_due": 5,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": true,
-    "last_checked_at": "2026-09-19T13:36:11.282767+00:00",
-    "first_seen_at": null,
-    "materially_changed_at": "2026-09-11T13:57:59.301209+00:00",
-    "change_labels": [
-      "Deadline changed"
-    ],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-52f61899ea44",
-    "title": "Route 94, Pleasant Valley Drive to Maple Grange Road, Contract No. 038153910, Roadway and Guiderail Improvements, Vernon Township, Sussex County; Federal Project No: 0094308, UPC No: 153910, PE No: 1910518, CE No: 1910521, DP No: 26121.",
-    "notice_excerpt": "NJDOT construction contract. Route 94, Pleasant Valley Drive to Maple Grange Road, Contract No. 038153910, Roadway and Guiderail Improvements, Vernon Township, Sussex County; Federal Project No: 0094308, UPC No: 153910, PE No: 1910518, CE No: 1910521, DP No: 26121.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26121.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "09/24/26",
-    "contract_number": "038153910",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.282763+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26121.pdf",
-      "checked_at": "2026-09-19T13:34:34.562472+00:00",
-      "contract": "038153910",
-      "items": [
-        {
-          "kind": "estimate",
-          "value": "Range between $10,000,001 to $20,000,000",
-          "evidence": "Estimated Range (for Information Purpose Only): Range between $10,000,001 to $20,000,000",
-          "page": 1
-        },
-        {
-          "kind": "completion",
-          "value": "12/22/2028",
-          "evidence": "Estimated Completion Date: 12/22/2028",
-          "page": 1
-        },
-        {
-          "kind": "work_types",
-          "value": "4 or 5",
-          "evidence": "Contractors Prequalified in one of these Work Types are eligible to bid this project: 4 or 5",
-          "page": 1
-        }
-      ],
-      "sha256": "058645b0bd8158850236ff04471f7130d4bf9c7fa5dccd5d8042c519015e7edf"
-    },
-    "counties": [
-      "Sussex"
-    ],
-    "coverage_scope": "SINGLE_COUNTY",
-    "region_raw": null,
-    "geography_confidence": "MEDIUM",
-    "geography_provenance": "NOTICE_TEXT",
-    "geography_evidence": "title:\"Sussex County\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
-    "county_display": "Sussex",
-    "geography_conflict": true,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [
-      "NJ-94"
-    ],
-    "structure_types": [],
-    "municipalities": [
-      "Vernon Township"
-    ],
-    "road_names": [
-      "Pleasant Valley Drive",
-      "Maple Grange Road"
-    ],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [],
-    "location_evidence": "title:\"Route 94\" | title:\"Vernon Township\" | title:\"Pleasant Valley Drive\" | title:\"to Maple Grange Road\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Sep 24, 2026 (time not published)",
-    "due_date_parsed": "2026-09-24",
-    "days_until_due": 5,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": true,
-    "last_checked_at": "2026-09-19T13:36:11.282711+00:00",
-    "first_seen_at": null,
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
-  },
-  {
-    "id": "notice-f8687984e3dc",
-    "title": "Route 28 Bridge Over Cuckles Brook, Super Structure Replacement, Contract No. 005183590, Township of Bridgewater, County of Somerset; Federal Project No: 0028312, UPC No: 183590, PE No: 1806511, CE No: 1806518, DP No: 26117.",
-    "notice_excerpt": "NJDOT construction contract. Route 28 Bridge Over Cuckles Brook, Super Structure Replacement, Contract No. 005183590, Township of Bridgewater, County of Somerset; Federal Project No: 0028312, UPC No: 183590, PE No: 1806511, CE No: 1806518, DP No: 26117.",
-    "source_id": "state-njdot-construction",
-    "source_name": "NJDOT Construction Services",
-    "source_tier": "state",
-    "source_url": "https://dot.nj.gov/transportation/business/procurement/ConstrServ/curradvproj.shtm",
-    "official_url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26117.pdf",
-    "county": "Statewide",
-    "entity_type": "State Agency",
-    "notice_type": "construction",
-    "notice_subtype": "construction",
-    "due_date_raw": "09/24/26",
-    "contract_number": "005183590",
-    "access_type": "Public access",
-    "platform": "NJDOT website",
-    "paywalled": false,
-    "source_status": "open",
-    "crawled_at": "2026-09-19T13:36:11.282703+00:00",
-    "project_facts": {
-      "state": "ok",
-      "url": "https://dot.nj.gov/transportation/contribute/business/procurement/ConstrServ/documents/NOTICETOCONTRACTORS_DP26117.pdf",
-      "checked_at": "2026-09-19T13:34:34.138983+00:00",
-      "contract": "005183590",
-      "items": [
-        {
-          "kind": "estimate",
-          "value": "Range between $2,500,001 to $5,000,000",
-          "evidence": "Estimated Range (for Information Purpose Only): Range between $2,500,001 to $5,000,000",
-          "page": 1
-        },
-        {
-          "kind": "completion",
-          "value": "03/28/2029",
-          "evidence": "Estimated Completion Date: 03/28/2029",
-          "page": 1
-        },
-        {
-          "kind": "work_types",
-          "value": "4 or 5",
-          "evidence": "Contractors Prequalified in one of these Work Types are eligible to bid this project: 4 or 5",
-          "page": 1
-        }
-      ],
-      "sha256": "440f0c8d583f0139165da97dc35baf7556b4caeaa4daf75719b776a28947dd20"
-    },
-    "counties": [
-      "Somerset"
-    ],
-    "coverage_scope": "SINGLE_COUNTY",
-    "region_raw": null,
-    "geography_confidence": "MEDIUM",
-    "geography_provenance": "NOTICE_TEXT",
-    "geography_evidence": "title:\"County of Somerset\" | county_raw=\"Statewide\" conflicts; explicit county evidence wins (R-03)",
-    "county_display": "Somerset",
-    "geography_conflict": true,
-    "agency_county_hint": "",
-    "geography_review_required": false,
-    "geography_review_reason": "",
-    "corridors": [
-      "NJ-28"
-    ],
-    "structure_types": [
-      "bridge"
-    ],
-    "municipalities": [
-      "Township of Bridgewater"
-    ],
-    "road_names": [],
-    "directional_corridors": [],
-    "directional_route_labels": [],
-    "crossing_phrases": [
-      "Bridge over Cuckles Brook"
-    ],
-    "location_evidence": "title:\"Route 28\" | title:\"Bridge\" | title:\"Township of Bridgewater\" | title:\"Bridge Over Cuckles Brook\"",
-    "deadline_at": null,
-    "deadline_local": null,
-    "deadline_timezone": null,
-    "deadline_timezone_source": null,
-    "deadline_timezone_assumed": false,
-    "deadline_has_time": false,
-    "deadline_precision": "date",
-    "deadline_display": "Thu, Sep 24, 2026 (time not published)",
-    "due_date_parsed": "2026-09-24",
-    "days_until_due": 5,
-    "deadline_conflict": false,
-    "published_deadline_display": null,
-    "forecast_timing_note": null,
-    "forecast_window_end": null,
-    "forecast_window_elapsed": false,
-    "status": "open",
-    "urgent": true,
-    "last_checked_at": "2026-09-19T13:36:11.282064+00:00",
-    "first_seen_at": null,
-    "materially_changed_at": null,
-    "change_labels": [],
-    "source_inactive": false,
-    "inactive_reason": "",
-    "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7fd838a05cea",
@@ -12312,7 +12527,8 @@
     ],
     "source_inactive": false,
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-14bcc53201a7",
@@ -12379,7 +12595,8 @@
     "change_labels": [],
     "source_inactive": false,
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-701b038ae2ea",
@@ -12444,7 +12661,8 @@
     "change_labels": [],
     "source_inactive": false,
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ba7a57c3b1ef",
@@ -12511,7 +12729,8 @@
     "change_labels": [],
     "source_inactive": false,
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-fdc1d17d4cda",
@@ -12580,7 +12799,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-701d86bd99b9",
@@ -12646,7 +12866,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6be589667115",
@@ -12714,7 +12935,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5661db9d794d",
@@ -12781,7 +13003,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a3457480a03c",
@@ -12849,7 +13072,8 @@
     "source_inactive": false,
     "inactive_reason": "",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-bd82877928a3",
@@ -12914,7 +13138,8 @@
     "noise_reason": "",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4531d15e2e38",
@@ -12976,7 +13201,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9eb4e1bd371c",
@@ -13036,7 +13262,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4cf1cbd80498",
@@ -13097,7 +13324,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-da285d07cdc6",
@@ -13156,7 +13384,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-12be7292bdb4",
@@ -13216,7 +13445,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-54792c5ec8b5",
@@ -13275,7 +13505,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-47d0f5d56965",
@@ -13335,7 +13566,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-64c3a266afb4",
@@ -13393,7 +13625,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b266cdbdbe2c",
@@ -13451,7 +13684,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b11b1976aaf1",
@@ -13511,7 +13745,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-205847904d0d",
@@ -13569,7 +13804,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ddaae7865146",
@@ -13627,7 +13863,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-bb04fa33a15d",
@@ -13688,7 +13925,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-13fc12476f99",
@@ -13756,7 +13994,8 @@
       "Removed from agency listing"
     ],
     "source_inactive": true,
-    "inactive_reason": "removed from current agency listing"
+    "inactive_reason": "removed from current agency listing",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-31f705d2179e",
@@ -13831,7 +14070,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c5a783bc64b4",
@@ -13902,7 +14142,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9a74308d8150",
@@ -13974,7 +14215,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-787751a992ad",
@@ -14065,7 +14307,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d6cd3a5ad00c",
@@ -14152,7 +14395,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d408af6223f6",
@@ -14222,7 +14466,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5186ba87d4f4",
@@ -14292,7 +14537,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2c483f1e0d5c",
@@ -14397,7 +14643,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e537cbbc611f",
@@ -14486,7 +14733,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-58e22dd4f9f8",
@@ -14558,7 +14806,8 @@
       "Removed from agency listing"
     ],
     "source_inactive": true,
-    "inactive_reason": "removed from current agency listing"
+    "inactive_reason": "removed from current agency listing",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ff3fc4734370",
@@ -14626,7 +14875,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ed82f6741cf8",
@@ -14698,7 +14948,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-fc090cbdc97a",
@@ -14776,7 +15027,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9252a5b2c0fb",
@@ -14846,7 +15098,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6db4eb12aa8e",
@@ -14914,7 +15167,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d98a99e2e94b",
@@ -15025,7 +15279,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f42ab9341e4f",
@@ -15094,7 +15349,8 @@
       "Removed from agency listing"
     ],
     "source_inactive": true,
-    "inactive_reason": "removed from current agency listing"
+    "inactive_reason": "removed from current agency listing",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-bb990e81f943",
@@ -15167,7 +15423,8 @@
     "source_inactive": true,
     "inactive_reason": "removed from current agency listing",
     "noise_flagged": false,
-    "noise_reason": ""
+    "noise_reason": "",
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d47f43d02a44",
@@ -15227,7 +15484,8 @@
     "inactive_reason": "removed from current agency listing",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-26d80ad34746",
@@ -15291,7 +15549,8 @@
     "noise_reason": "",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7f78b6b60878",
@@ -15355,7 +15614,8 @@
     "noise_reason": "",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-93af78594d02",
@@ -15418,7 +15678,8 @@
     "noise_reason": "",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-426e0e17e1fb",
@@ -15481,7 +15742,8 @@
     "noise_reason": "",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ff88c279bc5b",
@@ -15542,7 +15804,8 @@
     "noise_reason": "",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5f69af49e178",
@@ -15613,7 +15876,8 @@
     "inactive_reason": "removed from current agency listing",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-cc4e4df6cfd4",
@@ -15684,7 +15948,8 @@
     "inactive_reason": "removed from current agency listing",
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-306d6836846c",
@@ -15750,7 +16015,8 @@
     "materially_changed_at": "2026-09-11T13:57:59.300364+00:00",
     "change_labels": [
       "Removed from agency listing"
-    ]
+    ],
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9db6e6911640",
@@ -15812,7 +16078,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ff683f4b90af",
@@ -15874,7 +16141,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9caea0bae9d4",
@@ -15941,7 +16209,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0879acffe696",
@@ -16002,7 +16271,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b9fc8d1f10a0",
@@ -16066,7 +16336,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-52546cf61111",
@@ -16130,7 +16401,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-25be67d23f9a",
@@ -16196,7 +16468,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6ebfc6cc572a",
@@ -16262,7 +16535,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9ae0dfd9d280",
@@ -16326,7 +16600,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0002d7c371aa",
@@ -16390,7 +16665,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ac38e1e37a60",
@@ -16452,7 +16728,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-be604c75a3c9",
@@ -16514,7 +16791,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9171b5272a89",
@@ -16588,7 +16866,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-eda666719918",
@@ -16650,7 +16929,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0a8e5a0582b7",
@@ -16711,7 +16991,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0eb4140e98a2",
@@ -16772,7 +17053,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3f78c123ed11",
@@ -16837,7 +17119,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-244d851d92ae",
@@ -16900,7 +17183,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ac3eba078079",
@@ -16963,7 +17247,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c73b092bb5a0",
@@ -17026,7 +17311,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-422fddeee10a",
@@ -17086,7 +17372,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4e556bf86ab7",
@@ -17150,7 +17437,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c2c7a55ff2b8",
@@ -17213,7 +17501,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0bef22ed5cc6",
@@ -17277,7 +17566,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-664c064ca856",
@@ -17350,7 +17640,8 @@
     ],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8a4888fe5a11",
@@ -17422,7 +17713,8 @@
     ],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-84f48df70ca8",
@@ -17493,7 +17785,8 @@
     ],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3b3d9aa337bb",
@@ -17562,7 +17855,8 @@
     ],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a252e9c27b8c",
@@ -17631,7 +17925,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e730a2faf45f",
@@ -17700,7 +17995,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c5eb6f61be70",
@@ -17763,7 +18059,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-63e00e6aa2bc",
@@ -17828,7 +18125,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-08dd485b34b5",
@@ -17896,7 +18194,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a9140ab85c56",
@@ -17963,7 +18262,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ebcdb2bc4820",
@@ -18028,7 +18328,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3021debdac0a",
@@ -18101,7 +18402,8 @@
     ],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2fe5528fd64e",
@@ -18170,7 +18472,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c68ab5a1ba77",
@@ -18237,7 +18540,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4b3a02c9bed8",
@@ -18303,7 +18607,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4fc70637632d",
@@ -18368,7 +18673,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c980fb972e01",
@@ -18435,7 +18741,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-93a4e275759c",
@@ -18502,7 +18809,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4768037bfa40",
@@ -18568,7 +18876,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e794b27f9c9f",
@@ -18635,7 +18944,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-701d7391c185",
@@ -18708,7 +19018,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-454dd861d5a9",
@@ -18779,7 +19090,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a06fb7d8e6a5",
@@ -18859,7 +19171,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8f18be78fbcb",
@@ -18922,7 +19235,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b4c1737aab4f",
@@ -18982,7 +19296,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-05a95ece3506",
@@ -19042,7 +19357,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-947ef781a652",
@@ -19105,7 +19421,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": "Timing not confirmed; year not stated in the published window.",
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e41c792ebb64",
@@ -19166,7 +19483,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e57a4d94bddd",
@@ -19233,7 +19551,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a4a7000b6fc4",
@@ -19313,7 +19632,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8f2e1fdf37e6",
@@ -19389,7 +19709,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-211392edb2f6",
@@ -19457,7 +19778,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d5a69030aef2",
@@ -19531,7 +19853,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-49372b1bdc76",
@@ -19596,7 +19919,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3931903dc413",
@@ -19669,7 +19993,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e7feec016de4",
@@ -19729,7 +20054,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8da1fbc5495f",
@@ -19789,7 +20115,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3535135932fd",
@@ -19849,7 +20176,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-554194a0a2ef",
@@ -19909,7 +20237,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5bef5da91170",
@@ -19969,7 +20298,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-47da1eba2895",
@@ -20029,7 +20359,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5767ff5061ac",
@@ -20089,7 +20420,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ff2a7cd06c4b",
@@ -20149,7 +20481,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f8069a2e2366",
@@ -20209,7 +20542,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8c6e11bcbdd4",
@@ -20269,7 +20603,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-23b84de37ab8",
@@ -20329,7 +20664,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-25e42aa80787",
@@ -20389,7 +20725,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d0ec4e5eac00",
@@ -20449,7 +20786,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-a793b76e45d9",
@@ -20509,7 +20847,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2bfebd904cf0",
@@ -20569,7 +20908,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4088557e29a7",
@@ -20629,7 +20969,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-9b74e7680848",
@@ -20691,7 +21032,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6c50dceead72",
@@ -20751,7 +21093,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f68afd1251e5",
@@ -20813,7 +21156,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-aa134c3a58c7",
@@ -20873,7 +21217,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-28aa86c59ca7",
@@ -20933,7 +21278,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-af25fb18b2c2",
@@ -20993,7 +21339,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d2f17a8f624b",
@@ -21053,7 +21400,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2a20e2585343",
@@ -21113,7 +21461,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8807e68451e4",
@@ -21173,7 +21522,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-57f18ffec447",
@@ -21235,7 +21585,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-1ba7fa2b3c6f",
@@ -21295,7 +21646,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-91f6b1cfd5ec",
@@ -21355,7 +21707,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d0f5b22d5fae",
@@ -21415,7 +21768,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-c436bceaffb3",
@@ -21475,7 +21829,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0ffe81034a16",
@@ -21537,7 +21892,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-80f8a7945e63",
@@ -21597,7 +21953,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f8a0cac681ce",
@@ -21657,7 +22014,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-5304300999a7",
@@ -21719,7 +22077,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8b4cc079e887",
@@ -21779,7 +22138,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d119bb0069fd",
@@ -21841,7 +22201,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-cdd79fd951bf",
@@ -21901,7 +22262,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-2673caf8f0f6",
@@ -21978,7 +22340,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-76c9504e2fec",
@@ -22068,7 +22431,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d4e9e5626cac",
@@ -22164,7 +22528,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-48ad038a7bb7",
@@ -22224,7 +22589,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d19f0847c7c0",
@@ -22286,7 +22652,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-460f237db082",
@@ -22348,7 +22715,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-1c11b169bb5a",
@@ -22410,7 +22778,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-148c9196c9dc",
@@ -22472,7 +22841,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-1b8256d491a1",
@@ -22532,7 +22902,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7d6741063723",
@@ -22592,7 +22963,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d3255d2f1781",
@@ -22652,7 +23024,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-49c8d3fb38dc",
@@ -22712,7 +23085,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-23117ee3c87c",
@@ -22776,7 +23150,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-e37011c729a1",
@@ -22836,7 +23211,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-cc256a9e6b17",
@@ -22896,7 +23272,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3d32f8fccfac",
@@ -22956,7 +23333,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-1916bf81ad7a",
@@ -23016,7 +23394,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-329d3964b819",
@@ -23076,7 +23455,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ab34202c15b5",
@@ -23140,7 +23520,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-94286c1c86ab",
@@ -23200,7 +23581,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-bb3df162c1aa",
@@ -23264,7 +23646,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4a527682cf3f",
@@ -23324,7 +23707,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-19ad16719337",
@@ -23384,7 +23768,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-d9b2d3d5c8b4",
@@ -23444,7 +23829,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ba6ed97b54cf",
@@ -23504,7 +23890,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-457f28a885af",
@@ -23564,7 +23951,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-16519ad31762",
@@ -23627,7 +24015,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-8e5c06205bf9",
@@ -23693,7 +24082,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-02a995ef00c5",
@@ -23754,7 +24144,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-f265e6ef0d50",
@@ -23815,7 +24206,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-542b8b4e7fdb",
@@ -23876,7 +24268,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-338cff2bf4a9",
@@ -23937,7 +24330,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0495cd66303c",
@@ -24004,7 +24398,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ee7661874fd2",
@@ -24065,7 +24460,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-4c1ef6156c34",
@@ -24130,7 +24526,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-174243c2238b",
@@ -24195,7 +24592,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-befd4df59960",
@@ -24256,7 +24654,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-3cfa607ccc8b",
@@ -24323,7 +24722,8 @@
     ],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-7d3b7faf5dd4",
@@ -24384,7 +24784,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-34474d9c8a0c",
@@ -24448,7 +24849,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-6d118946ae4c",
@@ -24517,7 +24919,8 @@
     ],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-b4c73cac35db",
@@ -24580,7 +24983,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-238005760179",
@@ -24641,7 +25045,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-90f5091e6747",
@@ -24704,7 +25109,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-beccbfa0a875",
@@ -24768,7 +25174,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-0e67e1a2ccc2",
@@ -24829,7 +25236,8 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   },
   {
     "id": "notice-ec3b32132a08",
@@ -24895,6 +25303,7 @@
     "crossing_phrases": [],
     "forecast_timing_note": null,
     "forecast_window_end": null,
-    "forecast_window_elapsed": false
+    "forecast_window_elapsed": false,
+    "document_deadline_warning": null
   }
 ]

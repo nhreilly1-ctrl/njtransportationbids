@@ -1,7 +1,11 @@
 import unittest
 from unittest.mock import patch
 from datetime import datetime, timezone
-from app.core.project_facts import parse_njdot_facts, project_facts_display
+from app.core.project_facts import parse_njdot_facts, project_facts_display, parse_njdot_bid_date
+from app.core.deadlines import normalize_deadline
+from app.core.document_deadlines import document_deadline_warning, retain_document_date_check
+from copy import deepcopy
+from types import SimpleNamespace
 from crawlers.project_facts import collect_njdot_facts
 
 TEXT = '''Contract No. 038153910
@@ -13,6 +17,112 @@ Right of Way Required: Yes'''
 
 
 class ProjectFactsTests(unittest.TestCase):
+    def test_collector_keeps_pdf_date_evidence_and_hash(self):
+        item = {'official_url': 'https://dot.nj.gov/test.pdf', 'contract_number': '038153910'}
+        text = TEXT + '\nProject Bid Date: 9/24/2026'
+        reader = SimpleNamespace(pages=[SimpleNamespace(extract_text=lambda: text)])
+        with patch('crawlers.project_facts.PdfReader', return_value=reader):
+            pack = collect_njdot_facts(item, lambda _: SimpleNamespace(content=b'%PDF-test'), '2026-09-19T12:00:00Z')
+        self.assertEqual(pack['bid_date']['date'], '2026-09-24')
+        self.assertEqual(pack['bid_date']['page'], 1)
+        self.assertEqual(len(pack['sha256']), 64)
+        self.assertEqual(len(pack['items']), 3)
+
+    def discrepancy_record(self):
+        return {'id': 'pdf-date-test', '_canonical_notice': True,
+                'source_id': 'state-njdot-construction', 'notice_type': 'construction',
+                'title': 'Route 1 bridge', 'status': 'open', 'source_name': 'NJDOT',
+                'contract_number': '027153030', 'official_url': 'https://dot.nj.gov/test.pdf',
+                'due_date_raw': '09/24/2099',
+                'project_facts': {'state': 'ok', 'contract': '027153030',
+                    'url': 'https://dot.nj.gov/test.pdf', 'sha256': 'abc',
+                    'checked_at': datetime.now(timezone.utc).isoformat(),
+                    'bid_date': parse_njdot_bid_date('Contract # 027153030 Project Bid Date: 8/25/2099', '027153030'),
+                    'items': [{'kind': 'estimate', 'value': '$100', 'evidence': 'test', 'page': 1}]}}
+
+    def test_pdf_bid_date_uses_exact_contract_and_explicit_label(self):
+        text = 'Contract # 027153030 Project Advertisement Date: 7/28/26 Project Bid Date: 8/25/26'
+        self.assertEqual(parse_njdot_bid_date(text, '027153030')['date'], '2026-08-25')
+        self.assertIsNone(parse_njdot_bid_date(text, '027153031'))
+        self.assertIsNone(parse_njdot_bid_date(text.replace('8/25/26', '2/31/26'), '027153030'))
+        self.assertIsNone(parse_njdot_bid_date(text + ' Project Bid Date: 9/24/26', '027153030'))
+        self.assertIsNone(parse_njdot_bid_date(text + ' Contract No. 999', '027153030'))
+        self.assertIsNone(parse_njdot_bid_date('Contract # 027153030 Office opens 10 AM on 8/25/26', '027153030'))
+
+    def test_contract_hash_supported_without_dropping_qualification_footnote(self):
+        text = TEXT.replace('Contract No.', 'Contract #').replace('4 or 5', '4 or 5*')
+        self.assertEqual([f['kind'] for f in parse_njdot_facts(text, '038153910')], ['estimate', 'completion'])
+
+    def test_conflict_preserves_listing_and_does_not_invent_pdf_time(self):
+        item = self.discrepancy_record()
+        normalize_deadline(item)
+        self.assertEqual(item['due_date_raw'], '09/24/2099')
+        self.assertEqual(item['due_date_parsed'], '2099-09-24')
+        self.assertTrue(item['deadline_conflict'])
+        self.assertIsNone(item['deadline_at'])
+        self.assertIsNone(item['days_until_due'])
+        self.assertIn('last checked PDF date differs', item['deadline_display'])
+        self.assertTrue(project_facts_display(item)['needs_review'])
+        self.assertEqual(project_facts_display(item)['items'], [])
+
+    def test_agreement_wrong_identity_and_no_evidence_do_not_claim_conflict(self):
+        item = self.discrepancy_record()
+        self.assertIsNone(document_deadline_warning(item, '2099-08-25'))
+        for key, value in [('contract', 'wrong'), ('url', 'https://dot.nj.gov/other.pdf'),
+                           ('checked_at', '2999-01-01T00:00:00Z'), ('state', 'unavailable'), ('sha256', '')]:
+            changed = deepcopy(item)
+            changed['project_facts'][key] = value
+            self.assertIsNone(document_deadline_warning(changed, '2099-09-24'))
+
+    def test_stale_check_remains_uncertain_not_current_verification(self):
+        item = self.discrepancy_record()
+        item['project_facts']['checked_at'] = '2000-01-01T00:00:00Z'
+        self.assertTrue(document_deadline_warning(item, '2099-09-24')['stale'])
+        normalize_deadline(item)
+        self.assertTrue(item['deadline_conflict'])
+        self.assertTrue(project_facts_display(item)['needs_review'])
+
+    def test_failed_refresh_retains_only_date_evidence_not_stale_facts(self):
+        from crawlers.notice_runner import _merge
+        previous = self.discrepancy_record()
+        current = deepcopy(previous)
+        current['project_facts'] = {'state': 'unavailable', 'items': []}
+        merged = _merge([previous], [current])[0]
+        warning = document_deadline_warning(merged, '2099-09-24')
+        self.assertTrue(warning['stale'])
+        self.assertNotIn('items', merged['project_facts']['previous_date_check'])
+        for key, value in [('id', 'reissued'), ('contract_number', 'other'), ('official_url', 'https://dot.nj.gov/new.pdf')]:
+            changed = deepcopy(current)
+            changed['project_facts'] = {'state': 'unavailable'}
+            changed[key] = value
+            retain_document_date_check(changed, previous)
+            self.assertNotIn('previous_date_check', changed['project_facts'])
+
+    def test_successful_matching_refresh_clears_old_conflict(self):
+        previous = self.discrepancy_record()
+        current = deepcopy(previous)
+        current['project_facts']['bid_date']['date'] = '2099-09-24'
+        retain_document_date_check(current, previous)
+        normalize_deadline(current)
+        self.assertFalse(current['deadline_conflict'])
+
+    def test_disagreement_warns_detail_blocks_calendar_and_excludes_urgency(self):
+        import app.main as main
+        from app.core.scanning import closing_soon
+        item = self.discrepancy_record()
+        with patch.object(main, 'load_public_opps', return_value=[item]):
+            client = main.app.test_client()
+            response = client.get('/opportunities/pdf-date-test')
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'Listing and linked PDF dates differ', response.data)
+            self.assertNotIn(b'Add deadline to calendar', response.data)
+            self.assertNotIn(b'$100', response.data)
+            self.assertEqual(client.get('/opportunities/pdf-date-test/calendar.ics').status_code, 404)
+        enriched = main.enrich(item)
+        self.assertEqual(enriched['status'], 'open')
+        self.assertFalse(closing_soon(enriched))
+        self.assertIn(enriched, main.group_opportunity_scan([enriched])[3])
+
     def test_detail_renders_fact_and_source(self):
         import app.main as main
         template = main.app.jinja_env.get_template('opportunity_detail.html')

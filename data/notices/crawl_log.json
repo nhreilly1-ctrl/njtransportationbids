@@ -3,13 +3,6 @@
     "source_id": "state-njdot-construction",
     "history": [
       {
-        "at": "2026-09-02T13:57:28.802285+00:00",
-        "count": 5,
-        "error": null,
-        "state": "ok",
-        "message": null
-      },
-      {
         "at": "2026-09-03T13:59:26.394193+00:00",
         "count": 7,
         "error": null,
@@ -211,13 +204,20 @@
         "error": null,
         "state": "ok",
         "message": null
+      },
+      {
+        "at": "2026-09-19T18:02:20.298164+00:00",
+        "count": 12,
+        "error": null,
+        "state": "ok",
+        "message": null
       }
     ],
-    "last_crawl": "2026-09-19T13:34:40.151912+00:00",
+    "last_crawl": "2026-09-19T18:02:20.298164+00:00",
     "last_count": 12,
     "last_error": null,
     "health": "ok",
-    "last_successful_crawl": "2026-09-19T13:34:40.151912+00:00",
+    "last_successful_crawl": "2026-09-19T18:02:20.298164+00:00",
     "last_state": "ok",
     "last_message": null
   },

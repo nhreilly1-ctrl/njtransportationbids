@@ -4,6 +4,7 @@ import re
 from datetime import date, datetime, timezone
 from zoneinfo import ZoneInfo
 from app.core.forecast import forecast_state
+from app.core.document_deadlines import document_deadline_warning
 
 
 EASTERN = ZoneInfo("America/New_York")
@@ -152,6 +153,7 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
         due_date_parsed=None,
         days_until_due=None,
         deadline_conflict=False,
+        document_deadline_warning=None,
         published_deadline_display=None,
         forecast_timing_note=None,
         forecast_window_end=None,
@@ -177,6 +179,7 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
             due_date_parsed=local.date().isoformat(),
             days_until_due=(local.date() - today).days,
         )
+        _check_document_deadline(record)
         return record
 
     parsed_date = _parse_date(cleaned)
@@ -187,6 +190,7 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
             due_date_parsed=parsed_date.isoformat(),
             days_until_due=(parsed_date - today).days,
         )
+        _check_document_deadline(record)
         return record
 
     if record.get("is_planned") or record.get("status") == "upcoming" or WINDOW_PATTERN.search(cleaned):
@@ -198,6 +202,15 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
     else:
         record["deadline_display"] = f"{raw} (unparsed - verify with agency)"
     return record
+
+
+def _check_document_deadline(record):
+    warning = document_deadline_warning(record, record.get('due_date_parsed'))
+    if warning:
+        record.update(document_deadline_warning=warning, deadline_conflict=True,
+                      published_deadline_display=record['deadline_display'],
+                      days_until_due=None,
+                      deadline_display=record['deadline_display'] + ' - last checked PDF date differs; confirm with agency')
 
 
 def deadline_date(record: dict) -> date | None:
