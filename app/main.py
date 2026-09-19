@@ -25,6 +25,7 @@ from app.core.deadlines import (
 )
 from app.core.corridors import classify_location, enrich_location, location_display
 from app.core.project_maps import project_map_links
+from app.core.project_research import research_for
 from app.core.geography import NJ_COUNTIES, enrich_geography
 from crawlers.notice_sources import NOTICE_SOURCES
 from crawlers.source_health import build_health_summary
@@ -1434,6 +1435,7 @@ def opportunity_detail(opp_id: str):
         opp=opp,
         related=related,
         readiness=readiness_for(opp),
+        research=research_for(opp),
         preparation=preparation_for(opp),
         agency_guide_slug=guide_slug_for(opp),
         submission_checklist=checklist_for(opp),

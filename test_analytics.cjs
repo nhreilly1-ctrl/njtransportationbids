@@ -25,6 +25,18 @@ assert.equal(events[0][2].filter_q, undefined);
 handlers.click({target: {closest: () => ({tagName: 'A', dataset: {analyticsEvent: 'map_click', noticeId: 'test'}})}});
 assert.equal(events.length, 2);
 assert.equal(events[1][1], 'map_click');
+handlers.click({target: {closest: () => ({tagName: 'A', dataset: {
+  analyticsEvent: 'project_research_click', noticeId: 'research-test', agency: 'NJDOT',
+  opportunityType: 'construction', resource: 'traffic_cameras', resourceStage: 'road',
+  surface: 'opportunity_detail'
+}})}});
+assert.equal(events.length, 3);
+assert.equal(events[2][1], 'project_research_click');
+assert.equal(events[2][2].resource, 'traffic_cameras');
+assert.equal(events[2][2].resource_stage, 'road');
+assert.equal(events[2][2].notice_id, 'research-test');
+assert.equal(events[2][2].opportunity_type, 'construction');
+assert.equal(events[2][2].surface, 'opportunity_detail');
 for (const path of ['app/templates/opportunity_list.html', 'app/templates/notices/notice_list.html']) {
   const html = fs.readFileSync(path, 'utf8');
   assert.ok(!html.includes('this.form.submit()'));

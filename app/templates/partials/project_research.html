@@ -1,0 +1,27 @@
+{% if research %}
+<section id="project-research" class="project-research" aria-labelledby="project-research-heading">
+  <div class="project-research-header">
+    <div>
+      <div class="project-kicker">NJDOT / Research tools</div>
+      <h2 id="project-research-heading">Research this project</h2>
+    </div>
+    {% if agency_guide_slug %}<a href="{{ url_for('agency_guides') }}#{{ agency_guide_slug }}" data-analytics-event="agency_guide_open" data-agency="{{ agency_guide_slug }}" data-notice-id="{{ opp.id }}" data-surface="project_research">New to NJDOT? Agency guide &#8594;</a>{% endif %}
+  </div>
+  <p class="project-research-note">{{ research.note }}</p>
+  {% if research.context %}<p class="project-research-context"><strong>Road references in notice:</strong> {{ research.context }}</p>{% endif %}
+  <div class="project-research-grid">
+    {% for group in research.groups %}
+    <article class="project-research-tool">
+      <h3>{{ group.title }}</h3>
+      <p>{{ group.description }}</p>
+      <div class="project-research-links">
+        {% for link in group.links %}
+        <a href="{{ link.url }}" target="_blank" rel="noopener" data-analytics-event="project_research_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-opportunity-type="{{ opp.record_type }}" data-resource="{{ link.key }}" data-resource-stage="{{ group.key }}" data-surface="opportunity_detail">{{ link.label }} &#8599;</a>
+        {% endfor %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  <p class="project-research-note">Reference links reviewed <time datetime="{{ research.reviewed_on }}">{{ research.reviewed_on }}</time>. Check each source's own data and imagery dates.</p>
+</section>
+{% endif %}

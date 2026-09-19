@@ -35,7 +35,26 @@
 .project-page .detail-card td { overflow-wrap: anywhere; }
 .project-page .detail-card table { table-layout: fixed; }
 .project-page .btn:focus-visible { outline: 3px solid #185fa5; outline-offset: 3px; }
+.project-research { border: 1px solid #cbd7ce; border-top: 3px solid var(--ledger-green); background: #fafbf7; padding: 20px; margin-bottom: 16px; }
+.project-research-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.project-research h2 { font: 700 28px/1.15 "Barlow Condensed", sans-serif; margin: 0; }
+.project-research-header > a { display: flex; align-items: center; min-height: 44px; font-size: 13px; }
+.project-research-note, .project-research-context { font-size: 12px; color: var(--text2); line-height: 1.5; margin: 10px 0; overflow-wrap: anywhere; }
+.project-research-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; }
+.project-research-tool { padding: 16px 0; border-top: 1px solid #cbd7ce; min-width: 0; }
+.project-research-tool h3 { font: 700 18px/1.2 "Barlow", sans-serif; margin: 0 0 8px; }
+.project-research-tool p { font-size: 13px; line-height: 1.5; color: var(--text2); margin: 0 0 8px; }
+.project-research-links { display: flex; flex-direction: column; align-items: start; }
+.project-research a { color: var(--ledger-green); text-underline-offset: 3px; }
+.project-research-links a { display: flex; align-items: center; min-height: 44px; font-size: 13px; font-weight: 600; }
+.project-research a:focus-visible, .project-record-details summary:focus-visible { outline: 3px solid #185fa5; outline-offset: 3px; }
+.project-record-details { margin-bottom: 20px; border: 1px solid #cbd7ce; }
+.project-record-details summary { padding: 14px; cursor: pointer; font-weight: 600; }
+.project-record-details .detail-grid { display: block; }
 @media (max-width: 650px) {
+  .project-research { padding: 16px; }
+  .project-research-header { flex-direction: column; align-items: start; gap: 8px; }
+  .project-research-grid { grid-template-columns: minmax(0, 1fr); }
   .project-page .project-hero { padding: 16px; }
   .project-page .opportunity-hero { flex-direction: column; gap: 12px; }
   .project-page .opportunity-deadline { width: 100%; max-width: none; text-align: left; }
