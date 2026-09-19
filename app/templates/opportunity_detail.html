@@ -89,8 +89,9 @@
   {% if opp.status == 'expired' %}<p class="project-warning">This opportunity is closed. This page remains available for reference; check the official source for amendments or reissues.</p>{% endif %}
   {% include "partials/project_actions.html" %}
   {% if opp.document_deadline_warning %}
-  <div class="project-warning" id="document-date-warning"><strong>Listing and linked PDF dates differ.</strong>
-    <p>The agency listing shows {{ opp.document_deadline_warning.listing_date }}; the linked PDF's Project Bid Date is {{ opp.document_deadline_warning.pdf_date }}. It may be an earlier notice. Confirm the current deadline and addenda with NJDOT before submitting.</p>
+  <div class="project-warning" id="document-date-warning"><strong>{{ 'Previous PDF check found a different date; recheck needed.' if opp.document_deadline_warning.stale else 'Listing and linked PDF dates differ.' }}</strong>
+    <p>The agency listing shows {{ opp.document_deadline_warning.listing_date }}; at the last successful check, the PDF's Project Bid Date was {{ opp.document_deadline_warning.pdf_date }}. It may be an earlier notice. Confirm the current deadline and addenda with NJDOT before submitting.</p>
+    {% if opp.source_url %}<p><a href="{{ opp.source_url }}" target="_blank" rel="noopener" data-analytics-event="official_source_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-destination="current agency listing">Check the current agency listing</a></p>{% endif %}
     <a href="{{ opp.document_deadline_warning.url }}#page=1" target="_blank" rel="noopener">Read the dated PDF, page 1</a>. Checked {{ opp.document_deadline_warning.checked_at }}.
   </div>
   {% endif %}

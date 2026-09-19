@@ -3,8 +3,9 @@ from unittest.mock import patch
 from datetime import datetime, timezone
 from app.core.project_facts import parse_njdot_facts, project_facts_display, parse_njdot_bid_date
 from app.core.deadlines import normalize_deadline
-from app.core.document_deadlines import document_deadline_warning
+from app.core.document_deadlines import document_deadline_warning, retain_document_date_check
 from copy import deepcopy
+from types import SimpleNamespace
 from crawlers.project_facts import collect_njdot_facts
 
 TEXT = '''Contract No. 038153910
@@ -16,6 +17,17 @@ Right of Way Required: Yes'''
 
 
 class ProjectFactsTests(unittest.TestCase):
+    def test_collector_keeps_pdf_date_evidence_and_hash(self):
+        item = {'official_url': 'https://dot.nj.gov/test.pdf', 'contract_number': '038153910'}
+        text = TEXT + '\nProject Bid Date: 9/24/2026'
+        reader = SimpleNamespace(pages=[SimpleNamespace(extract_text=lambda: text)])
+        with patch('crawlers.project_facts.PdfReader', return_value=reader):
+            pack = collect_njdot_facts(item, lambda _: SimpleNamespace(content=b'%PDF-test'), '2026-09-19T12:00:00Z')
+        self.assertEqual(pack['bid_date']['date'], '2026-09-24')
+        self.assertEqual(pack['bid_date']['page'], 1)
+        self.assertEqual(len(pack['sha256']), 64)
+        self.assertEqual(len(pack['items']), 3)
+
     def discrepancy_record(self):
         return {'id': 'pdf-date-test', '_canonical_notice': True,
                 'source_id': 'state-njdot-construction', 'notice_type': 'construction',
@@ -49,18 +61,50 @@ class ProjectFactsTests(unittest.TestCase):
         self.assertTrue(item['deadline_conflict'])
         self.assertIsNone(item['deadline_at'])
         self.assertIsNone(item['days_until_due'])
-        self.assertIn('linked PDF date differs', item['deadline_display'])
+        self.assertIn('last checked PDF date differs', item['deadline_display'])
         self.assertTrue(project_facts_display(item)['needs_review'])
         self.assertEqual(project_facts_display(item)['items'], [])
 
-    def test_agreement_wrong_identity_failure_and_stale_pack_do_not_claim_conflict(self):
+    def test_agreement_wrong_identity_and_no_evidence_do_not_claim_conflict(self):
         item = self.discrepancy_record()
         self.assertIsNone(document_deadline_warning(item, '2099-08-25'))
         for key, value in [('contract', 'wrong'), ('url', 'https://dot.nj.gov/other.pdf'),
-                           ('checked_at', '2000-01-01T00:00:00Z'), ('state', 'unavailable'), ('sha256', '')]:
+                           ('checked_at', '2999-01-01T00:00:00Z'), ('state', 'unavailable'), ('sha256', '')]:
             changed = deepcopy(item)
             changed['project_facts'][key] = value
             self.assertIsNone(document_deadline_warning(changed, '2099-09-24'))
+
+    def test_stale_check_remains_uncertain_not_current_verification(self):
+        item = self.discrepancy_record()
+        item['project_facts']['checked_at'] = '2000-01-01T00:00:00Z'
+        self.assertTrue(document_deadline_warning(item, '2099-09-24')['stale'])
+        normalize_deadline(item)
+        self.assertTrue(item['deadline_conflict'])
+        self.assertTrue(project_facts_display(item)['needs_review'])
+
+    def test_failed_refresh_retains_only_date_evidence_not_stale_facts(self):
+        from crawlers.notice_runner import _merge
+        previous = self.discrepancy_record()
+        current = deepcopy(previous)
+        current['project_facts'] = {'state': 'unavailable', 'items': []}
+        merged = _merge([previous], [current])[0]
+        warning = document_deadline_warning(merged, '2099-09-24')
+        self.assertTrue(warning['stale'])
+        self.assertNotIn('items', merged['project_facts']['previous_date_check'])
+        for key, value in [('id', 'reissued'), ('contract_number', 'other'), ('official_url', 'https://dot.nj.gov/new.pdf')]:
+            changed = deepcopy(current)
+            changed['project_facts'] = {'state': 'unavailable'}
+            changed[key] = value
+            retain_document_date_check(changed, previous)
+            self.assertNotIn('previous_date_check', changed['project_facts'])
+
+    def test_successful_matching_refresh_clears_old_conflict(self):
+        previous = self.discrepancy_record()
+        current = deepcopy(previous)
+        current['project_facts']['bid_date']['date'] = '2099-09-24'
+        retain_document_date_check(current, previous)
+        normalize_deadline(current)
+        self.assertFalse(current['deadline_conflict'])
 
     def test_disagreement_warns_detail_blocks_calendar_and_excludes_urgency(self):
         import app.main as main

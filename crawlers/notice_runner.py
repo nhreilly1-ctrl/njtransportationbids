@@ -295,6 +295,8 @@ def _merge(existing, fresh, refreshed_source_ids=None):
         nid = n["id"]
         if nid in existing_by_id:
             old = existing_by_id[nid]
+            from app.core.document_deadlines import retain_document_date_check
+            retain_document_date_check(n, old)
             # Preserve manual overrides
             for field in ("status_override","noise_flagged","record_type_override","notice_subtype_override"):
                 if old.get(field):

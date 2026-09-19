@@ -210,7 +210,7 @@ def _check_document_deadline(record):
         record.update(document_deadline_warning=warning, deadline_conflict=True,
                       published_deadline_display=record['deadline_display'],
                       days_until_due=None,
-                      deadline_display=record['deadline_display'] + ' - linked PDF date differs; confirm with agency')
+                      deadline_display=record['deadline_display'] + ' - last checked PDF date differs; confirm with agency')
 
 
 def deadline_date(record: dict) -> date | None:
