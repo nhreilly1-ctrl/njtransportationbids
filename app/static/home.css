@@ -135,6 +135,12 @@
   gap: 9px;
   margin-top: 16px;
 }
+.home-search { margin-top: 14px; max-width: 580px; }
+.home-search label { display: block; font-size: 13px; margin-bottom: 5px; color: #f8f7ef; }
+.home-search > div { display: flex; gap: 6px; }
+.home-search input { min-width: 0; flex: 1; padding: 10px; border: 1px solid #cbd7ce; background: #fbfcf8; color: #17231e; font: inherit; font-size: 16px; }
+.home-search button { padding: 0 14px; min-height: 44px; background: #f1efe4; color: #0a3425; border: 1px solid #cbd7ce; font: inherit; font-weight: 700; }
+.home-search input:focus-visible, .home-search button:focus-visible { outline: 3px solid #9ed9b7; outline-offset: 3px; }
 
 .hero-button {
   display: inline-flex;

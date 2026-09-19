@@ -56,7 +56,7 @@
   {% include '_feed_order.html' %}
   <div class="filter-desk-head">
     <div><span>Search desk</span><strong>Narrow the opportunity ledger</strong></div>
-    <a href="{{ url_for('export_csv') }}">Export CSV <span>&nearr;</span></a>
+    <a href="{{ url_for('export_csv') }}" title="Exports the full public dataset, not these filters">Export all records (CSV) <span>&nearr;</span></a>
   </div>
   <div class="filter-desk-controls">
     <label class="filter-search"><span>Keyword</span><input type="text" name="q" placeholder="Project, agency, contract number..." value="{{ q }}"></label>
@@ -95,7 +95,7 @@
 {% include '_active_filters.html' %}
 
 {% macro bid_card(o) %}
-  {% set is_soon = o.due_date_parsed and o.due_date_parsed <= soon_cutoff and o.status == 'open' %}
+  {% set is_soon = o in soon and o.status == 'open' %}
   {% set evidenced_county = o.counties and o.geography_provenance in ('NOTICE_TEXT', 'SOURCE_RECORD_FIELD') %}
   <article class="bid-card ledger-record {{ 'soon' if is_soon }} {{ 'noise' if o.status == 'noise' }}">
     <div class="ledger-signal" aria-hidden="true"></div>
@@ -138,6 +138,7 @@
       </div>
     </div>
     <div class="bid-due ledger-deadline {{ 'soon-due' if is_soon }}">
+      {% if o.deadline_conflict %}<strong class="due-label">Agency lists open; deadline needs confirmation</strong>{% endif %}
       {% if o.due_date_raw and o.due_date_raw not in ('Not listed','-', '') %}
         <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ o.deadline_display }}</span>
         {% if o.forecast_timing_note %}<span class="due-label">{{ o.forecast_timing_note }}</span>{% endif %}
@@ -166,8 +167,9 @@
 {% else %}
 {{ opportunity_group('01', 'Closing within 7 days', soon, 'urgent') }}
 {{ opportunity_group('02', 'Closing this month', this_month, 'month') }}
-{{ opportunity_group('03', 'Upcoming or planned', upcoming, 'future') }}
-{{ opportunity_group('04', 'Deadline not resolved', nodate, 'undated') }}
+{{ opportunity_group('03', 'Open bids closing later', later_open, 'later') }}
+{{ opportunity_group('04', 'Upcoming or planned; not yet open for bid', forecasts, 'future') }}
+{{ opportunity_group('05', 'Deadline needs confirmation', nodate, 'undated') }}
 {% endif %}
 {% if closed %}
   <section class="ledger-group ledger-group-closed">

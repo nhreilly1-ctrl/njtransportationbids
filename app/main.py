@@ -1357,7 +1357,7 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
     available_counties = {county for opp in opps for county in opp.get("counties", [])}
     counties = [county for county in NJ_COUNTIES if county in available_counties]
     agencies = sorted({opp.get("source_name", "") for opp in opps if opp.get("source_name")})
-    today = date.today()
+    today = eastern_today()
     soon_cutoff = today + timedelta(days=7)
     return {
         "soon": soon,
@@ -1365,6 +1365,8 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
         "feed_groups": freshness_groups([o for o in filtered if o not in closed], order),
         "this_month": this_month,
         "upcoming": upcoming,
+        "later_open": [opp for opp in upcoming if opp.get("status") == "open"],
+        "forecasts": [opp for opp in upcoming if opp.get("status") == "upcoming"],
         "nodate": nodate,
         "closed": closed,
         "counties": counties,
@@ -1424,6 +1426,7 @@ def opportunities():
 
 @app.route("/opportunities/<opp_id>")
 def opportunity_detail(opp_id: str):
+    from app.core.project_presentation import project_presentation
     opportunities = [enrich(item) for item in load_public_opps()]
     opp = next((item for item in opportunities if str(item.get("id")) == opp_id), None)
     if not opp or opp["status"] == "deleted":
@@ -1433,6 +1436,7 @@ def opportunity_detail(opp_id: str):
     return render_template(
         "opportunity_detail.html",
         opp=opp,
+        presentation=project_presentation(opp),
         related=related,
         readiness=readiness_for(opp),
         research=research_for(opp),
