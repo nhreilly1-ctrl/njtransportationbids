@@ -43,3 +43,10 @@ for (const path of ['app/templates/opportunity_list.html', 'app/templates/notice
   assert.ok(html.includes('this.form.requestSubmit()'));
 }
 console.log('Analytics interaction tests passed; no requests sent.');
+for (const name of ['project_section_open', 'project_browse_click']) {
+  handlers.click({target: {closest: () => ({tagName: 'A', dataset: {
+    analyticsEvent: name, noticeId: 'entry-test', resource: 'related'
+  }})}});
+  assert.equal(events.at(-1)[1], name);
+  assert.equal(events.at(-1)[2].notice_id, 'entry-test');
+}

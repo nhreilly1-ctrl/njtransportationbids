@@ -35,6 +35,15 @@
 .project-page .detail-card td { overflow-wrap: anywhere; }
 .project-page .detail-card table { table-layout: fixed; }
 .project-page .btn:focus-visible { outline: 3px solid #185fa5; outline-offset: 3px; }
+.project-sections { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: -4px 0 16px; border-bottom: 1px solid #cbd7ce; }
+.project-sections a, .project-browse-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--ledger-green); font-size: 13px; font-weight: 600; text-underline-offset: 3px; }
+.project-sections a:focus-visible, .project-browse-link:focus-visible { outline: 3px solid #185fa5; outline-offset: 3px; }
+.project-page section[id], #agency-preparation-heading { scroll-margin-top: 80px; }
+.project-page .source-description p { padding: 0 14px 14px; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.project-facts dl { display: grid; grid-template-columns: minmax(120px, .7fr) minmax(0, 1.3fr); gap: 10px 16px; margin: 12px 0; }
+.project-facts dd { margin: 0; }
+.project-facts p, .project-facts small { font-size: 12px; line-height: 1.5; color: var(--text2); }
+#related-opportunities { margin-bottom: 24px; }
 .project-research { border: 1px solid #cbd7ce; border-top: 3px solid var(--ledger-green); background: #fafbf7; padding: 20px; margin-bottom: 16px; }
 .project-research-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .project-research h2 { font: 700 28px/1.15 "Barlow Condensed", sans-serif; margin: 0; }

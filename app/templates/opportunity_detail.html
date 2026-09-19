@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260905') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='project.css', v='20260917') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='project.css', v='20260918') }}">
 {% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
@@ -35,6 +35,7 @@
 </script>
 {% endblock %}
 {% block content %}
+{% set presentation = presentation | default({'heading': opp.title, 'shortened': false, 'repeated_summary': false}) %}
 {% set type_label = {
   'construction': 'Construction Bid',
   'professional_services': 'Professional Services',
@@ -58,7 +59,7 @@
   <div class="opportunity-hero">
     <div style="flex:1; min-width:0;">
       <div class="project-kicker">{{ type_label }} / New Jersey opportunities</div>
-      <h1 id="project-title">{{ opp.title }}</h1>
+      <h1 id="project-title">{{ presentation.heading }}</h1>
       <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }} &middot; {{ opp.location_display or opp.county_display }}</div>
       <div style="display:flex; gap:7px; flex-wrap:wrap;">
         {% if opp.status == 'open' %}<span class="badge badge-open">Open</span>
@@ -88,6 +89,14 @@
   {% include "partials/project_actions.html" %}
 </section>
 
+<nav class="project-sections" aria-label="On this project page">
+  {% if opp.project_facts_display and opp.project_facts_display['items'] %}<a href="#project-facts">Published project facts</a>{% endif %}
+  {% if opp.milestones_checked %}<a href="#agency-schedule">Agency schedule</a>{% endif %}
+  {% if research %}<a href="#project-research" data-analytics-event="project_section_open" data-resource="research" data-notice-id="{{ opp.id }}">Research tools</a>{% endif %}
+  {% if related %}<a href="#related-opportunities" data-analytics-event="project_section_open" data-resource="related" data-notice-id="{{ opp.id }}">Related work ({{ related|length }})</a>{% endif %}
+  {% if preparation %}<a href="#agency-preparation-heading">Agency preparation</a>{% endif %}
+</nav>
+
 <div class="trust-strip">
   <strong>Official-source record</strong>
   {% if opp.last_verified_date %}<span>Last checked {{ opp.last_verified_date }}</span>{% endif %}
@@ -97,7 +106,7 @@
 </div>
 
 {% if opp.project_facts_display %}
-<section class="detail-card" aria-label="Published project facts" style="margin-bottom:1rem;">
+<section id="project-facts" class="detail-card project-facts" aria-label="Published project facts" style="margin-bottom:1rem;">
   <h2 class="section-label">Published project facts</h2>
   {% if opp.project_facts_display.needs_review %}
   <p>Current notice facts could not be verified. Check the official notice for the estimate, completion date and work types.</p>
@@ -105,7 +114,7 @@
   <dl>{% for fact in opp.project_facts_display['items'] %}
     <dt><strong>{{ fact.label }}</strong></dt><dd>{{ fact.value }} <a href="{{ opp.project_facts_display.url }}#page={{ fact.page }}" target="_blank" rel="noopener">Notice, page {{ fact.page }}</a></dd>
   {% else %}<p>These facts were not extracted from the notice. Check the official document.</p>{% endfor %}</dl>
-  <p>Estimate is informational, not an award value. Work types alone do not establish your firm's eligibility. Confirm current requirements and addenda in the official bid package.</p>
+  {% if opp.project_facts_display['items'] %}<p>Estimate is informational, not an award value. Work types alone do not establish your firm's eligibility. Confirm current requirements and addenda in the official bid package.</p>{% endif %}
   {% endif %}
   <small>PDF checked {{ opp.project_facts_display.checked_at }}. NJDOT notice pilot.</small>
 </section>
@@ -168,10 +177,17 @@
 {% endif %}
 
 {% if opp.notice_excerpt %}
+{% if presentation.repeated_summary %}
+<details class="project-record-details source-description">
+  <summary>Full agency description and reference numbers</summary>
+  <p>{{ opp.notice_excerpt }}</p>
+</details>
+{% else %}
 <div class="detail-card" style="margin-bottom:1rem;">
   <div class="section-label" style="margin-top:0;">Opportunity summary</div>
   <p style="font-size:14px; color:var(--text2); line-height:1.7;">{{ opp.notice_excerpt }}</p>
 </div>
+{% endif %}
 {% endif %}
 
 {% if research %}
@@ -191,6 +207,7 @@
     <div class="section-label" style="margin-top:0;">Record details</div>
     <table style="width:100%; font-size:13px; border-collapse:collapse;">
       <tr><td style="color:var(--text2); padding:4px 0; width:44%;">Type</td><td style="padding:4px 0;">{{ type_label }}</td></tr>
+      {% if presentation.shortened %}<tr><td>Full source title</td><td>{{ opp.title }}</td></tr>{% endif %}
       {% if opp.notice_subtype %}<tr><td style="color:var(--text2); padding:4px 0;">Notice subtype</td><td style="padding:4px 0;">{{ opp.notice_subtype | replace('_',' ') | title }}</td></tr>{% endif %}
       {% if opp.contract_number %}<tr><td style="color:var(--text2); padding:4px 0;">Contract / reference</td><td style="padding:4px 0;">{{ opp.contract_number }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Source</td><td style="padding:4px 0;">{{ opp.source_name or '—' }}</td></tr>
@@ -210,20 +227,25 @@
 {% if research %}</details>{% endif %}
 
 {% if related %}
-<div class="section-label">Related opportunities</div>
+<section id="related-opportunities" aria-labelledby="related-heading">
+<h2 id="related-heading" class="section-label">Related opportunities</h2>
+<p class="project-map-note">Matched by the notice's location or agency. These are separate opportunities, not confirmed phases of the same contract.</p>
 {% for item in related %}
 <div class="bid-card">
   <div class="bid-dot {{ 'dot-green' if item.status == 'open' else 'dot-amber' }}"></div>
   <div class="bid-main">
     <a href="{{ url_for('opportunity_detail', opp_id=item.id) }}" class="bid-title" title="{{ item.title }}" data-analytics-event="related_opportunity_click" data-notice-id="{{ item.id }}" data-agency="{{ item.source_name }}" data-relation="{{ item.relation_reason or '' }}">{{ item.title }}</a>
     <div class="bid-meta">
+      <strong>{{ 'Open for bid' if item.status == 'open' else 'Upcoming / not yet advertised' }}</strong> &middot;
       {% if item.relation_reason %}<strong style="color:var(--text);">{{ item.relation_reason }}</strong> &middot; {% endif %}
       {{ item.source_name }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}
     </div>
   </div>
-  <div class="bid-due"><span class="due-label">{{ 'Expected' if item.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ item.deadline_display }}</span></div>
+  <div class="bid-due"><span class="due-label">{{ 'Expected' if item.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ item.deadline_display }}</span>{% if item.deadline_conflict %}<span class="due-label">Deadline needs confirmation</span>{% elif item.forecast_timing_note %}<span class="due-label">{{ item.forecast_timing_note }}</span>{% endif %}</div>
 </div>
 {% endfor %}
+<a class="project-browse-link" href="{{ url_for('notices2.notices_all', source=opp.source_id, status='active') }}" data-analytics-event="project_browse_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}">More open and upcoming notices from {{ opp.source_name }} &rarr;</a>
+</section>
 {% endif %}
 
 {% if agency_guide_slug and not research %}

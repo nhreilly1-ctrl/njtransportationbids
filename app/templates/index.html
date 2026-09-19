@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20260906b') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20260918') }}">
 {% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
@@ -65,10 +65,11 @@
       <div class="hero-kicker"><span class="live-pulse"></span> New Jersey public bid intelligence</div>
       <h1 id="home-title">Live transportation bid board</h1>
       <p>Open bids and anticipated transportation work from New Jersey's public agencies, organized for contractors and professional-services teams.</p>
-      <div class="hero-actions">
-        <a class="hero-button hero-button-primary" href="{{ url_for('notices2.notices_all', status='open') }}">Scan open bids</a>
-        <a class="hero-button hero-button-secondary" href="#forecast">Review upcoming work</a>
-      </div>
+      <form class="home-search" action="{{ url_for('notices2.notices_all') }}" method="get" role="search" data-analytics-event="filter_applied" data-surface="homepage search">
+        <label for="home-query">Find a project, route or contract</label>
+        <div><input id="home-query" name="q" type="search" placeholder="Route 1, bridge, DP 26121..." required><button type="submit">Search</button></div>
+        <input type="hidden" name="status" value="active">
+      </form>
       <div class="hero-freshness">
         <span>{{ stats.sources }} public sources monitored</span>
         <span>Statewide coverage</span>
