@@ -34,6 +34,46 @@ FIXTURES = Path(__file__).resolve().parent / "test_fixtures"
 
 
 class NoticeCrawlerTests(unittest.TestCase):
+    def test_gloucester_reads_cards_status_and_published_deadline(self):
+        html = (FIXTURES / "gloucester_bid_cards.html").read_text(encoding="utf-8")
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_gloucester_county(SOURCE)
+        self.assertEqual(len(records), 1)
+        record = records[0]
+        self.assertEqual(record["contract_number"], "TEST-1")
+        self.assertEqual(record["source_status"], "Open")
+        self.assertEqual(record["due_date_raw"], "10/29/2099 10:00 AM")
+        self.assertTrue(record["official_url"].endswith("bids.aspx?bidID=1"))
+        self.assertEqual(record["county_provenance"], "AGENCY_JURISDICTION")
+
+    def test_county_parsers_fail_closed_on_missing_structure(self):
+        for parser in (notice_crawlers.parse_gloucester_county, notice_crawlers.parse_hunterdon_county):
+            with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text="<h1>Welcome</h1>")):
+                with self.assertRaises(RuntimeError):
+                    parser(SOURCE)
+
+    def test_gloucester_explicit_empty_is_not_a_missing_layout(self):
+        html = '<div id="modulecontent">There are no bids at this time.</div>'
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            self.assertEqual(notice_crawlers.parse_gloucester_county(SOURCE), [])
+
+    def test_hunterdon_reads_unlinked_titles_and_excludes_awards_cancellations(self):
+        html = (FIXTURES / "hunterdon_schedule.html").read_text(encoding="utf-8")
+        with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=html)):
+            records = notice_crawlers.parse_hunterdon_county(SOURCE)
+        self.assertEqual([r["contract_number"] for r in records], ["2099-01", "2099-06"])
+        self.assertEqual(records[0]["due_date_raw"], "10/29/2099 11:00AM")
+        self.assertEqual(records[0]["official_url"], SOURCE["url"])
+        self.assertEqual(records[1]["due_date_raw"], "10/31/2099")
+        self.assertEqual(records[0]["county_provenance"], "AGENCY_JURISDICTION")
+
+    def test_hunterdon_changed_headers_and_dates_raise(self):
+        html = (FIXTURES / "hunterdon_schedule.html").read_text(encoding="utf-8")
+        for broken in (html.replace("Bid Date", "New deadline field"), html.replace("10/29/2099", "See addendum")):
+            with patch.object(notice_crawlers, "_get", return_value=SimpleNamespace(text=broken)):
+                with self.assertRaises(RuntimeError):
+                    notice_crawlers.parse_hunterdon_county(SOURCE)
+
     def test_akamai_denial_retries_with_browser_transport(self):
         denied = SimpleNamespace(
             status_code=403,

@@ -23,6 +23,7 @@ import io, json, re, hashlib, time, logging
 from datetime import date, datetime, timezone
 from difflib import SequenceMatcher
 from urllib.parse import urljoin
+from zoneinfo import ZoneInfo
 
 import requests
 from bs4 import BeautifulSoup
@@ -2155,49 +2156,89 @@ def parse_monmouth_county(source):
 # ── Gloucester County ─────────────────────────────────────────────────────────
 
 def parse_gloucester_county(source):
-    """Gloucester uses .aspx bid listing with bidID params."""
+    """Read CivicPlus bid cards; a changed layout must not pass as empty."""
     records = []
     r = _get(source["url"])
     if not r:
         raise RuntimeError("Gloucester County bid page could not be fetched")
 
     soup = _soup(r.text)
-    for row in soup.find_all("tr")[1:]:
-        cells = row.find_all("td")
-        if len(cells) < 2: continue
-        title = _clean(cells[0].get_text() if cells else "")
-        if not title or not _is_transport_relevant(title): continue
-
-        link = row.find("a", href=re.compile(r'bidID', re.I))
-        official_url = urljoin(source["url"], link["href"]) if link else source["url"]
-        date_cell = _clean(cells[1].get_text()) if len(cells) > 1 else ""
-
-        ntype = _classify_transport_scope(title, _clean(row.get_text()))
+    rows = soup.select(".bidItems .listItemsRow.bid")
+    if not rows:
+        content = soup.select_one("#modulecontent")
+        text = _clean(content.get_text(" ", strip=True)) if content else ""
+        if re.search(r"\bThere are no (?:open |current )?bids (?:at this time|available)\b", text, re.I):
+            return []
+        raise RuntimeError("Gloucester County bid-card structure was not found")
+    for row in rows:
+        link = row.select_one('.bidTitle a[href*="bidID"]')
+        status_blocks = row.select(".bidStatus > div")
+        if not link or len(status_blocks) != 2:
+            raise RuntimeError("Gloucester County bid card is missing title/status fields")
+        values = status_blocks[1].find_all("span", recursive=False)
+        if len(values) != 2:
+            raise RuntimeError("Gloucester County bid status/deadline layout changed")
+        title = _clean(link.get_text(" ", strip=True))
+        status, due = [_clean(value.get_text(" ", strip=True)) for value in values]
+        if status.lower() != "open":
+            if status.lower() in ("closed", "awarded", "cancelled", "canceled"):
+                continue
+            raise RuntimeError(f"Gloucester County unknown bid status: {status}")
+        ntype = _classify_transport_scope(title)
         if not ntype:
             continue
-
-        records.append({
-            "id":             _make_id(source["id"], title),
-            "title":          f"Gloucester County — {title}",
-            "notice_excerpt": _excerpt(_clean(row.get_text())),
-            "source_id":      source["id"],
-            "source_name":    source["name"],
-            "source_tier":    source["source_tier"],
-            "source_url":     source["url"],
-            "official_url":   official_url,
-            "county":         "Gloucester",
-            "entity_type":    source["entity_type"],
-            "notice_type":    ntype,
-            "notice_subtype": ntype,
-            "due_date_raw":   date_cell,
-            "contract_number":"",
-            "access_type":    source["access_type"],
-            "platform":       source["platform"],
-            "paywalled":      False,
-            "crawled_at":     _now(),
-        })
+        number = re.search(r"\bBid No\.\s*([\w-]+)", row.get_text(" ", strip=True), re.I)
+        record = _base_record(source, title, urljoin(source["url"], link["href"]), ntype,
+                              due, number.group(1) if number else "", row.get_text(" ", strip=True))
+        record["source_status"] = status
+        records.append(record)
 
     log.info(f"Gloucester County: {len(records)} records")
+    return records
+
+
+def parse_hunterdon_county(source):
+    """Read schedule cells even when commodity titles are not links."""
+    response = _get(source["url"])
+    if not response:
+        raise RuntimeError("Hunterdon County bid schedule could not be fetched")
+    soup = _soup(response.text)
+    expected = ["Bid #", "Bid/ Proposal Commodity", "Time", "Bid Date",
+                "Award Vendor", "Amount", "Award Date"]
+    table = next((table for table in soup.find_all("table")
+                  if [_clean(th.get_text(" ", strip=True)) for th in table.find_all("th")] == expected), None)
+    if table is None:
+        raise RuntimeError("Hunterdon County bid schedule headers changed or are missing")
+    records = []
+    today = datetime.now(ZoneInfo("America/New_York")).date()
+    for row in table.find_all("tr"):
+        cells = row.find_all("td", recursive=False)
+        if not cells:
+            continue
+        if len(cells) != len(expected):
+            raise RuntimeError("Hunterdon County bid schedule row is incomplete")
+        number, title, time_text, date_text, vendor, amount, awarded = [
+            _clean(cell.get_text(" ", strip=True)) for cell in cells]
+        if vendor or awarded or re.search(r"\b(?:cancelled|canceled|withdrawn)\b", title, re.I):
+            continue
+        ntype = _classify_transport_scope(title)
+        if not ntype:
+            continue
+        due = _parse_known_date(date_text)
+        if date_text and due is None:
+            raise RuntimeError(f"Hunterdon County unrecognized bid date: {date_text}")
+        if due and due < today:
+            continue
+        link = cells[1].find("a", href=True)
+        record = _base_record(source, title,
+                              urljoin(source["url"], link["href"]) if link else source["url"],
+                              ntype, f"{date_text} {time_text}".strip() if date_text else "",
+                              number, f"{number} {title}. Bid date: {date_text} {time_text}")
+        # A schedule without a bid date does not establish an open solicitation.
+        if not due:
+            record.pop("source_status", None)
+        records.append(record)
+    log.info(f"Hunterdon County: {len(records)} current transportation records")
     return records
 
 
@@ -2506,6 +2547,7 @@ PARSER_MAP = {
     "camden_county":        parse_camden_county,
     "monmouth_county":      parse_monmouth_county,
     "gloucester_county":    parse_gloucester_county,
+    "hunterdon_county":     parse_hunterdon_county,
     "opengov":              parse_opengov,
     "bidnet_agency":        parse_bidnet_agency,
     "bonfire":              parse_bonfire,

@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from app import main as app_main
-from app.core.bid_readiness import readiness_for
+from app.core.bid_readiness import readiness_for, wage_reference_for
 from app.core.relatedness import rank_related, score_related
 
 
@@ -14,6 +14,22 @@ def rec(**kw):
 
 
 class BidReadinessTests(unittest.TestCase):
+    def test_funding_routes_wage_reference_without_a_rate(self):
+        for funding, domain in (("Federal", "sam.gov"), ("State", "nj.gov/labor")):
+            for kind in ("construction", "professional_services"):
+                reference = readiness_for(rec(record_type=kind, notice_excerpt=f"Funding: {funding}."))["wage_reference"]
+                self.assertIn(domain, reference["resource"]["url"])
+                self.assertEqual(reference["evidence"], f"Funding: {funding}")
+                self.assertIn("not a determination", reference["note"])
+                self.assertNotIn("$", str(reference))
+
+    def test_wage_reference_requires_explicit_unambiguous_evidence(self):
+        self.assertEqual(wage_reference_for(rec(notice_excerpt="Federal Project No: 0022361"))["funding"], "federal")
+        for text in ("Federal Project No: N/A", "Federal Project No:", "Federal Project No: TBD", "Coordinate with FHWA"):
+            self.assertIsNone(wage_reference_for(rec(notice_excerpt=text)))
+        self.assertTrue(wage_reference_for(rec(notice_excerpt="Funding: Federal. Funding: State."))["unresolved"])
+        self.assertEqual(wage_reference_for(rec(notice_excerpt="Funding: State. FHWA coordination."))["funding"], "state")
+
     def _titles(self, pack):
         return [item["title"] for item in pack["resources"]]
 
@@ -216,6 +232,23 @@ class RelatednessTests(unittest.TestCase):
 
 
 class DetailPageTests(unittest.TestCase):
+    def test_project_page_shows_funding_selected_wage_link(self):
+        from bs4 import BeautifulSoup
+        for funding, domain in (("Federal", "sam.gov"), ("State", "nj.gov/labor")):
+            subject = rec(id="funding-test", _canonical_notice=True,
+                          notice_type="professional_services", record_type="professional_services",
+                          source_id="state-njdot-profserv", source_name="NJDOT",
+                          notice_excerpt=f"Funding: {funding}.", due_date_raw="Fall 2099",
+                          official_url="https://agency.example/project", source_url="https://agency.example")
+            with patch.object(app_main, "load_public_opps", return_value=[subject]):
+                response = app_main.app.test_client().get("/opportunities/funding-test")
+            self.assertEqual(response.status_code, 200)
+            block = BeautifulSoup(response.data, "html.parser").select_one('[aria-label="Funding-based wage reference"]')
+            self.assertIsNotNone(block)
+            self.assertIn(domain, block.find("a")["href"])
+            self.assertIn(f"Funding: {funding}", block.get_text())
+            self.assertNotIn("$", block.get_text())
+
     def test_detail_page_renders_reasons_readiness_and_pitch(self):
         subject = {
             "id": "subject", "_canonical_notice": True, "title": "Route 1 NB Bridge over Raritan River",

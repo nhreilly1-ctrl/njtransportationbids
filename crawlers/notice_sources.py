@@ -590,7 +590,7 @@ NOTICE_SOURCES = [
         "crawl_tier":   2,
         "county":       "Hunterdon",
         "url":          "https://www.co.hunterdon.nj.us/2913/2026-Bid-Schedule",
-        "parser":       "generic_html_list",
+        "parser":       "hunterdon_county",
         "access_type":  "Public access",
         "platform":     "County procurement portal",
         "notice_type":  "mixed",

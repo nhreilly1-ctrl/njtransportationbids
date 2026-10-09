@@ -111,7 +111,15 @@ Out of scope, permanently, unless this document changes:
 
 ## Known gaps this concept implies but the data cannot yet serve
 
-- **Project scale or value.** Nothing in the sources carries a reliable estimate,
-  so the "is it my size" question stays unanswered. Do not infer one.
-- **"New since you last looked."** Needs `first_seen_at`; `crawled_at` cannot
-  answer it. Until then, do not badge anything as new.
+- **Project scale or value beyond the NJDOT pilot.** PR #20 added published
+  estimate ranges, completion dates, and eligible work types extracted from
+  official NJDOT construction notice PDFs. Values require matching contract
+  identity, source URL, evidence, and a successful check within 48 hours;
+  stale or failed checks withhold the values. This is a bounded source-backed
+  pilot, not an estimate for every project or a bidder eligibility ruling.
+  Never infer missing values or extend this coverage to other agencies without
+  source evidence and extraction tests.
+- **"New since you last looked."** Index discovery is now recorded in
+  `first_seen_at` and supports newest-first feeds. Legacy discovery remains
+  unknown; refresh time is not discovery. Per-visitor last-visit comparison
+  remains a separate, unimplemented feature.

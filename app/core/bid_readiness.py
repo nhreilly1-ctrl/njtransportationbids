@@ -50,6 +50,9 @@ _FEDERAL_AID_BY_AUDIENCE = {
 # fallback for sources that publish neither.
 _FUNDING_FIELD_RE = re.compile(r"\bFunding:\s*(Federal|State)\b", re.IGNORECASE)
 _FEDERAL_PROJECT_RE = re.compile(r"\bFederal\s+Project\s+No", re.IGNORECASE)
+_FEDERAL_PROJECT_VALUE_RE = re.compile(
+    r"\bFederal\s+Project\s+No\.?\s*:\s*([A-Z0-9][A-Z0-9()/-]*)", re.IGNORECASE
+)
 _FEDERAL_HINTS = ("federal-aid", "federal aid", "fhwa", "buy america", "davis-bacon", "davis bacon")
 _NJSTART_HINTS = ("njstart", "nj start")
 
@@ -164,6 +167,30 @@ def _looks_federally_funded(record: dict[str, Any]) -> bool:
     return any(hint in lowered for hint in _FEDERAL_HINTS)
 
 
+def wage_reference_for(record: dict[str, Any]) -> dict[str, Any] | None:
+    """Select an informational reference, not a wage or applicability ruling."""
+    text = " ".join(str(record.get(field) or "")
+                    for field in ("title", "notice_excerpt", "notice_text"))
+    fields = list(_FUNDING_FIELD_RE.finditer(text))
+    funding = {match.group(1).lower() for match in fields}
+    if len(funding) > 1:
+        return {"unresolved": True, "note": "Funding descriptions conflict. Confirm the applicable wage determination in the official solicitation."}
+    if fields:
+        kind = fields[0].group(1).lower()
+        evidence = fields[0].group()
+    else:
+        project = _FEDERAL_PROJECT_VALUE_RE.search(text)
+        if not project or project.group(1).upper() in {"N/A", "NA", "NONE", "TBD", "NOT"}:
+            return None
+        kind, evidence = "federal", project.group()
+    title = "Federal Wage Determinations" if kind == "federal" else "NJ Prevailing Wage Determinations"
+    return {
+        "funding": kind, "evidence": evidence, "resource": _BY_TITLE[title],
+        "note": "Reference selected from published funding information, not a determination that wage rules apply to this contract. "
+                "Use the determination and modification identified in the official solicitation; state and federal requirements may both apply.",
+    }
+
+
 def _uses_njstart(record: dict[str, Any]) -> bool:
     text = " ".join(
         str(record.get(field) or "")
@@ -236,6 +263,7 @@ def readiness_for(record: dict[str, Any], limit: int = 8) -> dict[str, Any] | No
         "note": track["note"],
         "caveat": track.get("caveat", ""),
         "federal_evidence": federal_evidence,
+        "wage_reference": wage_reference_for(record),
         # Not "items": Jinja resolves ``pack.items`` to the dict method first.
         "resources": resources,
     }
