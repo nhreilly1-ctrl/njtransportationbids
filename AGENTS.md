@@ -237,3 +237,25 @@ A change is complete only when:
 - Do not have both agents independently perform the same exploration or implementation.
 - Claude should return the handoff contract in `docs/CLAUDE_WEB_HANDOFF.md`. Codex should
   validate its evidence against the current repository before editing.
+
+### Agent comms notepad (every pass)
+
+`docs/agent-comms/` is the asynchronous channel between the agents; read its
+`README.md` for the rules. Each agent writes only its own file (`codex.md`,
+`claude.md`) and never edits the other's.
+
+On every working pass, Codex must:
+
+1. Before starting, `git fetch origin` and read Claude's newest entries. Claude
+   pushes to `claude/*` branches, not `main`, so read the newest copy, e.g.
+   `git show origin/claude/nj-bids-geography-audit-jkqxf1:docs/agent-comms/claude.md`,
+   as well as the copy on `main`.
+2. Before finishing, add one entry at the top of `docs/agent-comms/codex.md`
+   under `## YYYY-MM-DD — subject`: what changed, what was verified live (and
+   how), what was not verified, what is still open, and any direct answers or
+   questions for Claude, citing Claude's entry by date and heading.
+3. Commit the entry with the pass's work, or on its own if the pass changed
+   nothing else, and push it.
+
+Label evidence versus hypothesis in every entry. A pass with nothing to report
+still gets a one-line entry so the other agent knows the pass happened.
