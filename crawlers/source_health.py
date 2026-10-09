@@ -41,8 +41,15 @@ def _prior_positive_counts(entry):
     ]
 
 
-def evaluate_source(source, entry=None, now=None):
-    """Return a stable health record for one configured source."""
+def evaluate_source(source, entry=None, now=None, has_records=False):
+    """Return a stable health record for one configured source.
+
+    ``has_records`` is durable proof, supplied by the caller, that this source
+    has produced at least one record at some point. Retained crawl history is a
+    bounded window (currently 30 entries, roughly 25 days), so history alone
+    cannot answer "has this source ever produced" — a source that produced
+    months ago and has been quiet since would read as never-producing.
+    """
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     entry = entry or {}
     critical = bool(source.get("critical"))
@@ -60,9 +67,13 @@ def evaluate_source(source, entry=None, now=None):
         else:
             break
 
-    ever_produced = (isinstance(last_count, int) and last_count > 0) or any(
-        not item.get("error") and isinstance(item.get("count"), int) and item["count"] > 0
-        for item in history
+    ever_produced = (
+        bool(has_records)
+        or (isinstance(last_count, int) and last_count > 0)
+        or any(
+            not item.get("error") and isinstance(item.get("count"), int) and item["count"] > 0
+            for item in history
+        )
     )
 
     result = {
@@ -162,7 +173,20 @@ def build_health_summary(sources, crawl_log, now=None, notices=None):
     """Build health and source-coverage metrics for all configured sources."""
     now = now or datetime.now(timezone.utc)
     log_by_id = {entry.get("source_id"): entry for entry in crawl_log}
-    evaluated = [evaluate_source(source, log_by_id.get(source["id"]), now) for source in sources]
+    # A record in the notice set proves the source produced, however long ago,
+    # and outlives the bounded crawl-history window.
+    sources_with_records = {
+        notice.get("source_id") for notice in (notices or []) if notice.get("source_id")
+    }
+    evaluated = [
+        evaluate_source(
+            source,
+            log_by_id.get(source["id"]),
+            now,
+            has_records=source["id"] in sources_with_records,
+        )
+        for source in sources
+    ]
     evaluated.sort(key=lambda item: (item["crawl_tier"] or 9, item["source_name"].lower()))
 
     severity_counts = Counter(item["severity"] for item in evaluated)

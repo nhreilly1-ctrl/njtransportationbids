@@ -745,6 +745,45 @@ class SourceHealthTests(unittest.TestCase):
         self.assertEqual(summary["coverage"]["county_sources"], 21)
         self.assertEqual(summary["coverage"]["missing_counties"], [])
 
+    def test_a_record_proves_production_after_history_rolls_past_it(self):
+        # Retained crawl history is a bounded window, so a source that produced
+        # months ago and has been quiet since must not read as never-producing.
+        source = dict(self.source, allow_empty=True)
+        entry = {
+            "last_crawl": self.now.isoformat(),
+            "last_count": 0,
+            "last_error": None,
+            "history": [{"at": self.now.isoformat(), "count": 0, "error": None}],
+        }
+        self.assertFalse(source_health.evaluate_source(source, entry, self.now)["ever_produced"])
+        self.assertTrue(
+            source_health.evaluate_source(source, entry, self.now, has_records=True)["ever_produced"]
+        )
+
+    def test_county_with_a_retired_record_is_not_reported_as_never_producing(self):
+        county = {
+            "id": "county-alpha", "name": "Alpha County", "url": "https://alpha.example/bids",
+            "crawl_tier": 2, "source_tier": "county", "county": "Essex",
+            "crawl_freq": "daily", "allow_empty": True,
+        }
+        crawl_log = [{
+            "source_id": "county-alpha",
+            "last_crawl": self.now.isoformat(),
+            "last_count": 0,
+            "last_error": None,
+            "history": [{"at": self.now.isoformat(), "count": 0, "error": None}],
+        }]
+        # The record is retired, but its existence still proves the parser worked.
+        notices = [{"source_id": "county-alpha", "source_inactive": True}]
+
+        without = source_health.build_health_summary([county], crawl_log, self.now, [])
+        self.assertIn("Essex", without["coverage"]["counties_never_produced"])
+
+        with_record = source_health.build_health_summary([county], crawl_log, self.now, notices)
+        self.assertNotIn("Essex", with_record["coverage"]["counties_never_produced"])
+        # It still has no *active* records, which is a separate, true statement.
+        self.assertIn("Essex", with_record["coverage"]["counties_without_active_records"])
+
     def test_allow_empty_zero_from_a_never_producing_source_is_disclosed(self):
         source = dict(self.source, allow_empty=True)
         entry = {
