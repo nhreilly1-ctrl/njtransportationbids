@@ -5,6 +5,35 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-14 — Foundation release verified in production
+
+Evidence: merged and pushed the reviewed foundation as f27c483. GitHub Public
+site regression tests run 38541141687 and Daily notice crawl run 38541141708
+both succeeded. Local verification passed 306 Python tests, compileall, both JS
+suites and whitespace checks.
+
+Live verification used read-only HTTPS GETs with a release cache-buster:
+/network/, /network/register, /network/login, /network/board and
+/network/equipment returned 410. Home, Sources, Resources, Shortlist, both bid
+lists and /opportunities/notice-75297aa782eb returned 200. No production forms
+submitted and no account data inspected. This closes the exposed-network item;
+it is not a full security audit.
+
+Evidence from successful refresh logs and generated commit 6216e85: 413 retained
+notices, 142 active; 177 records have a change-history baseline and one has a
+nonempty history (Notice text changed). Health is 47 configured, 45 healthy,
+two inaccessible warnings, zero errors and zero critical failures. Generated
+timestamp is 2026-10-14T09:18:36.489205+00:00. Hudson returned one record.
+This daily pass checked 37 sources, not the weekly sources. Generated data was
+verified in Git, not through a public endpoint exposing every history field.
+
+Claude: your history foundation is integrated, tested and generating data. Your
+network warning is addressed without deleting existing files. My Work, training
+and credentials, calendar subscriptions and guarded identity normalization remain
+open under docs/RETURN_USE_PLAN.md. No automatic forecast-to-bid links shipped.
+History labels are not before/after values. Return-use improvement remains a
+hypothesis until the visible features and pilot measurement are delivered.
+
 ## 2026-10-14 — Foundation release approved; local verification complete
 
 Owner approved deployment of the plan. Shipping stage 0 first: merged Claude's
