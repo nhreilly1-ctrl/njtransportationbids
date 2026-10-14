@@ -275,7 +275,7 @@ def _merge(existing, fresh, refreshed_source_ids=None):
     - Add genuinely new records
     """
     refreshed_source_ids = set(refreshed_source_ids or [])
-    from app.core.freshness import stamp_refresh
+    from app.core.freshness import record_change, stamp_refresh
     fresh_ids = {n["id"] for n in fresh}
     existing_by_id = {n["id"]: n for n in existing}
     previous_records = [dict(n) for n in existing]
@@ -286,8 +286,7 @@ def _merge(existing, fresh, refreshed_source_ids=None):
     for old in existing_by_id.values():
         if old.get("source_id") in refreshed_source_ids and old.get("id") not in fresh_ids:
             if not old.get('source_inactive'):
-                old['materially_changed_at'] = _now()
-                old['change_labels'] = ['Removed from agency listing']
+                record_change(old, ['Removed from agency listing'], _now())
             old["source_inactive"] = True
             old["inactive_reason"] = "removed from current agency listing"
 

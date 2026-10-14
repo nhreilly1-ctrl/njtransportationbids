@@ -98,6 +98,59 @@ class ScanTrustTests(unittest.TestCase):
         new = dict(id='new', first_seen_at='2026-09-01T12:00:00+00:00')
         self.assertEqual([r['id'] for r in newest_first([legacy, old, new])], ['new', 'old', 'legacy'])
 
+    def test_change_history_keeps_a_deadline_change_a_later_edit_would_erase(self):
+        from app.core.freshness import stamp_refresh, changes_since
+        base = dict(id='b', title='Bridge', due_date_raw='09/20/2026', notice_excerpt='A',
+                    first_seen_at='2026-09-01T12:00:00+00:00')
+        first = dict(base)
+        stamp_refresh(first, base, '2026-10-01T12:00:00+00:00')
+        moved = dict(first, due_date_raw='09/25/2026')
+        stamp_refresh(moved, first, '2026-10-02T12:00:00+00:00')
+        edited = dict(moved, notice_excerpt='B')
+        stamp_refresh(edited, moved, '2026-10-10T12:00:00+00:00')
+        # The latest-change fields only remember the text edit; history keeps both.
+        self.assertEqual(edited['change_labels'], ['Notice text changed'])
+        self.assertEqual([e['labels'] for e in edited['change_history']],
+                         [['Notice text changed'], ['Deadline changed']])
+        entries, complete = changes_since(edited, '2026-10-01T18:00:00+00:00')
+        self.assertTrue(complete)
+        self.assertEqual(len(entries), 2)
+        quiet = dict(edited)
+        stamp_refresh(quiet, edited, '2026-10-11T12:00:00+00:00')
+        self.assertEqual(quiet['change_history'], edited['change_history'])
+        self.assertEqual(quiet['change_history_since'], edited['change_history_since'])
+
+    def test_changes_since_says_incomplete_instead_of_guessing(self):
+        from app.core.freshness import HISTORY_LIMIT, record_change, changes_since
+        record = {}
+        record_change(record, ['Title changed'], '2026-10-05T12:00:00+00:00')
+        # Asking about a period before tracking began cannot be answered fully.
+        self.assertFalse(changes_since(record, '2026-10-01T12:00:00+00:00')[1])
+        self.assertTrue(changes_since(record, '2026-10-06T12:00:00+00:00')[1])
+        # Unparseable or naive baselines (a browser clock, say) are unknown, not zero.
+        self.assertEqual(changes_since(record, 'not a date'), ([], False))
+        self.assertEqual(changes_since(record, '2026-10-06T12:00:00'), ([], False))
+        # A change recorded before history existed is not silently dropped.
+        legacy = dict(materially_changed_at='2026-10-03T12:00:00+00:00',
+                      change_history_since='2026-10-01T12:00:00+00:00')
+        self.assertFalse(changes_since(legacy, '2026-10-02T12:00:00+00:00')[1])
+        # Past the retained window, older changes may be missing.
+        busy = {}
+        for day in range(1, HISTORY_LIMIT + 3):
+            record_change(busy, ['Notice text changed'], f'2026-10-{day:02d}T12:00:00+00:00')
+        self.assertEqual(len(busy['change_history']), HISTORY_LIMIT)
+        self.assertFalse(changes_since(busy, '2026-09-30T12:00:00+00:00')[1])
+        self.assertTrue(changes_since(busy, '2026-10-05T12:00:00+00:00')[1])
+
+    def test_removal_from_listing_is_recorded_in_history(self):
+        checked = '2026-10-09T12:00:00+00:00'
+        live = dict(id='gone', source_id='agency', title='Culvert', first_seen_at='2026-09-01T12:00:00+00:00',
+                    change_history_since='2026-09-01T12:00:00+00:00')
+        with patch.object(notice_runner, '_now', return_value=checked):
+            merged = notice_runner._merge([dict(live)], [], {'agency'})[0]
+        self.assertTrue(merged['source_inactive'])
+        self.assertEqual(merged['change_history'][0], {'at': checked, 'labels': ['Removed from agency listing']})
+
     def test_freshness_groups_do_not_call_unknown_dates_new(self):
         from app.core.freshness import freshness_groups
         rows = [dict(id='unknown'), dict(id='new', first_seen_at='2026-09-06T12:00:00Z'),
