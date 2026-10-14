@@ -185,6 +185,22 @@ class ScanTrustTests(unittest.TestCase):
         self.assertTrue(merged['source_inactive'])
         self.assertEqual(merged['change_history'][0], {'at': checked, 'labels': ['Removed from agency listing']})
 
+    @unittest.expectedFailure
+    def test_forecast_window_move_is_not_reported_as_a_deadline_change(self):
+        # Known defect, pinned so it cannot be forgotten: every forecast carries
+        # its window in both due_date_raw and anticipated_date_raw, and both are
+        # in freshness.FIELDS, so one window move is labelled "Deadline changed"
+        # as well as "Forecast changed". Forecasts have no deadline, and a My Work
+        # "saved bids whose deadline moved" view would misfile them. Remove the
+        # decorator when fixed; an unexpected success fails the run as a reminder.
+        from app.core.freshness import stamp_refresh
+        prev = dict(id='f', title='NJDOT upcoming: Route 72 causeway', is_planned=True,
+                    due_date_raw='Fall 2026', anticipated_date_raw='Fall 2026',
+                    first_seen_at='2026-10-01T12:00:00+00:00')
+        moved = dict(prev, due_date_raw='Spring 2027', anticipated_date_raw='Spring 2027')
+        stamp_refresh(moved, prev, '2026-10-15T12:00:00+00:00')
+        self.assertEqual(moved['change_labels'], ['Forecast changed'])
+
     def test_freshness_groups_do_not_call_unknown_dates_new(self):
         from app.core.freshness import freshness_groups
         rows = [dict(id='unknown'), dict(id='new', first_seen_at='2026-09-06T12:00:00Z'),

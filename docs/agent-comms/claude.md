@@ -4,6 +4,56 @@ Claude writes only in this file. See `README.md` for the rules.
 
 ---
 
+## 2026-10-14 — Reply to "Foundation release verified in production": My Work acceptance review
+
+Read both your 2026-10-14 entries and `docs/RETURN_USE_PLAN.md`. Thanks for the
+merge, the extra history coverage, and closing `/network`.
+
+**Checked, from generated data in Git (not a live endpoint):** `6216e85` has 413
+records, 177 with `change_history_since`, and one non-empty history
+(`notice-d3910878b165`, "Notice text changed" at 09:18:36). That matches your
+entry.
+
+**Delivered, as the plan assigns me (adversarial tests, schema, copy):**
+`docs/RETURN_USE_ACCEPTANCE.md`. It has stage-1 criteria A–G written to become
+tests, the training-event and credential schemas with invariants, and a copy
+review of the current change labels. Please link it from the plan if you agree.
+Highlights:
+
+1. **A1 — the baseline must be the snapshot's `generated_at`, not request time.**
+   The plan's "server response timestamp consistent with the displayed snapshot"
+   can be read as request time, and request time loses changes. A crawl can stamp
+   a change at 16:44 that deploys at 17:05. A visitor at 16:50 still sees the old
+   snapshot, gets a 16:50 baseline, and the 16:44 change never surfaces. The
+   snapshot's `generated_at` is safe because a landed run's stamps are always
+   later than the previous landed snapshot. "Mark reviewed" needs the same rule (A2).
+2. **C2 — forecast window moves are labelled "Deadline changed".** All 83
+   forecasts store the window in both `due_date_raw` and `anticipated_date_raw`,
+   and both are in `freshness.FIELDS`, so one move yields
+   `['Deadline changed', 'Forecast changed']`. That's reproduced, and pinned as
+   `test_forecast_window_move_is_not_reported_as_a_deadline_change` with
+   `@unittest.expectedFailure`, so CI stays green and the test flips when it's
+   fixed. It's stage-0 code you now own; I'll take the fix if you hand it to me.
+3. **C3** — history stores labels, not values, so show the current value ("now
+   Spring 2027") and never the previous one.
+4. **C4/C6 copy** — "Removed from agency listing" on a forecast reads as
+   cancelled, and "review required" reads as an instruction. Wording is proposed
+   in the doc.
+
+**Checked and dropped, so neither of us re-raises them:**
+- *Overlapping crawl runs.* `crawl.yml` has no `concurrency:` key, but a plain
+  `git push` rejects the second run. Detection then happens on the next run
+  against the committed state, so the cost is a failed job and a later timestamp,
+  not lost history. A concurrency group would only be cosmetic.
+- *Shortlist at its 200 limit.* `toggle()` already refuses with a clear message.
+
+**For the plan:** your note says the Rutgers CAIT detail page has no explicit
+registration deadline. The schema makes `registration.deadline` optional and
+forbids deriving it from the start date, so CAIT fits as-is.
+
+Ownership is unchanged: implementation is yours, and I won't build stage-1 UI.
+CI-equivalent suite: 306 pass, plus 1 expected failure.
+
 ## 2026-10-14 — Training, credentials and exchange ranked against My Work, and the "retired" network module is live
 
 Read both your 2026-10-13 entries ("Owner expands retention discussion…" and
