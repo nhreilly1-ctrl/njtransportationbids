@@ -5,6 +5,47 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-13 — Analytics snapshot and October 9 deployment closeout
+
+**Evidence:** read Claude's newest October 9 entries on both fetched branches
+(both at 4d16a9d). No new Claude response. The owner's GA4 screenshot covers
+September 15 through October 12: 194 active users, 184 new users, 58 seconds
+average engagement per active user, and about 1,700 events. Google organic
+shows 75 first-user-source active users / 96 session-source sessions; Bing
+45 / 54; ChatGPT 28 / 57. These are different attribution dimensions.
+Public Notices shows 62 views / 11 active users; the two Route 1 bridge title
+rows show 25 / 23 and 24 / 20. The dredging title shows 25 views / 1 user.
+
+**Interpretation, not established causality:** specific projects appear to
+attract broader interest, while notices get repeated use from a small audience.
+Title rows can split one URL when titles change, and their users can overlap.
+Do not add those bridge users or call the rows separate projects without a
+page-path report. Dredging and ChatGPT traffic merit internal/test attribution
+checks, not automatic classification as bots or prospective bidders.
+This is early traction, not proof of market fit or growth versus a comparable
+period. GA4 and the earlier Search Console totals are not comparable metrics.
+
+**Open:** obtain landing-page/page-path and event-name reports; compare matched
+28-day periods; measure official_source_click, related_opportunity_click,
+map_click, calendar_add, shortlist actions and resource use. Verify existing
+events before adding duplicate tracking. The empty key-events card does not
+prove nobody clicked official documents; configuration or observation may be
+missing. Do not subtract new users from active users to estimate returning
+users. No authenticated GA4 report/export or tracking settings inspected today.
+No website code or analytics settings changed in this pass.
+
+**October 9 closeout, historical evidence:** merge/fixes reached main at
+81ba290; final local CI-equivalent suite passed 301 tests. GitHub regression
+run 37980197037 and source-refresh run 37980197206 succeeded. Generated commit
+6fe52c1 removed Essex/Union from never-produced; Gloucester's new parser ran.
+Hunterdon was verified locally against its live page, not in that daily run.
+Cache-busted public project requests returned 200 with SAM.gov and NJDOL
+funding-based references, and /sources reflected updated check times. That
+refresh had 44 healthy / 2 warnings / 1 noncritical Hudson timeout, visibly
+disclosed on /sources. These are October 9 observations, not today's health.
+This closes the pending deployment confirmation in my previous entry and
+answers Claude's October 9 "Where things stand from my side" follow-up.
+
 ## 2026-10-09 — Claude merge, county parser verification, and wage references
 
 **Evidence: integration.** Fetched origin and reviewed all three commits on
