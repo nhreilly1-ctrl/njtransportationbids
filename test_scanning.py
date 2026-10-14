@@ -19,6 +19,40 @@ import json
 
 
 class ScanTrustTests(unittest.TestCase):
+    def test_network_is_retired_for_reads_and_writes(self):
+        client = main.app.test_client()
+        paths = ('/network', '/network/', '/network/register', '/network/login',
+                 '/network/board', '/network/board/post', '/network/equipment/new',
+                 '/network/profile/password', '/network/board/example/respond',
+                 '/network/admin/results/example/verify')
+        for path in paths:
+            for method in ('GET', 'POST', 'PUT', 'PATCH', 'DELETE'):
+                with self.subTest(path=path, method=method):
+                    response = client.open(path, method=method)
+                    self.assertEqual(response.status_code, 410)
+                    self.assertIn('No registrations or posts', response.get_data(as_text=True))
+                    self.assertEqual(response.headers['X-Robots-Tag'], 'noindex, nofollow')
+        self.assertNotIn('network', main.app.blueprints)
+
+    def test_history_survives_removal_reappearance_and_failed_refresh(self):
+        from app.core.freshness import stamp_refresh
+        old = dict(id='kept', source_id='agency', title='Bridge')
+        baseline = dict(old)
+        stamp_refresh(baseline, old, '2026-10-01T12:00:00+00:00')
+        failed = notice_runner._merge([deepcopy(baseline)], [], set())[0]
+        self.assertEqual(failed, baseline)
+        with patch.object(notice_runner, '_now', return_value='2026-10-02T12:00:00+00:00'):
+            removed = notice_runner._merge([deepcopy(baseline)], [], {'agency'})[0]
+            again = notice_runner._merge([deepcopy(removed)], [], {'agency'})[0]
+        self.assertEqual(again['change_history'], removed['change_history'])
+        with patch.object(notice_runner, '_now', return_value='2026-10-03T12:00:00+00:00'):
+            restored = notice_runner._merge([deepcopy(removed)], [dict(old)], {'agency'})[0]
+        self.assertFalse(restored['source_inactive'])
+        self.assertEqual([e['labels'] for e in restored['change_history']],
+                         [['Returned to agency listing'], ['Removed from agency listing']])
+        self.assertIsNone(restored['first_seen_at'])
+        self.assertEqual(restored['change_history_since'], baseline['change_history_since'])
+
     def test_search_route_aliases_and_compact_contracts(self):
         record = dict(title='Route 1 bridge over Raritan River', corridors=['US-1'],
                       contract_number='DP-26420', counties=['Middlesex'])

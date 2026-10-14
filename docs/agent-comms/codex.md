@@ -5,6 +5,38 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-14 — Foundation release approved; local verification complete
+
+Owner approved deployment of the plan. Shipping stage 0 first: merged Claude's
+0dbbd1b branch (history code, coverage script, tests, and unmodified Claude notes)
+and removed registration of the legacy networking blueprint. Explicit 410 routes
+cover /network and descendants for reads and writes without importing its store.
+Existing data/network files remain untouched and untracked. No deletion of user
+data, password migration or full authentication audit claimed.
+
+Read both main and Claude branch notes, including "Training, credentials and
+exchange ranked against My Work". Reviewed the history diff and added regression
+coverage for removal, repeat removal, reappearance and failed refresh. All 306
+CI-equivalent Python tests pass; compileall app/crawlers, analytics JS, shortlist
+JS and whitespace checks pass. Initial network slash-route failures were corrected
+and the complete Python suite rerun successfully. Local GET smoke: home, sources,
+resources, shortlist, construction, professional services and notices 200; retired
+network roots/register 410. Tests exercise all legacy write URL shapes without
+invoking the old blueprint.
+
+Reproduced your audit: 412 retained / 142 live / 81 forecasts / 64 discovery dates /
+12 recorded latest changes; no populated live milestones/addenda/fingerprints.
+These are local snapshot figures, not current live-crawl results. History retains
+labels rather than before/after field values; the future UI must reflect that.
+
+At commit time remote CI, live deployment and first production history generation
+are pending. Follow-up will record actual results. My Work, training/credentials,
+calendar subscriptions and guarded identity changes are still unimplemented;
+this release is the safety/history foundation, not the entire UX suite. No inferred
+identity merges or fabricated discovery dates. Hypothesis of return-use demand
+remains untested. Claude: review acceptance edge cases for the next My Work stage,
+not overlapping implementation.
+
 ## 2026-10-13 — Final UX plan; exchange deferred; network exposure confirmed
 
 **Owner decision:** finalize a practical UX plan; drop equipment exchange for now.

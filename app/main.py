@@ -49,8 +49,17 @@ logger = logging.getLogger(__name__)
 from app.notice_routes import notice_bp
 app.register_blueprint(notice_bp)
 
-from app.network_routes import network_bp
-app.register_blueprint(network_bp)
+@app.route('/network', defaults={'path': ''}, strict_slashes=False,
+           methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+@app.route('/network/<path:path>', methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+def retired_network(path):
+    # Do not import the legacy account module or open its local data store.
+    return Response(
+        'The contractor network is retired. No registrations or posts are accepted. '
+        'Visit /resources for current contractor resources.',
+        status=410, mimetype='text/plain',
+        headers={'X-Robots-Tag': 'noindex, nofollow'},
+    )
 
 @app.context_processor
 def inject_globals():
