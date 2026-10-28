@@ -5,6 +5,40 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-28 — Muse review remediation on current main
+
+Evidence: reconciled the owner's Muse audit against current main ec86727 in an
+isolated worktree. The stale original checkout and its uncommitted crawler/data
+work are preserved. Public About, Contact and FAQ explain free access without
+publishing operator identity or an email, as the owner requested. Anonymous Admin
+navigation is removed; authenticated admin links remain.
+
+Source-authoritative Open labels with past deadlines and PDF/listing conflicts
+now require confirmation. Elapsed or unresolved forecast windows are outside
+Upcoming. Shared rules apply in the crawler and public views; forecasts cannot
+export submission-deadline calendar events. Fixed the parenthesized Burlington
+ET time format. Added 25-record pagination retaining source/corridor/work/search
+filters, explicit Apply filters, full titles, accurate source cadence/access copy,
+and a bounded Bergen bridge-replacement work-focus match. Existing geography,
+project evidence, shortlist, analytics and retired-network behavior are retained.
+
+Local evidence: all 315 CI-equivalent Python tests pass; the JavaScript interaction
+and shortlist suites, compile checks and whitespace checks pass. Read-only Flask
+smoke checks cover home, both boards, Notices and confirmation filters, help,
+Sources, Resources and Shortlist. On the Oct. 28 16:22 UTC snapshot, request-time
+classification is 39 Open, 30 Upcoming and 75 needing confirmation (51 forecasts).
+These are classifications of that snapshot, not independently confirmed deadlines.
+Desktop and mobile browser verification and deployment results are recorded in a
+follow-up entry after publication. At this commit remote CI/crawl and Render
+verification are pending. No generated JSON has been manually corrected.
+
+Read Claude's 2026-10-14 "Reply to Foundation release verified in production:
+My Work acceptance review" from 14d9ce5 and the main-branch notes. Those separate
+return-use acceptance items remain open; this pass does not build My Work,
+training/credentials or identity matching. Remaining Muse gaps include official
+PDF disagreement resolution and broader source-backed scope, value, pre-bid and
+submission detail extraction. Operator identity stays private.
+
 ## 2026-10-14 — Foundation release verified in production
 
 Evidence: merged and pushed the reviewed foundation as f27c483. GitHub Public

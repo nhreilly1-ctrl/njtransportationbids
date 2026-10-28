@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}FAQ and Free Access - NJ Transportation Bids{% endblock %}
+{% block meta_description %}Answers about free access, official bid packages, deadlines, coverage, and source update schedules on NJ Transportation Bids.{% endblock %}
+{% block head_extra %}<link rel="stylesheet" href="{{ url_for('static', filename='info.css', v='20261028') }}">{% endblock %}
+{% block content %}
+<div class="info-page">
+  <div class="page-header">
+    <h1>FAQ and free access</h1>
+    <p class="info-intro">How to use the index and verify an opportunity before you bid.</p>
+  </div>
+  <nav class="info-nav" aria-label="About and help">
+    <a href="{{ url_for('about') }}">About the index</a>
+    <a href="{{ url_for('contact') }}">Contact and corrections</a>
+    <a href="{{ url_for('sources') }}">Sources and coverage</a>
+  </nav>
+  <section class="info-panel" aria-label="Frequently asked questions">
+    <details class="faq-item" open>
+      <summary>Is the bid index free? Do I need an account?</summary>
+      <p>Browsing and searching the public opportunity boards is free. No account or payment to this site is required to view listings or follow official source links.</p>
+      <p>An external agency portal may have its own registration requirements, document fees, or paid access rules.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Where do I get the full bid package or submit a bid?</summary>
+      <p>Open a listing's detail page and follow its official source link. Obtain the current bid package and addenda from the issuing agency or its procurement platform, and follow that source's submission instructions.</p>
+      <p>This site is a discovery index and does not accept bid submissions.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I rely on the displayed deadline?</summary>
+      <p>Confirm the deadline with the issuing agency every time. Dates may change through addenda, source text may be ambiguous, and extraction may be incomplete. A missing time does not establish an end-of-day deadline.</p>
+      <p>If a date is missing, conflicting, or flagged for confirmation, use the official notice and addenda to resolve it before planning a response.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What is an upcoming forecast?</summary>
+      <p>A forecast is anticipated work published by a source. It may not yet have a solicitation, bid package, or submission deadline. Expected seasons and dates are planning estimates and may change.</p>
+      <p>If the expected window has passed, check the issuing agency for a revised forecast, published solicitation, or cancellation.</p>
+      <p>The index uses supported source-specific forecast windows to flag elapsed schedules. Ambiguous seasons, yearless windows, and unresolved schedules need confirmation. Planning windows never establish a bid submission deadline.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Does the shortlist send alerts or sync between devices?</summary>
+      <p>The shortlist stores saved notice IDs in this browser. It requires no account, does not sync between devices, and does not send email alerts. Saved IDs are checked against current site data when you revisit.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How often is the information checked?</summary>
+      <p>Checks run on a source-dependent schedule. Some sources are checked daily and others weekly; failed or restricted sources may not yield current data. See <a href="{{ url_for('sources') }}">Sources and coverage</a> for last-check information and access limitations.</p>
+      <p>A site update timestamp describes the site's data update, not a fresh verification of every listing.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Does this include every New Jersey transportation opportunity?</summary>
+      <p>No. Coverage depends on the sources configured and the information available from them. Registration gates, paid access, unavailable pages, and extraction limits can leave gaps. Search the relevant official agency portal as well.</p>
+      <p>County and work-focus filters also depend on available source details. A notice with missing location or scope information may not appear under the filter you expect.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Who runs the site, and how do I report an error?</summary>
+      <p>See <a href="{{ url_for('about') }}">About</a> for published operator information and <a href="{{ url_for('contact') }}">Contact and corrections</a> for the site's contact availability. Deadline and bid requirement questions should go directly to the issuing agency.</p>
+    </details>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% if pagination.total %}
+<nav class="pagination" aria-label="Results pages">
+  <span class="page-summary">Showing {{ pagination.start }}–{{ pagination.end }} of {{ pagination.total }} results · Page {{ pagination.page }} of {{ pagination.pages }}</span>
+  {% if pagination.previous %}<a href="{{ pagination.previous }}" rel="prev">Previous</a>{% endif %}
+  {% if pagination.next %}<a href="{{ pagination.next }}" rel="next">Next</a>{% endif %}
+</nav>
+{% endif %}

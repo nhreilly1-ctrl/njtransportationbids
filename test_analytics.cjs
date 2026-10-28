@@ -40,7 +40,8 @@ assert.equal(events[2][2].surface, 'opportunity_detail');
 for (const path of ['app/templates/opportunity_list.html', 'app/templates/notices/notice_list.html']) {
   const html = fs.readFileSync(path, 'utf8');
   assert.ok(!html.includes('this.form.submit()'));
-  assert.ok(html.includes('this.form.requestSubmit()'));
+  assert.ok(!html.includes('this.form.requestSubmit()'), 'Filters apply through the visible submit button');
+  assert.ok(html.includes('type="submit" class="filter-submit">Apply filters'));
 }
 console.log('Analytics interaction tests passed; no requests sent.');
 for (const name of ['project_section_open', 'project_browse_click']) {

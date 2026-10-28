@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260906b') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20261028muse') }}">
 {% endblock %}
 {% block structured_data %}
 {% set listed_opps = (soon + this_month + upcoming + nodate + closed)[:50] %}
@@ -63,28 +63,30 @@
     <details class="more-filters" {{ 'open' if selected_county or selected_agency or selected_work }}>
     <summary>Work focus, county and agency filters</summary><div class="advanced-filter-controls">
     {% include '_work_filter.html' %}
-    <label><span>County</span><select name="county" onchange="this.form.requestSubmit()">
+    <label><span>County</span><select name="county" >
       <option value="">All counties</option>
       {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
     </select></label>
-    <label><span>Agency</span><select name="agency" onchange="this.form.requestSubmit()">
+    <label><span>Agency</span><select name="agency" >
       <option value="">All agencies</option>
       {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
     </select></label>
     </div></details>
-    <label class="filter-status"><span>Status</span><select name="status" onchange="this.form.requestSubmit()">
+    <label class="filter-status"><span>Status</span><select name="status" >
       <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
       <option value="open" {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
+      <option value="needs_confirmation" {{ 'selected' if selected_status == 'needs_confirmation' }}>Needs confirmation</option>
+      <option value="forecast_review" {{ 'selected' if selected_status == 'forecast_review' }}>Forecasts needing confirmation</option>
       <option value="upcoming" {{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
-      <option value="all" {{ 'selected' if selected_status == 'all' }}>Active + review queues</option>
-      <option value="review" {{ 'selected' if selected_status == 'review' }}>Review queues only</option>
+      <option value="all" {{ 'selected' if selected_status == 'all' }}>All public records</option>
+      <option value="review" {{ 'selected' if selected_status == 'review' }}>Confirmation records only</option>
       <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired only</option>
     </select></label>
-    <button type="submit" class="filter-submit">Search</button>
+    <button type="submit" class="filter-submit">Apply filters</button>
   </div>
   <div class="filter-desk-foot">
     <label class="closed-toggle">
-      <input type="checkbox" name="show_closed" value="1" {{ 'checked' if show_closed }} onchange="this.form.requestSubmit()">
+      <input type="checkbox" name="show_closed" value="1" {{ 'checked' if show_closed }} >
       Include closed and excluded records
     </label>
     {% if q or selected_county or selected_agency or selected_work or selected_status != 'active' or show_closed %}
@@ -93,6 +95,7 @@
   </div>
 </form>
 {% include '_active_filters.html' %}
+{% include '_pagination.html' %}
 
 {% macro bid_card(o) %}
   {% set is_soon = o in soon and o.status == 'open' %}
@@ -104,6 +107,7 @@
         <span>{{ 'Construction' if is_construction else 'Professional services' }}</span>
         {% if o.status == 'open' %}<strong>Open</strong>
         {% elif o.status == 'upcoming' %}<strong>Upcoming</strong>
+        {% elif o.status == 'needs_confirmation' %}<strong>Needs confirmation</strong>
         {% elif o.status in ('review_required', 'ai_review') %}<strong>Review</strong>
         {% elif o.status == 'expired' %}<strong>Expired</strong>
         {% elif o.status == 'noise' %}<strong>Excluded</strong>{% endif %}
@@ -138,9 +142,9 @@
       </div>
     </div>
     <div class="bid-due ledger-deadline {{ 'soon-due' if is_soon }}">
-      {% if o.deadline_conflict %}<strong class="due-label">Agency lists open; deadline needs confirmation</strong>{% endif %}
+      {% if o.deadline_conflict %}<strong class="due-label">Deadline needs confirmation</strong>{% endif %}
       {% if o.due_date_raw and o.due_date_raw not in ('Not listed','-', '') %}
-        <span class="due-label">{{ 'Expected' if o.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ o.deadline_display }}</span>
+        <span class="due-label">{{ o.public_date_label or ('Expected window' if o.is_planned else 'Listed deadline') }}</span><span class="due-date">{{ o.deadline_display }}</span>
         {% if o.forecast_timing_note %}<span class="due-label">{{ o.forecast_timing_note }}</span>{% endif %}
       {% else %}
         <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not published</span>
@@ -186,4 +190,5 @@
   <strong>Evidence-led locations.</strong>
   County and map information appears only when supported by the official notice or a structured official source field. Always confirm scope and submission requirements in the bid package.
 </details>
+{% include '_pagination.html' %}
 {% endblock %}

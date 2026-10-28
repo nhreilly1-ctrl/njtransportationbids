@@ -4,6 +4,7 @@
     {% if value and not (key == 'status' and value == 'active') %}
       {% set remaining = request.args.to_dict() %}
       {% set removed = remaining.pop(key, none) %}
+      {% set discarded_page = remaining.pop('page', none) %}
       <a href="{{ request.path }}?{{ remaining | urlencode }}" aria-label="Remove {{ label }} filter: {{ value }}">{{ label }}: {{ value | replace('_', ' ') }} <span aria-hidden="true">&times;</span></a>
     {% endif %}
   {% endfor %}

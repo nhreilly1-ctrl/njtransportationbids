@@ -14,6 +14,8 @@ from psycopg2.extras import RealDictCursor
 from flask import Flask, Response, jsonify, redirect, render_template, request, session, url_for
 
 from app.core.deadlines import (
+    apply_public_status,
+    matches_public_status,
     EASTERN,
     eastern_today,
     deadline_date,
@@ -39,6 +41,7 @@ from app.core.scanning import matches_search
 from app.core.project_facts import project_facts_display
 from app.core.work_focus import work_focus, matches_work_focus, WORK_FOCUS
 from app.core.freshness import feed_order, newest_first, freshness_groups
+from app.core.pagination import paginate
 from app.resource_catalog import RESOURCE_SECTIONS, resource_count
 
 
@@ -65,7 +68,7 @@ def retired_network(path):
 def inject_globals():
     noindex_prefixes = ("/admin", "/network", "/export/")
     return {
-        "today_date": date.today().isoformat(),
+        "today_date": eastern_today().isoformat(),
         "site_url": SITE_URL,
         "canonical_url": f"{SITE_URL}{request.path}",
         "robots_meta": "noindex, nofollow" if request.path.startswith(noindex_prefixes) else "index, follow",
@@ -562,6 +565,11 @@ def load_public_sources() -> list[dict]:
                 "critical": bool(configured.get("critical")),
                 "access_state": configured.get("crawl_state", "accessible"),
                 "access_reason": configured.get("access_reason"),
+                "access_type": configured.get('access_type') or 'Access not confirmed',
+                "access_limited": configured.get('crawl_state') == 'inaccessible' or configured.get('source_tier') == 'paywalled' or any(
+                    word in str(configured.get('access_type') or '').lower()
+                    for word in ('registration', 'membership', 'subscription', 'paid', 'limited')),
+                "last_success_display": format_eastern_timestamp(health.get('last_successful_crawl')),
                 "last_crawl": health.get("last_crawl"),
                 "last_crawl_display": format_eastern_timestamp(health.get("last_crawl")),
                 "last_count": health.get("last_count"),
@@ -822,6 +830,7 @@ def enrich(opp: dict) -> dict:
             record["status"] = "unknown_date"
         record["record_type"] = record.get("notice_type") or "uncategorized"
         record["notice_subtype"] = record.get("notice_subtype")
+        apply_public_status(record)
         record['schedule_indicator'] = schedule_indicator(record)
         return record
 
@@ -865,6 +874,7 @@ def enrich(opp: dict) -> dict:
     record_type, notice_subtype = classify_record(record)
     record["record_type"] = record_type
     record["notice_subtype"] = notice_subtype
+    apply_public_status(record)
     record['schedule_indicator'] = schedule_indicator(record)
     return record
 
@@ -1033,7 +1043,7 @@ def group_opportunity_scan(opps: list[dict]) -> tuple[list[dict], list[dict], li
         if opp.get("status") == "upcoming":
             upcoming.append(opp)
             continue
-        if opp.get("deadline_conflict") or deadline_is_past(opp):
+        if opp.get("status") != 'open' or opp.get("deadline_conflict") or deadline_is_past(opp):
             nodate.append(opp)
             continue
         if opp.get("due_date_parsed"):
@@ -1109,6 +1119,9 @@ def sitemap_xml():
         "/resources",
         "/agencies",
         "/sources",
+        "/about",
+        "/contact",
+        "/faq",
     ]
     entries = [(f"{SITE_URL}{path}", None) for path in paths]
     has_public_notices = False
@@ -1243,7 +1256,8 @@ def index():
 
     open_now = [opp for opp in active if opp["status"] == "open"]
     pipeline = [opp for opp in active if opp["status"] == "upcoming"]
-    for opp in pipeline:
+    forecast_review = [opp for opp in opps if opp['status'] == 'needs_confirmation' and opp.get('is_planned')]
+    for opp in pipeline + forecast_review:
         opp["homepage_pipeline_window"] = _homepage_pipeline_window(opp)
 
     corridor_counts: dict[str, int] = {}
@@ -1261,6 +1275,8 @@ def index():
         "active": len(active),
         "open": len(open_now),
         "pipeline": len(pipeline),
+        "needs_confirmation": len([opp for opp in opps if opp['status'] == 'needs_confirmation']),
+        "forecast_review": len(forecast_review),
         "open_construction": len(
             [opp for opp in open_now if opp.get("record_type") == "construction"]
         ),
@@ -1294,7 +1310,7 @@ def index():
                    freshness_groups(open_now, order, limit=10)),
         pipeline_preview=(sort_opps([o for o in pipeline if not o.get('forecast_window_elapsed')]) if order == 'closing'
                           else newest_first([o for o in pipeline if not o.get('forecast_window_elapsed')], order))[:6],
-        elapsed_forecasts=sort_opps([o for o in pipeline if o.get('forecast_window_elapsed')]),
+        elapsed_forecasts=sort_opps(forecast_review),
         unclassified_open=len(
             [
                 opp
@@ -1312,6 +1328,21 @@ def contractor_resources():
         resource_sections=RESOURCE_SECTIONS,
         resource_count=resource_count(),
     )
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
 
 
 @app.route("/agencies")
@@ -1334,15 +1365,7 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
         is_closed = current_status in ("expired", "noise")
         if current_status in ("deleted", "disabled"):
             return False
-        if status == "active" and current_status not in ("open", "upcoming") and not (show_closed and is_closed):
-            return False
-        if status == "all" and current_status not in ("open", "upcoming", "review_required", "ai_review", "unknown_date") and not (show_closed and is_closed):
-            return False
-        if status == "review" and current_status not in ("review_required", "ai_review", "unknown_date"):
-            return False
-        if status == "expired" and current_status != "expired":
-            return False
-        if status in ("open", "upcoming") and current_status != status:
+        if not matches_public_status(opp, status) and not (show_closed and is_closed and status in ('active', 'all')):
             return False
         if current_status == "noise" and not show_closed:
             return False
@@ -1350,7 +1373,7 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
             return False
         if notice_subtype and opp.get("notice_subtype") != notice_subtype:
             return False
-        if county and county not in opp.get("counties", []):
+        if county and ((bool(opp.get('counties')) or opp.get('coverage_scope') in ('STATEWIDE', 'BISTATE')) if county == 'Unknown' else county not in opp.get('counties', [])):
             return False
         if agency and (opp.get("source_name") or "").lower() != agency.lower():
             return False
@@ -1362,16 +1385,20 @@ def _opp_list_view(record_type: str, notice_subtype: str | None = None) -> dict:
 
     filtered = sort_opps([opp for opp in opps if keep(opp)])
     order = feed_order(request.args.get('sort'))
-    soon, this_month, upcoming, nodate, closed = group_opportunity_scan(filtered)
+    ordered = filtered if order == 'closing' else newest_first(filtered, order)
+    displayed, pagination = paginate(ordered)
+    soon, this_month, upcoming, nodate, closed = group_opportunity_scan(displayed)
     available_counties = {county for opp in opps for county in opp.get("counties", [])}
     counties = [county for county in NJ_COUNTIES if county in available_counties]
+    counties.append('Unknown')
     agencies = sorted({opp.get("source_name", "") for opp in opps if opp.get("source_name")})
     today = eastern_today()
     soon_cutoff = today + timedelta(days=7)
     return {
         "soon": soon,
         "feed_order": order,
-        "feed_groups": freshness_groups([o for o in filtered if o not in closed], order),
+        "feed_groups": freshness_groups([o for o in displayed if o not in closed], order),
+        "pagination": pagination,
         "this_month": this_month,
         "upcoming": upcoming,
         "later_open": [opp for opp in upcoming if opp.get("status") == "open"],
@@ -1461,7 +1488,7 @@ def opportunity_detail(opp_id: str):
 @app.route("/opportunities/<opp_id>/calendar.ics")
 def opportunity_calendar(opp_id: str):
     opp = next((enrich(item) for item in load_public_opps() if str(item.get("id")) == opp_id), None)
-    if not opp or opp.get("deadline_conflict") or not opp.get("due_date_parsed") or opp.get("status") not in ("open", "upcoming"):
+    if not opp or opp.get("deadline_conflict") or not opp.get("due_date_parsed") or opp.get("status") != 'open':
         return "Calendar event not available", 404
 
     def ics_text(value):
@@ -1530,6 +1557,7 @@ def sources():
         source["open"] = len([opp for opp in current if opp["status"] == "open"])
         source["upcoming"] = len([opp for opp in current if opp["status"] == "upcoming"])
         source["review_required"] = len([opp for opp in related if opp["status"] == "review_required"])
+        source['needs_confirmation'] = len([opp for opp in related if opp['status'] == 'needs_confirmation'])
         source["ai_review"] = len([opp for opp in related if opp["status"] == "ai_review"])
     sources = sorted(sources, key=lambda source: source.get("name", "").lower())
     source_summary = {
@@ -1541,6 +1569,10 @@ def sources():
         "county": len([source for source in sources if source.get("tier") == "county"]),
         "municipal": len([source for source in sources if source.get("tier") == "municipal"]),
         "platform": len([source for source in sources if source.get("tier") == "paywalled"]),
+        "recent_records": len([source for source in sources if source.get('severity') == 'ok' and (source.get('last_count') or 0) > 0]),
+        "limited": len([source for source in sources if source.get('access_limited')]),
+        "daily": len([source for source in sources if source.get('frequency') == 'daily']),
+        "weekly": len([source for source in sources if source.get('frequency') == 'weekly']),
     }
     return render_template("sources.html", sources=sources, source_summary=source_summary)
 

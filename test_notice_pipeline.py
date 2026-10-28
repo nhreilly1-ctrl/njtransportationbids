@@ -244,7 +244,7 @@ class NoticeCrawlerTests(unittest.TestCase):
         now = datetime(2026, 8, 21, 12, 0, tzinfo=timezone(timedelta(hours=-4)))
         enriched = notice_runner._enrich(record, now=now)
 
-        self.assertEqual(enriched["status"], "open")
+        self.assertEqual(enriched["status"], "needs_confirmation")
         self.assertTrue(enriched["deadline_conflict"])
         self.assertFalse(enriched["urgent"])
 
@@ -626,7 +626,7 @@ class NoticeLifecycleTests(unittest.TestCase):
         self.assertFalse(enriched["urgent"])
 
     def test_planned_notice_is_upcoming(self):
-        record = {"title": "Future bridge design", "is_planned": True, "due_date_raw": "Fall 2099"}
+        record = {"title": "Future bridge design", "source_id": "state-njdot-profserv-upcoming", "is_planned": True, "due_date_raw": "Fall 2099"}
         self.assertEqual(notice_runner._enrich(record)["status"], "upcoming")
 
     def test_authoritative_refresh_retires_missing_record(self):
@@ -962,11 +962,12 @@ class PublicDashboardTests(unittest.TestCase):
     def _frozen_deadline_clock(now):
         # enrich() expires records against the real clock; freeze it alongside
         # _homepage_today so fixture deadlines don't rot as real time passes.
-        from app.core.deadlines import deadline_is_past
-
-        return patch.object(
-            app_main, "deadline_is_past", lambda record: deadline_is_past(record, now)
-        )
+        from app.core.deadlines import deadline_is_past, apply_public_status
+        from contextlib import ExitStack
+        stack = ExitStack()
+        stack.enter_context(patch.object(app_main, 'deadline_is_past', lambda record: deadline_is_past(record, now)))
+        stack.enter_context(patch.object(app_main, 'apply_public_status', lambda record: apply_public_status(record, now)))
+        return stack
 
     @staticmethod
     def _scan_record(record_id, title, due_date_raw="", status="open", **overrides):
@@ -1009,7 +1010,7 @@ class PublicDashboardTests(unittest.TestCase):
             self._scan_record("later", "Bridge work closing later", "09/20/2026"),
             self._scan_record("soon", "Somerset CC-0043-26 closing soon", "08/24/2026"),
             self._scan_record("month", "Road work closing this month", "08/31/2026"),
-            self._scan_record("planned", "Planned intersection improvements", status="upcoming", is_planned=True),
+            self._scan_record("planned", "Planned intersection improvements", "Fall 2099", source_id="state-njdot-profserv-upcoming", status="upcoming", is_planned=True),
             self._scan_record("nodate", "Current drainage work without deadline", source_status="open"),
             self._scan_record("expired", "Expired paving contract", "08/01/2026", status="expired"),
             self._scan_record("noise", "Excluded navigation noise", noise_flagged=True),
@@ -1036,7 +1037,7 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertIn("Closing within 7 days", html)
         self.assertIn("Closing this month", html)
         self.assertIn("Upcoming or planned", html)
-        self.assertIn("Deadline needs confirmation", html)
+        self.assertNotIn("Current drainage work without deadline", html)
         self.assertIn("Mon, Aug 24, 2026 (time not published)", html)
         self.assertNotIn("12:00 AM", html)
 
@@ -1053,7 +1054,7 @@ class PublicDashboardTests(unittest.TestCase):
         future = app_main.enrich(self._scan_record("future", "Future bridge contract", "12/31/2099"))
         enriched = app_main.enrich(conflicted)
 
-        self.assertEqual(enriched["status"], "open")
+        self.assertEqual(enriched["status"], "needs_confirmation")
         self.assertTrue(enriched["deadline_conflict"])
         self.assertIsNone(enriched["days_until_due"])
         self.assertEqual(app_main.sort_opps([enriched, future])[-1]["id"], "njta-conflict")
@@ -1331,6 +1332,7 @@ class PublicDashboardTests(unittest.TestCase):
                 "planned",
                 "NJDOT anticipated bridge inspection agreement",
                 "Spring 2027",
+                source_id="state-njdot-profserv-upcoming",
                 status="upcoming",
                 is_planned=True,
                 notice_type="professional_services",

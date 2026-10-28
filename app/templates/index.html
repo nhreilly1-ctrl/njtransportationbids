@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20260918') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css', v='20261028muse') }}">
 {% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
@@ -64,14 +64,14 @@
     <div class="hero-copy">
       <div class="hero-kicker"><span class="live-pulse"></span> New Jersey public bid intelligence</div>
       <h1 id="home-title">Live transportation bid board</h1>
-      <p>Open bids and anticipated transportation work from New Jersey's public agencies, organized for contractors and professional-services teams.</p>
+      <p>A free index of open bids and anticipated transportation work from New Jersey's public agencies. Get bid packages and confirm submission requirements at the official source.</p>
       <form class="home-search" action="{{ url_for('notices2.notices_all') }}" method="get" role="search" data-analytics-event="filter_applied" data-surface="homepage search">
         <label for="home-query">Find a project, route or contract</label>
         <div><input id="home-query" name="q" type="search" placeholder="Route 1, bridge, DP 26121..." required><button type="submit">Search</button></div>
         <input type="hidden" name="status" value="active">
       </form>
       <div class="hero-freshness">
-        <span>{{ stats.sources }} public sources monitored</span>
+        <span>{{ stats.sources }} sources configured; access varies</span>
         <span>Statewide coverage</span>
         {% if stats.last_updated %}<span>Updated {{ stats.last_updated }}</span>{% endif %}
       </div>
@@ -108,7 +108,7 @@
     </a>
     <a href="{{ url_for('sources') }}" class="market-link market-link-sources">
       <span class="market-index">03</span>
-      <span><strong>Source coverage</strong><small>{{ stats.sources }} official sources monitored</small></span>
+      <span><strong>Source coverage</strong><small>{{ stats.sources }} sources configured</small></span>
       <span class="market-arrow">&rarr;</span>
     </a>
   </nav>
@@ -180,13 +180,9 @@
 
       {% if elapsed_forecasts %}
       <details class="pipeline-list">
-        <summary>Expected window passed: {{ elapsed_forecasts|length }} forecasts need confirmation</summary>
-        {% for o in elapsed_forecasts %}
-        <article class="pipeline-row">
-          <a href="{{ url_for('opportunity_detail', opp_id=o.id) }}">{{ o.title }}</a>
-          <span>{{ o.homepage_pipeline_window }}. {{ o.forecast_timing_note }}</span>
-        </article>
-        {% endfor %}
+        <summary>{{ elapsed_forecasts|length }} forecasts need confirmation</summary>
+        <p>Elapsed and unresolved windows are excluded from Upcoming.</p>
+        <a href="{{ url_for('notices2.notices_all', status='forecast_review') }}">Review forecasts needing confirmation &rarr;</a>
       </details>
       {% endif %}
       <a class="pipeline-link" href="{{ url_for('notices2.notices_all', status='upcoming', sort=feed_order) }}">Explore all {{ stats.pipeline }} upcoming opportunities &rarr;</a>
@@ -208,7 +204,9 @@
       {% endfor %}
     </nav>
   </section>
+
   {% endif %}
+  <p class="coverage-note"><a href="{{ url_for('notices2.notices_all', status='needs_confirmation') }}">{{ stats.needs_confirmation }} notices need confirmation</a>. Open excludes past deadlines and unresolved dates. Upcoming excludes elapsed or unresolved forecast windows. <a href="{{ url_for('faq') }}">How dates work</a></p>
 
   <footer class="home-utility">
     <a href="{{ url_for('contractor_resources') }}"><strong>Contractor resources</strong><span>Specs, wages, prequalification, compliance, and bonding.</span></a>

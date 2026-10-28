@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Contact and Corrections - NJ Transportation Bids{% endblock %}
+{% block meta_description %}Contact information and instructions for reporting a possible error in the NJ Transportation Bids public index.{% endblock %}
+{% block head_extra %}<link rel="stylesheet" href="{{ url_for('static', filename='info.css', v='20261028') }}">{% endblock %}
+{% block content %}
+<div class="info-page">
+  <div class="page-header">
+    <h1>Contact and corrections</h1>
+    <p class="info-intro">For questions about this index or a possible error in a listing.</p>
+  </div>
+  <nav class="info-nav" aria-label="About and help">
+    <a href="{{ url_for('about') }}">About the index</a>
+    <a href="{{ url_for('faq') }}">FAQ and free access</a>
+  </nav>
+  <section class="info-panel" aria-labelledby="site-contact">
+    <h2 id="site-contact">Contact the site</h2>
+    {% if site_operator_name %}<p>Site operator: {{ site_operator_name }}</p>{% endif %}
+    {% if site_contact_email %}
+      <p>Email: <a href="mailto:{{ site_contact_email }}">{{ site_contact_email }}</a></p>
+      <p>For a listing correction, include the listing URL, the official source URL, and a short description of what appears incorrect. Include the current official deadline or addendum if relevant.</p>
+    {% else %}
+      <p>This index does not currently offer a public support inbox or contact form.</p>
+      <p>For an urgent deadline or submission question, use the contact details in the issuing agency's official notice or bid package.</p>
+    {% endif %}
+  </section>
+  <section class="info-panel info-notice" aria-labelledby="agency-contact">
+    <h2 id="agency-contact">Bid questions go to the issuing agency</h2>
+    <p>Open the official source link on the opportunity's detail page for the agency's procurement contact and any prescribed question process.</p>
+    <p>This site cannot accept a bid, change a deadline, issue an addendum, or confirm that a submission meets agency requirements.</p>
+  </section>
+  {% if site_contact_email %}
+  <section class="info-panel" aria-labelledby="what-to-send">
+    <h2 id="what-to-send">What to include</h2>
+    <ul>
+      <li>The title and contract or solicitation number, if available.</li>
+      <li>The page URL on this site and the official agency source URL.</li>
+      <li>The detail that needs correction and supporting text or an addendum from the agency.</li>
+    </ul>
+    <p>Send only what is needed to explain the issue. Keep bid submissions and confidential proposal materials within the agency's official submission process.</p>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

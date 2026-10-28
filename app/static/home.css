@@ -1046,3 +1046,8 @@
   .feed-help { flex-basis: 100%; order: 3; }
   .brief-row > .shortlist-save { grid-column: 1; }
 }
+
+.brief-title {display:block;overflow:visible;-webkit-line-clamp:unset;}
+.brief-contract {white-space:normal;overflow-wrap:anywhere;}
+.pipeline-row > a {display:block;overflow:visible;-webkit-line-clamp:unset;}
+.pipeline-row > span {overflow:visible;white-space:normal;overflow-wrap:anywhere;}

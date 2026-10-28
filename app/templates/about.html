@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}About - NJ Transportation Bids{% endblock %}
+{% block meta_description %}How the free NJ Transportation Bids index works and where to verify official bid packages and deadlines.{% endblock %}
+{% block head_extra %}<link rel="stylesheet" href="{{ url_for('static', filename='info.css', v='20261028') }}">{% endblock %}
+{% block content %}
+<div class="info-page">
+  <div class="page-header">
+    <h1>About NJ Transportation Bids</h1>
+    <p class="info-intro">A free public index of New Jersey transportation construction bids, professional services solicitations, and public notices.</p>
+  </div>
+  <nav class="info-nav" aria-label="About and help">
+    <a href="{{ url_for('contact') }}">Contact and corrections</a>
+    <a href="{{ url_for('faq') }}">FAQ and free access</a>
+    <a href="{{ url_for('sources') }}">Sources and coverage</a>
+  </nav>
+  <section class="info-panel info-notice" aria-labelledby="free-access">
+    <h2 id="free-access">Browsing is free</h2>
+    <p>You can browse and search the public opportunity boards and follow official source links without an account or payment to this site.</p>
+    <p>An issuing agency or its procurement platform may require registration or charge for access to documents. Those requirements are set by the official source.</p>
+  </section>
+  <div class="info-grid">
+    <section class="info-panel" aria-labelledby="how-it-works">
+      <h2 id="how-it-works">What this index provides</h2>
+      <p>The boards collect notices and anticipated work from public procurement sources so contractors and professional services teams can find relevant opportunities in one place.</p>
+      <p>Each record links to its source. Available details depend on what that source publishes and what the index can extract.</p>
+    </section>
+    <section class="info-panel" aria-labelledby="official-source">
+      <h2 id="official-source">Use the agency's bid package</h2>
+      <p>This site does not host a complete bid package or accept bids. The issuing agency controls deadlines, addenda, eligibility, pre-bid meetings, and submission instructions.</p>
+      <p>Open the official source and confirm all requirements before preparing or submitting a response.</p>
+    </section>
+  </div>
+  <section class="info-panel" style="margin-top:1rem;" aria-labelledby="coverage">
+    <h2 id="coverage">Coverage and freshness</h2>
+    <p>Coverage is incomplete. Some procurement sites limit automated access, require registration, or provide information that cannot be reliably extracted. A configured source does not guarantee usable current records.</p>
+    <p>Source checks follow different schedules, including daily and weekly checks. A site update time does not mean every source or deadline was verified at that moment. Review <a href="{{ url_for('sources') }}">source coverage and last-check times</a>, and confirm the current notice at the official source.</p>
+    <p>Forecasts describe anticipated work and can change or pass their expected window without a new solicitation. Missing, conflicting, or uncertain dates require confirmation with the issuing agency.</p>
+  </section>
+  <section class="info-panel" aria-labelledby="operator">
+    <h2 id="operator">Independent public index</h2>
+    {% if site_operator_name %}
+      <p>NJ Transportation Bids is operated by {{ site_operator_name }}.</p>
+    {% endif %}
+    <p>This is an independent index, not an issuing agency or an official procurement portal. For site questions or a possible data error, see <a href="{{ url_for('contact') }}">Contact and corrections</a>.</p>
+  </section>
+</div>
+{% endblock %}

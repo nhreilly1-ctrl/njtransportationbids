@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&amp;family=Barlow:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20260906b') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='listings.css', v='20261028muse') }}">
 {% endblock %}
 {% block content %}
 
@@ -57,15 +57,15 @@
     <details class="more-filters" {{ 'open' if selected_county or selected_agency or selected_tier or selected_work }}>
     <summary>Work focus, county, agency and source filters</summary><div class="advanced-filter-controls">
     {% include '_work_filter.html' %}
-    <label><span>County</span><select name="county" onchange="this.form.requestSubmit()">
+    <label><span>County</span><select name="county" >
       <option value="">All counties</option>
       {% for c in counties %}<option value="{{ c }}" {{ 'selected' if c == selected_county }}>{{ c }}</option>{% endfor %}
     </select></label>
-    <label><span>Agency</span><select name="agency" onchange="this.form.requestSubmit()">
+    <label><span>Agency</span><select name="agency" >
       <option value="">All agencies</option>
       {% for a in agencies %}<option value="{{ a }}" {{ 'selected' if a == selected_agency }}>{{ a }}</option>{% endfor %}
     </select></label>
-    <label><span>Source</span><select name="tier" onchange="this.form.requestSubmit()">
+    <label><span>Source</span><select name="tier" >
       <option value="">All sources</option>
       <option value="state" {{ 'selected' if selected_tier == 'state' }}>State agencies</option>
       <option value="county" {{ 'selected' if selected_tier == 'county' }}>County portals</option>
@@ -73,14 +73,16 @@
       <option value="paywalled" {{ 'selected' if selected_tier == 'paywalled' }}>Registration platforms</option>
     </select></label>
     </div></details>
-    <label class="filter-status"><span>Status</span><select name="status" onchange="this.form.requestSubmit()">
+    <label class="filter-status"><span>Status</span><select name="status" >
       <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
       <option value="open" {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
+      <option value="needs_confirmation" {{ 'selected' if selected_status == 'needs_confirmation' }}>Needs confirmation</option>
+      <option value="forecast_review" {{ 'selected' if selected_status == 'forecast_review' }}>Forecasts needing confirmation</option>
       <option value="upcoming" {{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
       <option value="urgent" {{ 'selected' if selected_status == 'urgent' }}>Closing within 7 days</option>
       <option value="expired" {{ 'selected' if selected_status == 'expired' }}>Expired</option>
     </select></label>
-    <button type="submit" class="filter-submit">Search</button>
+    <button type="submit" class="filter-submit">Apply filters</button>
   </div>
   {% if q or selected_county or selected_agency or selected_tier or selected_corridor or selected_status != 'active' %}
   <div class="filter-desk-foot">
@@ -92,6 +94,7 @@
   {% endif %}
 </form>
 {% include '_active_filters.html' %}
+{% include '_pagination.html' %}
 
 {% macro notice_card(n) %}
   {% set is_urgent = n.urgent and n.status == 'open' %}
@@ -108,6 +111,7 @@
         {% if is_urgent %}<strong>Closing soon</strong>
         {% elif n.status == 'open' %}<strong>Open</strong>
         {% elif n.status == 'upcoming' %}<strong>Upcoming</strong>
+        {% elif n.status == 'needs_confirmation' %}<strong>Needs confirmation</strong>
         {% elif n.status == 'expired' %}<strong>Expired</strong>
         {% elif n.status == 'unknown_date' %}<strong>No due date</strong>{% endif %}
         {% if is_new %}<em>New today</em>{% endif %}
@@ -121,7 +125,7 @@
         {% if n.contract_number %}<span>Contract {{ n.contract_number }}</span>{% endif %}
         <span>{{ n.county_display or 'County not stated in notice' }}</span>
         {% if n.corridors %}<span>{{ n.corridors[:3] | join(', ') }}</span>{% endif %}
-        {% if n.crawled_at %}<span>Verified {{ n.crawled_at[:10] }}</span>{% endif %}
+        {% if n.crawled_at %}<span>Checked {{ n.crawled_at[:10] }}</span>{% endif %}
       </div>
       {% if n.notice_excerpt %}<p class="notice-excerpt">{{ n.notice_excerpt }}</p>{% endif %}
       <div class="bid-tags ledger-actions">
@@ -136,7 +140,7 @@
     </div>
     <div class="bid-due ledger-deadline {{ 'soon-due' if is_urgent }}">
       {% if n.due_date_raw and n.due_date_raw not in ('Not listed','-','') %}
-        <span class="due-label">{{ 'Expected' if n.status == 'upcoming' else 'Due' }}</span>
+        <span class="due-label">{{ n.public_date_label or ('Expected window' if n.is_planned else 'Listed deadline') }}</span>
         <span class="due-date">{{ n.deadline_display }}</span>
         {% if n.forecast_timing_note %}<span class="due-label">{{ n.forecast_timing_note }}</span>{% endif %}
         {% if n.days_until_due is defined and n.days_until_due is not none and n.status == 'open' %}<small>{{ n.days_until_due }} day{{ '' if n.days_until_due == 1 else 's' }}</small>{% endif %}
@@ -175,4 +179,5 @@
   <strong>The official-publication layer.</strong>
   These records preserve agency notice text and direct handoffs to issuing sources. Map links appear only when the notice itself supplies a usable route, road, or municipality.
 </details>
+{% include '_pagination.html' %}
 {% endblock %}
