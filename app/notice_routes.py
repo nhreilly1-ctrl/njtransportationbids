@@ -21,10 +21,11 @@ from flask import (Blueprint, render_template, request,
 from app.core.corridors import enrich_location
 from app.core.project_maps import project_map_links
 from app.core.deadlines import normalize_deadline
-from app.core.deadlines import EASTERN, deadline_is_past
+from app.core.deadlines import EASTERN, deadline_is_past, matches_public_status
+from app.core.pagination import paginate
 from app.core.scanning import closing_soon, matches_search, first_seen_today
 from app.core.work_focus import matches_work_focus, WORK_FOCUS
-from app.core.freshness import feed_order, freshness_groups
+from app.core.freshness import feed_order, freshness_groups, newest_first
 from app.core.geography import NJ_COUNTIES as CANONICAL_NJ_COUNTIES, enrich_geography
 
 notice_bp = Blueprint("notices2", __name__)
@@ -82,10 +83,7 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
 
         # Status
         st = n.get("status","")
-        if status_filter == "active"  and st not in ("open", "upcoming"): continue
-        if status_filter == "open"    and st != "open":                      continue
-        if status_filter == "upcoming" and st != "upcoming":                continue
-        if status_filter == "expired" and st != "expired":                   continue
+        if not matches_public_status(n, status_filter): continue
         if status_filter == "urgent" and not closing_soon(n): continue
 
         # Type
@@ -98,9 +96,8 @@ def _filter_notices(notices, notice_type=None, notice_subtype=None,
                 continue
 
         # County
-        if county:
-            if county not in n.get("counties", []):
-                continue
+        if county and ((bool(n.get('counties')) or n.get('coverage_scope') in ('STATEWIDE', 'BISTATE')) if county == 'Unknown' else county not in n.get('counties', [])):
+            continue
 
         # Corridor — backed only by explicit route references in notice text
         if corridor:
@@ -152,12 +149,12 @@ def _group_by_urgency(notices):
             month.append(n)
             continue
 
-        if not due or n.get("deadline_conflict") or deadline_is_past(n):
+        if st != 'open' or not due or n.get("deadline_conflict") or deadline_is_past(n):
             nodate.append(n)
             continue
 
         days = (date.fromisoformat(due) - today).days
-        if days <= 7:   urgent.append(n)
+        if 0 <= days <= 7: urgent.append(n)
         elif days <= 30: week.append(n)
         else:            month.append(n)
 
@@ -233,23 +230,26 @@ def _notice_list_view(notice_type=None, notice_subtype=None, active_nav="notices
     )
     sorted_notices = _sort_notices(filtered)
     order = feed_order(request.args.get('sort'))
-    urgent, week, month, nodate, expired = _group_by_urgency(sorted_notices)
+    ordered = sorted_notices if order == 'closing' else newest_first(filtered, order)
+    displayed, pagination = paginate(ordered)
+    urgent, week, month, nodate, expired = _group_by_urgency(displayed)
     stats = _build_stats(notices)
 
     # Build filter options from full dataset
     all_active = _filter_notices(notices, notice_type=notice_type,
-                                 notice_subtype=notice_subtype, status_filter="active")
+                                 notice_subtype=notice_subtype, status_filter="all")
     agencies = sorted(set(n.get("source_name","") for n in all_active if n.get("source_name")))
     open_count = len([n for n in filtered if n.get("status") == "open"])
     upcoming_count = len([n for n in filtered if n.get("status") == "upcoming"])
 
     return render_template("notices/notice_list.html",
-        feed_order=order, feed_groups=freshness_groups(filtered, order),
+        feed_order=order, feed_groups=freshness_groups(displayed, order),
+        pagination=pagination,
         urgent=urgent, week=week, month=month,
         nodate=nodate, expired=expired,
         total=len(filtered),
         stats=stats,
-        counties=NJ_COUNTIES,
+        counties=NJ_COUNTIES + ['Unknown'],
         agencies=agencies,
         selected_county=county,
         selected_agency=agency,

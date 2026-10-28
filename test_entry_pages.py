@@ -74,9 +74,9 @@ class EntryPageTests(unittest.TestCase):
     def test_conflicting_past_deadline_never_gets_urgent_styling(self):
         item = record(source_id='state-njta', source_status='open',
                       source_status_authoritative=True, due_date_raw='01/01/2020')
-        soup = self.render('/bids/construction?sort=closing', [item])
+        soup = self.render('/bids/construction?sort=closing&status=needs_confirmation', [item])
         self.assertFalse(soup.select('.soon, .soon-due'))
-        self.assertIn('deadline needs confirmation', soup.get_text())
+        self.assertIn('Deadline needs confirmation', soup.get_text())
 
     def test_home_search_is_public_get_form_and_tracks_submission_only(self):
         soup = self.render('/', [record()])

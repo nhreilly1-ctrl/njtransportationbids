@@ -119,7 +119,7 @@ class ProjectFactsTests(unittest.TestCase):
             self.assertNotIn(b'$100', response.data)
             self.assertEqual(client.get('/opportunities/pdf-date-test/calendar.ics').status_code, 404)
         enriched = main.enrich(item)
-        self.assertEqual(enriched['status'], 'open')
+        self.assertEqual(enriched['status'], 'needs_confirmation')
         self.assertFalse(closing_soon(enriched))
         self.assertIn(enriched, main.group_opportunity_scan([enriched])[3])
 

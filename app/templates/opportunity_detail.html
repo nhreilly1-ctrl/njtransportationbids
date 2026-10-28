@@ -63,6 +63,7 @@
       <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }} &middot; {{ opp.location_display or opp.county_display }}</div>
       <div style="display:flex; gap:7px; flex-wrap:wrap;">
         {% if opp.status == 'open' %}<span class="badge badge-open">Open</span>
+        {% elif opp.status == 'needs_confirmation' %}<span class="badge badge-nodate">Needs confirmation</span>
         {% elif opp.status == 'upcoming' %}<span class="badge badge-type-p">Upcoming</span>
         {% elif opp.status == 'expired' %}<span class="badge badge-expired">Expired</span>
         {% elif opp.status == 'unknown_date' %}<span class="badge badge-nodate">No due date</span>{% endif %}
@@ -75,7 +76,7 @@
     </div>
     {% if opp.due_date_raw and opp.due_date_raw != 'Not listed' %}
     <div class="opportunity-deadline">
-      <div style="font-size:11px; color:var(--text3);">{{ 'Expected' if opp.status == 'upcoming' else 'Due date' }}</div>
+      <div style="font-size:11px; color:var(--text3);">{{ opp.public_date_label or 'Listed deadline' }}</div>
       <div style="font-size:20px; font-weight:500; {{ 'color:var(--red)' if opp.status == 'expired' else '' }}">{{ opp.published_deadline_display if opp.document_deadline_warning else opp.deadline_display }}</div>
       {% if opp.document_deadline_warning %}<strong>Deadline needs confirmation</strong>{% endif %}
       {% if opp.forecast_timing_note %}<p style="font-size:12px;">{{ opp.forecast_timing_note }}</p>{% endif %}
@@ -85,6 +86,7 @@
     <div class="opportunity-deadline"><strong>Deadline not published</strong><p>Check the official notice for timing.</p></div>
     {% endif %}
   </div>
+  {% if opp.status == 'needs_confirmation' %}<p class="project-warning">{{ opp.status_note }} Verify with the issuing agency.</p>{% endif %}
   {% if opp.deadline_conflict and not opp.document_deadline_warning %}<p class="project-warning">Deadline needs confirmation. Check the official notice before relying on this date.</p>{% endif %}
   {% if opp.status == 'expired' %}<p class="project-warning">This opportunity is closed. This page remains available for reference; check the official source for amendments or reissues.</p>{% endif %}
   {% include "partials/project_actions.html" %}
@@ -224,7 +226,7 @@
       {% if opp.structure_types %}<tr><td style="color:var(--text2); padding:4px 0;">Structure</td><td style="padding:4px 0;">{{ opp.structure_types | join(', ') | title }}</td></tr>{% endif %}
       {% if opp.crossing_phrases %}<tr><td style="color:var(--text2); padding:4px 0;">Crossing</td><td style="padding:4px 0;">{{ opp.crossing_phrases | join(', ') }}</td></tr>{% endif %}
       {% if opp.municipalities %}<tr><td style="color:var(--text2); padding:4px 0;">Municipality</td><td style="padding:4px 0;">{{ opp.municipalities | join(', ') }}</td></tr>{% endif %}
-      {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">{{ 'Expected' if opp.status == 'upcoming' else 'Normalized deadline' }}</td><td style="padding:4px 0;">{{ opp.deadline_display }}</td></tr>{% endif %}
+      {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">{{ opp.public_date_label or 'Listed deadline' }}</td><td style="padding:4px 0;">{{ opp.deadline_display }}</td></tr>{% endif %}
       {% if opp.due_date_raw %}<tr><td style="color:var(--text2); padding:4px 0;">Source deadline text</td><td style="padding:4px 0;">{{ opp.due_date_raw }}</td></tr>{% endif %}
       {% if opp.last_verified_date %}<tr><td style="color:var(--text2); padding:4px 0;">Last checked</td><td style="padding:4px 0;">{{ opp.last_verified_date }}</td></tr>{% endif %}
       <tr><td style="color:var(--text2); padding:4px 0;">Access</td><td style="padding:4px 0;">{{ opp.access_type or '—' }}</td></tr>
@@ -249,7 +251,7 @@
       {{ item.source_name }}{% if item.contract_number %} &middot; {{ item.contract_number }}{% endif %}
     </div>
   </div>
-  <div class="bid-due"><span class="due-label">{{ 'Expected' if item.status == 'upcoming' else 'Due' }}</span><span class="due-date">{{ item.deadline_display }}</span>{% if item.deadline_conflict %}<span class="due-label">Deadline needs confirmation</span>{% elif item.forecast_timing_note %}<span class="due-label">{{ item.forecast_timing_note }}</span>{% endif %}</div>
+  <div class="bid-due"><span class="due-label">{{ item.public_date_label or 'Listed deadline' }}</span><span class="due-date">{{ item.deadline_display }}</span>{% if item.deadline_conflict %}<span class="due-label">Deadline needs confirmation</span>{% elif item.forecast_timing_note %}<span class="due-label">{{ item.forecast_timing_note }}</span>{% endif %}</div>
 </div>
 {% endfor %}
 <a class="project-browse-link" href="{{ url_for('notices2.notices_all', source=opp.source_id, status='active') }}" data-analytics-event="project_browse_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}">More open and upcoming notices from {{ opp.source_name }} &rarr;</a>

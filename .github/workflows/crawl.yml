@@ -9,6 +9,8 @@ on:
       - main
     paths:
       - 'crawlers/**'
+      - 'app/core/deadlines.py'
+      - 'app/core/forecast.py'
       - '.github/workflows/crawl.yml'
   schedule:
     - cron: '0 10 * * *'      # 6:00 AM ET daily (10:00 UTC)

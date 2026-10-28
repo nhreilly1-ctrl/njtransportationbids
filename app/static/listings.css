@@ -639,3 +639,7 @@
   .ledger-record-label { flex-wrap: wrap; }
   .listing-page .ledger-actions { align-items: flex-start; }
 }
+
+/* Full titles and contract references remain readable in every ledger. */
+.listing-page .bid-title {display:block;overflow:visible;-webkit-line-clamp:unset;overflow-wrap:anywhere;}
+.listing-page .ledger-meta > span {white-space:normal;overflow-wrap:anywhere;}

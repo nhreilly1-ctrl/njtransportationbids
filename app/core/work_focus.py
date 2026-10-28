@@ -12,7 +12,7 @@ def work_focus(record):
         "professional": r"\b(?:professional services|engineering services|consulting services|inspection services|construction management|construction project management|design services|surveying services|supervision of construction)\b",
         "supplies": r"\b(?:rock salt|snow plow parts|snowplow parts|cutting edges)\b",
         "support": r"\b(?:towing|snow removal|snow plowing|tree trimming|street sweeping|road sweeping|roadway sweeping)\b",
-        "projects": r"\b(?:resurfacing|pavement preservation|bridge rehabilitation|bridge replacement|culvert replacement|drainage restoration)\b",
+        "projects": r"\b(?:resurfacing|pavement preservation|bridge rehabilitation|bridge replacement|culvert replacement|replacement of (?:the )?(?:existing )?(?:[a-z]+(?: [a-z]+)? county )?(?:bridge|culvert)|drainage restoration)\b",
     }
     matches = {key: re.search(pattern, title) for key, pattern in patterns.items()}
     found = [key for key, match in matches.items() if match]

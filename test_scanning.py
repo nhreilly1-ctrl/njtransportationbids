@@ -103,7 +103,7 @@ class ScanTrustTests(unittest.TestCase):
         rows = [dict(id=status, title='Bridge '+status, _canonical_notice=True,
                      source_name='Agency', notice_type='construction', status=status,
                      due_date_raw='09/01/2099' if status == 'open' else 'Fall 2099',
-                     is_planned=status == 'upcoming') for status in ('open', 'upcoming')]
+                     is_planned=status == 'upcoming', source_id='state-njdot-profserv-upcoming') for status in ('open', 'upcoming')]
         for status in ('open', 'upcoming'):
             with (patch.object(main, 'load_public_opps', return_value=deepcopy(rows)),
                   patch.object(main, 'render_template', return_value='ok') as render):
@@ -267,7 +267,8 @@ class ScanTrustTests(unittest.TestCase):
         context = render.call_args.kwargs
         self.assertEqual([r['title'] for r in context['pipeline_preview']], ['Future forecast'])
         self.assertEqual([r['title'] for r in context['elapsed_forecasts']], ['Old forecast'])
-        self.assertEqual(context['stats']['pipeline'], 2)
+        self.assertEqual(context['stats']['pipeline'], 1)
+        self.assertEqual(context['stats']['forecast_review'], 1)
 
     def test_njdot_preserves_elapsed_visible_rows_not_hidden_history(self):
         book = Workbook()

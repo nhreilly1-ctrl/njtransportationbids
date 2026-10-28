@@ -92,7 +92,7 @@ def _parse_datetime(value: str) -> tuple[datetime | None, str | None, bool]:
     explicit_eastern = bool(
         re.search(r"\b(?:ET|EST|EDT)\b|Eastern\s+Time", value, re.I)
     )
-    cleaned = re.sub(r"\s*(?:Eastern\s+Time(?:\s*\(ET\))?|ET|EST|EDT|UTC|GMT)\s*$", "", value, flags=re.I)
+    cleaned = re.sub(r"\s*\(?(?:Eastern\s+Time(?:\s*\(ET\))?|ET|EST|EDT|UTC|GMT)\)?\s*$", "", value, flags=re.I)
 
     for fmt in DATETIME_FORMATS:
         try:
@@ -246,7 +246,7 @@ def reconcile_authoritative_open_deadline(
     record: dict,
     now: datetime | None = None,
 ) -> bool:
-    """Keep an authoritative Open record live while disclosing a stale deadline."""
+    """Disclose a source's Open label when its published deadline has passed."""
     source_status = str(record.get("source_status") or "").strip().lower()
     if not record.get("source_status_authoritative") or source_status != "open":
         return False
@@ -274,8 +274,79 @@ def deadline_is_past(record: dict, now: datetime | None = None) -> bool:
     if record.get("deadline_at"):
         try:
             parsed = datetime.fromisoformat(record["deadline_at"].replace("Z", "+00:00"))
-            return now.astimezone(timezone.utc) > parsed.astimezone(timezone.utc)
+            return now.astimezone(timezone.utc) >= parsed.astimezone(timezone.utc)
         except (TypeError, ValueError):
             pass
     due = deadline_date(record)
     return bool(due and due < now.astimezone(EASTERN).date())
+
+
+def apply_public_status(record: dict, now: datetime | None = None) -> dict:
+    """Keep unresolved dates and planning windows outside actionable counts.
+
+    Run after source/manual review rules and normalize_deadline. A source's Open
+    label is preserved as evidence, never as proof that a past date is biddable.
+    """
+    current = now or datetime.now(EASTERN)
+    if current.tzinfo is None:
+        current = current.replace(tzinfo=EASTERN)
+    today = current.astimezone(EASTERN).date()
+    source_status = str(record.get('source_status') or '').strip().lower()
+    planned = bool(record.get('is_planned') or record.get('status') == 'upcoming'
+                   or source_status in ('upcoming', 'planned', 'anticipated'))
+    record['is_planned'] = planned
+    record['public_date_label'] = 'Expected window' if planned else 'Listed deadline'
+    record['status_note'] = ''
+    status = record.get('status')
+    if status in ('deleted', 'disabled', 'noise'):
+        return record
+    if status == 'approved':
+        record['status'] = 'open'
+    if record.get('source_inactive') or source_status in ('closed', 'awarded', 'cancelled', 'canceled', 'withdrawn'):
+        record['status'] = 'expired'
+        record['status_note'] = 'The source marks this notice closed or no longer current.'
+    elif record.get('geography_review_required') or record.get('parser_review_required'):
+        record['status'] = 'review_required'
+    elif planned:
+        if not record.get('forecast_window_end') and deadline_date(record):
+            record['forecast_window_end'] = record['due_date_parsed']
+            record['forecast_window_elapsed'] = deadline_date(record) < today
+        if record.get('forecast_window_elapsed') or not record.get('forecast_window_end'):
+            record['status'] = 'needs_confirmation'
+            record['status_note'] = record.get('forecast_timing_note') or 'Confirm the expected advertisement window with the agency.'
+        else:
+            record['status'] = 'upcoming'
+    elif record.get('deadline_conflict'):
+        record['status'] = 'needs_confirmation'
+        record['status_note'] = 'Published dates or the agency status conflict. Confirm the current deadline and addenda.'
+    elif deadline_is_past(record, current):
+        record['status'] = 'expired'
+        record['public_date_label'] = 'Past listed deadline'
+        record['status_note'] = 'The listed deadline has passed. Check the official source for extensions or reissues.'
+    elif not deadline_date(record) or (deadline_date(record) == today and not record.get('deadline_has_time')):
+        record['status'] = 'needs_confirmation'
+        record['status_note'] = ('The listed date is today, but no submission time is published here.'
+                                 if deadline_date(record) else 'No parseable submission deadline is available here.')
+    if record.get('status') == 'needs_confirmation' and not planned:
+        record['public_date_label'] = 'Date needs confirmation'
+    record['urgent'] = (record.get('status') == 'open' and not record.get('deadline_conflict')
+                        and record.get('days_until_due') is not None
+                        and 0 <= record['days_until_due'] <= 7)
+    return record
+
+
+def matches_public_status(record: dict, selected: str) -> bool:
+    status = record.get('status')
+    if status in ('deleted', 'disabled', 'noise'):
+        return False
+    if selected == 'active':
+        return status in ('open', 'upcoming')
+    if selected in ('review', 'needs_confirmation'):
+        return status in ('needs_confirmation', 'unknown_date', 'review_required', 'ai_review')
+    if selected == 'forecast_review':
+        return status == 'needs_confirmation' and bool(record.get('is_planned'))
+    if selected == 'all':
+        return True
+    if selected == 'urgent':
+        return status == 'open' and bool(record.get('urgent'))
+    return status == selected

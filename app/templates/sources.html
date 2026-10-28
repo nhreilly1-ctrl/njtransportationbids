@@ -18,7 +18,7 @@
 <section class="sources-hero" aria-labelledby="sources-title">
   <div class="sources-hero-copy">
     <span class="sources-kicker">New Jersey procurement coverage</span>
-    <h1 id="sources-title"><strong>{{ source_summary.configured }}</strong><span>sources<br>monitored</span></h1>
+    <h1 id="sources-title"><strong>{{ source_summary.configured }}</strong><span>sources<br>configured</span></h1>
     <p>Official transportation opportunities from New Jersey state agencies, authorities, metropolitan planning organizations, counties, and selected municipal procurement portals.</p>
   </div>
   <div class="coverage-grid" aria-label="Source coverage by organization type">
@@ -30,7 +30,7 @@
 </section>
 
 <div class="coverage-note">
-  <strong>Statewide coverage:</strong> NJDOT, NJTA, NJ TRANSIT, regional bridge and port authorities, New Jersey MPOs, all 21 county procurement portals, and major municipal sources.
+  <strong>Coverage and access:</strong> Configuration does not guarantee current usable coverage. {{ source_summary.recent_records }} recent checks returned records; {{ source_summary.limited }} sources have access restrictions. {{ source_summary.daily }} sources are scheduled daily and {{ source_summary.weekly }} weekly. An empty check does not prove that no opportunities exist.
 </div>
 
 {% macro source_block(src) %}
@@ -40,7 +40,7 @@
   <div class="source-entry-main">
     <div class="source-entry-head">
       <h3>{{ src.name }}</h3>
-      {% if src.access_state == 'inaccessible' %}
+      {% if src.access_limited %}
         <span class="source-status source-status-limited">Access limited</span>
       {% elif src.health == 'bad' %}
         <span class="source-status source-status-check">Verify directly</span>
@@ -60,9 +60,12 @@
       {% endif %}
     </div>
     <div class="source-verification">
-      <span>Last checked {{ src.last_crawl_display or 'not yet recorded' }}</span>
+      <span>Last attempted {{ src.last_crawl_display or 'not yet recorded' }}</span>
+      <span>Last successful check {{ src.last_success_display or 'not recorded' }}</span>
       <span>Checked {{ src.frequency }}</span>
+      <span>{{ src.access_type }}</span>
     </div>
+    {% if src.needs_confirmation %}<a href="{{ url_for('notices2.notices_all', source=src.id, status='needs_confirmation') }}">{{ src.needs_confirmation }} need confirmation</a>{% endif %}
     {% if src.access_state == 'inaccessible' and src.access_reason %}
       <p class="source-guidance">{{ src.access_reason }}</p>
     {% elif src.health in ('warn', 'bad') %}
