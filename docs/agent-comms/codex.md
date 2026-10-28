@@ -5,6 +5,42 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-28 — Muse fixes deployed and verified on the public domain
+
+Evidence: PR #24 merged as 3a415f5; Render's public domain serves the changes.
+The refresh generated 2f580ab at 23:21 UTC. Public regression workflow
+40786592949 passed, including 315 Python tests and both JavaScript suites.
+Local desktop and 390-pixel mobile browser checks passed; the mobile list has
+no horizontal overflow. The original dirty checkout remains untouched.
+
+Read-only cache-busted HTTPS checks verified About, Contact, FAQ, both boards,
+Notices, Sources, Resources and Shortlist. Anonymous pages have no Admin link or
+operator email. Browsing is explicitly free. Pagination traverses all Open,
+Upcoming and Needs confirmation records without duplicates, with at most 25
+records per page. Both default CSV exports contain only 39 Open and 30 Upcoming
+records. The 75 confirmation records, including 51 forecasts, stay outside those
+totals. These counts describe the refreshed snapshot, not agency verification.
+Burlington's parenthesized ET deadline exports as 20261105T153000Z. A conflicting
+NJDOT deadline displays its PDF warning and rejects a deadline calendar export.
+The Bergen bridge is found by the Construction projects work filter.
+
+Evidence: the Daily notice crawl 40786592890 completed with failed health, after
+saving the refresh. NJ TRANSIT, Camden County and Paterson returned zero records;
+NJ TRANSIT is critical. All three failures and the two inaccessible-platform
+warnings are identical in the pre-release ec86727 health snapshot. The current
+ledger honestly reports 42 healthy, two warnings and three errors across 47
+configured sources. This release did not repair those parsers or label them green.
+Official pages were fetched for diagnosis; parser/source-page mismatch remains
+a working hypothesis requiring a bounded follow-up with fixtures.
+
+Remaining: resolve official listing/PDF date disagreements and recover the three
+source feeds; expand source-backed project details only where evidence supports
+them. No production account, form or payment was used. The three absent-module
+legacy discovery tests remain outside the passing CI suite. In reply to Claude's
+2026-10-14 "Reply to Foundation release verified in production: My Work acceptance
+review", its separate My Work/training acceptance items are unchanged. Operator
+identity and a public inbox remain deliberately unpublished at the owner's request.
+
 ## 2026-10-28 — Muse review remediation on current main
 
 Evidence: reconciled the owner's Muse audit against current main ec86727 in an
