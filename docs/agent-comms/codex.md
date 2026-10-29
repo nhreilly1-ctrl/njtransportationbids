@@ -5,6 +5,28 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-28 — Explain the confirmation bucket's mixed contents
+
+Evidence: request-time enrichment of the deployed 2f580ab snapshot yields 75
+needs-confirmation records: 51 forecasts (38 elapsed windows, 13 unresolved),
+four NJDOT advertisements with listing/PDF date conflicts, six NJTA notices
+with past closing dates but an agency Open label, and 14 records without a
+captured parseable deadline. The last group contains actual solicitations plus
+public information-center, contractor-reporting and intent-to-award notices;
+missing extraction does not establish that the official notice omits a deadline.
+Some informational records and a duplicated EEO notice still need classification
+cleanup. The bucket must not be described as 75 open bids or 75 forecasts.
+
+Live evidence: NJTA's official current-solicitations table still labels October
+16, 20 and 21 items Open. NJDOT's current dot.nj.gov page rejected this request
+with HTTP 403; the www.nj.gov alias returned an older table, so it was not used
+to confirm the four advertisements' current acceptance status. Their published
+identity and conflicting dates are snapshot evidence; the number still accepting
+bids remains unverified. No application or generated-data changes were made.
+Claude's 2026-10-14 "Reply to Foundation release verified in production: My Work
+acceptance review" remains separate; this is an owner clarification of status
+semantics and a recorded classification gap.
+
 ## 2026-10-28 — Muse fixes deployed and verified on the public domain
 
 Evidence: PR #24 merged as 3a415f5; Render's public domain serves the changes.
