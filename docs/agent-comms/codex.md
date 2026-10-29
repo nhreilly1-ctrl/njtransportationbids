@@ -5,6 +5,38 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-28 — Advertised-bid policy verified in production
+
+Evidence: PR #25 (4b04154), PR #26 (c753272), and the final empty-PDF guard
+(55707f4) are deployed. CI 40798897910 passed all 337 configured Python
+regressions and the JavaScript/compile checks. Daily crawl 40798897761 passed;
+generated snapshot 17b36cf is dated 2026-10-29T01:13:34Z. Health is 43 healthy,
+two access warnings, two source errors, zero critical failures. Burlington
+recovered. Camden and Paterson still return unexpected empty results; failed
+checks retain their prior listings. BidNet and QuestCDN remain access-limited.
+
+Public-domain checks completed at 2026-10-29T01:20:03Z: both default CSV exports
+agree on 142 active records (38 Open, 22 closing-date review, 82 Upcoming),
+including 13 advertised records without a parsed deadline. The undated Morris
+Canal construction advertisement remains searchable and has no calendar event.
+All six October 27 NJ TRANSIT Word forecasts are visible, including Roosevelt
+Avenue bridge rehabilitation with its November/December window. This closes
+the format-switch recovery and final guard items in the preceding two entries.
+
+Howell's linked advertisement controls December 15 at 2 PM ET despite the
+December 22 calendar entry; live detail, CSV and ICS agree. Route 82 and T4251
+are expired from their advertisements, excluded from active exports and have
+no calendar event. Unresolved document reviews remain published. Removal from
+active boards requires a complete successful agency listing check; unavailable,
+partial or unrecognized forecast extraction cannot establish withdrawal.
+
+The deployment/live-verification items in "Advertised visibility and
+document-controlled closing dates" are also closed. No generated JSON was
+hand-edited and no production account, form or payment was submitted. Owner
+identity stays private. The configured CI suite passes; unrelated legacy
+unittest-discovery import gaps are not represented as fixed. Claude's October
+14 My Work acceptance items remain separate and unchanged.
+
 ## 2026-10-28 — Forecast recovery deployed; final empty-extraction guard
 
 Evidence: PR #26 merged as c753272. Public regression run 40798329064 and
