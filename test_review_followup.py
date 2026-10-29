@@ -54,8 +54,8 @@ class ReviewStatusTests(unittest.TestCase):
         for raw, expected in [('10/28/2026 10:30 AM ET', 'expired'),
                               ('10/28/2026 12:00 PM ET', 'expired'),
                               ('10/28/2026 3:00 PM ET', 'open'),
-                              ('10/28/2026', 'needs_confirmation'),
-                              ('10/29/2026', 'open'), ('TBD', 'needs_confirmation')]:
+                              ('10/28/2026', 'open'),
+                              ('10/29/2026', 'open'), ('TBD', 'open')]:
             with self.subTest(raw=raw):
                 self.assertEqual(self.resolve(notice(due_date_raw=raw))['status'], expected)
 
@@ -64,8 +64,8 @@ class ReviewStatusTests(unittest.TestCase):
         self.assertEqual(self.resolve(notice(status_override='approved', due_date_raw='01/01/2020'))['status'], 'expired')
 
     def test_planning_windows_are_separate_from_submission_deadlines(self):
-        for raw, expected in [('Summer 2026', 'needs_confirmation'), ('Fall 2026', 'upcoming'),
-                              ('Winter 2027', 'needs_confirmation'), ('September/October', 'needs_confirmation'),
+        for raw, expected in [('Summer 2026', 'upcoming'), ('Fall 2026', 'upcoming'),
+                              ('Winter 2027', 'upcoming'), ('September/October', 'upcoming'),
                               ('11/17/2026', 'upcoming')]:
             record = notice(status='upcoming', source_status='upcoming', is_planned=True,
                             source_id='state-njdot-profserv-upcoming', due_date_raw=raw)
@@ -106,15 +106,15 @@ class ReviewPublicRoutesTests(unittest.TestCase):
 
     def test_counts_boards_notices_exports_and_calendar_share_actionable_status(self):
         home = self.context('/', main)
-        self.assertEqual(home['stats']['open'], 1)
-        self.assertEqual(home['stats']['pipeline'], 1)
-        self.assertEqual(home['stats']['needs_confirmation'], 3)
+        self.assertEqual(home['stats']['open'], 2)
+        self.assertEqual(home['stats']['pipeline'], 2)
+        self.assertEqual(home['stats']['needs_confirmation'], 2)
         for path in ('/export/opportunities.csv', '/export/notices.csv'):
             rows = list(csv.DictReader(StringIO(self.client.get(path).get_data(as_text=True))))
-            self.assertEqual({r['id'] for r in rows}, {'bid', 'current-forecast'})
+            self.assertEqual({r['id'] for r in rows}, {'bid', 'old', 'missing', 'current-forecast', 'elapsed-forecast'})
         for path, module in (('/bids/construction', main), ('/notices', notice_routes)):
-            self.assertEqual(self.context(path, module)['total'], 2)
-            self.assertEqual(self.context(path+'?status=needs_confirmation', module)['total'], 3)
+            self.assertEqual(self.context(path, module)['total'], 5)
+            self.assertEqual(self.context(path+'?status=needs_confirmation', module)['total'], 2)
             self.assertEqual(self.context(path+'?status=forecast_review', module)['total'], 1)
         for key in ('old', 'missing', 'current-forecast', 'elapsed-forecast'):
             self.assertEqual(self.client.get(f'/opportunities/{key}/calendar.ics').status_code, 404)

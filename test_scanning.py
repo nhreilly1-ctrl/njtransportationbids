@@ -265,9 +265,9 @@ class ScanTrustTests(unittest.TestCase):
               patch.object(main, 'render_template', return_value='ok') as render):
             main.app.test_client().get('/')
         context = render.call_args.kwargs
-        self.assertEqual([r['title'] for r in context['pipeline_preview']], ['Future forecast'])
+        self.assertEqual([r['title'] for r in context['pipeline_preview']], ['Future forecast', 'Old forecast'])
         self.assertEqual([r['title'] for r in context['elapsed_forecasts']], ['Old forecast'])
-        self.assertEqual(context['stats']['pipeline'], 1)
+        self.assertEqual(context['stats']['pipeline'], 2)
         self.assertEqual(context['stats']['forecast_review'], 1)
 
     def test_njdot_preserves_elapsed_visible_rows_not_hidden_history(self):
@@ -411,7 +411,7 @@ class ScanTrustTests(unittest.TestCase):
 
     def test_project_without_deadline_or_map_states_absence(self):
         html = self.render_project(due_date_raw=None, due_date_parsed=None, map_url=None)
-        self.assertIn("Deadline not published", html)
+        self.assertIn("No known closing date", html)
         self.assertNotIn('data-analytics-event="map_click"', html)
         self.assertNotIn('data-analytics-event="calendar_add"', html)
 

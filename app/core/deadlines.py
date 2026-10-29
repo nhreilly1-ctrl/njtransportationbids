@@ -5,6 +5,7 @@ from datetime import date, datetime, timezone
 from zoneinfo import ZoneInfo
 from app.core.forecast import forecast_state
 from app.core.document_deadlines import document_deadline_warning
+from app.core.bid_documents import controlling_document
 
 
 EASTERN = ZoneInfo("America/New_York")
@@ -139,6 +140,17 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
     raw_value = record.get("due_date_raw") or record.get("due_date") or ""
     raw = str(raw_value).strip()
     record["due_date_raw"] = raw
+    document = None if record.get('is_planned') else controlling_document(record)
+    effective_raw = str((document or {}).get('deadline', {}).get('raw') or raw)
+    record['effective_deadline_raw'] = effective_raw
+    record['deadline_basis'] = 'bid_document' if document else ('agency_listing' if raw else 'unknown')
+    record['deadline_source_url'] = document['url'] if document else record.get('official_url')
+    record['controlling_bid_document'] = document
+    review = record.get('bid_document_review') or {}
+    record['deadline_review_note'] = review.get('recheck_note') or review.get('reason') or ''
+    record['deadline_review_state'] = ('resolved' if document else
+                                       'needs_review' if review.get('state') == 'needs_review' else
+                                       'missing' if not raw else 'listing_only')
     today = today or datetime.now(EASTERN).date()
 
     record.update(
@@ -149,20 +161,21 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
         deadline_timezone_assumed=False,
         deadline_has_time=False,
         deadline_precision="unknown",
-        deadline_display="Deadline not published",
+        deadline_display="No known closing date",
         due_date_parsed=None,
         days_until_due=None,
-        deadline_conflict=False,
+        deadline_conflict=bool(not document and review.get('documents') and review.get('state') in ('needs_review', 'unavailable')),
         document_deadline_warning=None,
         published_deadline_display=None,
         forecast_timing_note=None,
         forecast_window_end=None,
         forecast_window_elapsed=False,
+        forecast_needs_update=False,
     )
-    if raw.lower() in UNKNOWN_VALUES:
+    if effective_raw.lower() in UNKNOWN_VALUES:
         return record
 
-    cleaned = re.sub(r"^(?:open|closed|advertised|pending)\s*[:\-]?\s*", "", raw, flags=re.I).strip()
+    cleaned = re.sub(r"^(?:open|closed|advertised|pending)\s*[:\-]?\s*", "", effective_raw, flags=re.I).strip()
     parsed_datetime, timezone_source, assumed = _parse_datetime(cleaned)
     if parsed_datetime:
         local = parsed_datetime.astimezone(EASTERN)
@@ -205,7 +218,22 @@ def normalize_deadline(record: dict, today: date | None = None) -> dict:
 
 
 def _check_document_deadline(record):
-    warning = document_deadline_warning(record, record.get('due_date_parsed'))
+    raw = record.get('due_date_raw') or ''
+    listing_dt, _, _ = _parse_datetime(raw)
+    listing = listing_dt.astimezone(EASTERN).date() if listing_dt else _parse_date(raw)
+    document = record.get('controlling_bid_document')
+    if document:
+        bid = document['deadline']
+        time_differs = bool(listing_dt and record.get('deadline_at') and
+                            listing_dt.astimezone(timezone.utc).isoformat().replace('+00:00', 'Z') != record['deadline_at'])
+        if listing and (listing.isoformat() != bid['date'] or time_differs):
+            record['document_deadline_warning'] = {
+                'listing_date': listing.isoformat(), 'pdf_date': bid['date'],
+                'url': document['url'], 'checked_at': document.get('checked_at', '')[:10],
+                'listing_raw': raw, 'document_raw': bid.get('raw') or bid['date'],
+                'resolved': True, 'stale': False}
+        return
+    warning = document_deadline_warning(record, listing.isoformat() if listing else None)
     if warning:
         record.update(document_deadline_warning=warning, deadline_conflict=True,
                       published_deadline_display=record['deadline_display'],
@@ -250,6 +278,8 @@ def reconcile_authoritative_open_deadline(
     source_status = str(record.get("source_status") or "").strip().lower()
     if not record.get("source_status_authoritative") or source_status != "open":
         return False
+    if record.get('deadline_basis') == 'bid_document':
+        return False  # The bid document controls even if the agency badge is stale.
     if not deadline_is_past(record, now):
         return False
 
@@ -297,6 +327,8 @@ def apply_public_status(record: dict, now: datetime | None = None) -> dict:
     record['is_planned'] = planned
     record['public_date_label'] = 'Expected window' if planned else 'Listed deadline'
     record['status_note'] = ''
+    record['public_date_label'] = ('Bid document closing date' if record.get('deadline_basis') == 'bid_document'
+                                   else record['public_date_label'])
     status = record.get('status')
     if status in ('deleted', 'disabled', 'noise'):
         return record
@@ -311,11 +343,13 @@ def apply_public_status(record: dict, now: datetime | None = None) -> dict:
         if not record.get('forecast_window_end') and deadline_date(record):
             record['forecast_window_end'] = record['due_date_parsed']
             record['forecast_window_elapsed'] = deadline_date(record) < today
-        if record.get('forecast_window_elapsed') or not record.get('forecast_window_end'):
-            record['status'] = 'needs_confirmation'
+        record['forecast_needs_update'] = bool(record.get('forecast_window_elapsed') or not record.get('forecast_window_end'))
+        record['status'] = 'upcoming'
+        if record['forecast_needs_update']:
             record['status_note'] = record.get('forecast_timing_note') or 'Confirm the expected advertisement window with the agency.'
-        else:
-            record['status'] = 'upcoming'
+    elif source_status == 'past_calendar_event' and deadline_is_past(record, current):
+        record['status'] = 'expired'
+        record['status_note'] = 'Past calendar event; no later closing date has been established from a bid document.'
     elif record.get('deadline_conflict'):
         record['status'] = 'needs_confirmation'
         record['status_note'] = 'Published dates or the agency status conflict. Confirm the current deadline and addenda.'
@@ -324,9 +358,12 @@ def apply_public_status(record: dict, now: datetime | None = None) -> dict:
         record['public_date_label'] = 'Past listed deadline'
         record['status_note'] = 'The listed deadline has passed. Check the official source for extensions or reissues.'
     elif not deadline_date(record) or (deadline_date(record) == today and not record.get('deadline_has_time')):
-        record['status'] = 'needs_confirmation'
+        record['status'] = 'open'
         record['status_note'] = ('The listed date is today, but no submission time is published here.'
-                                 if deadline_date(record) else 'No parseable submission deadline is available here.')
+                                 if deadline_date(record) else 'Advertised by the agency; no known closing date is captured here.')
+        if not deadline_date(record):
+            record['deadline_display'] = 'No known closing date'
+            record['deadline_review_state'] = 'missing'
     if record.get('status') == 'needs_confirmation' and not planned:
         record['public_date_label'] = 'Date needs confirmation'
     record['urgent'] = (record.get('status') == 'open' and not record.get('deadline_conflict')
@@ -340,11 +377,14 @@ def matches_public_status(record: dict, selected: str) -> bool:
     if status in ('deleted', 'disabled', 'noise'):
         return False
     if selected == 'active':
-        return status in ('open', 'upcoming')
+        return status in ('open', 'upcoming', 'needs_confirmation', 'unknown_date')
     if selected in ('review', 'needs_confirmation'):
-        return status in ('needs_confirmation', 'unknown_date', 'review_required', 'ai_review')
+        return status in ('needs_confirmation', 'unknown_date', 'review_required', 'ai_review') or bool(record.get('forecast_needs_update'))
     if selected == 'forecast_review':
-        return status == 'needs_confirmation' and bool(record.get('is_planned'))
+        return bool(record.get('is_planned') and record.get('forecast_needs_update'))
+    if selected == 'deadline_review':
+        return (matches_public_status(record, 'active') and not record.get('is_planned')
+                and (bool(record.get('deadline_conflict')) or not record.get('due_date_parsed')))
     if selected == 'all':
         return True
     if selected == 'urgent':

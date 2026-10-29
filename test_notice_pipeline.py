@@ -1037,7 +1037,8 @@ class PublicDashboardTests(unittest.TestCase):
         self.assertIn("Closing within 7 days", html)
         self.assertIn("Closing this month", html)
         self.assertIn("Upcoming or planned", html)
-        self.assertNotIn("Current drainage work without deadline", html)
+        self.assertIn("Current drainage work without deadline", html)
+        self.assertIn("No known closing date", html)
         self.assertIn("Mon, Aug 24, 2026 (time not published)", html)
         self.assertNotIn("12:00 AM", html)
 

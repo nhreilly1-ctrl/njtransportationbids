@@ -290,13 +290,18 @@ def _merge(existing, fresh, refreshed_source_ids=None):
                 record_change(old, ['Removed from agency listing'], _now())
             old["source_inactive"] = True
             old["inactive_reason"] = "removed from current agency listing"
+            old['listing_checked_at'] = _now()
 
     for n in fresh:
+        n['last_seen_advertised_at'] = _now()
+        n['listing_checked_at'] = _now()
         nid = n["id"]
         if nid in existing_by_id:
             old = existing_by_id[nid]
             from app.core.document_deadlines import retain_document_date_check
             retain_document_date_check(n, old)
+            from app.core.bid_documents import retain_bid_document_review
+            retain_bid_document_review(n, old)
             # Preserve manual overrides
             for field in ("status_override","noise_flagged","record_type_override","notice_subtype_override"):
                 if old.get(field):
@@ -419,17 +424,21 @@ def run_crawl(sources_to_crawl):
             continue
         try:
             records = crawl_source(source)
+            from crawlers.bid_documents import inspect_bid_documents
+            from crawlers.notice_crawlers import _get
+            inspect_bid_documents(records, _get, _now())
             if source['id'] == 'state-drjtbc-profserv':
                 from crawlers.document_watch import inspect_documents
                 inspect_documents(records)
-            crawl_error = "zero_records" if not records and not source.get("allow_empty") else None
+            confirmed_empty = not records and getattr(records, 'listing_complete', False)
+            crawl_error = "zero_records" if not records and not source.get("allow_empty") and not confirmed_empty else None
             _log_crawl(source["id"], len(records), crawl_error)
             log.info(f"  → {len(records)} records")
             if crawl_error:
                 log.warning(f"{source['id']} returned zero records; parser or source may have changed")
-            elif source.get("parser") in AUTHORITATIVE_PARSERS and (
+            elif (source.get("parser") in AUTHORITATIVE_PARSERS and (
                 records or source.get("empty_is_authoritative")
-            ):
+            )) or getattr(records, 'listing_complete', False):
                 refreshed_source_ids.add(source["id"])
             all_fresh.extend(records)
         except Exception as e:

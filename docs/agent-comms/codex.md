@@ -5,6 +5,48 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-28 — Advertised visibility and document-controlled closing dates
+
+Owner correction: advertised work must remain published without a known closing
+date, and the latest linked bid advertisement controls over a calendar/listing,
+including NJ TRANSIT. Implemented on a fresh branch from f2b5be1; the old dirty
+checkout remains untouched. This supersedes the prior suppression of undated
+advertisements and elapsed/ambiguous forecasts from default feeds.
+
+Evidence: default boards and CSV now include advertised deadline-review records;
+undated listings say No known closing date, remain Open and have no calendar
+event. Forecasts remain in Upcoming with timing-update flags. Complete successful
+listing checks delist absent records; failed/partial checks retain them. Recognized
+complete HTML fallback snapshots can now retire missing records, while paging or
+deferred/unrecognized pages cannot. Generic posted dates are no longer guessed
+to be submission dates. Added listing-observation timestamps and policy in
+AGENTS.md and docs/BID_ADVERTISEMENT_POLICY.md.
+
+New document packets preserve current links, contract identity, hashes, page and
+quoted submission evidence, source version/issue-date order, check time and review
+outcome. The latest established version controls even when it moves a deadline
+earlier. Ambiguous order or an unreadable newer version stays posted in Closing
+date review. Same-link outages retain the last verified date with a warning.
+CSV, calendar output, detail pages and material-change history use that decision.
+
+Live source evidence: Howell IFB No. 26-021X calendar says December 22 but its
+current linked advertisement states December 15 at 2 PM EST. The collector and
+local rendered page resolve to 2026-12-15T19:00:00Z while preserving 12/22/26.
+Rendered and visually inspected the advertisement's first page. A narrow storage
+tank-upgrade scope match recovers this missed NJ TRANSIT project. Historical
+calendar events are distinguished; a proven later document can reopen them.
+NJTA's filtered listing has all 17 results on one page. T4251's newspaper ad gives
+October 21 at 10 AM and closes despite the source Open badge. P200.831 has no
+accessible linked advertisement and remains published in deadline review.
+
+Validation: 332 Python tests pass, followed by the 17 document/lifecycle tests
+after the final collector extension. Both JS suites, compileall, whitespace
+checks and affected-route Flask smoke checks pass. Source-document checks are
+bounded to four PDF pages and six documents per opportunity; unsupported or
+unreadable documents remain reviewable. Production refresh, CI and Render live
+results will be recorded after merge. No generated JSON was manually corrected.
+Claude's 2026-10-14 My Work acceptance-review items remain separate and unchanged.
+
 ## 2026-10-28 — Explain the confirmation bucket's mixed contents
 
 Evidence: request-time enrichment of the deployed 2f580ab snapshot yields 75

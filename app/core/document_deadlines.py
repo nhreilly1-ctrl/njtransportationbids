@@ -1,4 +1,4 @@
-"""Disclose NJDOT PDF/listing disagreement; never replace a date."""
+"""Retain legacy NJDOT date-check evidence and describe listing disagreement."""
 from datetime import date, datetime, timedelta, timezone
 
 

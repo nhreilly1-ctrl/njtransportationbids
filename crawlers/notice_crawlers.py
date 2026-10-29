@@ -78,6 +78,22 @@ def _get(url, timeout=20):
 def _soup(html, parser="html.parser"):
     return BeautifulSoup(html, parser)
 
+
+class ListingRecords(list):
+    """A parser may attest that it observed the complete listing, including empty."""
+    listing_complete = False
+
+
+def _complete_listing(soup, records, marker=None):
+    heading = soup.find(['h1', 'h2'], string=re.compile(r'bids|procurement|legal notices|solicitations', re.I))
+    identified = bool(soup.select_one(marker)) if marker else bool(heading and soup.find('main'))
+    paging = soup.select_one('[rel="next"], .pagination, [id*="Pager"], [id*="pager"], a[aria-label*="Next"]')
+    deferred = re.search(r'load more|next page|page\s+\d+\s+of\s+[2-9]', soup.get_text(' ', strip=True), re.I)
+    empty = re.search(r'no\s+(?:current\s+|open\s+)?(?:bids|solicitations|legal notices)\s+(?:are\s+)?(?:available|posted|found)', soup.get_text(' ', strip=True), re.I)
+    records = ListingRecords(records)
+    records.listing_complete = bool(identified and not paging and not deferred and (records or empty))
+    return records
+
 def _now():
     return datetime.now(timezone.utc).isoformat()
 
@@ -120,7 +136,7 @@ CONSTRUCTION_SCOPE_KW = [
     "traffic", "streetscape", "resurfacing", "reconstruction",
     "maintenance contract", "job order contract", "rail rehabilitation", "rail grinding",
     "track rehabilitation", "station rehabilitation", "platform lift",
-    "structural repair", "hvac overhaul", "tank installation", "ferry retrofit",
+    "structural repair", "hvac overhaul", "tank installation", "storage tank upgrade", "ferry retrofit",
     "parking lot", "water main", "watermain", "wastewater", "sewer",
     "stormwater", "pump station", "bikeway", "greenway", "living shoreline",
     "sludge", "utility infrastructure", "snow plowing",
@@ -1196,7 +1212,7 @@ def parse_njtransit(source):
         except ValueError:
             continue
         description, contract_no = values[2], values[3]
-        if due < date.today() or not re.search(r"\b(?:electronic )?(?:bids?|proposals?) due\b", description, re.I):
+        if not re.search(r"\b(?:electronic )?(?:bids?|proposals?) due\b", description, re.I):
             continue
         notice_type = _classify_transport_scope(description)
         if not notice_type:
@@ -1222,7 +1238,7 @@ def parse_njtransit(source):
             "access_type": source["access_type"],
             "platform": source["platform"],
             "paywalled": False,
-            "source_status": "open",
+            "source_status": "open" if due >= date.today() else 'past_calendar_event',
             "crawled_at": _now(),
         })
 
@@ -1420,7 +1436,8 @@ def parse_cumberland_county(source):
     response = _get(source["url"])
     if response is None:
         raise RuntimeError("Cumberland listing unavailable")
-    links = _soup(response.text).select('a.NEWS_FEED_DISPLAY_LINK_TITLE')
+    soup = _soup(response.text)
+    links = soup.select('a.NEWS_FEED_DISPLAY_LINK_TITLE')
     if not links:
         raise RuntimeError("Cumberland procurement feed missing")
     records, seen = [], set()
@@ -1463,7 +1480,7 @@ def parse_cumberland_county(source):
                               contract_number=reference.group(1), excerpt=text)
         record["deadline_evidence_url"] = pdf_url
         records.append(record)
-    return records
+    return _complete_listing(soup, records, 'a.NEWS_FEED_DISPLAY_LINK_TITLE')
 
 
 def _extract_pdf_due_date(url):
@@ -1782,7 +1799,11 @@ def parse_generic_html_list(source):
             r'|\b\d{1,2}/\d{1,2}/\d{2,4}\b',
             context, re.I
         )
-        due_date = date_match.group(0) if date_match else ""
+        closing = re.search(
+            r'(?:closing date|due date|bid opening|bids? due|proposals? due)\s*:?\s*'
+            r'((?:[A-Z][a-z]+\s+\d{1,2},?\s+\d{4})|(?:\d{1,2}/\d{1,2}/\d{2,4}))',
+            context, re.I)
+        due_date = closing.group(1) if closing else ""
 
         contract_match = re.search(r'\bBid\s+No\.?\s*[\w-]+|\bRFP\s+[\d-]+|\bBid\s+#\s*[\w-]+', context, re.I)
         contract_no = contract_match.group(0) if contract_match else ""
@@ -1843,7 +1864,7 @@ def parse_generic_html_list(source):
             })
 
     log.info(f"{source['name']}: {len(records)} records")
-    return records
+    return _complete_listing(soup, records)
 
 
 # ── Granicus county procurement pages ───────────────────────────────────────

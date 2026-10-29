@@ -63,7 +63,7 @@ def project_facts_display(record, now=None):
         return result
     result['needs_review'] = False
     result['url'] = pack['url']
-    if record.get('document_deadline_warning'):
+    if record.get('deadline_conflict'):
         result['needs_review'] = True
         return result
     result['items'] = [dict(item, label=LABELS[item['kind']]) for item in pack.get('items', [])

@@ -77,6 +77,7 @@
       <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
       <option value="open" {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
       <option value="needs_confirmation" {{ 'selected' if selected_status == 'needs_confirmation' }}>Needs confirmation</option>
+      <option value="deadline_review" {{ 'selected' if selected_status == 'deadline_review' }}>Closing date review</option>
       <option value="forecast_review" {{ 'selected' if selected_status == 'forecast_review' }}>Forecasts needing confirmation</option>
       <option value="upcoming" {{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
       <option value="urgent" {{ 'selected' if selected_status == 'urgent' }}>Closing within 7 days</option>
@@ -111,7 +112,7 @@
         {% if is_urgent %}<strong>Closing soon</strong>
         {% elif n.status == 'open' %}<strong>Open</strong>
         {% elif n.status == 'upcoming' %}<strong>Upcoming</strong>
-        {% elif n.status == 'needs_confirmation' %}<strong>Needs confirmation</strong>
+        {% elif n.status == 'needs_confirmation' %}<strong>Advertised / deadline review</strong>
         {% elif n.status == 'expired' %}<strong>Expired</strong>
         {% elif n.status == 'unknown_date' %}<strong>No due date</strong>{% endif %}
         {% if is_new %}<em>New today</em>{% endif %}
@@ -139,13 +140,13 @@
       </div>
     </div>
     <div class="bid-due ledger-deadline {{ 'soon-due' if is_urgent }}">
-      {% if n.due_date_raw and n.due_date_raw not in ('Not listed','-','') %}
+      {% if n.due_date_parsed or (n.due_date_raw and n.due_date_raw not in ('Not listed','-','')) %}
         <span class="due-label">{{ n.public_date_label or ('Expected window' if n.is_planned else 'Listed deadline') }}</span>
         <span class="due-date">{{ n.deadline_display }}</span>
         {% if n.forecast_timing_note %}<span class="due-label">{{ n.forecast_timing_note }}</span>{% endif %}
         {% if n.days_until_due is defined and n.days_until_due is not none and n.status == 'open' %}<small>{{ n.days_until_due }} day{{ '' if n.days_until_due == 1 else 's' }}</small>{% endif %}
       {% else %}
-        <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not published</span>
+        <span class="due-label">Closing date</span><span class="due-date unresolved-date">No known closing date</span>
       {% endif %}
     </div>
   </article>
