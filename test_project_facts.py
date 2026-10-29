@@ -53,17 +53,17 @@ class ProjectFactsTests(unittest.TestCase):
         text = TEXT.replace('Contract No.', 'Contract #').replace('4 or 5', '4 or 5*')
         self.assertEqual([f['kind'] for f in parse_njdot_facts(text, '038153910')], ['estimate', 'completion'])
 
-    def test_conflict_preserves_listing_and_does_not_invent_pdf_time(self):
+    def test_document_date_controls_preserves_listing_and_does_not_invent_time(self):
         item = self.discrepancy_record()
         normalize_deadline(item)
         self.assertEqual(item['due_date_raw'], '09/24/2099')
-        self.assertEqual(item['due_date_parsed'], '2099-09-24')
-        self.assertTrue(item['deadline_conflict'])
+        self.assertEqual(item['due_date_parsed'], '2099-08-25')
+        self.assertFalse(item['deadline_conflict'])
         self.assertIsNone(item['deadline_at'])
-        self.assertIsNone(item['days_until_due'])
-        self.assertIn('last checked PDF date differs', item['deadline_display'])
-        self.assertTrue(project_facts_display(item)['needs_review'])
-        self.assertEqual(project_facts_display(item)['items'], [])
+        self.assertIsNotNone(item['days_until_due'])
+        self.assertEqual(item['deadline_basis'], 'bid_document')
+        self.assertFalse(project_facts_display(item)['needs_review'])
+        self.assertTrue(project_facts_display(item)['items'])
 
     def test_agreement_wrong_identity_and_no_evidence_do_not_claim_conflict(self):
         item = self.discrepancy_record()
@@ -74,12 +74,13 @@ class ProjectFactsTests(unittest.TestCase):
             changed['project_facts'][key] = value
             self.assertIsNone(document_deadline_warning(changed, '2099-09-24'))
 
-    def test_stale_check_remains_uncertain_not_current_verification(self):
+    def test_stale_check_retains_date_but_withholds_stale_project_facts(self):
         item = self.discrepancy_record()
         item['project_facts']['checked_at'] = '2000-01-01T00:00:00Z'
         self.assertTrue(document_deadline_warning(item, '2099-09-24')['stale'])
         normalize_deadline(item)
-        self.assertTrue(item['deadline_conflict'])
+        self.assertFalse(item['deadline_conflict'])
+        self.assertEqual(item['due_date_parsed'], '2099-08-25')
         self.assertTrue(project_facts_display(item)['needs_review'])
 
     def test_failed_refresh_retains_only_date_evidence_not_stale_facts(self):
@@ -102,11 +103,12 @@ class ProjectFactsTests(unittest.TestCase):
         previous = self.discrepancy_record()
         current = deepcopy(previous)
         current['project_facts']['bid_date']['date'] = '2099-09-24'
+        current['project_facts']['bid_date']['raw'] = '9/24/2099'
         retain_document_date_check(current, previous)
         normalize_deadline(current)
         self.assertFalse(current['deadline_conflict'])
 
-    def test_disagreement_warns_detail_blocks_calendar_and_excludes_urgency(self):
+    def test_document_date_renders_with_evidence_and_controls_calendar(self):
         import app.main as main
         from app.core.scanning import closing_soon
         item = self.discrepancy_record()
@@ -114,14 +116,14 @@ class ProjectFactsTests(unittest.TestCase):
             client = main.app.test_client()
             response = client.get('/opportunities/pdf-date-test')
             self.assertEqual(response.status_code, 200)
-            self.assertIn(b'Listing and linked PDF dates differ', response.data)
-            self.assertNotIn(b'Add deadline to calendar', response.data)
-            self.assertNotIn(b'$100', response.data)
-            self.assertEqual(client.get('/opportunities/pdf-date-test/calendar.ics').status_code, 404)
+            self.assertIn(b'Bid document controls the closing date', response.data)
+            self.assertIn(b'Add deadline to calendar', response.data)
+            self.assertIn(b'$100', response.data)
+            self.assertEqual(client.get('/opportunities/pdf-date-test/calendar.ics').status_code, 200)
         enriched = main.enrich(item)
-        self.assertEqual(enriched['status'], 'needs_confirmation')
+        self.assertEqual(enriched['status'], 'open')
         self.assertFalse(closing_soon(enriched))
-        self.assertIn(enriched, main.group_opportunity_scan([enriched])[3])
+        self.assertIn(enriched, main.group_opportunity_scan([enriched])[2])
 
     def test_detail_renders_fact_and_source(self):
         import app.main as main

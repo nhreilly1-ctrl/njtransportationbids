@@ -1,0 +1,15 @@
+{% set review = opp.get('bid_document_review') or {} %}
+{% if opp.controlling_bid_document %}
+<div class="project-warning" id="document-date-warning">
+  <strong>Bid document controls the closing date.</strong>
+  <p><a href="{{ opp.controlling_bid_document.url }}#page={{ opp.controlling_bid_document.deadline.page }}" target="_blank" rel="noopener">Read the controlling {{ opp.controlling_bid_document.kind or 'advertisement' }}</a>. Last checked {{ opp.controlling_bid_document.checked_at[:10] }}.</p>
+  {% if opp.document_deadline_warning %}<p>The agency listing shows {{ opp.document_deadline_warning.listing_raw or opp.document_deadline_warning.listing_date }}. The linked document states {{ opp.document_deadline_warning.document_raw or opp.document_deadline_warning.pdf_date }}; the document date is used above.</p>{% endif %}
+  {% if opp.deadline_review_note %}<p>{{ opp.deadline_review_note }}</p>{% endif %}
+</div>
+{% elif opp.bid_document_review or opp.document_deadline_warning %}
+<div class="project-warning" id="document-date-warning">
+  <strong>Bid document review needed; this listing remains published.</strong>
+  <p>{{ opp.deadline_review_note or 'The linked documents and listing need a deadline review.' }}</p>
+  {% for document in review.get('documents', []) %}<p><a href="{{ document.url }}" target="_blank" rel="noopener">{{ document.title }}</a>{% if document.deadline %}: {{ document.deadline.raw }}{% endif %}</p>{% endfor %}
+</div>
+{% endif %}

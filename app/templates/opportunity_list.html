@@ -76,6 +76,7 @@
       <option value="active" {{ 'selected' if selected_status == 'active' }}>Open + upcoming</option>
       <option value="open" {{ 'selected' if selected_status == 'open' }}>Open for bid</option>
       <option value="needs_confirmation" {{ 'selected' if selected_status == 'needs_confirmation' }}>Needs confirmation</option>
+      <option value="deadline_review" {{ 'selected' if selected_status == 'deadline_review' }}>Closing date review</option>
       <option value="forecast_review" {{ 'selected' if selected_status == 'forecast_review' }}>Forecasts needing confirmation</option>
       <option value="upcoming" {{ 'selected' if selected_status == 'upcoming' }}>Upcoming work</option>
       <option value="all" {{ 'selected' if selected_status == 'all' }}>All public records</option>
@@ -107,7 +108,7 @@
         <span>{{ 'Construction' if is_construction else 'Professional services' }}</span>
         {% if o.status == 'open' %}<strong>Open</strong>
         {% elif o.status == 'upcoming' %}<strong>Upcoming</strong>
-        {% elif o.status == 'needs_confirmation' %}<strong>Needs confirmation</strong>
+        {% elif o.status == 'needs_confirmation' %}<strong>Advertised / deadline review</strong>
         {% elif o.status in ('review_required', 'ai_review') %}<strong>Review</strong>
         {% elif o.status == 'expired' %}<strong>Expired</strong>
         {% elif o.status == 'noise' %}<strong>Excluded</strong>{% endif %}
@@ -143,11 +144,11 @@
     </div>
     <div class="bid-due ledger-deadline {{ 'soon-due' if is_soon }}">
       {% if o.deadline_conflict %}<strong class="due-label">Deadline needs confirmation</strong>{% endif %}
-      {% if o.due_date_raw and o.due_date_raw not in ('Not listed','-', '') %}
+      {% if o.due_date_parsed or (o.due_date_raw and o.due_date_raw not in ('Not listed','-', '')) %}
         <span class="due-label">{{ o.public_date_label or ('Expected window' if o.is_planned else 'Listed deadline') }}</span><span class="due-date">{{ o.deadline_display }}</span>
         {% if o.forecast_timing_note %}<span class="due-label">{{ o.forecast_timing_note }}</span>{% endif %}
       {% else %}
-        <span class="due-label">Deadline</span><span class="due-date unresolved-date">Not published</span>
+        <span class="due-label">Closing date</span><span class="due-date unresolved-date">No known closing date</span>
       {% endif %}
     </div>
   </article>

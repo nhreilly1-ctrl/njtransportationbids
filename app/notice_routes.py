@@ -162,7 +162,7 @@ def _group_by_urgency(notices):
 
 
 def _build_stats(notices):
-    active   = [n for n in notices if n.get("status") in ("open", "upcoming")
+    active   = [n for n in notices if matches_public_status(n, 'active')
                 and not n.get("noise_flagged")]
     today    = date.today()
     posted_today = [n for n in active if first_seen_today(n)]
@@ -299,7 +299,7 @@ def notice_detail(notice_id):
 @notice_bp.route("/export/notices.csv")
 def export_notices_csv():
     notices = _load_notices()
-    active  = [n for n in notices if n.get("status") in ("open", "upcoming")
+    active  = [n for n in notices if matches_public_status(n, 'active')
                and not n.get("noise_flagged")]
     buf = StringIO()
     fields = ["id","title","source_name","source_tier","county","county_provenance","counties",
@@ -307,6 +307,8 @@ def export_notices_csv():
               "geography_provenance","geography_evidence","agency_county_hint",
               "geography_review_required","notice_type",
               "notice_subtype","due_date_raw","due_date_parsed","status",
+              "effective_deadline_raw","deadline_basis","deadline_source_url",
+              "deadline_review_state","deadline_review_note",
               "deadline_at","deadline_local","deadline_timezone",
               "deadline_timezone_source","deadline_timezone_assumed",
               "deadline_precision","deadline_display",

@@ -72,6 +72,18 @@ is binding on public pages and settles design questions that taste cannot.
 - Use `app/core/deadlines.py` for deadline parsing. Preserve `due_date_raw`; store exact
   instants in UTC, render explicit Eastern time, label assumed time zones, and never
   invent a time for date-only records.
+- Keep advertised opportunities published when no closing date is known. Show
+  that absence explicitly and do not offer a deadline calendar event. Forecasts
+  stay in Upcoming while advertised, with elapsed/ambiguous timing flagged.
+- The latest linked official bid advertisement or ordered addendum controls the
+  closing date, including for NJ TRANSIT. Use `app/core/bid_documents.py` and the
+  crawler review packet; retain listing text, identity evidence, document hash,
+  page, check time and source URL. Order by published version/date, never fetch
+  order or the furthest-out closing date. Unresolved document order/extraction
+  stays visible in closing-date review; do not silently substitute an older PDF.
+- Delist absent records only after a successful complete agency-listing check.
+  Failed and partial checks retain the last observed listing. Never treat a
+  still-accessible historical PDF as proof it remains advertised.
 - A successful zero-result crawl is not automatically a failure. Source policy such
   as `allow_empty` determines whether zero is expected.
 - A green workflow only proves execution. Verify record counts, representative known

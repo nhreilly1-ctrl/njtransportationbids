@@ -10,6 +10,7 @@ on:
     paths:
       - 'crawlers/**'
       - 'app/core/deadlines.py'
+      - 'app/core/bid_documents.py'
       - 'app/core/forecast.py'
       - '.github/workflows/crawl.yml'
   schedule:

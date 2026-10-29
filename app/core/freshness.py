@@ -61,6 +61,13 @@ def stamp_refresh(record, previous, checked_at):
                   if normalize(previous.get(field)) != normalize(record.get(field))]
         if previous.get('source_inactive'):
             labels.append('Returned to agency listing')
+        from app.core.bid_documents import controlling_document
+        before, after = controlling_document(previous), controlling_document(record)
+        if before and after:
+            if before.get('sha256') != after.get('sha256') or before.get('url') != after.get('url'):
+                labels.append('Bid document changed')
+            if (before.get('deadline') or {}).get('raw') != (after.get('deadline') or {}).get('raw'):
+                labels.append('Closing date changed')
         if document_changed:
             labels.append('Document changed; review required')
         if labels:

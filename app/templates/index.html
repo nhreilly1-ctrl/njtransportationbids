@@ -181,7 +181,7 @@
       {% if elapsed_forecasts %}
       <details class="pipeline-list">
         <summary>{{ elapsed_forecasts|length }} forecasts need confirmation</summary>
-        <p>Elapsed and unresolved windows are excluded from Upcoming.</p>
+        <p>These forecasts remain published while the agency advertises them. Their expected windows need an update; they are not bid closing dates.</p>
         <a href="{{ url_for('notices2.notices_all', status='forecast_review') }}">Review forecasts needing confirmation &rarr;</a>
       </details>
       {% endif %}
@@ -206,7 +206,7 @@
   </section>
 
   {% endif %}
-  <p class="coverage-note"><a href="{{ url_for('notices2.notices_all', status='needs_confirmation') }}">{{ stats.needs_confirmation }} notices need confirmation</a>. Open excludes past deadlines and unresolved dates. Upcoming excludes elapsed or unresolved forecast windows. <a href="{{ url_for('faq') }}">How dates work</a></p>
+  <p class="coverage-note">{{ stats.undated_open }} advertised listings have no known closing date. {{ stats.advertised_review }} advertised listings need a deadline review and remain on the boards. Upcoming includes {{ stats.forecast_review }} forecasts whose timing needs an update. The latest linked bid advertisement or dated addendum controls the closing date. <a href="{{ url_for('faq') }}">How dates work</a></p>
 
   <footer class="home-utility">
     <a href="{{ url_for('contractor_resources') }}"><strong>Contractor resources</strong><span>Specs, wages, prequalification, compliance, and bonding.</span></a>

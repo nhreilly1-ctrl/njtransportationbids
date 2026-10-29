@@ -63,7 +63,7 @@
       <div style="font-size:13px; color:var(--text2); margin-bottom:1rem;">{{ opp.source_name }} &middot; {{ opp.location_display or opp.county_display }}</div>
       <div style="display:flex; gap:7px; flex-wrap:wrap;">
         {% if opp.status == 'open' %}<span class="badge badge-open">Open</span>
-        {% elif opp.status == 'needs_confirmation' %}<span class="badge badge-nodate">Needs confirmation</span>
+        {% elif opp.status == 'needs_confirmation' %}<span class="badge badge-nodate">Advertised / deadline review</span>
         {% elif opp.status == 'upcoming' %}<span class="badge badge-type-p">Upcoming</span>
         {% elif opp.status == 'expired' %}<span class="badge badge-expired">Expired</span>
         {% elif opp.status == 'unknown_date' %}<span class="badge badge-nodate">No due date</span>{% endif %}
@@ -74,29 +74,23 @@
         {% if opp.platform and opp.platform != 'Unknown' %}<span class="badge badge-access">{{ opp.platform }}</span>{% endif %}
       </div>
     </div>
-    {% if opp.due_date_raw and opp.due_date_raw != 'Not listed' %}
+    {% if opp.due_date_parsed or (opp.due_date_raw and opp.due_date_raw != 'Not listed') %}
     <div class="opportunity-deadline">
       <div style="font-size:11px; color:var(--text3);">{{ opp.public_date_label or 'Listed deadline' }}</div>
-      <div style="font-size:20px; font-weight:500; {{ 'color:var(--red)' if opp.status == 'expired' else '' }}">{{ opp.published_deadline_display if opp.document_deadline_warning else opp.deadline_display }}</div>
-      {% if opp.document_deadline_warning %}<strong>Deadline needs confirmation</strong>{% endif %}
+      <div style="font-size:20px; font-weight:500; {{ 'color:var(--red)' if opp.status == 'expired' else '' }}">{{ opp.deadline_display }}</div>
+      {% if opp.deadline_conflict %}<strong>Deadline review needed</strong>{% endif %}
       {% if opp.forecast_timing_note %}<p style="font-size:12px;">{{ opp.forecast_timing_note }}</p>{% endif %}
       {% if opp.days_until_due is not none and opp.status == 'open' and not opp.deadline_conflict %}<div style="font-size:11px;color:var(--text2);">{{ opp.days_until_due }} day{{ 's' if opp.days_until_due != 1 }} remaining</div>{% endif %}
     </div>
     {% else %}
-    <div class="opportunity-deadline"><strong>Deadline not published</strong><p>Check the official notice for timing.</p></div>
+    <div class="opportunity-deadline"><strong>No known closing date</strong><p>Advertised listing; check the official notice for timing.</p></div>
     {% endif %}
   </div>
   {% if opp.status == 'needs_confirmation' %}<p class="project-warning">{{ opp.status_note }} Verify with the issuing agency.</p>{% endif %}
   {% if opp.deadline_conflict and not opp.document_deadline_warning %}<p class="project-warning">Deadline needs confirmation. Check the official notice before relying on this date.</p>{% endif %}
   {% if opp.status == 'expired' %}<p class="project-warning">This opportunity is closed. This page remains available for reference; check the official source for amendments or reissues.</p>{% endif %}
   {% include "partials/project_actions.html" %}
-  {% if opp.document_deadline_warning %}
-  <div class="project-warning" id="document-date-warning"><strong>{{ 'Previous PDF check found a different date; recheck needed.' if opp.document_deadline_warning.stale else 'Listing and linked PDF dates differ.' }}</strong>
-    <p>The agency listing shows {{ opp.document_deadline_warning.listing_date }}; at the last successful check, the PDF's Project Bid Date was {{ opp.document_deadline_warning.pdf_date }}. It may be an earlier notice. Confirm the current deadline and addenda with NJDOT before submitting.</p>
-    {% if opp.source_url %}<p><a href="{{ opp.source_url }}" target="_blank" rel="noopener" data-analytics-event="official_source_click" data-notice-id="{{ opp.id }}" data-agency="{{ opp.source_name }}" data-destination="current agency listing">Check the current agency listing</a></p>{% endif %}
-    <a href="{{ opp.document_deadline_warning.url }}#page=1" target="_blank" rel="noopener">Read the dated PDF, page 1</a>. Checked {{ opp.document_deadline_warning.checked_at }}.
-  </div>
-  {% endif %}
+  {% include 'partials/bid_document_review.html' %}
 </section>
 
 <nav class="project-sections" aria-label="On this project page">
@@ -309,7 +303,7 @@
 <div class="detail-card" style="margin-bottom:1rem;">
   <div style="font-size:13px; color:var(--text2);">
     <strong style="color:var(--text);">NJ Transportation Bids</strong> tracks road, bridge, and transit solicitations
-    from {{ source_total }} official New Jersey agency sources every day &mdash; NJDOT, the Turnpike Authority,
+    from {{ source_total }} official New Jersey agency sources on daily or weekly schedules &mdash; NJDOT, the Turnpike Authority,
     NJ TRANSIT, the Port Authority, and all 21 counties &mdash; including work agencies expect to advertise months ahead.
     Free, no account. <a href="{{ url_for('index') }}">See everything open now</a>.
   </div>

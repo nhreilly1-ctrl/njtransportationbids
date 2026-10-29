@@ -1248,7 +1248,7 @@ def index():
     order = feed_order(request.args.get('sort'))
     opps = [enrich(opp) for opp in load_public_opps()]
     opps = [opp for opp in opps if opp["status"] not in ("noise", "deleted", "disabled")]
-    active = sort_opps([opp for opp in opps if opp["status"] in ("open", "upcoming")])
+    active = sort_opps([opp for opp in opps if matches_public_status(opp, 'active')])
     today = _homepage_today()
     for opp in active:
         opp["days_until_due"] = None if opp.get("deadline_conflict") else deadline_days_remaining(opp, today)
@@ -1256,7 +1256,7 @@ def index():
 
     open_now = [opp for opp in active if opp["status"] == "open"]
     pipeline = [opp for opp in active if opp["status"] == "upcoming"]
-    forecast_review = [opp for opp in opps if opp['status'] == 'needs_confirmation' and opp.get('is_planned')]
+    forecast_review = [opp for opp in pipeline if opp.get('forecast_needs_update')]
     for opp in pipeline + forecast_review:
         opp["homepage_pipeline_window"] = _homepage_pipeline_window(opp)
 
@@ -1275,7 +1275,9 @@ def index():
         "active": len(active),
         "open": len(open_now),
         "pipeline": len(pipeline),
-        "needs_confirmation": len([opp for opp in opps if opp['status'] == 'needs_confirmation']),
+        "needs_confirmation": len([opp for opp in opps if matches_public_status(opp, 'review')]),
+        "undated_open": len([opp for opp in open_now if not opp.get('due_date_parsed')]),
+        "advertised_review": len([opp for opp in active if opp['status'] == 'needs_confirmation']),
         "forecast_review": len(forecast_review),
         "open_construction": len(
             [opp for opp in open_now if opp.get("record_type") == "construction"]
@@ -1308,8 +1310,7 @@ def index():
         feed_order=order,
         open_lane=(_group_homepage_lane(open_now[:10], today) if order == 'closing' else
                    freshness_groups(open_now, order, limit=10)),
-        pipeline_preview=(sort_opps([o for o in pipeline if not o.get('forecast_window_elapsed')]) if order == 'closing'
-                          else newest_first([o for o in pipeline if not o.get('forecast_window_elapsed')], order))[:6],
+        pipeline_preview=(sort_opps(pipeline) if order == 'closing' else newest_first(pipeline, order))[:6],
         elapsed_forecasts=sort_opps(forecast_review),
         unclassified_open=len(
             [
@@ -1513,7 +1514,8 @@ def opportunity_calendar(opp_id: str):
         part
         for part in (
             opp.get("source_name"),
-            f"Source deadline: {opp.get('due_date_raw')}" if opp.get("due_date_raw") else None,
+            f"Source deadline: {opp.get('effective_deadline_raw')}" if opp.get("effective_deadline_raw") else None,
+            f"Controlling bid document: {opp.get('deadline_source_url')}" if opp.get('deadline_basis') == 'bid_document' else None,
             "Verify submission details with the official source.",
         )
         if part
@@ -1600,7 +1602,7 @@ def export_csv():
     ids = request.args.get("ids", "")
     selected = {item for item in ids.split(",") if item}
     opps = [enrich(opp) for opp in load_public_opps()]
-    opps = [opp for opp in opps if opp["status"] in ("open", "upcoming")]
+    opps = [opp for opp in opps if matches_public_status(opp, 'active')]
     if selected:
         opps = [opp for opp in opps if str(opp.get("id")) in selected]
 
@@ -1623,6 +1625,11 @@ def export_csv():
         "notice_subtype",
         "due_date_raw",
         "due_date_parsed",
+        "effective_deadline_raw",
+        "deadline_basis",
+        "deadline_source_url",
+        "deadline_review_state",
+        "deadline_review_note",
         "deadline_at",
         "deadline_local",
         "deadline_timezone",
