@@ -284,6 +284,13 @@ class TransitForecastTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'could not be parsed'):
                 notice_crawlers._parse_njtransit_upcoming_docx(SOURCES_BY_ID['state-njtransit'], 'https://content.njtransit.com/Upcoming.docx')
 
+    def test_empty_pdf_extraction_cannot_retire_forecasts(self):
+        html = '<table><tr><th>Event Date</th></tr></table><a href="Upcoming.pdf">Upcoming opportunities</a>'
+        with (patch.object(notice_crawlers, '_get', return_value=SimpleNamespace(text=html)),
+              patch.object(notice_crawlers, '_parse_njtransit_upcoming_pdf', return_value=[])):
+            with self.assertRaisesRegex(RuntimeError, 'extraction is empty'):
+                notice_crawlers.parse_njtransit(SOURCES_BY_ID['state-njtransit'])
+
 
 if __name__ == '__main__':
     unittest.main()

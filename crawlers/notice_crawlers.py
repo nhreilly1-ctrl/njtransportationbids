@@ -1326,6 +1326,8 @@ def parse_njtransit(source):
             upcoming = _parse_njtransit_upcoming_docx(source, document_url)
         else:
             raise RuntimeError('NJ TRANSIT forecast format is unsupported; retain existing forecasts')
+        if not upcoming:
+            raise RuntimeError('NJ TRANSIT forecast extraction is empty; retain existing forecasts')
         open_titles = [record["title"].lower() for record in records
                        if record.get('source_status') != 'past_calendar_event']
         for candidate in upcoming:

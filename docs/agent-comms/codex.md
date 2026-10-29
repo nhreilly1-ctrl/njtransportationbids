@@ -5,6 +5,22 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-28 — Forecast recovery deployed; final empty-extraction guard
+
+Evidence: PR #26 merged as c753272. Public regression run 40798329064 and
+Daily crawl 40798329054 passed; generated snapshot 4cee9c9 contains the Word
+forecast repair. All six scoped records extracted from the October 27 DOCX
+are restored by successful source observation, with updated advertisement
+windows. NJ TRANSIT has no critical failure. Burlington, Camden and Paterson
+remain source errors; their failed checks do not retire retained records.
+
+Added the same fail-on-empty protection to the legacy PDF forecast path: a
+valid file whose structure no longer yields forecasts must not become proof
+of agency removal. The 136 document, pipeline and scanning regressions pass,
+including the new empty-PDF case, after the earlier complete 336-test pass.
+The new total is 337 tests; final CI/crawl results follow after publication.
+No generated JSON has been manually restored or corrected.
+
 ## 2026-10-28 — NJ TRANSIT forecast format switch caught during release QA
 
 Evidence: PR #25 merged as 4b04154; CI 40796760242 and crawl 40796760109 passed.
