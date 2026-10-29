@@ -1,5 +1,7 @@
 """Advertised visibility, evidence precedence, and safe source retirement."""
 import csv
+import io
+import zipfile
 from copy import deepcopy
 from datetime import datetime
 from io import StringIO
@@ -14,6 +16,7 @@ from app.core.deadlines import EASTERN, apply_public_status, matches_public_stat
 from app.core.freshness import stamp_refresh
 from crawlers import notice_crawlers, notice_runner
 from crawlers.bid_documents import collect_bid_document_review
+from crawlers.notice_sources import SOURCES_BY_ID
 from test_review_followup import notice
 
 NOW = datetime(2026, 10, 28, 12, tzinfo=EASTERN)
@@ -229,6 +232,57 @@ class AdvertisedLifecycleTests(unittest.TestCase):
             self.assertIn(b'DTSTART;VALUE=DATE:20991105', calendar.data)
             self.assertIn(b'Source deadline: 2099-11-05', calendar.data)
             self.assertNotIn(b'Source deadline: 11/17/2099', calendar.data)
+
+
+class TransitForecastTests(unittest.TestCase):
+    def word(self):
+        paragraphs = [
+            '<w:p><w:r><w:t>Expected Advertisement: November/December</w:t></w:r></w:p>',
+            '<w:p><w:r><w:t>Requests for Proposals (RFP):</w:t></w:r></w:p>']
+        for title, description in [('Bridge Engineering Services', 'NJ TRANSIT is seeking engineering services for a bridge.'),
+                                   ('Purchase of 4 Service Trucks', 'NJ TRANSIT is seeking bids for new trucks.')]:
+            paragraphs.extend([
+                '<w:p><w:pPr><w:numPr><w:ilvl w:val="0"/></w:numPr></w:pPr><w:r><w:t>'+title+'</w:t></w:r></w:p>',
+                '<w:p><w:r><w:t>'+description+'</w:t></w:r></w:p>'])
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, 'w') as archive:
+            archive.writestr('word/document.xml', '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+''.join(paragraphs)+'</w:body></w:document>')
+        return buffer.getvalue()
+
+    def test_word_forecasts_preserve_scope_window_and_revision_evidence(self):
+        source = SOURCES_BY_ID['state-njtransit']
+        url = 'https://content.njtransit.com/Upcoming%20rev%2010-27-26.docx'
+        with patch.object(notice_crawlers, '_get', return_value=SimpleNamespace(content=self.word())):
+            rows = notice_crawlers._parse_njtransit_upcoming_docx(source, url)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['notice_type'], 'professional_services')
+        self.assertEqual(rows[0]['due_date_raw'], 'November/December')
+        self.assertEqual(rows[0]['forecast_publication_date'], '2026-10-27')
+        self.assertEqual(resolve(rows[0])['forecast_window_end'], '2026-12-31')
+        self.assertTrue(rows[0]['is_planned'])
+
+    def test_past_calendar_advertisement_cannot_suppress_a_new_forecast(self):
+        source = SOURCES_BY_ID['state-njtransit']
+        html = ('<table><tr><td>10/01/26</td><td>11:00</td><td>Proposals Due: "Bridge Engineering Services"</td><td>123</td></tr></table>'
+                '<a href="https://content.njtransit.com/Upcoming%20rev%2010-27-26.docx">upcoming bidding opportunities</a>')
+        def get(url, **kwargs):
+            return SimpleNamespace(content=self.word()) if url.endswith('.docx') else SimpleNamespace(text=html)
+        with patch.object(notice_crawlers, '_get', side_effect=get):
+            rows = notice_crawlers.parse_njtransit(source)
+        self.assertEqual(len([r for r in rows if r.get('is_planned')]), 1)
+        self.assertEqual(len(rows), 2)
+
+    def test_unsupported_forecast_format_prevents_authoritative_removal(self):
+        source = SOURCES_BY_ID['state-njtransit']
+        html = '<table><tr><th>Event Date</th></tr></table><a href="Upcoming.xlsx">Upcoming opportunities</a>'
+        with patch.object(notice_crawlers, '_get', return_value=SimpleNamespace(text=html)):
+            with self.assertRaisesRegex(RuntimeError, 'unsupported'):
+                notice_crawlers.parse_njtransit(source)
+
+    def test_unreadable_word_forecast_is_failure_instead_of_empty_success(self):
+        with patch.object(notice_crawlers, '_get', return_value=SimpleNamespace(content=b'not a Word document')):
+            with self.assertRaisesRegex(RuntimeError, 'could not be parsed'):
+                notice_crawlers._parse_njtransit_upcoming_docx(SOURCES_BY_ID['state-njtransit'], 'https://content.njtransit.com/Upcoming.docx')
 
 
 if __name__ == '__main__':

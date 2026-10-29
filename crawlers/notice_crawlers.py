@@ -20,9 +20,11 @@ Output notice dict shape:
 """
 
 import io, json, re, hashlib, time, logging
+import zipfile
+import xml.etree.ElementTree as ET
 from datetime import date, datetime, timezone
 from difflib import SequenceMatcher
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit, unquote
 from zoneinfo import ZoneInfo
 
 import requests
@@ -1176,6 +1178,76 @@ def _parse_njtransit_upcoming_pdf(source, pdf_url):
     return records
 
 
+def _parse_njtransit_upcoming_docx(source, document_url):
+    response = _get(document_url, timeout=30)
+    if response is None or len(response.content) > 10_000_000:
+        raise RuntimeError('NJ TRANSIT forecast document could not be fetched')
+    try:
+        with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+            if archive.getinfo('word/document.xml').file_size > 2_000_000:
+                raise ValueError('Forecast XML exceeds check limit')
+            root = ET.fromstring(archive.read('word/document.xml'))
+    except (zipfile.BadZipFile, KeyError, ValueError, ET.ParseError) as exc:
+        raise RuntimeError('NJ TRANSIT forecast Word document could not be parsed') from exc
+    ns = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+    blocks, pending, period, category = [], None, '', ''
+    for paragraph in root.findall('.//w:p', ns):
+        text = _clean(''.join(node.text or '' for node in paragraph.findall('.//w:t', ns)))
+        if not text:
+            continue
+        if text.lower().startswith('expected advertisement:'):
+            if pending:
+                blocks.append(pending)
+                pending = None
+            period = text.split(':', 1)[1].strip()
+            continue
+        if re.search(r'^(?:Requests for Proposals|Invitations for Bid)', text, re.I):
+            category = 'professional_services' if text.lower().startswith('requests') else 'construction'
+            continue
+        numbering = paragraph.find('w:pPr/w:numPr', ns)
+        if numbering is not None:
+            level = numbering.find('w:ilvl', ns)
+            nested = level is not None and level.get('{'+ns['w']+'}val') != '0'
+            if nested and pending:
+                pending['title'] += ' ' + text
+                continue
+            if pending:
+                blocks.append(pending)
+            pending = dict(title=text, body='', period=period, category=category)
+        elif pending:
+            pending['body'] += ' ' + text
+    if pending:
+        blocks.append(pending)
+    if not blocks or not any(item['period'] for item in blocks):
+        raise RuntimeError('NJ TRANSIT forecast Word structure changed; retain existing forecasts')
+    published = None
+    revision = re.search(r'\brev\s+(\d{1,2}-\d{1,2}-\d{2}(?:\d{2})?)', unquote(document_url), re.I)
+    if revision:
+        try:
+            published = datetime.strptime(revision[1], '%m-%d-%Y' if len(revision[1].split('-')[-1]) == 4 else '%m-%d-%y').date().isoformat()
+        except ValueError:
+            pass
+    records = []
+    for item in blocks:
+        scope = _classify_transport_scope(item['title'], item['body'])
+        if scope is None and re.search(r'\bNorth Jersey Coast Line Signage\b', item['title'], re.I):
+            scope = 'construction'
+        if scope is None:
+            continue
+        title = item['title'].strip(' .')
+        record = _base_record(source, 'NJ TRANSIT upcoming: ' + title, document_url,
+                              item['category'] or scope, due_date=item['period'],
+                              excerpt=title + ' ' + item['body'])
+        record.update(id=_make_id(source['id'], 'upcoming:' + title), is_planned=True,
+                      source_status='upcoming', anticipated_date_raw=item['period'],
+                      forecast_publication_date=published,
+                      forecast_publication_evidence=document_url if published else None)
+        records.append(record)
+    if not records:
+        raise RuntimeError('NJ TRANSIT forecast Word document yielded no scoped records; retain existing forecasts')
+    return records
+
+
 def parse_njtransit(source):
     """Parse future bid/proposal due rows and the upcoming-opportunities PDF."""
     records = []
@@ -1242,17 +1314,27 @@ def parse_njtransit(source):
             "crawled_at": _now(),
         })
 
-    upcoming_link = soup.find("a", href=re.compile(r"upcoming.*\.pdf", re.I))
+    upcoming_link = next((a for a in soup.find_all('a', href=True)
+                          if re.search(r'\b(?:upcoming|forecasts?)\b',
+                                       unquote(a['href']) + ' ' + a.get_text(' ', strip=True), re.I)), None)
     if upcoming_link:
-        upcoming = _parse_njtransit_upcoming_pdf(
-            source, urljoin(source["url"], upcoming_link["href"])
-        )
-        open_titles = [record["title"].lower() for record in records]
+        document_url = urljoin(source['url'], upcoming_link['href'])
+        extension = urlsplit(document_url).path.lower()
+        if extension.endswith('.pdf'):
+            upcoming = _parse_njtransit_upcoming_pdf(source, document_url)
+        elif extension.endswith('.docx'):
+            upcoming = _parse_njtransit_upcoming_docx(source, document_url)
+        else:
+            raise RuntimeError('NJ TRANSIT forecast format is unsupported; retain existing forecasts')
+        open_titles = [record["title"].lower() for record in records
+                       if record.get('source_status') != 'past_calendar_event']
         for candidate in upcoming:
             candidate_title = candidate["title"].replace("NJ TRANSIT upcoming: ", "").lower()
             if any(SequenceMatcher(None, candidate_title, title).ratio() >= 0.78 for title in open_titles):
                 continue
             records.append(candidate)
+    elif 'upcoming procurement' in soup.get_text(' ', strip=True).lower():
+        raise RuntimeError('NJ TRANSIT forecast link is missing; retain existing forecasts')
 
     log.info(f"NJ TRANSIT: {len(records)} open/upcoming records")
     return records

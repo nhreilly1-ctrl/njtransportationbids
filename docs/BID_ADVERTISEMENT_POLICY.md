@@ -43,6 +43,10 @@ records. Their coverage limitations remain visible in source health.
 NJ TRANSIT's calendar also contains historical events. Past rows are retained
 as past calendar events; a matching document establishing a later deadline can
 reopen them. Merely encountering an archived calendar row does not make it Open.
+Historical calendar entries cannot suppress a newly published forecast. Both
+PDF and Word forecast documents are supported. A linked but unsupported,
+unreadable or structurally changed forecast document makes the source check
+incomplete, preventing that check from retiring existing forecasts.
 
 Document checking currently reads at most four PDF pages and six linked documents
 per opportunity. Unsupported or unreadable documents stay in review. A review

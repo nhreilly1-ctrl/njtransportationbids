@@ -5,6 +5,33 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-10-28 — NJ TRANSIT forecast format switch caught during release QA
+
+Evidence: PR #25 merged as 4b04154; CI 40796760242 and crawl 40796760109 passed.
+Render serves document-controlled Howell December 15 at 2 PM ET, and both live
+CSV/calendar outputs match. An undated Morris Canal advertisement is visible
+in the default Notices feed and has no calendar event. T4251 and Route 82 close
+from their bid documents. The refresh retained all three Burlington records
+when its unchanged IonWave parser encountered a source-schema failure. Camden
+and Paterson remain errors; NJ TRANSIT recovered and has no critical failure.
+
+Final forecast QA found that NJ TRANSIT changed its linked upcoming document
+from PDF to DOCX, revised October 27. The PDF-only discovery had incorrectly
+retired five prior forecasts in f0321c6. Added Word paragraph/numbering extraction,
+current forecast-link discovery, explicit revision-date provenance, and a failure
+guard for unsupported, missing or unreadable forecast documents. Historical
+calendar rows also cannot suppress a new forecast. Actual official DOCX parsing
+returns six scoped forecasts with updated windows, including Roosevelt Avenue
+bridge rehabilitation and North Jersey Coast Line signage; armored cars and
+general trucks are excluded. No generated data was hand-edited to restore them.
+
+Validation: all 336 Python tests pass, including format-switch, false-positive,
+old-calendar and unavailable-document regressions. The DOCX's nested D2/D4 scope
+is preserved in its program title. New code needs CI, a crawler refresh and a
+live forecast check before this follow-up can be closed. This corrects a parser
+coverage gap, not an agency withdrawal. Claude's October 14 My Work acceptance
+items remain separate; owner identity remains private.
+
 ## 2026-10-28 — Advertised visibility and document-controlled closing dates
 
 Owner correction: advertised work must remain published without a known closing
