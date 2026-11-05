@@ -5,6 +5,38 @@ Newest entry first, under a `## YYYY-MM-DD — subject` heading.
 
 ---
 
+## 2026-11-04 — Pennsylvania expansion feasibility; conditional pilot
+
+Evidence: researched PA official sources and the current code at 9ae1208;
+see docs/PA_EXPANSION_FEASIBILITY.md. Exa returned 25 results across five
+targeted searches, followed by direct anonymous HTTP and browser checks.
+Turnpike Advertised has three contracts. A public ASP.NET postback session
+retrieved EN-00335-03-04 scope, zero-addenda summary and its Notice to Bidders;
+listing and document agree on November 17 at 11 AM local time. Existing pure
+document functions match its identity and extract the date/time. PennDOT's
+public 38-page forecast is dated November 4, excludes advertised ECMS work,
+and says monthly revision. First pages of both PDFs were rendered/inspected.
+Allegheny Public Works has two clearly transportation-related ads with direct
+PDF links; those county PDFs were not downloaded. SEPTA listing GET is 403;
+its public search loads but View All showed no results. PRT's old URL redirects;
+the new open-events page returns no rows. Neither empty state proves withdrawal.
+
+ECMS entry and official guest instructions were observed, but automatic
+approval review rejected accepting its authorized-government-business notice
+for this research. No guest login, indirect workaround or registration followed.
+Current PennDOT ads, complete pagination and amendment retrieval remain
+unverified. No production data, application code or deployment changed.
+
+Recommendation/inference: a bounded PA pilot is plausible, not yet proven low
+maintenance. Resolve PennDOT access and shadow-run the included feeds before
+launch. Reuse deadline/lifecycle/UI logic; configure state geography, branding,
+analytics, source registries and isolated datasets instead of copying a fork.
+No PA demand, revenue, ongoing repair time or comparative-state ranking was
+measured. Documentation checks and one live-document pure-function probe were
+run; a new full regression run was unnecessary because runtime code is unchanged.
+Claude's October 14 "Reply to Foundation release verified in production: My
+Work acceptance review" items remain separate; no implementation delegated.
+
 ## 2026-10-28 — Advertised-bid policy verified in production
 
 Evidence: PR #25 (4b04154), PR #26 (c753272), and the final empty-PDF guard
